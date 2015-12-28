@@ -1,0 +1,49 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+		<h:outputText value="Setores" styleClass="header" />
+		<h:messages />
+		<h:form id="form">
+			<p:dataTable id="dataTable" var="item"
+				value="#{sectorController.lazyModel}" paginator="true" rows="10"
+				selection="#{sectorController.selectedItems}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="10,15,50">
+				<f:facet name="header">
+                    Setores
+                </f:facet>
+				<p:column selectionMode="multiple" style="width:18px" />
+				<p:column sortBy="#{item.id}">
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{item.id}" />
+				</p:column>
+				<p:column sortBy="#{item.name}">
+					<f:facet name="header">
+						<h:outputText value="Nome" />
+					</f:facet>
+					<h:outputText value="#{item.name}" />
+				</p:column>
+				<p:column sortBy="#{item.details}">
+					<f:facet name="header">
+						<h:outputText value="Detalhes" />
+					</f:facet>
+					<h:outputText value="#{item.details}" />
+				</p:column>
+				<f:facet name="footer">
+					<p:commandButton value="Novo setor"
+						oncomplete="newUserDialog.show()" icon="ui-icon-star"
+						title="Criar novo setor" />
+					<p:commandButton value="Excluir setores"
+						actionListener="#{sectorController.doDeleteUsers}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
