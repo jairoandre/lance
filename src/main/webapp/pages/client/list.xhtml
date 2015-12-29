@@ -7,16 +7,17 @@
 	<ui:define name="content">
 		<h:messages />
 		<h:form id="form">
-			<p:commandButton value="Novo setor" action="#{sectorController.preAdd}"
-				icon="ui-icon-star" title="Criar novo setor" />
-			<p:commandButton value="Excluir setores"
-				actionListener="#{sectorController.doDeleteUsers}"
+			<p:commandButton value="Novo cliente"
+				oncomplete="newUserDialog.show()" icon="ui-icon-star"
+				title="Criar novo cliente" />
+			<p:commandButton value="Excluir clientes"
+				actionListener="#{clientController.doDeleteUsers}"
 				update="dataTable" icon="ui-icon-trash" />
 			<br />
 			<br />
 			<p:dataTable id="dataTable" var="item"
-				value="#{sectorController.lazyModel}" paginator="true" rows="10"
-				selection="#{sectorController.selectedItems}"
+				value="#{clientController.lazyModel}" paginator="true" rows="10"
+				selection="#{clientController.selectedItems}"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				lazy="true" rowsPerPageTemplate="10,15,50">
 				<p:column selectionMode="multiple" style="width:18px" />
@@ -26,17 +27,17 @@
 					</f:facet>
 					<h:outputText value="#{item.id}" />
 				</p:column>
-				<p:column sortBy="#{item.name}">
+				<p:column sortBy="#{item.title}">
 					<f:facet name="header">
 						<h:outputText value="Nome" />
 					</f:facet>
-					<h:outputText value="#{item.name}" />
+					<h:outputText value="#{item.title}" />
 				</p:column>
-				<p:column sortBy="#{item.details}">
+				<p:column sortBy="#{item.clientCode}">
 					<f:facet name="header">
-						<h:outputText value="Detalhes" />
+						<h:outputText value="Código" />
 					</f:facet>
-					<h:outputText value="#{item.details}" />
+					<h:outputText value="#{item.clientCode}" />
 				</p:column>
 			</p:dataTable>
 

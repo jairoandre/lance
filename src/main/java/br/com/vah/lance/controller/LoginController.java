@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -83,7 +84,7 @@ public class LoginController implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		try {
-			String navigateString = "";
+			String navigateString = "/pages/index.xhtml";
 			// Checks if username and password are valid if not throws a
 			// ServletException
 			request.login(username, password);
@@ -107,7 +108,7 @@ public class LoginController implements Serializable {
 		} catch (ServletException e) {
 			logger.log(Level.SEVERE, e.toString());
 			context.addMessage(null,
-					new FacesMessage("Error!", "The username or password you provided does not match our records."));
+					new FacesMessage("Erro!", "Usuário ou senha inválida."));
 		}
 	}
 

@@ -5,13 +5,11 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-<h:head>
-	<title>Title</title>
-</h:head>
 <h:body>
 	<h:form>
 		<p:growl id="messages" />
-		<p:menubar>
+		<p:menubar rendered="#{request.getUserPrincipal() != null}">
+			<p:menuitem action="/pages/index.xhtml?faces-redirect=true"><h:graphicImage library="img" name="favicon.png" height="20"/></p:menuitem>
 			<c:if test="#{request.isUserInRole('Administrator')}">
 				<p:menuitem value="Home"
 					action="/admin/AdminHome.xhtml?faces-redirect=true" ajax="false"
@@ -20,26 +18,31 @@
 					action="/admin/UserList.xhtml?faces-redirect=true" ajax="false"
 					icon="ui-icon-person" />
 			</c:if>
-			<c:if test="#{request.getUserPrincipal() != null}">
-				<p:menuitem value="Logout" action="#{loginController.logout}"
-					icon="ui-icon-power" />
-			</c:if>
-			<p:menuitem value="Setores" action="/pages/sector/list.xhtml?faces-redirect=true"
-				icon="ui-icon-hospital-o" />
-			<p:menuitem value="Clientes"
-				action="/setor.xhtml?faces-redirect=true" icon="ui-icon-contact" />
-			<p:menuitem value="Tipos de serviço"
-				action="/setor.xhtml?faces-redirect=true" icon="ui-icon-contact" />
-			<p:menuitem value="Serviços"
-				action="/setor.xhtml?faces-redirect=true" icon="ui-icon-contact" />
-			<p:menuitem value="Contratos"
-				action="/setor.xhtml?faces-redirect=true" icon="ui-icon-contact" />
-			<p:menuitem value="Lançamentos"
-				action="/setor.xhtml?faces-redirect=true" icon="ui-icon-contact" />
-			<c:if test="#{request.getUserPrincipal() == null}">
-				<p:menuitem value="Login" action="/Login.xhtml?faces-redirect=true"
-					icon="ui-icon-power" />
-			</c:if>
+			<p:submenu label="Cadastro" icon="ui-icon-document">
+				<p:menuitem value="Setores"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+				<p:menuitem value="Clientes"
+					action="/pages/client/list.xhtml?faces-redirect=true" />
+				<p:menuitem value="Tipos de serviço"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+				<p:menuitem value="Serviços"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+				<p:menuitem value="Contratos"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+			</p:submenu>
+			<p:submenu label="Lançamentos" icon="ui-icon-dashboard">
+				<p:menuitem value="Gerir lançamentos"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+				<p:menuitem value="Auditar lançamentos"
+					action="/pages/sector/list.xhtml?faces-redirect=true" />
+			</p:submenu>
+			<f:facet name="options">
+				<h:outputText value="Olá, #{loginController.username}" rendered="#{request.getUserPrincipal() != null}" />
+				<p:commandButton value="Logout" action="#{loginController.logout}"
+						icon="ui-icon-power" rendered="#{request.getUserPrincipal() != null}" />
+				<p:commandButton value="Login" action="/Login.xhtml?faces-redirect=true"
+						icon="ui-icon-power" rendered="#{request.getUserPrincipal() == null}" />
+			</f:facet>
 		</p:menubar>
 	</h:form>
 </h:body>

@@ -50,7 +50,7 @@ public class Contract implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="ID_CLIENTE", nullable=false)
-	private Supplier supplier;
+	private Client supplier;
 	
 	@OneToMany(mappedBy = "contract", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<ServiceContract> services;
@@ -137,7 +137,7 @@ public class Contract implements Serializable {
 	 * 
 	 * @return
 	 */
-	public Supplier getSupplier() {
+	public Client getSupplier() {
 		return supplier;
 	}
 
@@ -145,7 +145,7 @@ public class Contract implements Serializable {
 	 * 
 	 * @param supplier
 	 */
-	public void setSupplier(Supplier supplier) {
+	public void setSupplier(Client supplier) {
 		this.supplier = supplier;
 	}
 

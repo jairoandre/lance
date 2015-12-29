@@ -5,7 +5,30 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="content">
-		<h:outputText value="Editar Setor" styleClass="header" />
 		<h:messages />
+		<h:form id="form">
+			<p:panel header="Validate">
+				<p:messages autoUpdate="true" />
+				<h:panelGrid id="grid" columns="3" cellpadding="5">
+					<h:outputLabel for="name" value="Nome:" style="font-weight:bold" />
+					<p:inputText id="name" value="#{sectorController.item.name}"
+						required="true" label="Nome" />
+					<p:message for="name" />
+					<h:outputLabel for="details" value="Detalhes:" style="font-weight:bold" />
+					<p:inputText id="details" value="#{sectorController.item.details}"
+						required="true" label="Detalhe" />
+					<p:message for="details" />
+					<h:outputLabel for="area" value="Área:"
+						style="font-weight:bold" />
+					<p:inputText id="area" value="#{sectorController.item.area}"
+						label="Área">
+						<f:validateDoubleRange minimum="0" maximum="10.2" />
+					</p:inputText>
+					<p:message for="area" />					
+				</h:panelGrid>
+				<p:commandButton value="Salvar" ajax="false" icon="ui-icon-check"
+					validateClient="true" style="margin-right:10px" action="#{sectorController.doCreate()}" />				
+			</p:panel>
+		</h:form>
 	</ui:define>
 </ui:composition>

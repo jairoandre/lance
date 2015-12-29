@@ -7,25 +7,23 @@
 	<ui:define name="content">
 		<h:form styleClass="loginPanelStyle">
 			<p:growl id="msgs" showDetail="true" sticky="false" />
+			<h:graphicImage library="img" name="logo.png" height="50"/>
 			<p:panelGrid columns="2">
-				<f:facet name="header">
-                    LOGIN
-                </f:facet>
-				<h:outputText value="Username : "></h:outputText>
+				<h:outputText value="Usuário: "></h:outputText>
 				<p:inputText id="username" value="#{loginController.username}"
 					required="true" requiredMessage="Please Enter Username!">
 					<f:validateLength minimum="1" />
 				</p:inputText>
-				<h:outputText value="Password : "></h:outputText>
+				<h:outputText value="Senha: "></h:outputText>
 				<p:password id="password" value="#{loginController.password}"
 					required="true" requiredMessage="Please Enter password!">
 					<f:validateLength minimum="1" />
 				</p:password>
 				<f:facet name="footer">
 					<center>
-						<p:commandButton value="Submit" update="msgs"
+						<p:commandButton value="Entrar" update="msgs"
 							actionListener="#{loginController.login}" type="submit"
-							icon="ui-icon-check" style="margin:0"></p:commandButton>
+							icon="ui-icon-check" style="margin:0"/>
 					</center>
 				</f:facet>
 			</p:panelGrid>

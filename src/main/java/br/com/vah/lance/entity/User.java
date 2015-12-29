@@ -6,96 +6,116 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * 
- * @author Emre Simtay <emre@simtay.com>
+ * @author jairoportela
+ *
  */
 @SuppressWarnings("serial")
 @Entity
+@Table(name="TB_PTC_USUARIO_PUSER")
 @NamedQueries({
     @NamedQuery(name = User.ALL, query = "SELECT u FROM User u "),
     @NamedQuery(name = User.TOTAL, query = "SELECT COUNT(u) FROM User u")})
 public class User extends BaseEntity implements Serializable {
 
-    public final static String ALL = "User.populateUsers";
-    public final static String TOTAL = "User.countUsersTotal";
+    public final static String ALL = "User.populatedItems";
+    public final static String TOTAL = "User.totalCount";
+    
+    @Id
+    @Column(name="ID_PUSER")
+    private Long id;
        
-    @Column(nullable = false, length = 50)
-    private String username;
+    @Column(name="DS_LOGIN", nullable = false)
+    private String login;
     
-    @Column(length = 50)
-    private String firstname;
-    
-    @Column(length = 50)
-    private String lastname;
-    
-    @Column(length = 50)
-    private String email;
-    
-    @Column(length = 64)
+    @Column(name="DS_SENHA")
     private String password;
     
     @ManyToMany
-    @JoinTable(name = "user_roles", joinColumns = {
-        @JoinColumn(name = "User_userid")}, inverseJoinColumns = {
-        @JoinColumn(name = "Role_roleid")})
+    @JoinTable(name = "TB_PTC_PERFIL_ACESSO_USUARIO", joinColumns = {
+        @JoinColumn(name = "ID_PUSER")}, inverseJoinColumns = {
+        @JoinColumn(name = "ID_PERFIL_ACESSO")})
     private List<Role> roles;
 
     public User() {
         roles = new ArrayList<Role>();
     }
 
-    public String getUsername() {
-        return this.username;
-    }
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getFirstname() {
-        return this.firstname;
-    }
+	/**
+	 * @return the login
+	 */
+	public String getLogin() {
+		return login;
+	}
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
+	/**
+	 * @param login the login to set
+	 */
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    public String getLastname() {
-        return this.lastname;
-    }
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getEmail() {
-        return this.email;
-    }
+	/**
+	 * @return the roles
+	 */
+	public List<Role> getRoles() {
+		return roles;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
 
-    public String getPassword() {
-        return this.password;
-    }
+	@Override
+	public String getAllNamedQuery() {
+		return ALL;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	@Override
+	public String getCountNamedQuery() {
+		return TOTAL;
+	}
     
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
+    
+    
 }

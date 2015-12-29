@@ -2,36 +2,30 @@ package br.com.vah.lance.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
 /**
- * Super Entity class
+ * 
+ * @author jairoportela
  *
- * @author Emre Simtay <emre@simtay.com>
  */
-@MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
+	public abstract Long getId();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public abstract void setId(Long id);
+    
+    public abstract String getAllNamedQuery();
+    
+    public abstract String getCountNamedQuery();
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -42,7 +36,7 @@ public abstract class BaseEntity implements Serializable {
             return false;
         } else if (!(obj instanceof BaseEntity)) {
             return false;
-        } else if (((BaseEntity) obj).id.equals(this.id)) {
+        } else if (((BaseEntity) obj).getId().equals(this.getId())) {
             return true;
         } else {
             return false;
@@ -51,6 +45,6 @@ public abstract class BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "entity." + this.getClass() + "[ id=" + id + " ] ";
+        return "entity." + this.getClass() + "[ id=" + getId() + " ] ";
     }
 }

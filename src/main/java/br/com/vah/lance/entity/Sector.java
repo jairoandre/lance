@@ -1,6 +1,5 @@
 package br.com.vah.lance.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -26,7 +25,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = Sector.ALL, query = "SELECT s FROM Sector s "),
     @NamedQuery(name = Sector.TOTAL, query = "SELECT COUNT(s) FROM Sector s")})
-public class Sector implements Serializable {
+public class Sector extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	
 	public final static String ALL = "Sector.populateSectors";
@@ -48,7 +47,7 @@ public class Sector implements Serializable {
 	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
 			@JoinColumn(name = "ID_SETOR", referencedColumnName = "ID") }, inverseJoinColumns = {
 					@JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID") })
-	private List<Supplier> suppliers;
+	private List<Client> suppliers;
 
 	public Sector() {}
 
@@ -57,6 +56,7 @@ public class Sector implements Serializable {
 	/**
 	 * @return the id
 	 */
+	@Override
 	public Long getId() {
 		return id;
 	}
@@ -66,6 +66,7 @@ public class Sector implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -129,7 +130,7 @@ public class Sector implements Serializable {
 	/**
 	 * @return the suppliers
 	 */
-	public List<Supplier> getSuppliers() {
+	public List<Client> getSuppliers() {
 		return suppliers;
 	}
 
@@ -138,35 +139,22 @@ public class Sector implements Serializable {
 	/**
 	 * @param suppliers the suppliers to set
 	 */
-	public void setSuppliers(List<Supplier> suppliers) {
+	public void setSuppliers(List<Client> suppliers) {
 		this.suppliers = suppliers;
 	}
 
 
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+	public String getAllNamedQuery() {
+		return ALL;
 	}
 
+
+
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Sector other = (Sector) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+	public String getCountNamedQuery() {
+		return TOTAL;
 	}
 
 }

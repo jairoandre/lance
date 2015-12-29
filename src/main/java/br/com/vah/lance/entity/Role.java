@@ -3,10 +3,14 @@ package br.com.vah.lance.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * 
@@ -14,45 +18,77 @@ import javax.persistence.NamedQuery;
  */
 @SuppressWarnings("serial")
 @Entity
+@Table(name="TB_PTC_PERFIL_ACESSO")
 @NamedQueries({@NamedQuery(name = Role.ALL, query = "SELECT r FROM Role r")})
 public class Role extends BaseEntity implements Serializable {
 
-    public final static String ALL = "Role.populateRoles";
-   
-    private String roledesc;
+    public final static String ALL = "Role.populatedItems";
+    
+    @Id
+    @Column(name="ID_PERFIL_ACESSO")
+    private Long id;
+    
+    @Column(name="DS_PERFIL_ACESSO")
     private String rolename;
 
     public Role() {
-    }
+    }   
 
-    public Role(Integer roleid, String rolename) {
-        this.rolename = rolename;
-    }
-
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch=FetchType.LAZY)
     private List<User> users;
 
-    public String getRoledesc() {
-        return this.roledesc;
-    }
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
 
-    public void setRoledesc(String roledesc) {
-        this.roledesc = roledesc;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getRolename() {
-        return this.rolename;
-    }
+	/**
+	 * @return the rolename
+	 */
+	public String getRolename() {
+		return rolename;
+	}
 
-    public void setRolename(String rolename) {
-        this.rolename = rolename;
-    }
+	/**
+	 * @param rolename the rolename to set
+	 */
+	public void setRolename(String rolename) {
+		this.rolename = rolename;
+	}
 
-    public List<User> getUsers() {
-        return users;
-    }
+	/**
+	 * @return the users
+	 */
+	public List<User> getUsers() {
+		return users;
+	}
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }    
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	@Override
+	public String getAllNamedQuery() {
+		return ALL;
+	}
+
+	@Override
+	public String getCountNamedQuery() {
+		return null;
+	}
+    
+    
+    
 }

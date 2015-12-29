@@ -7,28 +7,28 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.Sector;
+import br.com.vah.lance.entity.Client;
+import br.com.vah.lance.service.ClientService;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.SectorService;
 import br.com.vah.lance.util.GenericLazyDataModel;
 
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class SectorController extends AbstractController<Sector> {
+public class ClientController extends AbstractController<Client> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject SectorService das;	
+	private @Inject ClientService das;	
 
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
-		setLazyModel(new GenericLazyDataModel<Sector>(das, new Sector()));
+		setLazyModel(new GenericLazyDataModel<Client>(das, new Client()));
 	}
 
 	@Override
-	public DataAccessService<Sector> getService() {
+	public DataAccessService<Client> getService() {
 		return das;
 	}
 
@@ -38,18 +38,18 @@ public class SectorController extends AbstractController<Sector> {
 	}
 
 	@Override
-	public Sector createNewItem() {
-		return new Sector();
+	public Client createNewItem() {
+		return new Client();
 	}
 
 	@Override
 	public String getEditPage() {
-		return "/pages/sector/edit.xhtml";
+		return "pages/client/edit.xhtml";
 	}
 	
 	@Override
 	public String getListPage() {
-		return "/pages/sector/list.xhtml";
+		return "/pages/client/list.xhtml";
 	}
 
 }

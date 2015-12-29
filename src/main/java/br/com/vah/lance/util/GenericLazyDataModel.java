@@ -1,4 +1,4 @@
-package br.com.vah.lance.controller;
+package br.com.vah.lance.util;
 
 
 import java.io.Serializable;
@@ -9,21 +9,20 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import br.com.vah.lance.entity.Sector;
+import br.com.vah.lance.entity.BaseEntity;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.util.LazySorter;
 
 /**
  * 
- * Custom Lazy Sector DataModel which extends PrimeFaces LazyDataModel.
+ * Custom Lazy DataModel which extends PrimeFaces LazyDataModel.
  * For more information please visit http://www.primefaces.org/showcase-labs/ui/datatableLazy.jsf
  */
 
 @SuppressWarnings({"serial","rawtypes","unchecked"})
-public class LazySectorDataModel extends LazyDataModel<Sector> implements Serializable{
+public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T> implements Serializable{
 
     // Data Source for binding data to the DataTable
-    private List<Sector> datasource;
+    private List<T> datasource;
     // Selected Page size in the DataTable
     private int pageSize;
     // Current row index number
@@ -31,24 +30,27 @@ public class LazySectorDataModel extends LazyDataModel<Sector> implements Serial
     // Total row number
     private int rowCount;
     // Data Access Service for create read update delete operations
-    private DataAccessService crudService;
+	private DataAccessService crudService;
+    
+    private T instance;
     
     /**
      *
      * @param crudService
      */
-    public LazySectorDataModel(DataAccessService crudService) {
+    public GenericLazyDataModel(DataAccessService crudService, T instance) {
         this.crudService = crudService;
+        this.instance = instance;
     }
     
     @Override
-    public List<Sector> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+    public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder,
     		Map<String, Object> filters) {
-    	datasource = crudService.findWithNamedQuery(Sector.ALL, first, first + pageSize);
+    	datasource = crudService.findWithNamedQuery(instance.getAllNamedQuery(), first, first + pageSize);
     	if(sortField != null){
     		Collections.sort(datasource, new LazySorter<>(sortField, sortOrder));
     	}
-    	setRowCount(crudService.countTotalRecord(Sector.TOTAL));
+    	setRowCount(crudService.countTotalRecord(instance.getCountNamedQuery()));
     	return datasource;
     }
     
@@ -71,7 +73,7 @@ public class LazySectorDataModel extends LazyDataModel<Sector> implements Serial
      * @return Object
      */
     @Override
-    public Object getRowKey(Sector sector) {
+    public Object getRowKey(T sector) {
         return sector.getId().toString();
     }
 
@@ -80,7 +82,7 @@ public class LazySectorDataModel extends LazyDataModel<Sector> implements Serial
      * @return 
      */
     @Override
-    public Sector getRowData() {
+    public T getRowData() {
         if(datasource == null)
             return null;
         int index =  rowIndex % pageSize;
@@ -96,12 +98,12 @@ public class LazySectorDataModel extends LazyDataModel<Sector> implements Serial
      * @return 
      */
     @Override
-    public Sector getRowData(String rowKey) {
+    public T getRowData(String rowKey) {
         if(datasource == null)
             return null;
-       for(Sector sector : datasource) {  
-           if(sector.getId().toString().equals(rowKey))  
-           return sector;  
+       for(T item : datasource) {  
+           if(item.getId().toString().equals(rowKey))  
+           return item;  
        }  
        return null;  
     }
@@ -172,7 +174,7 @@ public class LazySectorDataModel extends LazyDataModel<Sector> implements Serial
      */
     @Override
     public void setWrappedData(Object list) {
-        this.datasource = (List<Sector>) list;
+        this.datasource = (List<T>) list;
     }
     
     /**

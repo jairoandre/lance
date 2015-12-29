@@ -1,18 +1,21 @@
 package br.com.vah.lance.controller;
 
-import br.com.vah.lance.entity.Role;
-import br.com.vah.lance.entity.User;
-import br.com.vah.lance.service.UserService;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.primefaces.model.LazyDataModel;
+
+import br.com.vah.lance.entity.Role;
+import br.com.vah.lance.entity.User;
+import br.com.vah.lance.service.UserService;
+import br.com.vah.lance.util.GenericLazyDataModel;
 
 /**
  * User Controller class allows users to do CRUD operations
@@ -30,7 +33,7 @@ public class UserController implements Serializable {
     // Selected users that will be removed 
     private User[] selectedUsers;
     // Lazy loading user list
-    private LazyDataModel<User> lazyModel;
+    private GenericLazyDataModel<User> lazyModel;
     // Creating new user
     private User newUser = new User();
     // Selected user that will be updated
@@ -50,7 +53,7 @@ public class UserController implements Serializable {
      */
     @PostConstruct
     public void init() {
-        lazyModel = new LazyUserDataModel(das);
+        lazyModel = new GenericLazyDataModel<User>(das, new User());
         roleList = das.findWithNamedQuery(Role.ALL);
     }
 

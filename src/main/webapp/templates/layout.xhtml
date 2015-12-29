@@ -7,17 +7,13 @@
 <h:head>
 	<title>Sistema lance</title>
 	<h:outputStylesheet library="css" name="default.css" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['img/favicon.ico']}" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-
-		<p:layoutUnit position="north" size="60" resizable="false" closable="false" collapsible="false">
-			<ui:include src="../templates/tiles/top-menu.xhtml" />
-		</p:layoutUnit>
-
-		<p:layoutUnit position="center">
-			<ui:insert name="content">Put default content here, if any.</ui:insert>
-		</p:layoutUnit>
-	</p:layout>
+	<ui:include src="../templates/tiles/top-menu.xhtml" />
+	<h:panelGroup style="padding: 20px;">
+		<ui:insert name="content">Put default content here, if any.</ui:insert>
+	</h:panelGroup>
 </h:body>
 </html>
