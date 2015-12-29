@@ -38,19 +38,18 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * @return
 	 */
 	public abstract T createNewItem();
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public abstract String getEditPage();
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public abstract String getListPage();
-	
 
 	/**
 	 * Create, Update and Delete operations
@@ -89,7 +88,8 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	}
 
 	/**
-	 * @param item the item to set
+	 * @param item
+	 *            the item to set
 	 */
 	public void setItem(T item) {
 		this.item = item;
@@ -139,13 +139,12 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	public void setSelectedItem(T selectedItem) {
 		this.selectedItem = selectedItem;
 	}
-	
+
 	/*
 	 * ACTIONS
 	 */
-	
+
 	public String preAdd() {
-		item = createNewItem();
 		return getEditPage();
 	}
 

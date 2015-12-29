@@ -24,6 +24,7 @@ public class SectorController extends AbstractController<Sector> {
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
+		setItem(createNewItem());
 		setLazyModel(new GenericLazyDataModel<Sector>(das, new Sector()));
 	}
 

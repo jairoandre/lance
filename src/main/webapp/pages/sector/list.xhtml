@@ -5,7 +5,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="content">
-		<h:messages />
 		<h:form id="form">
 			<p:commandButton value="Novo setor" action="#{sectorController.preAdd}"
 				icon="ui-icon-star" title="Criar novo setor" />
@@ -37,6 +36,12 @@
 						<h:outputText value="Detalhes" />
 					</f:facet>
 					<h:outputText value="#{item.details}" />
+				</p:column>
+				<p:column sortBy="#{item.area}">
+					<f:facet name="header">
+						<h:outputText value="Área" />
+					</f:facet>
+					<h:outputText value="#{item.area}" />
 				</p:column>
 			</p:dataTable>
 
