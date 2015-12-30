@@ -8,8 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import br.com.vah.lance.entity.User;
-
 /**
  * Implementation of the generic Data Access Service All CRUD (create, read,
  * update, delete) basic data access operations for any persistent object are
@@ -86,12 +84,6 @@ public abstract class DataAccessService<T> {
 	 */
 	public boolean deleteItems(T[] items) {
 		for (T item : items) {
-			if (item instanceof User) {
-				User user = (User) item;
-				if (user.getId() == 1) {
-					continue;
-				}
-			}
 			em.remove(em.merge(item));
 		}
 		return true;
@@ -105,12 +97,6 @@ public abstract class DataAccessService<T> {
 	 * @return the object that is updated
 	 */
 	public T update(T item) {
-		if (item instanceof User) {
-			User user = (User) item;
-			if (user.getId() == 1) {
-				return item;
-			}
-		}
 		return this.em.merge(item);
 
 	}

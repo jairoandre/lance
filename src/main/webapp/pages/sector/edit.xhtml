@@ -3,30 +3,31 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{sectorController.id}" />
+			<f:viewParam name="editing" value="#{sectorController.editing}" />
+			<f:viewAction action="#{sectorController.onLoad}" />
+		</f:metadata>
+	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<p:panel id="sectorPnl" header="#{sectorController.item.id ? 'Editar' : 'Novo'} Setor">
-				<h:panelGrid id="grid" columns="3" cellpadding="5">
-					<h:outputLabel for="name" value="Nome:" style="font-weight:bold" />
-					<p:inputText id="name" value="#{sectorController.item.name}"
-						required="true" label="Nome" />
-					<p:message for="name" />
-					<h:outputLabel for="details" value="Detalhes:" style="font-weight:bold" />
-					<p:inputText id="details" value="#{sectorController.item.details}"
-						required="true" label="Detalhe" />
-					<p:message for="details" />
-					<h:outputLabel for="area" value="Área:"
-						style="font-weight:bold" />
-					<p:inputText id="area" value="#{sectorController.item.area}"
-						label="Área">
-						<f:validateDoubleRange minimum="0" maximum="10.2" />
-					</p:inputText>
-					<p:message for="area" />					
-				</h:panelGrid>
-				<p:commandButton value="Salvar" ajax="true" icon="ui-icon-check" update="sectorPnl"
-					validateClient="true" style="margin-right:10px" action="#{sectorController.doCreate}" />				
-			</p:panel>
+			<lance:editForm id="sectorPnl" controller="#{sectorController}">
+				<uilance:formField id="name" label="Nome"
+					value="#{sectorController.item.name}"
+					editing="#{sectorController.editing}" required="true" />
+				<uilance:formField id="details" label="Detalhes"
+					value="#{sectorController.item.details}"
+					editing="#{sectorController.editing}" required="true" />
+				<uilance:formField id="area" label="Área"
+					value="#{sectorController.item.name}"
+					editing="#{sectorController.editing}">
+					<f:validateDoubleRange minimum="0" maximum="99999999.99" />
+				</uilance:formField>
+			</lance:editForm>
 		</h:form>
 	</ui:define>
 </ui:composition>

@@ -43,13 +43,18 @@ public class ClientController extends AbstractController<Client> {
 	}
 
 	@Override
-	public String getEditPage() {
-		return "pages/client/edit.xhtml";
+	public String editPage() {
+		return "/pages/client/edit.xhtml";
 	}
 	
 	@Override
-	public String getListPage() {
+	public String listPage() {
 		return "/pages/client/list.xhtml";
+	}
+	
+	@Override
+	public String entityTitle() {
+		return "cliente";
 	}
 
 }

@@ -44,13 +44,18 @@ public class SectorController extends AbstractController<Sector> {
 	}
 
 	@Override
-	public String getEditPage() {
+	public String editPage() {
 		return "/pages/sector/edit.xhtml";
 	}
 	
 	@Override
-	public String getListPage() {
+	public String listPage() {
 		return "/pages/sector/list.xhtml";
+	}
+	
+	@Override
+	public String entityTitle() {
+		return "setor";
 	}
 
 }

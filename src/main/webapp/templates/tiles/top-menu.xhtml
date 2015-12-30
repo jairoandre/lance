@@ -7,9 +7,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:body>
 	<h:form>
-		<p:growl id="messages" />
+		<p:growl id="messages" showDetail="true" showSummary="true" autoUpdate="true" />
 		<p:menubar rendered="#{request.getUserPrincipal() != null}">
-			<p:menuitem action="/pages/index.xhtml?faces-redirect=true"><h:graphicImage library="img" name="favicon.png" height="20"/></p:menuitem>
+			<p:menuitem action="/pages/index.xhtml?faces-redirect=true"><h:graphicImage library="img" name="favicon.png" height="15"/></p:menuitem>
 			<c:if test="#{request.isUserInRole('Administrator')}">
 				<p:menuitem value="Home"
 					action="/admin/AdminHome.xhtml?faces-redirect=true" ajax="false"
@@ -30,14 +30,14 @@
 				<p:menuitem value="Contratos"
 					action="/pages/sector/list.xhtml?faces-redirect=true" />
 			</p:submenu>
-			<p:submenu label="Lançamentos" icon="ui-icon-dashboard">
+			<p:submenu label="Lançamentos" icon="ui-icon-flag">
 				<p:menuitem value="Gerir lançamentos"
 					action="/pages/sector/list.xhtml?faces-redirect=true" />
 				<p:menuitem value="Auditar lançamentos"
 					action="/pages/sector/list.xhtml?faces-redirect=true" />
 			</p:submenu>
 			<f:facet name="options">
-				<h:outputText value="Olá, #{loginController.username}" rendered="#{request.getUserPrincipal() != null}" />
+				<h:outputText value="Olá, #{loginController.username}    " rendered="#{request.getUserPrincipal() != null}" />
 				<p:commandButton value="Logout" action="#{loginController.logout}"
 						icon="ui-icon-power" rendered="#{request.getUserPrincipal() != null}" />
 				<p:commandButton value="Login" action="/Login.xhtml?faces-redirect=true"

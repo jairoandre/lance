@@ -3,9 +3,26 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{clientController.id}" />
+			<f:viewParam name="editing" value="#{clientController.editing}" />
+			<f:viewAction action="#{clientController.onLoad}" />
+		</f:metadata>
+	</ui:define>
 	<ui:define name="content">
-		<h:outputText value="Editar Setor" styleClass="header" />
-		<h:messages />
+		<h:form id="form">
+			<lance:editForm id="clienPnl" controller="#{clientController}">
+				<uilance:formField id="name" label="Nome"
+					value="#{clientController.item.title}"
+					editing="#{clientController.editing}" required="true" />
+				<uilance:formField id="details" label="Código"
+					value="#{clientController.item.clientCode}"
+					editing="#{clientController.editing}" required="true" />
+			</lance:editForm>
+		</h:form>
 	</ui:define>
 </ui:composition>

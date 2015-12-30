@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
 import br.com.vah.lance.entity.BaseEntity;
 import br.com.vah.lance.service.DataAccessService;
@@ -14,11 +13,13 @@ import br.com.vah.lance.util.GenericLazyDataModel;
 @SuppressWarnings("serial")
 public abstract class AbstractController<T extends BaseEntity> implements Serializable {
 
-	private T[] selectedItems;
-
-	private T selectedItem;
-
 	private T item;
+
+	private Long id;
+
+	private Integer index;
+
+	private Boolean editing = true;
 
 	private GenericLazyDataModel<T> lazyModel;
 
@@ -43,41 +44,48 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * 
 	 * @return
 	 */
-	public abstract String getEditPage();
+	public abstract String editPage();
 
 	/**
 	 * 
 	 * @return
 	 */
-	public abstract String getListPage();
+	public abstract String listPage();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String entityTitle();
+
+	public void onLoad() {
+		getLogger().info("Load params");
+		if (id == null) {
+			item = createNewItem();
+		} else {
+			item = getService().find(id);
+		}
+	}
+
+	public void addMsg(FacesMessage msg, boolean flash) {
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		ctx.addMessage(null, msg);
+		if (flash) {
+			ctx.getExternalContext().getFlash().setKeepMessages(true);
+		}
+	}
 
 	/**
 	 * Create, Update and Delete operations
 	 */
-	public void doCreate() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		getService().create(item);
-		context.addMessage(null, new FacesMessage("Sucesso!", "Registro salvo"));
-	}
-
-	/**
-	 *
-	 * @param actionEvent
-	 */
-	public void doUpdate(ActionEvent actionEvent) {
-		getService().update(selectedItem);
-	}
-
-	/**
-	 *
-	 * @param actionEvent
-	 */
-	public void doDelete(ActionEvent actionEvent) {
-		getService().deleteItems(selectedItems);
-	}
-
-	public void closeEvent() {
-		item = createNewItem();
+	public String doSave() {
+		if (item.getId() == null) {
+			getService().create(item);
+		} else {
+			getService().update(item);
+		}
+		addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
+		return back();
 	}
 
 	/**
@@ -111,41 +119,87 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	}
 
 	/**
-	 * @return the selectedItems
+	 * @return the id
 	 */
-	public T[] getSelectedItems() {
-		return selectedItems;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * @param selectedItems
-	 *            the selectedItems to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setSelectedItems(T[] selectedItems) {
-		this.selectedItems = selectedItems;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**
-	 * @return the selectedItem
+	 * @return the index
 	 */
-	public T getSelectedItem() {
-		return selectedItem;
+	public Integer getIndex() {
+		return index;
 	}
 
 	/**
-	 * @param selectedItem
-	 *            the selectedItem to set
+	 * @param index
+	 *            the index to set
 	 */
-	public void setSelectedItem(T selectedItem) {
-		this.selectedItem = selectedItem;
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+	/**
+	 * @return the editing
+	 */
+	public Boolean getEditing() {
+		return editing;
+	}
+
+	/**
+	 * @param editing
+	 *            the editing to set
+	 */
+	public void setEditing(Boolean editing) {
+		this.editing = editing;
 	}
 
 	/*
 	 * ACTIONS
 	 */
+	public String preDelete(Long id, Integer index) {
+		this.id = id;
+		this.index = index;
+		return null;
+	}
 
-	public String preAdd() {
-		return getEditPage();
+	public String doDelete() {
+		getService().delete(id);
+		getLazyModel().remove(index);
+		addMsg(new FacesMessage("Sucesso", "Registro removido [id=" + id + "]"), false);
+		return null;
+	}
+
+	public String add() {
+		return editPage() + "?faces-redirect=true&editing=true";
+	}
+
+	public String back() {
+		return listPage() + "?faces-redirect=true";
+	}
+
+	public String edit(T item) {
+		return editPage() + "?faces-redirect=true&id=" + item.getId() + "&editing=true";
+	}
+
+	public String detail(T item) {
+		return editPage() + "?faces-redirect=true&id=" + item.getId() + "&editing=false";
+	}
+
+	public String getEditLabel() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(id == null ? "Novo " : editing ? "Editar " : "Visualizar ");
+		buffer.append(entityTitle());
+		return buffer.toString();
 	}
 
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:p="http://primefaces.org/ui">
+
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="label" />
+	<composite:attribute name="controller" />
+</composite:interface>
+
+<composite:implementation>
+	<p:commandButton value="Novo #{cc.attrs.label}"
+		action="#{cc.attrs.controller.add}" icon="ui-icon-star"
+		title="Criar novo setor" />
+	<br />
+	<br />
+	<p:dataTable id="#{cc.attrs.id}" var="item"
+		value="#{cc.attrs.controller.lazyModel}" paginator="true"
+		paginatorPosition="bottom" rows="10" rowKey="index"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		lazy="true" rowsPerPageTemplate="10,25,50">
+		<composite:insertChildren />
+		<p:column style="text-align: right;">
+			<f:facet name="header">
+				<h:outputText value="Ações" />
+			</f:facet>
+			<p:commandButton action="#{cc.attrs.controller.detail(item)}"
+				icon="ui-icon-search" />
+			<p:commandButton action="#{cc.attrs.controller.edit(item)}"
+				icon="ui-icon-pencil" />
+			<p:commandButton
+				action="#{cc.attrs.controller.preDelete(item.id, index)}"
+				ajax="true" oncomplete="PF('deleteMdl').show();"
+				icon="ui-icon-trash" />
+		</p:column>
+	</p:dataTable>
+	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
+		modal="true">
+		<h:outputText value="Você deseja realmente excluir o item?" />
+		<f:facet name="footer">
+			<p:commandButton value="Excluir" ajax="true" update="@form"
+				action="#{cc.attrs.controller.doDelete}"
+				oncomplete="PF('deleteMdl').hide();" icon="fa fa-warning" />
+			<p:commandButton value="Cancelar"
+				oncomplete="PF('deleteMdl').hide();" icon="fa fa-arrow-left" />
+		</f:facet>
+	</p:dialog>
+</composite:implementation>
+
+</html>
+
+
