@@ -56,7 +56,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * 
 	 * @return
 	 */
-	public abstract String entityTitle();
+	public abstract String getEntityName();
 
 	public void onLoad() {
 		getLogger().info("Load params");
@@ -198,7 +198,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	public String getEditLabel() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(id == null ? "Novo " : editing ? "Editar " : "Visualizar ");
-		buffer.append(entityTitle());
+		buffer.append(getEntityName());
 		return buffer.toString();
 	}
 

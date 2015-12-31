@@ -1,0 +1,13 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
+	<p:calendar id="#{id}" value="#{value}" required="#{required}"
+		label="#{label}" disabled="#{!editing}" pattern="dd/MM/yyyy"
+		mask="true">
+		<ui:insert />
+	</p:calendar>
+	<p:message for="#{id}" />
+</ui:composition>

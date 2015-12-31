@@ -90,7 +90,7 @@ public class LoginController implements Serializable {
 			request.login(username, password);
 			// gets the user principle and navigates to the appropriate page
 			Principal principal = request.getUserPrincipal();
-			if (!request.isUserInRole("admin")) {
+			if (!request.isUserInRole("administrator")) {
 				navigateString = "/admin/home.xhtml";
 			}
 			try {

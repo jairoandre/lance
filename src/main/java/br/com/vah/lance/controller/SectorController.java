@@ -19,7 +19,7 @@ public class SectorController extends AbstractController<Sector> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject SectorService das;	
+	private @Inject SectorService das;
 
 	@PostConstruct
 	public void init() {
@@ -47,14 +47,14 @@ public class SectorController extends AbstractController<Sector> {
 	public String editPage() {
 		return "/pages/sector/edit.xhtml";
 	}
-	
+
 	@Override
 	public String listPage() {
 		return "/pages/sector/list.xhtml";
 	}
-	
+
 	@Override
-	public String entityTitle() {
+	public String getEntityName() {
 		return "setor";
 	}
 

@@ -1,6 +1,6 @@
 package br.com.vah.lance.entity;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -24,8 +26,13 @@ import javax.persistence.TemporalType;
  **/
 @Entity
 @Table(name = "TB_LANCA_CONTRATO")
-public class Contract implements Serializable {
+@NamedQueries({ @NamedQuery(name = Contract.ALL, query = "SELECT c FROM Contract c"),
+		@NamedQuery(name = Contract.TOTAL, query = "SELECT COUNT(c) FROM Contract c") })
+public class Contract extends BaseEntity {
 	private static final long serialVersionUID = 1L;
+
+	public static final String ALL = "Contract.populatedItems";
+	public static final String TOTAL = "Contract.countTotal";
 
 	@Id
 	@SequenceGenerator(name = "seqContractGenerator", sequenceName = "SEQ_TB_LANCA_CONTRATO", allocationSize = 1)
@@ -47,20 +54,23 @@ public class Contract implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DT_REAJUSTE")
 	private Date changeDate;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_CLIENTE", nullable=false)
-	private Client supplier;
-	
-	@OneToMany(mappedBy = "contract", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinColumn(name = "ID_CLIENTE", nullable = false)
+	private Client client;
+
+	@OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ServiceContract> services;
 
 	public Contract() {
+		this.client = new Client();
+		this.services = new ArrayList<>();
 	}
 
 	/**
 	 * @return the id
 	 */
+	@Override
 	public Long getId() {
 		return id;
 	}
@@ -69,6 +79,7 @@ public class Contract implements Serializable {
 	 * @param id
 	 *            the id to set
 	 */
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -132,21 +143,20 @@ public class Contract implements Serializable {
 	public void setChangeDate(Date changeDate) {
 		this.changeDate = changeDate;
 	}
+	
 
 	/**
-	 * 
-	 * @return
+	 * @return the client
 	 */
-	public Client getSupplier() {
-		return supplier;
+	public Client getClient() {
+		return client;
 	}
 
 	/**
-	 * 
-	 * @param supplier
+	 * @param client the client to set
 	 */
-	public void setSupplier(Client supplier) {
-		this.supplier = supplier;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	/**
@@ -157,7 +167,8 @@ public class Contract implements Serializable {
 	}
 
 	/**
-	 * @param services the services to set
+	 * @param services
+	 *            the services to set
 	 */
 	public void setServices(List<ServiceContract> services) {
 		this.services = services;
@@ -186,6 +197,21 @@ public class Contract implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getAllNamedQuery() {
+		return ALL;
+	}
+
+	@Override
+	public String getCountNamedQuery() {
+		return TOTAL;
+	}
+
+	@Override
+	public String getLabelForSelectItem() {
+		return getTitle();
 	}
 
 }

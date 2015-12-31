@@ -13,10 +13,7 @@
 			<p:menuitem action="/pages/index.xhtml?faces-redirect=true">
 				<h:graphicImage library="img" name="favicon.png" height="15" />
 			</p:menuitem>
-			<c:if test="#{request.isUserInRole('admin')}">
-				<p:menuitem value="Home"
-					action="/admin/home.xhtml?faces-redirect=true" ajax="false"
-					icon="ui-icon-home" />
+			<c:if test="#{request.isUserInRole('administrator')}">
 				<p:menuitem value="Usuários"
 					action="/admin/users.xhtml?faces-redirect=true" ajax="false"
 					icon="ui-icon-person" />
@@ -31,7 +28,7 @@
 				<p:menuitem value="Serviços"
 					action="/pages/service/list.xhtml?faces-redirect=true" />
 				<p:menuitem value="Contratos"
-					action="/pages/sector/list.xhtml?faces-redirect=true" />
+					action="/pages/contract/list.xhtml?faces-redirect=true" />
 			</p:submenu>
 			<p:submenu label="Lançamentos" icon="ui-icon-flag">
 				<p:menuitem value="Gerir lançamentos"
@@ -40,14 +37,13 @@
 					action="/pages/sector/list.xhtml?faces-redirect=true" />
 			</p:submenu>
 			<f:facet name="options">
-				<h:outputText value="Olá, #{loginController.username}    "
-					rendered="#{request.getUserPrincipal() != null}" />
-				<p:commandButton value="Logout" action="#{loginController.logout}"
-					icon="ui-icon-power"
-					rendered="#{request.getUserPrincipal() != null}" />
-				<p:commandButton value="Login"
-					action="/Login.xhtml?faces-redirect=true" icon="ui-icon-power"
-					rendered="#{request.getUserPrincipal() == null}" />
+				<h:panelGroup style="margin-top: 3px;" layout="block">
+					<h:outputText value="Olá, #{loginController.username}    "
+						rendered="#{request.getUserPrincipal() != null}" />
+					<p:commandButton value="Logout" action="#{loginController.logout}"
+						icon="ui-icon-power"
+						rendered="#{request.getUserPrincipal() != null}" />
+				</h:panelGroup>
 			</f:facet>
 		</p:menubar>
 	</h:form>

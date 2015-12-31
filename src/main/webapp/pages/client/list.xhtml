@@ -8,8 +8,7 @@
 	xmlns:uilance="http://vah.com.br/lance">
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:dataTable id="dataTable" controller="#{clientController}"
-				label="cliente">
+			<lance:dataTable id="dataTable" controller="#{clientController}">
 				<uilance:column value="#{item.id}" label="Id" />
 				<uilance:column value="#{item.title}" label="Nome" />
 				<uilance:column value="#{item.clientCode}" label="Código" />

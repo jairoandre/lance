@@ -53,8 +53,10 @@
 		<auth-constraint>
 			<description>Pages</description>
 			<role-name>manager</role-name>
-			<role-name>admin</role-name>
+			<role-name>administrator</role-name>
 			<role-name>user</role-name>
+			<role-name>accountant</role-name>
+			<role-name>supervisor</role-name>
 		</auth-constraint>
 	</security-constraint>
 	<login-config>
@@ -66,13 +68,19 @@
 		</form-login-config>
 	</login-config>
 	<security-role>
-		<role-name>admin</role-name>
+		<role-name>administrator</role-name>
 	</security-role>
 	<security-role>
 		<role-name>manager</role-name>
 	</security-role>
 	<security-role>
 		<role-name>user</role-name>
+	</security-role>
+	<security-role>
+		<role-name>supervisor</role-name>
+	</security-role>
+	<security-role>
+		<role-name>accountant</role-name>
 	</security-role>
 	<error-page>
 		<error-code>403</error-code>

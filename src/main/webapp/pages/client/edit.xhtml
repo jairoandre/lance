@@ -16,10 +16,10 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:editForm id="clienPnl" controller="#{clientController}">
-				<uilance:formField id="name" label="Nome"
+				<uilance:inputText id="name" label="Nome"
 					value="#{clientController.item.title}"
 					editing="#{clientController.editing}" required="true" />
-				<uilance:formField id="details" label="Código"
+				<uilance:inputText id="details" label="Código"
 					value="#{clientController.item.clientCode}"
 					editing="#{clientController.editing}" required="true" />
 			</lance:editForm>

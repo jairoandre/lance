@@ -157,4 +157,11 @@ public class Sector extends BaseEntity {
 		return TOTAL;
 	}
 
+
+
+	@Override
+	public String getLabelForSelectItem() {
+		return getName();
+	}
+
 }

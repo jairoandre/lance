@@ -94,4 +94,9 @@ public class Client extends BaseEntity {
 		return TOTAL;
 	}
 
+	@Override
+	public String getLabelForSelectItem() {
+		return getTitle();
+	}
+
 }

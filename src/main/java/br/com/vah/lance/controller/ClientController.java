@@ -19,7 +19,7 @@ public class ClientController extends AbstractController<Client> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ClientService das;	
+	private @Inject ClientService das;
 
 	@PostConstruct
 	public void init() {
@@ -46,14 +46,14 @@ public class ClientController extends AbstractController<Client> {
 	public String editPage() {
 		return "/pages/client/edit.xhtml";
 	}
-	
+
 	@Override
 	public String listPage() {
 		return "/pages/client/list.xhtml";
 	}
-	
+
 	@Override
-	public String entityTitle() {
+	public String getEntityName() {
 		return "cliente";
 	}
 

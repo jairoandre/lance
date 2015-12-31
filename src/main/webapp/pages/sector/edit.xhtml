@@ -16,17 +16,17 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:editForm id="sectorPnl" controller="#{sectorController}">
-				<uilance:formField id="name" label="Nome"
+				<uilance:inputText id="name" label="Nome"
 					value="#{sectorController.item.name}"
 					editing="#{sectorController.editing}" required="true" />
-				<uilance:formField id="details" label="Detalhes"
+				<uilance:inputText id="details" label="Detalhes"
 					value="#{sectorController.item.details}"
 					editing="#{sectorController.editing}" required="true" />
-				<uilance:formField id="area" label="Área"
+				<uilance:inputText id="area" label="Área"
 					value="#{sectorController.item.area}"
 					editing="#{sectorController.editing}">
 					<f:validateDoubleRange minimum="0" maximum="99999999.99" />
-				</uilance:formField>
+				</uilance:inputText>
 			</lance:editForm>
 		</h:form>
 	</ui:define>

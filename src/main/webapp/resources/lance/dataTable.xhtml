@@ -7,14 +7,13 @@
 
 <composite:interface>
 	<composite:attribute name="id" />
-	<composite:attribute name="label" />
 	<composite:attribute name="controller" />
 </composite:interface>
 
 <composite:implementation>
-	<p:commandButton value="Novo #{cc.attrs.label}"
+	<p:commandButton value="Novo #{cc.attrs.controller.entityName}"
 		action="#{cc.attrs.controller.add}" icon="ui-icon-star"
-		title="Criar novo setor" />
+		title="Criar novo #{cc.attrs.controller.entityName}" />
 	<br />
 	<br />
 	<p:dataTable id="#{cc.attrs.id}" var="item"
@@ -40,7 +39,7 @@
 	</p:dataTable>
 	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
 		modal="true">
-		<h:outputText value="Você deseja realmente excluir o item?" />
+		<h:outputText value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?" />
 		<f:facet name="footer">
 			<p:commandButton value="Excluir" ajax="true" update="@form"
 				action="#{cc.attrs.controller.doDelete}"

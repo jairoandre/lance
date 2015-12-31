@@ -1,0 +1,28 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:dataTable id="dataTable" controller="#{contractController}"
+				label="contrato">
+				<uilance:column value="#{item.id}" label="Id" />
+				<uilance:column value="#{item.title}" label="Nome" />
+				<uilance:column value="#{item.beginDate}" label="Data de início">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</uilance:column>
+				<uilance:column value="#{item.endDate}" label="Data de término">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</uilance:column>
+				<uilance:column value="#{item.changeDate}" label="Data de reajuste">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</uilance:column>
+				<uilance:column value="#{item.client.title}" label="Cliente" />
+			</lance:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

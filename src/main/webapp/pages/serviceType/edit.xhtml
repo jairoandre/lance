@@ -16,7 +16,7 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:editForm id="sectorPnl" controller="#{serviceTypeController}">
-				<uilance:formField id="name" label="Nome"
+				<uilance:inputText id="name" label="Nome"
 					value="#{serviceTypeController.item.title}"
 					editing="#{serviceTypeController.editing}" required="true" />
 			</lance:editForm>

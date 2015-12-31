@@ -47,10 +47,16 @@ public class Service extends BaseEntity {
 	@JoinColumn(name = "ID_TP_SERVICO", nullable = false)
 	private ServiceType serviceType;
 
+	public Service() {
+		serviceType = new ServiceType();
+	}
+
+	@Override
 	public Long getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -119,5 +125,10 @@ public class Service extends BaseEntity {
 	@Override
 	public String getCountNamedQuery() {
 		return TOTAL;
+	}
+
+	@Override
+	public String getLabelForSelectItem() {
+		return getTitle();
 	}
 }

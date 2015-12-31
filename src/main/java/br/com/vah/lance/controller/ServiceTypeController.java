@@ -19,7 +19,7 @@ public class ServiceTypeController extends AbstractController<ServiceType> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ServiceTypeService das;	
+	private @Inject ServiceTypeService das;
 
 	@PostConstruct
 	public void init() {
@@ -47,14 +47,14 @@ public class ServiceTypeController extends AbstractController<ServiceType> {
 	public String editPage() {
 		return "/pages/serviceType/edit.xhtml";
 	}
-	
+
 	@Override
 	public String listPage() {
 		return "/pages/serviceType/list.xhtml";
 	}
-	
+
 	@Override
-	public String entityTitle() {
+	public String getEntityName() {
 		return "tipo de serviço";
 	}
 

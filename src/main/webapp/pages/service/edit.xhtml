@@ -16,24 +16,29 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:editForm id="sectorPnl" controller="#{serviceController}">
-				<uilance:formField id="name" label="Nome"
+				<uilance:inputText id="name" label="Nome"
 					value="#{serviceController.item.title}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:formField id="defaultHistory" label="Histórico padrão"
+				<uilance:inputText id="defaultHistory" label="Histórico padrão"
 					value="#{serviceController.item.defaultHistory}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:formField id="documentType" label="Tipo"
+				<uilance:inputText id="documentType" label="Tipo de documento"
 					value="#{serviceController.item.documentType}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:formField id="ledgerAccount" label="Conta contábil"
+				<uilance:inputText id="ledgerAccount" label="Conta contábil"
 					value="#{serviceController.item.ledgerAccount}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:formField id="resultAccount" label="Conta resultado"
+				<uilance:inputText id="resultAccount" label="Conta resultado"
 					value="#{serviceController.item.resultAccount}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:formField id="costAccount" label="Conta de custo"
+				<uilance:inputText id="costAccount" label="Conta de custo"
 					value="#{serviceController.item.costAccount}"
 					editing="#{serviceController.editing}" required="true" />
+				<uilance:selectOne id="serviceType" label="Tipo de serviço"
+					value="#{serviceController.item.serviceType.id}"
+					editing="#{serviceController.editing}" required="true">
+					<f:selectItems value="#{serviceController.serviceTypes}" />
+				</uilance:selectOne>
 			</lance:editForm>
 		</h:form>
 	</ui:define>

@@ -1,0 +1,57 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{contractController.id}" />
+			<f:viewParam name="editing" value="#{contractController.editing}" />
+			<f:viewAction action="#{contractController.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:editForm id="contractPnl" controller="#{contractController}">
+				<uilance:inputText id="name" label="Nome"
+					value="#{contractController.item.title}"
+					editing="#{contractController.editing}" required="true" />
+				<uilance:inputDate id="beginDate" label="Data de início"
+					value="#{contractController.item.beginDate}"
+					editing="#{contractController.editing}" required="true" />
+				<uilance:inputDate id="endDate" label="Data de término"
+					value="#{contractController.item.endDate}"
+					editing="#{contractController.editing}" required="true" />
+				<uilance:inputDate id="changeDate" label="Data de reajuste"
+					value="#{contractController.item.changeDate}"
+					editing="#{contractController.editing}" required="true" />
+				<uilance:selectOne id="client" label="Cliente"
+					value="#{contractController.item.client.id}"
+					editing="#{contractController.editing}" required="true">
+					<f:selectItems value="#{contractController.clients}" />
+				</uilance:selectOne>
+				<f:facet name="other">
+					<p:panel id="servicePnl" header="Serviços">
+						<uilance:selectOne id="serviceSelectOne" label="Serviço"
+							value="#{contractController.serviceIdToAdd}"
+							editing="true"
+							rendered="#{contractController.editing}" required="false">
+							<f:selectItems value="#{contractController.services}" />
+						</uilance:selectOne>
+						<p:commandButton action="#{contractController.addService}"
+							ajax="true" update="servicePnl" value="Adicionar" immediate="true" />
+						<p:dataList value="#{contractController.item.services}"
+							var="service" type="ordered">
+							<uilance:inputText id="service_#{service.id}"
+								label="#{service.service.title}" value="#{service.amount}"
+								editing="true" />
+						</p:dataList>
+					</p:panel>
+				</f:facet>
+			</lance:editForm>
+		</h:form>
+	</ui:define>
+</ui:composition>
