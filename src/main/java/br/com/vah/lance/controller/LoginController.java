@@ -90,12 +90,8 @@ public class LoginController implements Serializable {
 			request.login(username, password);
 			// gets the user principle and navigates to the appropriate page
 			Principal principal = request.getUserPrincipal();
-			if (request.isUserInRole("Administrator")) {
-				navigateString = "/admin/AdminHome.xhtml";
-			} else if (request.isUserInRole("Manager")) {
-				navigateString = "/manager/ManagerHome.xhtml";
-			} else if (request.isUserInRole("User")) {
-				navigateString = "/user/UserHome.xhtml";
+			if (!request.isUserInRole("admin")) {
+				navigateString = "/admin/home.xhtml";
 			}
 			try {
 				logger.log(Level.INFO, "User ({0}) loging in #" + DateUtility.getCurrentDateTime(),
@@ -107,8 +103,7 @@ public class LoginController implements Serializable {
 			}
 		} catch (ServletException e) {
 			logger.log(Level.SEVERE, e.toString());
-			context.addMessage(null,
-					new FacesMessage("Erro!", "Usuário ou senha inválida."));
+			context.addMessage(null, new FacesMessage("Erro!", "Usuário ou senha inválida."));
 		}
 	}
 

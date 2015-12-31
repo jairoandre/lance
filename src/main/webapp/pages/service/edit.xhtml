@@ -1,0 +1,40 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{serviceController.id}" />
+			<f:viewParam name="editing" value="#{serviceController.editing}" />
+			<f:viewAction action="#{serviceController.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:editForm id="sectorPnl" controller="#{serviceController}">
+				<uilance:formField id="name" label="Nome"
+					value="#{serviceController.item.title}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:formField id="defaultHistory" label="Histórico padrão"
+					value="#{serviceController.item.defaultHistory}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:formField id="documentType" label="Tipo"
+					value="#{serviceController.item.documentType}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:formField id="ledgerAccount" label="Conta contábil"
+					value="#{serviceController.item.ledgerAccount}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:formField id="resultAccount" label="Conta resultado"
+					value="#{serviceController.item.resultAccount}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:formField id="costAccount" label="Conta de custo"
+					value="#{serviceController.item.costAccount}"
+					editing="#{serviceController.editing}" required="true" />
+			</lance:editForm>
+		</h:form>
+	</ui:define>
+</ui:composition>

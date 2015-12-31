@@ -1,0 +1,25 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:dataTable id="dataTable" controller="#{serviceController}"
+				label="serviço">
+				<uilance:column value="#{item.id}" label="Id" />
+				<uilance:column value="#{item.title}" label="Nome" />
+				<uilance:column value="#{item.defaultHistory}"
+					label="Histórico padrão" />
+				<uilance:column value="#{item.documentType}" label="Tipo" />
+				<uilance:column value="#{item.ledgerAccount}" label="Conta contábil" />
+				<uilance:column value="#{item.resultAccount}"
+					label="Conta resultado" />
+				<uilance:column value="#{item.costAccount}" label="Conta de custo" />
+			</lance:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -24,12 +24,8 @@ public class LoginPageFilter implements Filter{
 
        if(request.getUserPrincipal() != null){ //If user is already authenticated
                 String navigateString = "/pages/index.xhtml";
-                if(request.isUserInRole("Administrator")){
-                        navigateString = "/admin/AdminHome.xhtml";
-                }else if(request.isUserInRole("Manager")){
-                        navigateString = "/manager/ManagerHome.xhtml";
-                }else if(request.isUserInRole("User")){
-                        navigateString = "/user/UserHome.xhtml";
+                if(request.isUserInRole("admin")){
+                        navigateString = "/admin/home.xhtml";
                 }
                 response.sendRedirect(request.getContextPath()+navigateString);
        } else{

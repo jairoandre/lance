@@ -44,42 +44,17 @@
 		<welcome-file>/login.xhtml</welcome-file>
 	</welcome-file-list>
 	<security-constraint>
-		<display-name>Administrator</display-name>
+		<display-name>Pages</display-name>
 		<web-resource-collection>
-			<web-resource-name>Admin Area</web-resource-name>
+			<web-resource-name>App pages</web-resource-name>
 			<description />
-			<url-pattern>/admin/*</url-pattern>
+			<url-pattern>/pages/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<description>Administrator</description>
-			<role-name>Administrator</role-name>
-		</auth-constraint>
-	</security-constraint>
-	<security-constraint>
-		<display-name>Manager</display-name>
-		<web-resource-collection>
-			<web-resource-name>Manager Area</web-resource-name>
-			<description />
-			<url-pattern>/manager/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<description>Manager</description>
-			<role-name>Manager</role-name>
-			<role-name>Administrator</role-name>
-		</auth-constraint>
-	</security-constraint>
-	<security-constraint>
-		<display-name>User</display-name>
-		<web-resource-collection>
-			<web-resource-name>User Operations</web-resource-name>
-			<description />
-			<url-pattern>/user/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<description>User</description>
-			<role-name>Manager</role-name>
-			<role-name>Administrator</role-name>
-			<role-name>User</role-name>
+			<description>Pages</description>
+			<role-name>manager</role-name>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
 		</auth-constraint>
 	</security-constraint>
 	<login-config>
@@ -91,13 +66,13 @@
 		</form-login-config>
 	</login-config>
 	<security-role>
-		<role-name>Administrator</role-name>
+		<role-name>admin</role-name>
 	</security-role>
 	<security-role>
-		<role-name>Manager</role-name>
+		<role-name>manager</role-name>
 	</security-role>
 	<security-role>
-		<role-name>User</role-name>
+		<role-name>user</role-name>
 	</security-role>
 	<error-page>
 		<error-code>403</error-code>

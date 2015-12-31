@@ -19,6 +19,7 @@
 	<br />
 	<p:dataTable id="#{cc.attrs.id}" var="item"
 		value="#{cc.attrs.controller.lazyModel}" paginator="true"
+		emptyMessage="Sem registros"
 		paginatorPosition="bottom" rows="10" rowKey="index"
 		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		lazy="true" rowsPerPageTemplate="10,25,50">
