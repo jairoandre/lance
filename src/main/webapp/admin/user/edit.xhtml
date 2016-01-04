@@ -1,0 +1,56 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{userController.id}" />
+			<f:viewParam name="editing" value="#{userController.editing}" />
+			<f:viewAction action="#{userController.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:editForm id="contractPnl" controller="#{userController}"
+				columns="3">
+				<uilance:inputText id="name" label="Login"
+					value="#{userController.item.login}"
+					editing="#{userController.editing}" required="true" />				
+				<f:facet name="other">
+					<p:panel id="addServiceGrid" header="Serviços">
+						<h:panelGrid columns="3" rendered="#{userController.editing}">
+							<uilance:selectOne id="serviceSelectOne" label="Serviço"
+								value="#{userController.serviceIdToAdd}" editing="true"
+								rendered="#{userController.editing}" required="false"
+								renderMessage="false">
+								<f:selectItems value="#{userController.services}" />
+								<p:ajax update="addServiceBtn" process="@this serviceSelectOne" />
+							</uilance:selectOne>
+							<p:commandButton id="addServiceBtn"
+								action="#{userController.addService}" ajax="true"
+								update="addServiceGrid serviceSelectOne" value="Adicionar"
+								process="@this serviceSelectOne"
+								disabled="#{userController.serviceIdToAdd == null}" />
+						</h:panelGrid>
+						<p:dataGrid id="servicesGrid" var="service"
+							value="#{userController.item.services}" columns="1"
+							emptyMessage="Sem serviços" rowIndexVar="index">
+							<h:panelGrid id="serviceContractItem" columns="4">
+								<h:outputText value="#{service.title}" />
+								<p:commandButton id="removeBtn"
+									action="#{userController.removeService(index)}" ajax="true"
+									update=":#{p:component('addServiceGrid')}"
+									rendered="#{userController.editing}"
+									validateClient="false" value="Remover" process="@this" />
+							</h:panelGrid>
+						</p:dataGrid>
+					</p:panel>
+				</f:facet>
+			</lance:editForm>
+		</h:form>
+	</ui:define>
+</ui:composition>

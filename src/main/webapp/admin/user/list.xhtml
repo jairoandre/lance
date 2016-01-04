@@ -1,0 +1,16 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="content">
+		<h:form id="form">
+			<lance:dataTable id="dataTable" controller="#{userController}">
+				<uilance:column value="#{item.login}" label="Login" />
+			</lance:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

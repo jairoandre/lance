@@ -4,10 +4,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
+	<h:outputText value="#{value}" rendered="#{!editing}">
+		<f:convertDateTime pattern="dd/MM/yyyy" />
+	</h:outputText>
 	<p:calendar id="#{id}" value="#{value}" required="#{required}"
-		label="#{label}" disabled="#{!editing}" pattern="dd/MM/yyyy"
-		mask="true">
+		label="#{label}" rendered="#{editing}" pattern="dd/MM/yyyy"
+		mask="true" locale="pt_BR">
 		<ui:insert />
 	</p:calendar>
-	<p:message for="#{id}" />
+	<p:message id="#{id}_Msg" for="#{id}" />
 </ui:composition>

@@ -9,53 +9,40 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.Client;
-import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceContract;
-import br.com.vah.lance.service.ClientService;
-import br.com.vah.lance.service.ContractService;
+import br.com.vah.lance.entity.User;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
+import br.com.vah.lance.service.UserService;
 import br.com.vah.lance.util.GenericLazyDataModel;
 import br.com.vah.lance.util.LanceUtils;
 
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class ContractController extends AbstractController<Contract> {
+public class UserController extends AbstractController<User> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ContractService das;
-
-	private @Inject ClientService clientService;
+	private @Inject UserService das;
 
 	private @Inject ServiceService serviceService;
-
-	private List<SelectItem> clients;
 
 	private List<SelectItem> services;
 
 	private Long serviceIdToAdd;
 
+	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<Contract>(das, new Contract()));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		this.clients = LanceUtils.createSelectItem(clientService.findWithNamedQuery(Client.ALL), true);
+		setLazyModel(new GenericLazyDataModel<User>(das, new User()));
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
 	}
 
 	@Override
-	public DataAccessService<Contract> getService() {
+	public DataAccessService<User> getService() {
 		return das;
 	}
 
@@ -65,30 +52,38 @@ public class ContractController extends AbstractController<Contract> {
 	}
 
 	@Override
-	public Contract createNewItem() {
-		return new Contract();
+	public User createNewItem() {
+		return new User();
 	}
 
 	@Override
 	public String editPage() {
-		return "/pages/contract/edit.xhtml";
+		return "/admin/user/edit.xhtml";
 	}
 
 	@Override
 	public String listPage() {
-		return "/pages/contract/list.xhtml";
+		return "/admin/user/list.xhtml";
 	}
 
 	@Override
 	public String getEntityName() {
-		return "contrato";
+		return "usuário";
 	}
 
 	/**
-	 * @return the clients
+	 * @return the serviceService
 	 */
-	public List<SelectItem> getClients() {
-		return clients;
+	public ServiceService getServiceService() {
+		return serviceService;
+	}
+
+	/**
+	 * @param serviceService
+	 *            the serviceService to set
+	 */
+	public void setServiceService(ServiceService serviceService) {
+		this.serviceService = serviceService;
 	}
 
 	/**
@@ -96,6 +91,14 @@ public class ContractController extends AbstractController<Contract> {
 	 */
 	public List<SelectItem> getServices() {
 		return services;
+	}
+
+	/**
+	 * @param services
+	 *            the services to set
+	 */
+	public void setServices(List<SelectItem> services) {
+		this.services = services;
 	}
 
 	/**
@@ -114,20 +117,17 @@ public class ContractController extends AbstractController<Contract> {
 	}
 
 	public String addService() {
-		ServiceContract serviceContract = new ServiceContract();
 		Service service = serviceService.find(serviceIdToAdd);
-		serviceContract.setService(service);
-		serviceContract.setContract(getItem());
-		getItem().getServices().add(serviceContract);
+		getItem().getServices().add(service);
 		services = LanceUtils.splice(services, serviceIdToAdd);
 		serviceIdToAdd = null;
 		return null;
 	}
-	
+
 	public String removeService(Integer index) {
-		ServiceContract cs = getItem().getServices().get(index);
+		Service serv = getItem().getServices().get(index);
 		getItem().getServices().remove(index.intValue());
-		services.add(new SelectItem(cs.getService().getId(),cs.getService().getTitle()));
+		services.add(new SelectItem(serv.getId(), serv.getTitle()));
 		return null;
 	}
 

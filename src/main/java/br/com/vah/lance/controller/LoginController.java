@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import br.com.vah.lance.entity.User;
+import br.com.vah.lance.service.UserService;
 import br.com.vah.lance.util.DateUtility;
 
 /**
@@ -29,10 +31,13 @@ import br.com.vah.lance.util.DateUtility;
 @SessionScoped
 public class LoginController implements Serializable {
 
-	@Inject
-	private transient Logger logger;
+	private @Inject transient Logger logger;
+
+	private @Inject UserService userService;
+
 	private String username;
 	private String password;
+	private User user;
 
 	/**
 	 * Creates a new instance of LoginController
@@ -46,6 +51,13 @@ public class LoginController implements Serializable {
 	 */
 	public String getUsername() {
 		return username;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
 	}
 
 	/**
@@ -89,6 +101,7 @@ public class LoginController implements Serializable {
 			// ServletException
 			request.login(username, password);
 			// gets the user principle and navigates to the appropriate page
+			this.user = userService.findByLogin(username);
 			Principal principal = request.getUserPrincipal();
 			if (!request.isUserInRole("administrator")) {
 				navigateString = "/admin/home.xhtml";

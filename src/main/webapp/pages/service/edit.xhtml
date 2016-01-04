@@ -36,6 +36,7 @@
 					editing="#{serviceController.editing}" required="true" />
 				<uilance:selectOne id="serviceType" label="Tipo de serviço"
 					value="#{serviceController.item.serviceType.id}"
+					displayValue="#{serviceController.item.serviceType.title}"
 					editing="#{serviceController.editing}" required="true">
 					<f:selectItems value="#{serviceController.serviceTypes}" />
 				</uilance:selectOne>

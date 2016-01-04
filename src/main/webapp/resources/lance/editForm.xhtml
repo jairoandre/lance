@@ -8,12 +8,13 @@
 <composite:interface>
 	<composite:attribute name="id" />
 	<composite:attribute name="controller" />
+	<composite:attribute name="columns" />
 	<composite:facet name="other" />
 </composite:interface>
 
 <composite:implementation>
 	<p:panel id="#{cc.attrs.id}" header="#{cc.attrs.controller.editLabel}">
-		<h:panelGrid id="grid" columns="6" cellpadding="5">
+		<h:panelGrid id="grid" columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}" cellpadding="5">
 			<composite:insertChildren />
 		</h:panelGrid>
 		<composite:renderFacet name="other" />

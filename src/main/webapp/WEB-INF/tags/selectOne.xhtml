@@ -4,9 +4,11 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
-	<p:selectOneMenu  id="#{id}" value="#{value}" required="#{required}"
-		label="#{label}" disabled="#{!editing}" effect="fade" effectSpeed="20">
+	<h:outputText value="#{displayValue}" rendered="#{!editing}" />
+	<p:selectOneMenu id="#{id}" value="#{value}" required="#{required}"
+		label="#{label}" rendered="#{editing}" effect="fade" effectSpeed="20">
 		<ui:insert />
-	</p:selectOneMenu >
-	<p:message for="#{id}" rendered="#{renderMessage == null ? true : renderMessage}"/>
+	</p:selectOneMenu>
+	<p:message for="#{id}"
+		rendered="#{renderMessage == null ? true : renderMessage}" />
 </ui:composition>

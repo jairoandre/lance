@@ -16,9 +16,9 @@ public abstract class BaseEntity implements Serializable {
 
 	public abstract Long getId();
 	
-	public abstract String getLabelForSelectItem();
-
-    public abstract void setId(Long id);
+	public abstract void setId(Long id);
+	
+	public abstract String getLabelForSelectItem();    
     
     public abstract String getAllNamedQuery();
     

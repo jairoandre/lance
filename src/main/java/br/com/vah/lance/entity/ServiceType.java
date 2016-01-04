@@ -13,18 +13,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TB_LANCA_TIPO_SERVICO")
 @NamedQueries({ @NamedQuery(name = ServiceType.ALL, query = "SELECT st FROM ServiceType st"),
-		@NamedQuery(name = ServiceType.TOTAL, query = "SELECT COUNT(st) FROM ServiceType st") })
+		@NamedQuery(name = ServiceType.COUNT, query = "SELECT COUNT(st) FROM ServiceType st") })
 public class ServiceType extends BaseEntity {
-
-	public final static String ALL = "ServiceType.populatedItems";
-	public final static String TOTAL = "ServiceType.countTotal";
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public final static String ALL = "ServiceType.populatedItems";
+	public final static String COUNT = "ServiceType.countTotal";
+
 	@Id
-	@SequenceGenerator(name = "seqServiceTypeGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO", allocationSize = 1)
+	@SequenceGenerator(name = "seqServiceTypeGenerator", sequenceName = "SEQ_TB_LANCA_TIPO_SERVICO", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceTypeGenerator")
 	@Column(name = "ID")
 	private Long id;
@@ -56,7 +56,7 @@ public class ServiceType extends BaseEntity {
 
 	@Override
 	public String getCountNamedQuery() {
-		return TOTAL;
+		return COUNT;
 	}
 
 	@Override

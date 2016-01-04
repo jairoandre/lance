@@ -15,16 +15,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TB_LANCA_SERVICO")
 @NamedQueries({ @NamedQuery(name = Service.ALL, query = "SELECT s FROM Service s"),
-		@NamedQuery(name = Service.TOTAL, query = "SELECT COUNT(s) FROM Service s") })
+		@NamedQuery(name = Service.COUNT, query = "SELECT COUNT(s) FROM Service s") })
 public class Service extends BaseEntity {
-
-	public final static String ALL = "Service.all";
-	public final static String TOTAL = "Service.total";
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public final static String ALL = "Service.all";
+	public final static String COUNT = "Service.total";
 
 	@Id
 	@SequenceGenerator(name = "seqServiceGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO", allocationSize = 1)
@@ -124,7 +123,7 @@ public class Service extends BaseEntity {
 
 	@Override
 	public String getCountNamedQuery() {
-		return TOTAL;
+		return COUNT;
 	}
 
 	@Override

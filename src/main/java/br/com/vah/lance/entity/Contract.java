@@ -27,12 +27,14 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TB_LANCA_CONTRATO")
 @NamedQueries({ @NamedQuery(name = Contract.ALL, query = "SELECT c FROM Contract c"),
-		@NamedQuery(name = Contract.TOTAL, query = "SELECT COUNT(c) FROM Contract c") })
+		@NamedQuery(name = Contract.COUNT, query = "SELECT COUNT(c) FROM Contract c"),
+		@NamedQuery(name = Contract.VALIDS_IN_DATE, query = "SELECT c from Contract c where c.beginDate <= :date and c.endDate >= :date")})
 public class Contract extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	public static final String ALL = "Contract.populatedItems";
-	public static final String TOTAL = "Contract.countTotal";
+	public static final String COUNT = "Contract.countTotal";
+	public static final String VALIDS_IN_DATE = "Contract.validsInDate";
 
 	@Id
 	@SequenceGenerator(name = "seqContractGenerator", sequenceName = "SEQ_TB_LANCA_CONTRATO", allocationSize = 1)
@@ -206,7 +208,7 @@ public class Contract extends BaseEntity {
 
 	@Override
 	public String getCountNamedQuery() {
-		return TOTAL;
+		return COUNT;
 	}
 
 	@Override

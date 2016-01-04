@@ -14,11 +14,11 @@ import javax.persistence.Table;
 @Table(name = "TB_LANCA_CLIENTE")
 @NamedQueries({
     @NamedQuery(name = Client.ALL, query = "SELECT c FROM Client c"),
-    @NamedQuery(name = Client.TOTAL, query = "SELECT COUNT(c) FROM Client c")})
+    @NamedQuery(name = Client.COUNT, query = "SELECT COUNT(c) FROM Client c")})
 public class Client extends BaseEntity {
 	
 	public final static String ALL = "Client.populatedClients";
-    public final static String TOTAL = "Client.countClientsTotal";
+    public final static String COUNT = "Client.countClientsTotal";
 
 	private static final long serialVersionUID = 1L;
 
@@ -91,7 +91,7 @@ public class Client extends BaseEntity {
 
 	@Override
 	public String getCountNamedQuery() {
-		return TOTAL;
+		return COUNT;
 	}
 
 	@Override

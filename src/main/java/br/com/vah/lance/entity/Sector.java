@@ -24,12 +24,12 @@ import javax.persistence.Table;
 @Table(name = "TB_LANCA_SETOR")
 @NamedQueries({
     @NamedQuery(name = Sector.ALL, query = "SELECT s FROM Sector s "),
-    @NamedQuery(name = Sector.TOTAL, query = "SELECT COUNT(s) FROM Sector s")})
+    @NamedQuery(name = Sector.COUNT, query = "SELECT COUNT(s) FROM Sector s")})
 public class Sector extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	
 	public final static String ALL = "Sector.populateSectors";
-    public final static String TOTAL = "Sector.countSectorsTotal";
+    public final static String COUNT = "Sector.countSectorsTotal";
 
 	@Id
 	@SequenceGenerator(name = "seqSectorGenerator", sequenceName = "SEQ_TB_LANCA_SETOR", allocationSize = 1)
@@ -154,7 +154,7 @@ public class Sector extends BaseEntity {
 
 	@Override
 	public String getCountNamedQuery() {
-		return TOTAL;
+		return COUNT;
 	}
 
 

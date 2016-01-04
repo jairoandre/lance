@@ -90,6 +90,9 @@
    <name>required</name>
   </attribute>
   <attribute>
+   <name>displayValue</name>
+  </attribute>
+  <attribute>
    <name>renderMessage</name>
   </attribute>
  </tag>
