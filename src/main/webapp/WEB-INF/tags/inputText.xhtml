@@ -3,7 +3,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
+	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" rendered="#{label != null}" />
 	<p:inputText id="#{id}" value="#{value}" required="#{required}"
 		label="#{label}" disabled="#{!editing}">
 		<ui:insert />

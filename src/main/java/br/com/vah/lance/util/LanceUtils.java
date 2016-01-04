@@ -20,4 +20,14 @@ public class LanceUtils {
 		return selectItems;
 	}
 
+	public static List<SelectItem> splice(List<SelectItem> items, Object id) {
+		List<SelectItem> newItems = new ArrayList<>();
+		for (SelectItem item : items) {
+			if (!id.equals(item.getValue())) {
+				newItems.add(item);
+			}
+		}
+		return newItems;
+	}
+
 }

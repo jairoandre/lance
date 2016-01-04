@@ -35,20 +35,33 @@
 				</uilance:selectOne>
 				<f:facet name="other">
 					<p:panel id="servicePnl" header="Serviços">
-						<uilance:selectOne id="serviceSelectOne" label="Serviço"
-							value="#{contractController.serviceIdToAdd}"
-							editing="true"
-							rendered="#{contractController.editing}" required="false">
-							<f:selectItems value="#{contractController.services}" />
-						</uilance:selectOne>
-						<p:commandButton action="#{contractController.addService}"
-							ajax="true" update="servicePnl" value="Adicionar" immediate="true" />
-						<p:dataList value="#{contractController.item.services}"
-							var="service" type="ordered">
-							<uilance:inputText id="service_#{service.id}"
-								label="#{service.service.title}" value="#{service.amount}"
-								editing="true" />
-						</p:dataList>
+						<h:panelGrid columns="3">
+							<uilance:selectOne id="serviceSelectOne" label="Serviço"
+								value="#{contractController.serviceIdToAdd}" editing="true"
+								rendered="#{contractController.editing}" required="false"
+								renderMessage="false">
+								<f:selectItems value="#{contractController.services}" />
+								<p:ajax update="addServiceBtn" process="@this serviceSelectOne" />
+							</uilance:selectOne>
+							<p:commandButton id="addServiceBtn"
+								action="#{contractController.addService}" ajax="true"
+								update="servicePnl serviceSelectOne" value="Adicionar"
+								process="@this serviceSelectOne serviceContractGrid"
+								disabled="#{contractController.serviceIdToAdd == null}" />
+						</h:panelGrid>
+						<p:dataGrid id="serviceContractGrid" var="service"
+							value="#{contractController.item.services}"
+							columns="1"
+							emptyMessage="Sem serviços" rowIndexVar="index">
+							<h:panelGrid id="serviceContractItem" columns="4">
+								<uilance:inputText id="service" label="#{service.service.title}"
+									value="#{service.amount}" editing="true" />
+								<p:commandButton id="removeBtn"
+									action="#{contractController.removeService(index)}" ajax="true"
+									update="@form"
+									value="Remover" process="@this" />
+							</h:panelGrid>
+						</p:dataGrid>
 					</p:panel>
 				</f:facet>
 			</lance:editForm>

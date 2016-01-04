@@ -115,11 +115,18 @@ public class ContractController extends AbstractController<Contract> {
 
 	public String addService() {
 		ServiceContract serviceContract = new ServiceContract();
-		Service service = new Service();
-		service.setId(this.serviceIdToAdd);
-		service.setTitle("Service " + this.serviceIdToAdd);
+		Service service = serviceService.find(serviceIdToAdd);
 		serviceContract.setService(service);
 		getItem().getServices().add(serviceContract);
+		services = LanceUtils.splice(services, serviceIdToAdd);
+		serviceIdToAdd = null;
+		return null;
+	}
+	
+	public String removeService(Integer index) {
+		ServiceContract cs = getItem().getServices().get(index);
+		getItem().getServices().remove(index);
+		services.add(new SelectItem(cs.getService().getId(),cs.getService().getTitle()));
 		return null;
 	}
 

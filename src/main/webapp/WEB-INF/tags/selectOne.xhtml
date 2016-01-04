@@ -5,8 +5,8 @@
 	xmlns:p="http://primefaces.org/ui">
 	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
 	<p:selectOneMenu  id="#{id}" value="#{value}" required="#{required}"
-		label="#{label}" disabled="#{!editing}">
+		label="#{label}" disabled="#{!editing}" effect="fade" effectSpeed="20">
 		<ui:insert />
 	</p:selectOneMenu >
-	<p:message for="#{id}" />
+	<p:message for="#{id}" rendered="#{renderMessage == null ? true : renderMessage}"/>
 </ui:composition>
