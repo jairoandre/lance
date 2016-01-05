@@ -52,20 +52,17 @@
 								disabled="#{contractController.serviceIdToAdd == null}" />
 						</h:panelGrid>
 						<p:dataGrid id="servicesGrid" var="service"
-							value="#{contractController.item.services}" columns="1"
+							value="#{contractController.item.services}" columns="2"
 							emptyMessage="Sem serviços" rowIndexVar="index">
-							<h:panelGrid id="serviceContractItem" columns="4">
-								<uilance:inputText id="service" label="#{service.service.title}"
-									value="#{service.amount}"
-									editing="#{contractController.editing}" required="true">
-									<p:ajax process="@this" update="@this" />
-								</uilance:inputText>
-								<p:commandButton id="removeBtn"
-									action="#{contractController.removeService(index)}" ajax="true"
-									update=":#{p:component('addServiceGrid')}"
-									rendered="#{contractController.editing}"
-									validateClient="false" value="Remover" process="@this" />
-							</h:panelGrid>
+							<uilance:inputText id="service" label="#{service.service.title}"
+								value="#{service.amount}"
+								editing="#{contractController.editing}" required="true">
+								<p:ajax process="@this" update="@this" />
+							</uilance:inputText>
+							<p:commandButton id="removeBtn"
+								action="#{contractController.removeService(index)}" ajax="true"
+								update=":#{p:component('addServiceGrid')}"
+								rendered="#{contractController.editing}" validateClient="false" value="Remover" process="@this" />
 						</p:dataGrid>
 					</p:panel>
 				</f:facet>
