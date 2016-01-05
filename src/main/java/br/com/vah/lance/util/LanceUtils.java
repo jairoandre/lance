@@ -1,7 +1,11 @@
 package br.com.vah.lance.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.model.SelectItem;
 
@@ -28,6 +32,56 @@ public class LanceUtils {
 			}
 		}
 		return newItems;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Map.Entry<? extends Object, ? extends Object>> transformMap(Map<?, ?> map) {
+		return new ArrayList(map.entrySet());
+	}
+
+	public static Date[] getDateRangeForThisMonth() {
+		Date begining, end;
+
+		Date[] array = new Date[2];
+
+		{
+			Calendar calendar = getCalendarForNow();
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+			setTimeToBeginningOfDay(calendar);
+			begining = calendar.getTime();
+		}
+
+		{
+			Calendar calendar = getCalendarForNow();
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			setTimeToEndofDay(calendar);
+			end = calendar.getTime();
+		}
+
+		array[0] = begining;
+		array[1] = end;
+
+		return array;
+	}
+
+	private static Calendar getCalendarForNow() {
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(new Date());
+		return calendar;
+	}
+
+	private static void setTimeToBeginningOfDay(Calendar calendar) {
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+	}
+
+	private static void setTimeToEndofDay(Calendar calendar) {
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 999);
 	}
 
 }

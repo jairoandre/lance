@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:body>
-	<h:form>
+	<h:form id="menuForm">
 		<p:growl id="messages" showDetail="true" showSummary="true"
 			autoUpdate="true" globalOnly="true" />
 		<p:menubar rendered="#{request.getUserPrincipal() != null}">

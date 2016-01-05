@@ -9,9 +9,13 @@ package br.com.vah.lance.constant;
 public enum EntryStatusEnum {
 
 	/**
-	 * Criado
+	 * Não lançado
 	 */
-	C("Criado"),
+	N("Não lançado"),
+	/**
+	 * Lançado
+	 */
+	L("Lançado"),
 	/**
 	 * Validado
 	 */

@@ -1,6 +1,7 @@
 package br.com.vah.lance.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ import br.com.vah.lance.constant.EntryStatusEnum;
 @Table(name = "TB_LANCA_LANCAMENTO")
 @NamedQueries({ @NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
 		@NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
-		@NamedQuery(name = Entry.BY_DATE_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn = :date and e.service in :services") })
+		@NamedQuery(name = Entry.BY_DATE_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services") })
 public class Entry extends BaseEntity {
 
 	/**
@@ -117,7 +118,8 @@ public class Entry extends BaseEntity {
 	/**
 	 * Estado do lançamento, valores possíveis:
 	 * <ul>
-	 * <li>Criado</li>
+	 * <li>Não lançado</li>
+	 * <li>Lançado</li>
 	 * <li>Validado</li>
 	 * <li>Pendente</li>
 	 * <li>Corrigido</li>
@@ -130,8 +132,13 @@ public class Entry extends BaseEntity {
 	private EntryStatusEnum status;
 
 	public Entry() {
-		this.status = EntryStatusEnum.C;
+		this.status = EntryStatusEnum.N;
 		this.createdOn = new Date();
+		this.effectiveOn = new Date();
+		this.value = BigDecimal.ZERO;
+		this.contractValue = BigDecimal.ZERO;
+		this.variableValue = BigDecimal.ZERO;
+		this.comments = new ArrayList<>();
 	}
 
 	public Entry(Contract contract) {

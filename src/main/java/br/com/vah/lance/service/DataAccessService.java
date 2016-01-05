@@ -1,5 +1,6 @@
 package br.com.vah.lance.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,7 +99,20 @@ public abstract class DataAccessService<T> {
 	 */
 	public T update(T item) {
 		return this.em.merge(item);
+	}
 
+	/**
+	 * Updates a list of entity instance
+	 * 
+	 * @param items
+	 * @return
+	 */
+	public List<T> update(List<T> items) {
+		List<T> persistedList = new ArrayList<>();
+		for (T item : items) {
+			persistedList.add(this.em.merge(item));
+		}
+		return persistedList;
 	}
 
 	/**

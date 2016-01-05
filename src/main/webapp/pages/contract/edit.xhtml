@@ -51,19 +51,31 @@
 								process="@this serviceSelectOne"
 								disabled="#{contractController.serviceIdToAdd == null}" />
 						</h:panelGrid>
-						<p:dataGrid id="servicesGrid" var="service"
-							value="#{contractController.item.services}" columns="2"
-							emptyMessage="Sem serviços" rowIndexVar="index">
-							<uilance:inputText id="service" label="#{service.service.title}"
-								value="#{service.amount}"
-								editing="#{contractController.editing}" required="true">
-								<p:ajax process="@this" update="@this" />
-							</uilance:inputText>
-							<p:commandButton id="removeBtn"
-								action="#{contractController.removeService(index)}" ajax="true"
-								update=":#{p:component('addServiceGrid')}"
-								rendered="#{contractController.editing}" validateClient="false" value="Remover" process="@this" />
-						</p:dataGrid>
+						<table>
+							<ui:repeat id="servicesRepeat" var="service"
+								value="#{contractController.item.services}" varStatus="iter">
+								<tbody>
+									<tr>
+										<td><h:outputLabel for="service"
+												value="#{service.service.title}:" style="font-weight:bold" />
+										</td>
+										<td><h:outputText value="#{service.amount}"
+												rendered="#{!contractController.editing}" /> <p:inputText
+												id="service" value="#{service.amount}" required="true"
+												label="#{service.service.title}"
+												rendered="#{contractController.editing}">
+												<p:ajax process="@this" update="@this" />
+											</p:inputText></td>
+										<td><p:commandButton id="removeBtn"
+												action="#{contractController.removeService(iter.index)}"
+												ajax="true" update=":#{p:component('addServiceGrid')}"
+												rendered="#{contractController.editing}"
+												validateClient="false" value="Remover" process="@this" /></td>
+										<td><p:message for="service" /></td>
+									</tr>
+								</tbody>
+							</ui:repeat>
+						</table>
 					</p:panel>
 				</f:facet>
 			</lance:editForm>
