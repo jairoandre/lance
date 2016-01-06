@@ -325,16 +325,6 @@ public class Entry extends BaseEntity {
 		return null;
 	}
 
-	@Override
-	public String getAllNamedQuery() {
-		return ALL;
-	}
-
-	@Override
-	public String getCountNamedQuery() {
-		return COUNT;
-	}
-
 	public BigDecimal getTotal() {
 		return contractValue.add(variableValue);
 	}

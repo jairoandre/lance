@@ -18,11 +18,7 @@ public abstract class BaseEntity implements Serializable {
 	
 	public abstract void setId(Long id);
 	
-	public abstract String getLabelForSelectItem();    
-    
-    public abstract String getAllNamedQuery();
-    
-    public abstract String getCountNamedQuery();
+	public abstract String getLabelForSelectItem();
 
     @Override
     public int hashCode() {

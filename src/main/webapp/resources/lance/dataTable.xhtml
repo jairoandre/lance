@@ -11,32 +11,45 @@
 </composite:interface>
 
 <composite:implementation>
-	<p:commandButton value="Novo #{cc.attrs.controller.entityName}"
-		action="#{cc.attrs.controller.add}" icon="ui-icon-star"
-		title="Criar novo #{cc.attrs.controller.entityName}" />
-	<br />
-	<br />
-	<p:dataTable id="#{cc.attrs.id}" var="item"
-		value="#{cc.attrs.controller.lazyModel}" paginator="true"
-		emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
-		rowKey="index"
-		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		lazy="true" rowsPerPageTemplate="10,25,50">
-		<composite:insertChildren />
-		<p:column width="100">
-			<f:facet name="header">
-				<h:outputText value="Ações" />
-			</f:facet>
-			<p:commandButton action="#{cc.attrs.controller.detail(item)}"
-				icon="ui-icon-search" />
-			<p:commandButton action="#{cc.attrs.controller.edit(item)}"
-				icon="ui-icon-pencil" />
-			<p:commandButton
-				action="#{cc.attrs.controller.preDelete(item.id, index)}"
-				ajax="true" oncomplete="PF('deleteMdl').show();"
-				icon="ui-icon-trash" />
-		</p:column>
-	</p:dataTable>
+	<p:panel id="#{cc.attrs.id}"
+		header="#{cc.attrs.controller.entityName.toUpperCase()}">
+		<h:panelGrid columns="2" style="width: 100%">
+			<h:panelGroup>
+				<p:inputText id="#{cc.attrs.id}SearchInput"
+					value="#{cc.attrs.controller.searchTerm}"
+					placeholder="Filtrar por..." />
+				<p:commandButton value="Buscar" action="#{cc.attrs.controller.add}"
+					icon="fa fa-search"
+					title="Criar novo #{cc.attrs.controller.entityName}"
+					style="margin-left: 5px;" />
+			</h:panelGroup>
+			<p:commandButton value="Novo #{cc.attrs.controller.entityName}"
+				action="#{cc.attrs.controller.add}" icon="ui-icon-star"
+				title="Criar novo #{cc.attrs.controller.entityName}"
+				style="float: right;" />
+		</h:panelGrid>
+		<p:dataTable id="#{cc.attrs.id}Tbl" var="item"
+			value="#{cc.attrs.controller.lazyModel}" paginator="true"
+			emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
+			rowKey="index"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			lazy="true" rowsPerPageTemplate="10,25,50">
+			<composite:insertChildren />
+			<p:column width="100">
+				<f:facet name="header">
+					<h:outputText value="Ações" />
+				</f:facet>
+				<p:commandButton action="#{cc.attrs.controller.detail(item)}"
+					icon="ui-icon-search" />
+				<p:commandButton action="#{cc.attrs.controller.edit(item)}"
+					icon="ui-icon-pencil" />
+				<p:commandButton
+					action="#{cc.attrs.controller.preDelete(item.id, index)}"
+					ajax="true" oncomplete="PF('deleteMdl').show();"
+					icon="ui-icon-trash" />
+			</p:column>
+		</p:dataTable>
+	</p:panel>
 	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
 		modal="true">
 		<h:outputText

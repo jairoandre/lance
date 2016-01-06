@@ -24,7 +24,7 @@ public class UserController extends AbstractController<User> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject UserService das;
+	private @Inject UserService service;
 
 	private @Inject ServiceService serviceService;
 
@@ -37,13 +37,13 @@ public class UserController extends AbstractController<User> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<User>(das, new User()));
+		setLazyModel(new GenericLazyDataModel<User>(service));
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
 	}
 
 	@Override
 	public DataAccessService<User> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

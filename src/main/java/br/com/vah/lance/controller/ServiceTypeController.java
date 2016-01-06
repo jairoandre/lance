@@ -19,18 +19,18 @@ public class ServiceTypeController extends AbstractController<ServiceType> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ServiceTypeService das;
+	private @Inject ServiceTypeService service;
 
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<ServiceType>(das, new ServiceType()));
+		setLazyModel(new GenericLazyDataModel<ServiceType>(service));
 	}
 
 	@Override
 	public DataAccessService<ServiceType> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

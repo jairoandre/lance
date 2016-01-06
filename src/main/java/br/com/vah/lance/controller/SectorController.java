@@ -19,18 +19,18 @@ public class SectorController extends AbstractController<Sector> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject SectorService das;
+	private @Inject SectorService service;
 
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<Sector>(das, new Sector()));
+		setLazyModel(new GenericLazyDataModel<Sector>(service));
 	}
 
 	@Override
 	public DataAccessService<Sector> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

@@ -3,10 +3,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<p:column sortBy="#{value}" style="#{style}">
-		<f:facet name="header">
-			<h:outputText value="#{label}" />
-		</f:facet>
+	<p:column sortBy="${value}" style="#{style}" headerText="#{label}" >
 		<h:outputText value="#{value}">
 			<ui:insert />
 		</h:outputText>

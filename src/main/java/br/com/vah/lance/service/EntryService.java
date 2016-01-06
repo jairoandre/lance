@@ -64,6 +64,7 @@ public class EntryService extends DataAccessService<Entry> {
 					Entry entry = new Entry(contract);
 					entry.setService(service.getService());
 					entry.setContractValue(service.getAmount());
+					entry.setValue(service.getAmount());
 					entry.setUserForEntry(user);
 					entry.setContract(contract);
 					map.put(contract, entry);

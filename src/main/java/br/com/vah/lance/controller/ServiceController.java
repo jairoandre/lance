@@ -24,7 +24,7 @@ public class ServiceController extends AbstractController<Service> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ServiceService das;
+	private @Inject ServiceService service;
 
 	private @Inject ServiceTypeService serviceTypeService;
 
@@ -34,7 +34,7 @@ public class ServiceController extends AbstractController<Service> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<Service>(das, new Service()));
+		setLazyModel(new GenericLazyDataModel<Service>(service));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -62,7 +62,7 @@ public class ServiceController extends AbstractController<Service> {
 
 	@Override
 	public DataAccessService<Service> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

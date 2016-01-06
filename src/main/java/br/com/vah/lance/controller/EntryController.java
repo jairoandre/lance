@@ -38,6 +38,12 @@ public class EntryController extends AbstractController<Entry> {
 
 	private List<Map.Entry<Contract, Entry>> entryMap;
 
+	private BigDecimal variableValueTotal = BigDecimal.ZERO;
+
+	private BigDecimal contractValueTotal = BigDecimal.ZERO;
+
+	private BigDecimal valueTotal = BigDecimal.ZERO;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PostConstruct
 	public void init() {
@@ -61,11 +67,11 @@ public class EntryController extends AbstractController<Entry> {
 				if (getId().equals(map.getKey().getId())) {
 					serviceItem = map.getKey();
 					entryMap = map.getValue();
+					updateTotals();
 					break;
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -147,21 +153,53 @@ public class EntryController extends AbstractController<Entry> {
 	public GenericLazyDataModel<Entry> getLazyModel() {
 		return super.getLazyModel();
 	}
+	
+	public void updateValue(Entry item){
+		item.setValue(item.getContractValue().add(item.getVariableValue()));
+		updateTotals();
+	}
 
-	public BigDecimal getTotal() {
-		BigDecimal total = BigDecimal.ZERO;
+	public void updateTotals() {
+		valueTotal = BigDecimal.ZERO;
+		contractValueTotal = BigDecimal.ZERO;
+		variableValueTotal = BigDecimal.ZERO;
 		for (Map.Entry<Contract, Entry> ent : entryMap) {
-			total = total.add(ent.getValue().getContractValue()).add(ent.getValue().getVariableValue());
+			valueTotal = valueTotal.add(ent.getValue().getValue());
+			contractValueTotal = contractValueTotal.add(ent.getValue().getContractValue());
+			variableValueTotal = variableValueTotal.add(ent.getValue().getVariableValue());
+
 		}
-		return total;
+	}
+
+	/**
+	 * @return the variableValueTotal
+	 */
+	public BigDecimal getVariableValueTotal() {
+		return variableValueTotal;
+	}
+
+	/**
+	 * @return the contractValueTotal
+	 */
+	public BigDecimal getContractValueTotal() {
+		return contractValueTotal;
+	}
+
+	/**
+	 * @return the valueTotal
+	 */
+	public BigDecimal getValueTotal() {
+		return valueTotal;
 	}
 
 	public String saveEntrys() {
 		List<Entry> entries = new ArrayList<>();
 		for (Map.Entry<Contract, Entry> map : entryMap) {
-			map.getValue().setUserForContract(loginController.getUser());
-			map.getValue().setUserForEntry(loginController.getUser());
-			entries.add(map.getValue());
+			Entry curr = map.getValue();
+			curr.setUserForContract(loginController.getUser());
+			curr.setUserForEntry(loginController.getUser());
+			curr.setValue(curr.getContractValue().add(curr.getVariableValue()));
+			entries.add(curr);
 		}
 		das.saveEntrys(entries);
 		addMsg(new FacesMessage("Sucesso!", "Lançamentos atualizados"), true);

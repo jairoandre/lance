@@ -22,12 +22,30 @@ body {
 	margin-top: 0;
 }
 
-.loginPanelStyle {
+.login-pnl {
 	margin-left: auto;
 	margin-right: auto;
 	width: 300px;
 	margin-top: 15%;
+	background: #EFF7E1;
+	padding: 10px;
+	padding-top: 30px;
+	border: solid 1px #D0DEB8;
 }
+
+.login-pnl img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.login-pnl table {
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
 
 .userFormStyle {
 	margin-left: auto;

@@ -9,6 +9,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+
+import br.com.vah.lance.util.PaginatedSearchParam;
+
 /**
  * Implementation of the generic Data Access Service All CRUD (create, read,
  * update, delete) basic data access operations for any persistent object are
@@ -207,4 +216,60 @@ public abstract class DataAccessService<T> {
 		query.setFirstResult(start);
 		return query.getResultList();
 	}
+
+	/**
+	 * Create criteria
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public Criteria createCriteria(PaginatedSearchParam params) {
+		Session session = em.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(type);
+
+		for (Map.Entry<String, Object> par : params.getParams().entrySet()) {
+			if (par.getValue() != null) {
+				criteria.add(Restrictions.ilike(par.getKey(), (String) par.getValue(), MatchMode.ANYWHERE));
+			}
+		}
+		return criteria;
+	}
+
+	/**
+	 * Paginated search
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public List<T> paginatedSearch(PaginatedSearchParam params) {
+		Criteria criteria = createCriteria(params);
+
+		criteria.setFirstResult(params.getFirst());
+		criteria.setMaxResults(params.getPageSize());
+
+		if (params.getOrderBy() != null) {
+			if (params.getAsc()) {
+				criteria.addOrder(Order.asc(params.getOrderBy()));
+			} else {
+				criteria.addOrder(Order.desc(params.getOrderBy()));
+			}
+		}
+		
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		return criteria.list();
+	}
+
+	/**
+	 * Paginated count
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public int paginatedCount(PaginatedSearchParam params) {
+		Criteria criteria = createCriteria(params);
+		criteria.setProjection(Projections.rowCount());
+		return ((Number) criteria.uniqueResult()).intValue();
+	}
+
 }

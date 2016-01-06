@@ -22,6 +22,8 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	private Boolean editing = true;
 
 	private GenericLazyDataModel<T> lazyModel;
+	
+	private String searchTerm;
 
 	/**
 	 * @return the service
@@ -57,6 +59,20 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * @return
 	 */
 	public abstract String getEntityName();
+
+	/**
+	 * @return the searchTerm
+	 */
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	/**
+	 * @param searchTerm the searchTerm to set
+	 */
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;
+	}
 
 	public void onLoad() {
 		getLogger().info("Load params");

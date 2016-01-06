@@ -27,7 +27,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ContractService das;
+	private @Inject ContractService service;
 
 	private @Inject ClientService clientService;
 
@@ -43,7 +43,7 @@ public class ContractController extends AbstractController<Contract> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<Contract>(das, new Contract()));
+		setLazyModel(new GenericLazyDataModel<Contract>(service));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,7 +56,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	@Override
 	public DataAccessService<Contract> getService() {
-		return das;
+		return service;
 	}
 
 	@Override
@@ -123,11 +123,11 @@ public class ContractController extends AbstractController<Contract> {
 		serviceIdToAdd = null;
 		return null;
 	}
-	
+
 	public String removeService(Integer index) {
 		ServiceContract cs = getItem().getServices().get(index);
 		getItem().getServices().remove(index.intValue());
-		services.add(new SelectItem(cs.getService().getId(),cs.getService().getTitle()));
+		services.add(new SelectItem(cs.getService().getId(), cs.getService().getTitle()));
 		return null;
 	}
 

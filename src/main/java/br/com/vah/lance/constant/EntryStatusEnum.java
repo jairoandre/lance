@@ -58,7 +58,7 @@ public enum EntryStatusEnum {
 		case P:
 			return "#A30000";
 		case F:
-			return "#005700";
+			return "#A5356D";
 		case S:
 			return "#0088ff";
 		default:

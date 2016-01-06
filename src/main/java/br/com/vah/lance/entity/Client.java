@@ -85,16 +85,6 @@ public class Client extends BaseEntity {
 	}
 
 	@Override
-	public String getAllNamedQuery() {
-		return ALL;
-	}
-
-	@Override
-	public String getCountNamedQuery() {
-		return COUNT;
-	}
-
-	@Override
 	public String getLabelForSelectItem() {
 		return getTitle();
 	}

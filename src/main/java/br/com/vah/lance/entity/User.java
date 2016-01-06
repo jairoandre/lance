@@ -105,14 +105,4 @@ public class User extends BaseEntity {
 		this.services = services;
 	}
 
-	@Override
-	public String getAllNamedQuery() {
-		return ALL;
-	}
-
-	@Override
-	public String getCountNamedQuery() {
-		return COUNT;
-	}
-
 }

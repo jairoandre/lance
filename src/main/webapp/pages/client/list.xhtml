@@ -9,9 +9,15 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:dataTable id="dataTable" controller="#{clientController}">
-				<uilance:column value="#{item.id}" label="Id" />
-				<uilance:column value="#{item.title}" label="Nome" />
-				<uilance:column value="#{item.clientCode}" label="Código" />
+				<p:column sortBy="#{item.id}" headerText="Id">
+					<h:outputText value="#{item.id}" />
+				</p:column>
+				<p:column sortBy="#{item.title}" headerText="Nome">
+					<h:outputText value="#{item.title}" />
+				</p:column>
+				<p:column sortBy="#{item.clientCode}" headerText="Código">
+					<h:outputText value="#{item.clientCode}" />
+				</p:column>
 			</lance:dataTable>
 		</h:form>
 	</ui:define>

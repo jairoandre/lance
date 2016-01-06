@@ -5,28 +5,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="content">
-		<h:form styleClass="loginPanelStyle">
+		<h:form styleClass="login-pnl">
 			<p:growl id="msgs" showDetail="true" sticky="false" />
-			<h:graphicImage library="img" name="logo.png" height="50"/>
-			<p:panelGrid columns="2">
-				<h:outputText value="Usuário: "></h:outputText>
+			<h:graphicImage library="img" name="logo.png" height="50" />
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Usuário: " />
 				<p:inputText id="username" value="#{loginController.username}"
-					required="true" requiredMessage="Please Enter Username!">
+					required="true" requiredMessage="Usuário requerido">
 					<f:validateLength minimum="1" />
 				</p:inputText>
-				<h:outputText value="Senha: "></h:outputText>
+				<p:outputLabel value="Senha:" />
 				<p:password id="password" value="#{loginController.password}"
-					required="true" requiredMessage="Please Enter password!">
+					required="true" requiredMessage="Senha requerida">
 					<f:validateLength minimum="1" />
 				</p:password>
-				<f:facet name="footer">
-					<center>
-						<p:commandButton value="Entrar" update="msgs"
-							actionListener="#{loginController.login}" type="submit"
-							icon="ui-icon-check" style="margin:0"/>
-					</center>
-				</f:facet>
-			</p:panelGrid>
+			</h:panelGrid>
+			<br/>
+			<center>
+				<p:commandButton value="Entrar" update="msgs"
+					actionListener="#{loginController.login}" type="submit"
+					icon="fa fa-sign-in" style="margin:0" />
+			</center>
+
 		</h:form>
 	</ui:define>
 </ui:composition>

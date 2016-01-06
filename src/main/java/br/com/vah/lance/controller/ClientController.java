@@ -19,17 +19,17 @@ public class ClientController extends AbstractController<Client> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject ClientService das;
+	private @Inject ClientService service;
 
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
-		setLazyModel(new GenericLazyDataModel<Client>(das, new Client()));
+		setLazyModel(new GenericLazyDataModel<Client>(service));
 	}
 
 	@Override
 	public DataAccessService<Client> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

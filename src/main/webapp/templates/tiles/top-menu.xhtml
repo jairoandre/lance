@@ -39,7 +39,7 @@
 						value="Olá, #{loginController.username}     "
 						rendered="#{request.getUserPrincipal() != null}" />
 					<p:commandButton value="Logout" action="#{loginController.logout}"
-						icon="ui-icon-power"
+						icon="fa fa-sign-out"
 						rendered="#{request.getUserPrincipal() != null}" />
 				</h:panelGroup>
 			</f:facet>

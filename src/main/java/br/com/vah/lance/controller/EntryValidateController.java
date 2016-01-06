@@ -21,7 +21,7 @@ public class EntryValidateController extends AbstractController<Entry> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject EntryService das;
+	private @Inject EntryService service;
 
 	private @Inject LoginController loginController;
 	
@@ -40,7 +40,7 @@ public class EntryValidateController extends AbstractController<Entry> {
 
 	@Override
 	public DataAccessService<Entry> getService() {
-		return das;
+		return service;
 	}
 
 	@Override

@@ -19,7 +19,7 @@
 				columns="3">
 				<uilance:inputText id="name" label="Login"
 					value="#{userController.item.login}"
-					editing="#{userController.editing}" required="true" />				
+					editing="#{userController.editing}" required="true" />
 				<f:facet name="other">
 					<p:panel id="addServiceGrid" header="Serviços">
 						<h:panelGrid columns="3" rendered="#{userController.editing}">
@@ -36,18 +36,25 @@
 								process="@this serviceSelectOne"
 								disabled="#{userController.serviceIdToAdd == null}" />
 						</h:panelGrid>
-						<p:dataGrid id="servicesGrid" var="service"
-							value="#{userController.item.services}" columns="1"
-							emptyMessage="Sem serviços" rowIndexVar="index">
-							<h:panelGrid id="serviceContractItem" columns="4">
-								<h:outputText value="#{service.title}" />
-								<p:commandButton id="removeBtn"
-									action="#{userController.removeService(index)}" ajax="true"
-									update=":#{p:component('addServiceGrid')}"
-									rendered="#{userController.editing}"
-									validateClient="false" value="Remover" process="@this" />
-							</h:panelGrid>
-						</p:dataGrid>
+						<table>
+							<ui:repeat id="servicesRepeat" var="service"
+								value="#{userController.item.services}" varStatus="iter">
+								<tbody>
+									<tr>
+										<td>
+											<h:outputText value="#{service.title}" />
+										</td>
+										<td>
+											<p:commandButton id="removeBtn"
+												action="#{userController.removeService(iter.index)}" ajax="true"
+												update=":#{p:component('addServiceGrid')}"
+												rendered="#{userController.editing}" validateClient="false"
+												value="Remover" process="@this" />
+										</td>
+									</tr>
+								</tbody>
+							</ui:repeat>
+						</table>
 					</p:panel>
 				</f:facet>
 			</lance:editForm>

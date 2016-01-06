@@ -10,18 +10,30 @@
 		<h:form id="form">
 			<lance:dataTable id="dataTable" controller="#{contractController}"
 				label="contrato">
-				<uilance:column value="#{item.id}" label="Id" />
-				<uilance:column value="#{item.title}" label="Nome" />
-				<uilance:column value="#{item.beginDate}" label="Data de início">
-					<f:convertDateTime pattern="dd/MM/yyyy" />
-				</uilance:column>
-				<uilance:column value="#{item.endDate}" label="Data de término">
-					<f:convertDateTime pattern="dd/MM/yyyy" />
-				</uilance:column>
-				<uilance:column value="#{item.changeDate}" label="Data de reajuste">
-					<f:convertDateTime pattern="dd/MM/yyyy" />
-				</uilance:column>
-				<uilance:column value="#{item.client.title}" label="Cliente" />
+				<p:column sortBy="#{item.id}" headerText="Id">
+					<h:outputText value="#{item.id}" />
+				</p:column>
+				<p:column sortBy="#{item.title}" headerText="Título">
+					<h:outputText value="#{item.title}" />
+				</p:column>
+				<p:column sortBy="#{item.beginDate}" headerText="Data de início">
+					<h:outputText value="#{item.beginDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column sortBy="#{item.endDate}" headerText="Data de término">
+					<h:outputText value="#{item.endDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste">
+					<h:outputText value="#{item.changeDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column sortBy="#{item.client.title}" headerText="Cliente">
+					<h:outputText value="#{item.client.title}" />
+				</p:column>
 			</lance:dataTable>
 		</h:form>
 	</ui:define>

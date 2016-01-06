@@ -15,52 +15,73 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<p:dataTable id="dataTable" var="entry"
-				value="#{entryController.entryMap}">
-				<p:columnGroup type="header">
-					<p:row>
-						<p:column colspan="4"
-							headerText="#{entryController.serviceItem.title}"
-							style="text-align: left;" />
-					</p:row>
-					<p:row>
-						<p:column headerText="Cliente" style="text-align: left;" />
-						<p:column headerText="Valor de Contrato" style="text-align: left;" />
-						<p:column headerText="Valor variável" style="text-align: left;" />
-						<p:column headerText="Estado" style="text-align: left;" />
-					</p:row>
-				</p:columnGroup>
-				<p:column>
-					<h:outputText value="#{entry.key.client.title}" />
-				</p:column>
-				<p:column>
-					<h:outputText value="#{entry.value.contractValue}" />
-				</p:column>
-				<p:column>
-					<p:inputText value="#{entry.value.variableValue}" required="true">
-						<p:ajax process="@this" update="@form" />
-					</p:inputText>
-				</p:column>
-				<p:column style="color: #{entry.value.status.color}">
-					<lance:entryStatus status="#{entry.value.status}" />
-				</p:column>
-				<p:columnGroup id="footer" type="footer">
-					<p:row>
-						<p:column footerText="Total:" style="text-align: right;" />
-						<p:column colspan="3" style="text-align: left;"
-							footerText="#{entryController.total}" />
-					</p:row>
-				</p:columnGroup>
-			</p:dataTable>
-			<h:panelGroup id="entrySaveBtnPnl" layout="block"
-				style="margin-top: 10px;">
-				<p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
-					update="@form" validateClient="true" style="margin-right:10px"
-					action="#{entryController.saveEntrys}"
-					rendered="#{entryController.editing}" />
-				<p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-					action="#{entryController.back}" />
-			</h:panelGroup>
+			<p:panel header="Lançamento">
+				<p:dataTable id="dataTable" var="entry"
+					value="#{entryController.entryMap}">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column colspan="5"
+								headerText="#{entryController.serviceItem.title}"
+								style="text-align: left;" />
+						</p:row>
+						<p:row>
+							<p:column headerText="Cliente" style="text-align: left;" />
+							<p:column headerText="Valor contratual" style="text-align: left;" />
+							<p:column headerText="Valor variável" style="text-align: left;" />
+							<p:column headerText="Valor lançamento" style="text-align: left;" />
+							<p:column headerText="Estado" style="text-align: left;" />
+						</p:row>
+					</p:columnGroup>
+					<p:column>
+						<h:outputText value="#{entry.key.client.title}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{entry.value.contractValue}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{entry.value.variableValue}"
+							rendered="#{entry.value.status == 'V'}" />
+						<p:inputText value="#{entry.value.variableValue}" required="true"
+							rendered="#{entry.value.status != 'V'}">
+							<p:ajax process="@this"
+								listener="#{entryController.updateValue(entry.value)}"
+								update="@form entryValue" />
+						</p:inputText>
+					</p:column>
+					<p:column>
+						<h:outputText id="entryValue" value="#{entry.value.value}" />
+					</p:column>
+					<p:column style="color: #{entry.value.status.color}">
+						<lance:entryStatus status="#{entry.value.status}" />
+					</p:column>
+					<p:columnGroup id="footer" type="footer">
+						<p:row>
+							<p:column footerText="Total:" style="text-align: right;" />
+							<p:column style="text-align: left;"
+								footerText="#{entryController.contractValueTotal}" />
+							<p:column style="text-align: left;"
+								footerText="#{entryController.variableValueTotal}" />
+							<p:column style="text-align: left;"
+								footerText="#{entryController.valueTotal}" />
+							<p:column />
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+				<p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+					<f:facet name="start">
+						<h:panelGroup styleClass="fa fa-refresh fa-spin" />
+					</f:facet>
+				</p:ajaxStatus>
+				<h:panelGroup id="entrySaveBtnPnl" layout="block"
+					style="margin-top: 10px;">
+					<p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+						update="@form" validateClient="true" style="margin-right:10px"
+						action="#{entryController.saveEntrys}"
+						rendered="#{entryController.editing}" />
+					<p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
+						action="#{entryController.back}" />
+				</h:panelGroup>
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>

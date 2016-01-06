@@ -9,15 +9,29 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:dataTable id="dataTable" controller="#{serviceController}">
-				<uilance:column value="#{item.id}" label="Id" />
-				<uilance:column value="#{item.title}" label="Nome" />
-				<uilance:column value="#{item.defaultHistory}"
-					label="Histórico padrão" />
-				<uilance:column value="#{item.documentType}" label="Tipo" />
-				<uilance:column value="#{item.ledgerAccount}" label="Conta contábil" />
-				<uilance:column value="#{item.resultAccount}"
-					label="Conta resultado" />
-				<uilance:column value="#{item.costAccount}" label="Conta de custo" />
+				<p:column sortBy="#{item.id}" headerText="Id">
+					<h:outputText value="#{item.id}" />
+				</p:column>
+				<p:column sortBy="#{item.title}" headerText="Nome">
+					<h:outputText value="#{item.title}" />
+				</p:column>
+				<p:column sortBy="#{item.defaultHistory}"
+					headerText="Histórico padrão">
+					<h:outputText value="#{item.defaultHistory}" />
+				</p:column>
+				<p:column sortBy="#{item.documentType}" headerText="Tipo">
+					<h:outputText value="#{item.documentType}" />
+				</p:column>
+				<p:column sortBy="#{item.ledgerAccount}" headerText="Conta contábil">
+					<h:outputText value="#{item.ledgerAccount}" />
+				</p:column>
+				<p:column sortBy="#{item.resultAccount}"
+					headerText="Conta resultado">
+					<h:outputText value="#{item.resultAccount}" />
+				</p:column>
+				<p:column sortBy="#{item.costAccount}" headerText="Conta custo">
+					<h:outputText value="#{item.costAccount}" />
+				</p:column>
 			</lance:dataTable>
 		</h:form>
 	</ui:define>

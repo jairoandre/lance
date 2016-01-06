@@ -1,7 +1,6 @@
 package br.com.vah.lance.util;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,25 +30,30 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	private int rowCount;
 	// Data Access Service for create read update delete operations
 	private DataAccessService crudService;
-
-	private T instance;
+	/**
+	 * Search parms
+	 */
+	private PaginatedSearchParam searchParams = new PaginatedSearchParam();
 
 	/**
 	 *
 	 * @param crudService
 	 */
-	public GenericLazyDataModel(DataAccessService crudService, T instance) {
+	public GenericLazyDataModel(DataAccessService crudService) {
 		this.crudService = crudService;
-		this.instance = instance;
 	}
 
 	@Override
 	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-		datasource = crudService.findWithNamedQuery(instance.getAllNamedQuery(), first, first + pageSize);
-		if (sortField != null) {
-			Collections.sort(datasource, new LazySorter<>(sortField, sortOrder));
-		}
-		setRowCount(crudService.countTotalRecord(instance.getCountNamedQuery()));
+
+		searchParams.setFirst(first);
+		searchParams.setPageSize(pageSize);
+		searchParams.setOrderBy(sortField);
+		searchParams.setAsc(SortOrder.ASCENDING.equals(sortOrder));
+
+		datasource = crudService.paginatedSearch(searchParams);
+
+		setRowCount(crudService.paginatedCount(searchParams));
 		return datasource;
 	}
 

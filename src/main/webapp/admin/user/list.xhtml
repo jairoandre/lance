@@ -9,7 +9,9 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<lance:dataTable id="dataTable" controller="#{userController}">
-				<uilance:column value="#{item.login}" label="Login" />
+				<p:column sortBy="#{item.login}" headerText="Login">
+					<h:outputText value="#{item.login}" />
+				</p:column>
 			</lance:dataTable>
 		</h:form>
 	</ui:define>
