@@ -17,10 +17,10 @@
 			<h:panelGroup>
 				<p:inputText id="#{cc.attrs.id}SearchInput"
 					value="#{cc.attrs.controller.searchTerm}"
-					placeholder="Filtrar por..." />
-				<p:commandButton value="Buscar" action="#{cc.attrs.controller.add}"
+					placeholder="Digite o termo..." />
+				<p:commandButton value="Buscar" action="#{cc.attrs.controller.search}"
 					icon="fa fa-search"
-					title="Criar novo #{cc.attrs.controller.entityName}"
+					title="Procurar #{cc.attrs.controller.entityName}"
 					style="margin-left: 5px;" />
 			</h:panelGroup>
 			<p:commandButton value="Novo #{cc.attrs.controller.entityName}"

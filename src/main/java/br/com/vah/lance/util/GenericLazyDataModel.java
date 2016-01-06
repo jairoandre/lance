@@ -201,4 +201,11 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	public Object getWrappedData() {
 		return datasource;
 	}
+
+	/**
+	 * @return the searchParams
+	 */
+	public PaginatedSearchParam getSearchParams() {
+		return searchParams;
+	}
 }
