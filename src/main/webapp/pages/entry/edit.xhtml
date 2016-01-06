@@ -19,13 +19,15 @@
 				value="#{entryController.entryMap}">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column colspan="3"
-							headerText="#{entryController.serviceItem.title}" />
+						<p:column colspan="4"
+							headerText="#{entryController.serviceItem.title}"
+							style="text-align: left;" />
 					</p:row>
 					<p:row>
-						<p:column headerText="Cliente" />
-						<p:column headerText="Valor de Contrato" />
-						<p:column headerText="Valor variável" />
+						<p:column headerText="Cliente" style="text-align: left;" />
+						<p:column headerText="Valor de Contrato" style="text-align: left;" />
+						<p:column headerText="Valor variável" style="text-align: left;" />
+						<p:column headerText="Estado" style="text-align: left;" />
 					</p:row>
 				</p:columnGroup>
 				<p:column>
@@ -39,10 +41,13 @@
 						<p:ajax process="@this" update="@form" />
 					</p:inputText>
 				</p:column>
+				<p:column style="color: #{entry.value.status.color}">
+					<lance:entryStatus status="#{entry.value.status}" />
+				</p:column>
 				<p:columnGroup id="footer" type="footer">
 					<p:row>
 						<p:column footerText="Total:" style="text-align: right;" />
-						<p:column colspan="2" style="text-align: left;"
+						<p:column colspan="3" style="text-align: left;"
 							footerText="#{entryController.total}" />
 					</p:row>
 				</p:columnGroup>

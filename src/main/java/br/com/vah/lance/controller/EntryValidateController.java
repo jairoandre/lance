@@ -24,6 +24,8 @@ public class EntryValidateController extends AbstractController<Entry> {
 	private @Inject EntryService das;
 
 	private @Inject LoginController loginController;
+	
+	private Comment comment;
 
 	@PostConstruct
 	public void init() {
@@ -33,6 +35,7 @@ public class EntryValidateController extends AbstractController<Entry> {
 	@Override
 	public void onLoad() {
 		super.onLoad();
+		comment = createComment();
 	}
 
 	@Override
@@ -43,6 +46,20 @@ public class EntryValidateController extends AbstractController<Entry> {
 	@Override
 	public Logger getLogger() {
 		return logger;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public Comment getComment() {
+		return comment;
+	}
+
+	/**
+	 * @param comment the comment to set
+	 */
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
 	@Override
@@ -66,13 +83,18 @@ public class EntryValidateController extends AbstractController<Entry> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public String addComment() {
+	
+	public Comment createComment() {
 		Comment comment = new Comment();
 		comment.setAuthor(loginController.getUser());
 		comment.setCreatedOn(new Date());
 		comment.setEntry(getItem());
+		return comment;
+	}
+
+	public String addComment() {
 		getItem().getComments().add(comment);
+		comment = createComment();
 		return null;
 	}
 

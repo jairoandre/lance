@@ -16,12 +16,47 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<p:panel id="validatePnl" header="Lançamento">
-				<h:panelGrid columns="2">
-					<h:outputLabel value="Serviço:" />
+			<p:panel id="validatePnl" header="Validar lançamento">
+				<h:panelGrid columns="4">
+					<h:outputLabel value="Serviço:" style="font-weight: bold;" />
 					<h:outputText value="#{entryValidateController.item.service.title}" />
-					<h:outputLabel value="Comentário:" />
-					<p:inputTextarea value="Digite..." />
+					<h:outputLabel value="Valor:" style="font-weight: bold;" />
+					<h:outputText value="#{entryValidateController.item.total}" />
+				</h:panelGrid>
+				<br />
+				<p:dataTable id="commentsTbl" var="comment"
+					value="#{entryValidateController.item.comments}"
+					emptyMessage="Sem comentários">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column headerText="Comentários" colspan="3"
+								style="text-align: left;" />
+						</p:row>
+						<p:row>
+							<p:column headerText="Autor" style="text-align: left;" />
+							<p:column headerText="Conteúdo" style="text-align: left;" />
+							<p:column headerText="Data" style="text-align: left;" />
+						</p:row>
+					</p:columnGroup>
+					<p:column>
+						<h:outputText value="#{comment.author.login}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{comment.details}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{comment.createdOn}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+				<br />
+				<h:panelGrid columns="1">
+					<p:inputTextarea id="comment" cols="60"
+						value="#{entryValidateController.comment.details}" />
+					<p:commandButton id="commentBtn" icon="fa fa-comment"
+						value="Adicionar" action="#{entryValidateController.addComment}"
+						process="@this comment" update="commentsTbl comment" ajax="true" />
 				</h:panelGrid>
 			</p:panel>
 			<h:panelGroup id="entrySaveBtnPnl" layout="block"
@@ -30,7 +65,7 @@
 					update="@form" validateClient="true" style="margin-right:10px"
 					action="#{entryValidateController.doSave}"
 					rendered="#{entryValidateController.editing}" />
-				<p:commandButton value="Indeferir" icon="ui-icon-check" ajax="true"
+				<p:commandButton value="Indeferir" icon="ui-icon-cancel" ajax="true"
 					update="@form" validateClient="true" style="margin-right:10px"
 					action="#{entryValidateController.doDenySave}"
 					rendered="#{entryValidateController.editing}" />

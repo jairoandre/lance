@@ -47,4 +47,23 @@ public enum EntryStatusEnum {
 		return this.label;
 	}
 
+	public String getColor() {
+		switch (this) {
+		case N:
+			return "#ff7700";
+		case L:
+			return "#002C57";
+		case V:
+			return "#005700";
+		case P:
+			return "#A30000";
+		case F:
+			return "#005700";
+		case S:
+			return "#0088ff";
+		default:
+			return "#000000";
+		}
+	}
+
 }

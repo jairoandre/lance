@@ -1,9 +1,9 @@
 package br.com.vah.lance.entity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -83,7 +83,7 @@ public class Entry extends BaseEntity {
 	 * Comentários do lançamento
 	 */
 	@OneToMany(mappedBy = "entry", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<Comment> comments;
+	private Set<Comment> comments;
 
 	/**
 	 * Valor do lançamento
@@ -138,7 +138,7 @@ public class Entry extends BaseEntity {
 		this.value = BigDecimal.ZERO;
 		this.contractValue = BigDecimal.ZERO;
 		this.variableValue = BigDecimal.ZERO;
-		this.comments = new ArrayList<>();
+		this.comments = new LinkedHashSet<>();
 	}
 
 	public Entry(Contract contract) {
@@ -219,15 +219,14 @@ public class Entry extends BaseEntity {
 	/**
 	 * @return the comments
 	 */
-	public List<Comment> getComments() {
+	public Set<Comment> getComments() {
 		return comments;
 	}
 
 	/**
-	 * @param comments
-	 *            the comments to set
+	 * @param comments the comments to set
 	 */
-	public void setComments(List<Comment> comments) {
+	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
 
@@ -334,6 +333,10 @@ public class Entry extends BaseEntity {
 	@Override
 	public String getCountNamedQuery() {
 		return COUNT;
+	}
+
+	public BigDecimal getTotal() {
+		return contractValue.add(variableValue);
 	}
 
 }

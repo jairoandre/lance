@@ -65,21 +65,19 @@
 						<h:outputText value="-"
 							rendered="#{subMap.value.effectiveOn == null}" />
 					</p:column>
-					<p:column>
-						<h:panelGroup styleClass="fa fa-question-circle"
-							rendered="#{subMap.value.status == 'N'}" />
-						<h:panelGroup styleClass="fa fa-tag"
-							rendered="#{subMap.value.status == 'L'}" />
-						<h:outputText value="    #{subMap.value.status.label}" />
+					<p:column style="color: #{subMap.value.status.color}">
+						<lance:entryStatus status="#{subMap.value.status}" />
 					</p:column>
 					<p:column width="50">
 						<p:commandButton action="#{entryController.edit(map.key)}"
 							icon="ui-icon-pencil" style="float: right;" />
-						<p:commandButton disabled="#{subMap.value.id == null}"
+						<p:commandButton
 							action="#{entryController.validate(subMap.value)}"
-							icon="ui-icon-notice" style="float: right;" />
+							icon="ui-icon-notice" style="float: right;"
+							disabled="#{subMap.value.status != 'L' and subMap.value.status != 'F'}" />
 						<p:commandButton action="#{entryController.edit(map.key)}"
-							icon="ui-icon-calculator" style="float: right;" />
+							icon="ui-icon-calculator" style="float: right;"
+							disabled="#{subMap.value.status != 'V'}" />
 					</p:column>
 				</p:subTable>
 			</p:dataTable>
