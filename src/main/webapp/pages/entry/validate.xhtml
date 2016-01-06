@@ -16,6 +16,14 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
+			<p:panel id="validatePnl" header="Lançamento">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Serviço:" />
+					<h:outputText value="#{entryValidateController.item.service.title}" />
+					<h:outputLabel value="Comentário:" />
+					<p:inputTextarea value="Digite..." />
+				</h:panelGrid>
+			</p:panel>
 			<h:panelGroup id="entrySaveBtnPnl" layout="block"
 				style="margin-top: 10px;">
 				<p:commandButton value="Validar" icon="ui-icon-check" ajax="true"

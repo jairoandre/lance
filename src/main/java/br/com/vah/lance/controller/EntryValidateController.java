@@ -87,8 +87,9 @@ public class EntryValidateController extends AbstractController<Entry> {
 		return super.doSave();
 	}
 
-	public String validate(Entry item) {
-		return "/pages/entry/valid.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
+	@Override
+	public String back() {
+		return "/pages/entry/list.xhtml?faces-redirect=true";
 	}
 
 }

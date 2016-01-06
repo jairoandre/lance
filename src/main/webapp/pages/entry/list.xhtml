@@ -12,7 +12,8 @@
 				var="map" emptyMessage="Sem entradas" rowIndexVar="index">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column rowspan="2" headerText="Cliente" style="text-align: left;" />
+						<p:column rowspan="2" headerText="Cliente"
+							style="text-align: left;" />
 						<p:column colspan="7" headerText="Lançamento" />
 					</p:row>
 					<p:row>
@@ -74,7 +75,8 @@
 					<p:column width="50">
 						<p:commandButton action="#{entryController.edit(map.key)}"
 							icon="ui-icon-pencil" style="float: right;" />
-						<p:commandButton action="#{entryController.edit(map.key)}"
+						<p:commandButton disabled="#{subMap.value.id == null}"
+							action="#{entryController.validate(subMap.value)}"
 							icon="ui-icon-notice" style="float: right;" />
 						<p:commandButton action="#{entryController.edit(map.key)}"
 							icon="ui-icon-calculator" style="float: right;" />

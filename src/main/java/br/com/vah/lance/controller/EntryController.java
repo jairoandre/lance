@@ -168,4 +168,8 @@ public class EntryController extends AbstractController<Entry> {
 		return back();
 	}
 
+	public String validate(Entry item) {
+		return "/pages/entry/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
+	}
+
 }
