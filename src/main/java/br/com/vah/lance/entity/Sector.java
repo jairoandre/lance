@@ -42,7 +42,7 @@ public class Sector extends BaseEntity {
 	@Column(name = "LO_DETALHES")
 	private String details;
 	@Column(name = "NM_TITULO")
-	private String name;
+	private String title;
 	@ManyToMany
 	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
 			@JoinColumn(name = "ID_SETOR", referencedColumnName = "ID") }, inverseJoinColumns = {
@@ -108,21 +108,21 @@ public class Sector extends BaseEntity {
 	}
 
 
-
 	/**
-	 * @return the name
+	 * 
+	 * @return
 	 */
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
 
-
 	/**
-	 * @param name the name to set
+	 * 
+	 * @param title
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 
@@ -145,7 +145,7 @@ public class Sector extends BaseEntity {
 
 	@Override
 	public String getLabelForSelectItem() {
-		return getName();
+		return getTitle();
 	}
 
 }
