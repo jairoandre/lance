@@ -4,10 +4,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
-	<h:outputText value="#{displayValue}" rendered="#{!editing}" />
+	<h:outputText value="#{value == null ? '-' : (value ? 'Sim' : 'Não')}"
+		rendered="#{!editing}" />
 	<p:selectOneMenu id="#{id}" value="#{value}" required="#{required}"
 		label="#{label}" rendered="#{editing}">
-		<ui:insert />
+		<f:selectItem itemLabel="Selecione..." />
+		<f:selectItem itemLabel="Sim" itemValue="true" />
+		<f:selectItem itemLabel="Não" itemValue="false" />
 	</p:selectOneMenu>
 	<p:message for="#{id}"
 		rendered="#{renderMessage == null ? true : renderMessage}" />

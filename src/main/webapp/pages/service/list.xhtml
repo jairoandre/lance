@@ -32,6 +32,12 @@
 				<p:column sortBy="#{item.costAccount}" headerText="Conta custo">
 					<h:outputText value="#{item.costAccount}" />
 				</p:column>
+				<p:column sortBy="#{item.billable}" headerText="Gera nota">
+					<h:outputText value="#{item.billable ? 'Sim' : 'Não'}" />
+				</p:column>
+				<p:column sortBy="#{item.groupable}" headerText="Agrupável">
+					<h:outputText value="#{item.groupable ? 'Sim' : 'Não'}" />
+				</p:column>
 			</lance:dataTable>
 		</h:form>
 	</ui:define>

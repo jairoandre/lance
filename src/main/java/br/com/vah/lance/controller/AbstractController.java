@@ -82,7 +82,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 */
 	public String search() {
 		lazyModel.getSearchParams().getParams().put(searchField, getSearchTerm());
-		lazyModel.load(0, 0, "id", null, null);
+		lazyModel.getSearchParams().setResetPage(true);
 		return null;
 	}
 

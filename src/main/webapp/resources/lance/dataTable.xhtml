@@ -18,8 +18,9 @@
 				<p:inputText id="#{cc.attrs.id}SearchInput"
 					value="#{cc.attrs.controller.searchTerm}"
 					placeholder="Digite o termo..." />
-				<p:commandButton value="Buscar" action="#{cc.attrs.controller.search}"
-					icon="fa fa-search"
+				<p:commandButton value="Buscar"
+					action="#{cc.attrs.controller.search}" icon="fa fa-search"
+					ajax="true" process="@form" update="@form"
 					title="Procurar #{cc.attrs.controller.entityName}"
 					style="margin-left: 5px;" />
 			</h:panelGroup>

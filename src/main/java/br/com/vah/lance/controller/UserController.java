@@ -9,6 +9,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.User;
 import br.com.vah.lance.service.DataAccessService;
@@ -32,6 +33,10 @@ public class UserController extends AbstractController<User> {
 
 	private Long serviceIdToAdd;
 
+	private RolesEnum roleToAdd;
+
+	private List<SelectItem> roles;
+
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -39,6 +44,7 @@ public class UserController extends AbstractController<User> {
 		setItem(createNewItem());
 		setLazyModel(new GenericLazyDataModel<User>(service));
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
+		this.roles = RolesEnum.getSelectItems();
 	}
 
 	@Override
@@ -102,6 +108,21 @@ public class UserController extends AbstractController<User> {
 	}
 
 	/**
+	 * @return the roles
+	 */
+	public List<SelectItem> getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles
+	 *            the roles to set
+	 */
+	public void setRoles(List<SelectItem> roles) {
+		this.roles = roles;
+	}
+
+	/**
 	 * @return the serviceIdToAdd
 	 */
 	public Long getServiceIdToAdd() {
@@ -116,6 +137,21 @@ public class UserController extends AbstractController<User> {
 		this.serviceIdToAdd = serviceIdToAdd;
 	}
 
+	/**
+	 * @return the roleToAdd
+	 */
+	public RolesEnum getRoleToAdd() {
+		return roleToAdd;
+	}
+
+	/**
+	 * @param roleToAdd
+	 *            the roleToAdd to set
+	 */
+	public void setRoleToAdd(RolesEnum roleToAdd) {
+		this.roleToAdd = roleToAdd;
+	}
+
 	public String addService() {
 		Service service = serviceService.find(serviceIdToAdd);
 		getItem().getServices().add(service);
@@ -128,6 +164,17 @@ public class UserController extends AbstractController<User> {
 		Service serv = getItem().getServices().get(index);
 		getItem().getServices().remove(index.intValue());
 		services.add(new SelectItem(serv.getId(), serv.getTitle()));
+		return null;
+	}
+
+	public String addRole() {
+		getItem().getRoles().add(roleToAdd);
+		roleToAdd = null;
+		return null;
+	}
+
+	public String removeRole(RolesEnum role) {
+		getItem().getRoles().remove(role);
 		return null;
 	}
 

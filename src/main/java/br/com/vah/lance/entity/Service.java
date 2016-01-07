@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
@@ -42,13 +40,10 @@ public class Service extends BaseEntity {
 	private Integer costAccount;
 	@Column(name = "NM_TITULO")
 	private String title;
-	@ManyToOne
-	@JoinColumn(name = "ID_TP_SERVICO", nullable = false)
-	private ServiceType serviceType;
-
-	public Service() {
-		serviceType = new ServiceType();
-	}
+	@Column(name = "SN_FATURAVEL")
+	private Boolean billable;
+	@Column(name = "SN_AGRUPAVEL")
+	private Boolean groupable;
 
 	@Override
 	public Long getId() {
@@ -108,12 +103,34 @@ public class Service extends BaseEntity {
 		this.title = title;
 	}
 
-	public ServiceType getServiceType() {
-		return serviceType;
+	/**
+	 * @return the billable
+	 */
+	public Boolean getBillable() {
+		return billable;
 	}
 
-	public void setServiceType(ServiceType serviceType) {
-		this.serviceType = serviceType;
+	/**
+	 * @param billable
+	 *            the billable to set
+	 */
+	public void setBillable(Boolean billable) {
+		this.billable = billable;
+	}
+
+	/**
+	 * @return the groupable
+	 */
+	public Boolean getGroupable() {
+		return groupable;
+	}
+
+	/**
+	 * @param groupable
+	 *            the groupable to set
+	 */
+	public void setGroupable(Boolean groupable) {
+		this.groupable = groupable;
 	}
 
 	@Override

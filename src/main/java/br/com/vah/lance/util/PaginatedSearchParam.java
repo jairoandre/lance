@@ -21,6 +21,8 @@ public class PaginatedSearchParam implements Serializable {
 	
 	private Boolean asc;
 	
+	private Boolean resetPage = false;
+	
 	public PaginatedSearchParam() {
 		params = new HashMap<>();
 		first = 0;
@@ -96,6 +98,20 @@ public class PaginatedSearchParam implements Serializable {
 	 */
 	public void setAsc(Boolean asc) {
 		this.asc = asc;
+	}
+
+	/**
+	 * @return the resetPage
+	 */
+	public Boolean getResetPage() {
+		return resetPage;
+	}
+
+	/**
+	 * @param resetPage the resetPage to set
+	 */
+	public void setResetPage(Boolean resetPage) {
+		this.resetPage = resetPage;
 	}
 
 }

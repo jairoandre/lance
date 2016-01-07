@@ -15,7 +15,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:editForm id="sectorPnl" controller="#{serviceController}">
+			<lance:editForm id="sectorPnl" controller="#{serviceController}" columns="3">
 				<uilance:inputText id="name" label="Nome"
 					value="#{serviceController.item.title}"
 					editing="#{serviceController.editing}" required="true" />
@@ -28,18 +28,19 @@
 				<uilance:inputText id="ledgerAccount" label="Conta contábil"
 					value="#{serviceController.item.ledgerAccount}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:inputText id="resultAccount" label="Conta resultado"
+				<uilance:inputText id="resultAccount"
+					label="Conta contábil de resultado"
 					value="#{serviceController.item.resultAccount}"
 					editing="#{serviceController.editing}" required="true" />
 				<uilance:inputText id="costAccount" label="Conta de custo"
 					value="#{serviceController.item.costAccount}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:selectOne id="serviceType" label="Tipo de serviço"
-					value="#{serviceController.item.serviceType.id}"
-					displayValue="#{serviceController.item.serviceType.title}"
-					editing="#{serviceController.editing}" required="true">
-					<f:selectItems value="#{serviceController.serviceTypes}" />
-				</uilance:selectOne>
+				<uilance:selectBoolean id="billable" label="Gera nota"
+					value="#{serviceController.item.billable}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:selectBoolean id="groupable" label="Faturável"
+					value="#{serviceController.item.groupable}"
+					editing="#{serviceController.editing}" required="true" />
 			</lance:editForm>
 		</h:form>
 	</ui:define>

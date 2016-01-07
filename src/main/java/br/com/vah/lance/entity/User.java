@@ -1,10 +1,17 @@
 package br.com.vah.lance.entity;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -13,6 +20,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import br.com.vah.lance.constant.RolesEnum;
 
 @Entity
 @Table(name = "TB_PTC_USUARIO_PUSER")
@@ -43,6 +52,17 @@ public class User extends BaseEntity {
 	@JoinTable(name = "TB_LANCA_USUARIO_SERVICO", joinColumns = {
 			@JoinColumn(name = "ID_PUSER") }, inverseJoinColumns = { @JoinColumn(name = "ID_SERVICO") })
 	private List<Service> services;
+
+	@ElementCollection(targetClass = RolesEnum.class, fetch = FetchType.EAGER)
+	@CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER") )
+	@Column(name = "CD_ROLE", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Set<RolesEnum> roles;
+
+	public User() {
+		services = new ArrayList<Service>();
+		roles = new LinkedHashSet<RolesEnum>();
+	}
 
 	@Override
 	public Long getId() {
@@ -103,6 +123,21 @@ public class User extends BaseEntity {
 	 */
 	public void setServices(List<Service> services) {
 		this.services = services;
+	}
+
+	/**
+	 * @return the roles
+	 */
+	public Set<RolesEnum> getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles
+	 *            the roles to set
+	 */
+	public void setRoles(Set<RolesEnum> roles) {
+		this.roles = roles;
 	}
 
 }

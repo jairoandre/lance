@@ -46,9 +46,15 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	@Override
 	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
 
-		searchParams.setFirst(first);
-		searchParams.setPageSize(pageSize);
+		if (searchParams.getResetPage()) {
+			searchParams.setFirst(0);
+			setRowIndex(0);
+			searchParams.setResetPage(false);
+		} else {
+			searchParams.setFirst(first);
+		}
 		searchParams.setOrderBy(sortField);
+		searchParams.setPageSize(pageSize);
 		searchParams.setAsc(SortOrder.ASCENDING.equals(sortOrder));
 
 		datasource = crudService.paginatedSearch(searchParams);
