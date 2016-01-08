@@ -85,6 +85,22 @@ No arquivo `standalone.xhtml`:
 </security-domains>
 ```
 
+Para base H2:
+
+```
+<security-domain name="lance" cache-type="default">
+                    <authentication>
+                        <login-module code="Database" flag="required">
+                            <module-option name="dsJndiName" value="java:jboss/datasources/lanceH2"/>
+                            <module-option name="principalsQuery" 
+                            	value="select ds_senha from usrdbvah.tb_ptc_usuario_puser where ds_login=?"/>
+                            <module-option name="rolesQuery" 
+                            	value="select tur.cd_role, 'Roles' from usrdbvah.tb_lanca_usuario_role tur, usrdbvah.tb_ptc_usuario_puser tu where tu.id_puser = tur.id_puser and tu.ds_login=?"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+```
+
 ## Geração de pacote
 
 `mvn clean package`
