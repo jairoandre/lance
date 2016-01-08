@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TB_LANCA_COMENTARIOS")
+@Table(name = "TB_LANCA_COMENTARIOS", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = Comment.ALL, query = "SELECT c FROM Comment c"),
 		@NamedQuery(name = Comment.COUNT, query = "SELECT COUNT(c) FROM Comment c") })
 public class Comment extends BaseEntity {

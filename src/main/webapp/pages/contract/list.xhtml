@@ -8,33 +8,35 @@
 	xmlns:uilance="http://vah.com.br/lance">
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:dataTable id="dataTable" controller="#{contractController}"
-				label="contrato">
-				<p:column sortBy="#{item.id}" headerText="Id">
-					<h:outputText value="#{item.id}" />
-				</p:column>
-				<p:column sortBy="#{item.title}" headerText="Título">
-					<h:outputText value="#{item.title}" />
-				</p:column>
-				<p:column sortBy="#{item.beginDate}" headerText="Data de início">
-					<h:outputText value="#{item.beginDate}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column sortBy="#{item.endDate}" headerText="Data de término">
-					<h:outputText value="#{item.endDate}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste">
-					<h:outputText value="#{item.changeDate}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column sortBy="#{item.client.title}" headerText="Cliente">
-					<h:outputText value="#{item.client.title}" />
-				</p:column>
-			</lance:dataTable>
+			<p:panel header="Contratos">
+				<lance:dataTable id="dataTable" controller="#{contractController}"
+					label="contrato">
+					<p:column sortBy="#{item.id}" headerText="Id">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+					<p:column sortBy="#{item.title}" headerText="Título">
+						<h:outputText value="#{item.title}" />
+					</p:column>
+					<p:column sortBy="#{item.beginDate}" headerText="Data de início">
+						<h:outputText value="#{item.beginDate}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column sortBy="#{item.endDate}" headerText="Data de término">
+						<h:outputText value="#{item.endDate}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste">
+						<h:outputText value="#{item.changeDate}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column sortBy="#{item.client.title}" headerText="Cliente">
+						<h:outputText value="#{item.client.title}" />
+					</p:column>
+				</lance:dataTable>
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>

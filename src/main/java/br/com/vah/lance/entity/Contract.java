@@ -11,8 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -25,7 +23,7 @@ import javax.persistence.TemporalType;
  * The persistent class for the TB_LANCA_CONTRATO database table.
  **/
 @Entity
-@Table(name = "TB_LANCA_CONTRATO")
+@Table(name = "TB_LANCA_CONTRATO", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = Contract.ALL, query = "SELECT c FROM Contract c"),
 		@NamedQuery(name = Contract.COUNT, query = "SELECT COUNT(c) FROM Contract c"),
 		@NamedQuery(name = Contract.VALIDS_IN_DATE, query = "SELECT c from Contract c where c.beginDate <= :date and c.endDate >= :date")})
@@ -57,15 +55,10 @@ public class Contract extends BaseEntity {
 	@Column(name = "DT_REAJUSTE")
 	private Date changeDate;
 
-	@ManyToOne
-	@JoinColumn(name = "ID_CLIENTE", nullable = false)
-	private Client client;
-
 	@OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ServiceContract> services;
 
 	public Contract() {
-		this.client = new Client();
 		this.services = new ArrayList<>();
 	}
 
@@ -144,21 +137,6 @@ public class Contract extends BaseEntity {
 	 */
 	public void setChangeDate(Date changeDate) {
 		this.changeDate = changeDate;
-	}
-	
-
-	/**
-	 * @return the client
-	 */
-	public Client getClient() {
-		return client;
-	}
-
-	/**
-	 * @param client the client to set
-	 */
-	public void setClient(Client client) {
-		this.client = client;
 	}
 
 	/**

@@ -9,11 +9,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.Client;
 import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceContract;
-import br.com.vah.lance.service.ClientService;
 import br.com.vah.lance.service.ContractService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
@@ -29,11 +27,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	private @Inject ContractService service;
 
-	private @Inject ClientService clientService;
-
 	private @Inject ServiceService serviceService;
-
-	private List<SelectItem> clients;
 
 	private List<SelectItem> services;
 
@@ -50,7 +44,6 @@ public class ContractController extends AbstractController<Contract> {
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		this.clients = LanceUtils.createSelectItem(clientService.findWithNamedQuery(Client.ALL), true);
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
 	}
 
@@ -83,14 +76,7 @@ public class ContractController extends AbstractController<Contract> {
 	public String getEntityName() {
 		return "contrato";
 	}
-
-	/**
-	 * @return the clients
-	 */
-	public List<SelectItem> getClients() {
-		return clients;
-	}
-
+	
 	/**
 	 * @return the services
 	 */

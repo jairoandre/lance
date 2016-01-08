@@ -5,13 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import br.com.vah.lance.entity.mv.MvAccountChart;
+import br.com.vah.lance.entity.mv.MvDefaultHistory;
+import br.com.vah.lance.entity.mv.MvDocumentType;
+
 @Entity
-@Table(name = "TB_LANCA_SERVICO")
+@Table(name = "TB_LANCA_SERVICO", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = Service.ALL, query = "SELECT s FROM Service s"),
 		@NamedQuery(name = Service.COUNT, query = "SELECT COUNT(s) FROM Service s") })
 public class Service extends BaseEntity {
@@ -28,20 +34,25 @@ public class Service extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceGenerator")
 	@Column(name = "ID")
 	private Long id;
-	@Column(name = "CD_HISTORICO_PADRAO")
-	private Integer defaultHistory;
-	@Column(name = "CD_TP_DOCUMENTO")
-	private Integer documentType;
-	@Column(name = "CD_CONTA_CONTABIL")
-	private Integer ledgerAccount;
-	@Column(name = "CD_CONTA_RESULTADO")
-	private Integer resultAccount;
-	@Column(name = "CD_CONTA_CUSTO")
-	private Integer costAccount;
+
 	@Column(name = "NM_TITULO")
 	private String title;
+
+	@ManyToOne
+	@JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
+	private MvDefaultHistory defaultHistory;
+
+	@ManyToOne
+	@JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
+	private MvDocumentType documentType;
+
+	@ManyToOne
+	@JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
+	private MvAccountChart ledgerAccount;
+
 	@Column(name = "SN_FATURAVEL")
 	private Boolean billable;
+
 	@Column(name = "SN_AGRUPAVEL")
 	private Boolean groupable;
 
@@ -55,52 +66,64 @@ public class Service extends BaseEntity {
 		this.id = id;
 	}
 
-	public Integer getDefaultHistory() {
-		return defaultHistory;
-	}
-
-	public void setDefaultHistory(Integer defaultHistory) {
-		this.defaultHistory = defaultHistory;
-	}
-
-	public Integer getDocumentType() {
-		return documentType;
-	}
-
-	public void setDocumentType(Integer documentType) {
-		this.documentType = documentType;
-	}
-
-	public Integer getLedgerAccount() {
-		return ledgerAccount;
-	}
-
-	public void setLedgerAccount(Integer ledgerAccount) {
-		this.ledgerAccount = ledgerAccount;
-	}
-
-	public Integer getResultAccount() {
-		return resultAccount;
-	}
-
-	public void setResultAccount(Integer resultAccount) {
-		this.resultAccount = resultAccount;
-	}
-
-	public Integer getCostAccount() {
-		return costAccount;
-	}
-
-	public void setCostAccount(Integer costAccount) {
-		this.costAccount = costAccount;
-	}
-
+	/**
+	 * @return the title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * @param title
+	 *            the title to set
+	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	/**
+	 * @return the defaultHistory
+	 */
+	public MvDefaultHistory getDefaultHistory() {
+		return defaultHistory;
+	}
+
+	/**
+	 * @param defaultHistory
+	 *            the defaultHistory to set
+	 */
+	public void setDefaultHistory(MvDefaultHistory defaultHistory) {
+		this.defaultHistory = defaultHistory;
+	}
+
+	/**
+	 * @return the documentType
+	 */
+	public MvDocumentType getDocumentType() {
+		return documentType;
+	}
+
+	/**
+	 * @param documentType
+	 *            the documentType to set
+	 */
+	public void setDocumentType(MvDocumentType documentType) {
+		this.documentType = documentType;
+	}
+
+	/**
+	 * @return the ledgerAccount
+	 */
+	public MvAccountChart getLedgerAccount() {
+		return ledgerAccount;
+	}
+
+	/**
+	 * @param ledgerAccount
+	 *            the ledgerAccount to set
+	 */
+	public void setLedgerAccount(MvAccountChart ledgerAccount) {
+		this.ledgerAccount = ledgerAccount;
 	}
 
 	/**

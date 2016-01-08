@@ -13,7 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TB_LANCA_SERVICO_CONTRATO")
+@Table(name = "TB_LANCA_SERVICO_CONTRATO", schema = "USRDBVAH")
 public class ServiceContract {
 	
 	@Id

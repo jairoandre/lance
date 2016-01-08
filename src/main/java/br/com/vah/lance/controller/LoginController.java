@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.entity.User;
 import br.com.vah.lance.service.UserService;
 import br.com.vah.lance.util.DateUtility;
@@ -101,9 +102,10 @@ public class LoginController implements Serializable {
 			// ServletException
 			request.login(username, password);
 			// gets the user principle and navigates to the appropriate page
-			this.user = userService.findByLogin(username);
+			user = userService.findByLogin(username);
 			Principal principal = request.getUserPrincipal();
-			if (!request.isUserInRole("administrator")) {
+
+			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
 				navigateString = "/admin/home.xhtml";
 			}
 			try {

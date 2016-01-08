@@ -24,7 +24,7 @@ import javax.persistence.Table;
 import br.com.vah.lance.constant.RolesEnum;
 
 @Entity
-@Table(name = "TB_PTC_USUARIO_PUSER")
+@Table(name = "TB_PTC_USUARIO_PUSER", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = User.ALL, query = "SELECT u FROM User u"),
 		@NamedQuery(name = User.COUNT, query = "SELECT COUNT(u) FROM User u"),
 		@NamedQuery(name = User.FIND_BY_LOGIN, query = "SELECT u FROM User u where u.login = :login") })
@@ -50,11 +50,11 @@ public class User extends BaseEntity {
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "TB_LANCA_USUARIO_SERVICO", joinColumns = {
-			@JoinColumn(name = "ID_PUSER") }, inverseJoinColumns = { @JoinColumn(name = "ID_SERVICO") })
+			@JoinColumn(name = "ID_PUSER") }, inverseJoinColumns = { @JoinColumn(name = "ID_SERVICO") }, schema = "USRDBVAH")
 	private List<Service> services;
 
 	@ElementCollection(targetClass = RolesEnum.class, fetch = FetchType.EAGER)
-	@CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER") )
+	@CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER"), schema = "USRDBVAH" )
 	@Column(name = "CD_ROLE", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Set<RolesEnum> roles;

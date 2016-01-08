@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.vah.lance.constant.RolesEnum;
+
 /**
  * To prevent user from going back to Login page if the user already logged in
  * 
@@ -26,7 +28,7 @@ public class LoginPageFilter implements Filter {
 		if (request.getUserPrincipal() != null) { // If user is already
 													// authenticated
 			String navigateString = "/pages/index.xhtml";
-			if (request.isUserInRole("administrator")) {
+			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
 				navigateString = "/admin/home.xhtml";
 			}
 			response.sendRedirect(request.getContextPath() + navigateString);

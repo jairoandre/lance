@@ -31,7 +31,7 @@ import br.com.vah.lance.constant.EntryStatusEnum;
  *
  */
 @Entity
-@Table(name = "TB_LANCA_LANCAMENTO")
+@Table(name = "TB_LANCA_LANCAMENTO", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
 		@NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
 		@NamedQuery(name = Entry.BY_DATE_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services") })

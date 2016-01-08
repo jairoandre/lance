@@ -18,7 +18,7 @@ public enum RolesEnum {
 	public String getLabel() {
 		return label;
 	}
-
+	
 	public static List<SelectItem> getSelectItems() {
 		List<SelectItem> items = new ArrayList<>();
 		items.add(new SelectItem(null, "Selecione..."));

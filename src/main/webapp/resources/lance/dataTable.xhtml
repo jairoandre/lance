@@ -16,13 +16,13 @@
 </composite:interface>
 
 <composite:implementation>
-	<p:panel id="#{cc.attrs.id}"
-		header="#{cc.attrs.controller.entityName.toUpperCase()}">
-		<h:panelGrid columns="2" style="width: 100%">
-			<h:panelGroup>
+	<h:panelGroup id="#{cc.attrs.id}" layout="block">
+		<h:panelGrid id="#{cc.attrs.id}SearchInputGrid" columns="2"
+			style="width: 100%">
+			<h:panelGroup id="#{cc.attrs.id}SearchInputPnl">
 				<p:inputText id="#{cc.attrs.id}SearchInput"
 					value="#{cc.attrs.controller.searchTerm}"
-					placeholder="Digite o termo..." />
+					placeholder="Digite o termo..." style="min-width: 200px" />
 				<p:commandButton value="Buscar"
 					action="#{cc.attrs.controller.search}" icon="fa fa-search"
 					ajax="true" process="@form" update="#{cc.attrs.id}Tbl"
@@ -77,7 +77,7 @@
 					value="Excluir #{cc.attrs.controller.entityName}" />
 			</p:column>
 		</p:dataTable>
-	</p:panel>
+	</h:panelGroup>
 	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
 		modal="true">
 		<h:outputText

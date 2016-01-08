@@ -38,7 +38,7 @@ public class MvClient extends BaseEntity {
 	private String title;
 
 	@ElementCollection(targetClass = MvSector.class, fetch = FetchType.EAGER)
-	@CollectionTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = @JoinColumn(name = "CD_FORNECEDOR") )
+	@CollectionTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = @JoinColumn(name = "CD_FORNECEDOR"), schema = "USRDBVAH" )
 	@Column(name = "CD_PRESTADOR", nullable = false)
 	private Set<MvSector> sectors;
 

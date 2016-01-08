@@ -46,7 +46,8 @@
 				<h:outputText value="#{clientController.item.title}" />
 				<f:facet name="other">
 					<p:commandButton id="addSectorBtn"
-						onclick="PF('addSectorDlg').show()" value="Adicionar setor" />
+						onclick="PF('addSectorDlg').show()" value="Adicionar setor"
+						rendered="#{clientController.editing}" />
 					<p:dataTable id="sectorTbl" var="sector"
 						value="#{clientController.item.sectors.toArray()}"
 						emptyMessage="Sem setores" style="margin-top: 10px">
@@ -54,11 +55,11 @@
 							<h:outputText value="#{sector.title}" />
 						</p:column>
 						<p:column width="100" headerText="Remover"
-							style="text-align: center;">
+							style="text-align: center;"
+							rendered="#{clientController.editing}">
 							<p:commandLink id="removeBtn"
 								action="#{clientController.toggle(sector)}" ajax="true"
-								styleClass="action-link" update="@form"
-								rendered="#{clientController.editing}" process="@this">
+								styleClass="action-link" update="@form" process="@this">
 								<span class="fa fa-trash" />
 							</p:commandLink>
 						</p:column>

@@ -11,7 +11,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TB_LANCA_TIPO_SERVICO")
+@Table(name = "TB_LANCA_TIPO_SERVICO", schema = "USRDBVAH")
 @NamedQueries({ @NamedQuery(name = ServiceType.ALL, query = "SELECT st FROM ServiceType st"),
 		@NamedQuery(name = ServiceType.COUNT, query = "SELECT COUNT(st) FROM ServiceType st") })
 public class ServiceType extends BaseEntity {
