@@ -45,8 +45,6 @@ body {
 	margin-right: auto;
 }
 
-
-
 .userFormStyle {
 	margin-left: auto;
 	margin-right: auto;
@@ -76,11 +74,11 @@ body {
 	color: white;
 }
 
-.masthead > h1 {
+.masthead>h1 {
 	font-size: 3em;
 }
 
-.masthead > h2 {
+.masthead>h2 {
 	font-size: 1em;
 	font-weight: bold;
 }
@@ -106,7 +104,7 @@ body {
 }
 
 .masthead.logo p {
-	line-height : 100px;
+	line-height: 100px;
 	margin: 0px;
 }
 
@@ -116,5 +114,39 @@ body {
 }
 
 .td-align-top {
-	vertical-align: top;	
+	vertical-align: top;
+}
+
+.create-btn {
+	float: right;
+	background: #568A30 !important;
+	border-color: #2B4213 !important;
+	color: #fff !important;
+}
+
+.create-btn:HOVER {
+	background: #748A30 !important;
+	border-color: #374213 !important;
+}
+
+.action-link {
+	padding: 5px;
+}
+
+.action-link span {
+	font-size: 18px;
+}
+
+.action-link:HOVER {
+	color: red;
+	font-weight: bold;
+}
+
+.ui-growl {   
+    position:fixed;
+    top: 40%;
+    left: 37%;
+    width: 250px;
+    height: 110px;
+    z-index:9999; 
 }

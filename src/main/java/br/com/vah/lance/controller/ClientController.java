@@ -7,7 +7,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.Client;
+import br.com.vah.lance.entity.mv.MvClient;
+import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.ClientService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
@@ -15,20 +16,27 @@ import br.com.vah.lance.util.GenericLazyDataModel;
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class ClientController extends AbstractController<Client> {
+public class ClientController extends AbstractController<MvClient> {
 
 	private @Inject transient Logger logger;
 
 	private @Inject ClientService service;
 
+	private Long sectorIdToAdd;
+
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
-		setLazyModel(new GenericLazyDataModel<Client>(service));
+		setLazyModel(new GenericLazyDataModel<MvClient>(service));
 	}
 
 	@Override
-	public DataAccessService<Client> getService() {
+	public void onLoad() {
+		super.onLoad();
+	}
+
+	@Override
+	public DataAccessService<MvClient> getService() {
 		return service;
 	}
 
@@ -38,8 +46,8 @@ public class ClientController extends AbstractController<Client> {
 	}
 
 	@Override
-	public Client createNewItem() {
-		return new Client();
+	public MvClient createNewItem() {
+		return new MvClient();
 	}
 
 	@Override
@@ -55,6 +63,34 @@ public class ClientController extends AbstractController<Client> {
 	@Override
 	public String getEntityName() {
 		return "cliente";
+	}
+
+	/**
+	 * @return the sectorIdToAdd
+	 */
+	public Long getSectorIdToAdd() {
+		return sectorIdToAdd;
+	}
+
+	/**
+	 * @param sectorIdToAdd
+	 *            the sectorIdToAdd to set
+	 */
+	public void setSectorIdToAdd(Long sectorIdToAdd) {
+		this.sectorIdToAdd = sectorIdToAdd;
+	}
+
+	public String toggle(MvSector sector) {
+		if (getItem().getSectors().contains(sector)) {
+			getItem().getSectors().remove(sector);
+		} else {
+			getItem().getSectors().add(sector);
+		}
+		return null;
+	}
+
+	public Boolean selected(MvSector sector) {
+		return getItem().getSectors().contains(sector);
 	}
 
 }

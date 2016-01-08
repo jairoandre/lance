@@ -107,13 +107,19 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * Create, Update and Delete operations
 	 */
 	public String doSave() {
-		if (item.getId() == null) {
-			getService().create(item);
-		} else {
-			getService().update(item);
+		try {
+			if (item.getId() == null) {
+				getService().create(item);
+			} else {
+				getService().update(item);
+			}
+			addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
+			return back();
+		} catch (Exception e) {
+			addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Ops! Erro inesperado: " + e.getMessage()),
+					true);
 		}
-		addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
-		return back();
+		return null;
 	}
 
 	/**

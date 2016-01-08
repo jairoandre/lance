@@ -15,13 +15,55 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
+			<p:dialog widgetVar="addSectorDlg" modal="true"
+				header="RELACIONAR SETOR" width="80%">
+				<p:ajax event="close" update=":#{p:component('sectorTbl')}" />
+				<lance:dataTable id="dataTable" controller="#{sectorController}"
+					renderAddBtn="false" renderActionColumn="false">
+					<p:column sortBy="#{item.id}" headerText="Id">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+					<p:column sortBy="#{item.title}" headerText="Nome">
+						<h:outputText value="#{item.title}" />
+					</p:column>
+					<p:column headerText="Relacionar" style="text-align: center"
+						width="100">
+						<p:commandLink id="toggleSector"
+							action="#{clientController.toggle(item)}" ajax="true"
+							styleClass="action-link" process="@this" update="@this">
+							<span
+								class="fa fa#{clientController.selected(item) ? '-check' : ''}-square-o" />
+						</p:commandLink>
+					</p:column>
+				</lance:dataTable>
+				<f:facet name="footer">
+					<p:commandButton id="closeSectorDlgBtn" ajax="true"
+						onclick="PF('addSectorDlg').hide()" value="Fechar diálogo" />
+				</f:facet>
+			</p:dialog>
 			<lance:editForm id="clienPnl" controller="#{clientController}">
-				<uilance:inputText id="name" label="Nome"
-					value="#{clientController.item.title}"
-					editing="#{clientController.editing}" required="true" />
-				<uilance:inputText id="details" label="Código"
-					value="#{clientController.item.clientCode}"
-					editing="#{clientController.editing}" required="true" />
+				<h:outputLabel value="Cliente:" style="font-weight: bold;" />
+				<h:outputText value="#{clientController.item.title}" />
+				<f:facet name="other">
+					<p:commandButton id="addSectorBtn"
+						onclick="PF('addSectorDlg').show()" value="Adicionar setor" />
+					<p:dataTable id="sectorTbl" var="sector"
+						value="#{clientController.item.sectors.toArray()}"
+						emptyMessage="Sem setores" style="margin-top: 10px">
+						<p:column headerText="Setor" style="text-align: left;">
+							<h:outputText value="#{sector.title}" />
+						</p:column>
+						<p:column width="100" headerText="Remover"
+							style="text-align: center;">
+							<p:commandLink id="removeBtn"
+								action="#{clientController.toggle(sector)}" ajax="true"
+								styleClass="action-link" update="@form"
+								rendered="#{clientController.editing}" process="@this">
+								<span class="fa fa-trash" />
+							</p:commandLink>
+						</p:column>
+					</p:dataTable>
+				</f:facet>
 			</lance:editForm>
 		</h:form>
 	</ui:define>

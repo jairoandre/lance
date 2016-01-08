@@ -8,15 +8,13 @@
 	xmlns:uilance="http://vah.com.br/lance">
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:dataTable id="dataTable" controller="#{clientController}">
-				<p:column sortBy="#{item.id}" headerText="Id">
+			<lance:dataTable id="dataTable" controller="#{clientController}"
+				renderDeleteAction="false" renderAddBtn="false">
+				<p:column sortBy="#{item.id}" headerText="Código" width="100">
 					<h:outputText value="#{item.id}" />
 				</p:column>
 				<p:column sortBy="#{item.title}" headerText="Nome">
 					<h:outputText value="#{item.title}" />
-				</p:column>
-				<p:column sortBy="#{item.clientCode}" headerText="Código">
-					<h:outputText value="#{item.clientCode}" />
 				</p:column>
 			</lance:dataTable>
 		</h:form>

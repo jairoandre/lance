@@ -2,7 +2,7 @@ package br.com.vah.lance.service;
 
 import javax.ejb.Stateless;
 
-import br.com.vah.lance.entity.Client;
+import br.com.vah.lance.entity.mv.MvClient;
 
 /**
  * 
@@ -10,10 +10,10 @@ import br.com.vah.lance.entity.Client;
  *
  */
 @Stateless
-public class ClientService extends DataAccessService<Client> {
+public class ClientService extends DataAccessService<MvClient> {
 	
 	public ClientService(){
-		super(Client.class);
+		super(MvClient.class);
 	}
 
 }

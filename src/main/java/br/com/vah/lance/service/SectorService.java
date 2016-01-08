@@ -2,7 +2,7 @@ package br.com.vah.lance.service;
 
 import javax.ejb.Stateless;
 
-import br.com.vah.lance.entity.Sector;
+import br.com.vah.lance.entity.mv.MvSector;
 
 /**
  * 
@@ -10,10 +10,10 @@ import br.com.vah.lance.entity.Sector;
  *
  */
 @Stateless
-public class SectorService extends DataAccessService<Sector> {
+public class SectorService extends DataAccessService<MvSector> {
 	
 	public SectorService(){
-		super(Sector.class);
+		super(MvSector.class);
 	}
 
 }

@@ -3,13 +3,20 @@ package br.com.vah.lance.entity.mv;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import br.com.vah.lance.entity.BaseEntity;
 
 @Entity
-@Table(name = "SECTOR", schema = "DBAMV")
+@Table(name = "SETOR", schema = "DBAMV")
+@NamedQueries({ @NamedQuery(name = MvSector.ALL, query = "SELECT s FROM MvSector s"),
+	@NamedQuery(name = MvSector.COUNT, query = "SELECT COUNT(s) FROM MvSector s") })
 public class MvSector extends BaseEntity {
+	
+	public final static String ALL = "MvSector.populatedItems";
+	public final static String COUNT = "MvSector.countTotal";
 
 	/**
 	 * 
@@ -17,7 +24,7 @@ public class MvSector extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "CD_PRESTADOR")
+	@Column(name = "CD_SETOR")
 	private Long id;
 
 	@Column(name = "NM_SETOR")

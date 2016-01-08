@@ -35,8 +35,7 @@
 				icon="ui-icon-flag" />
 			<f:facet name="options">
 				<h:panelGroup style="margin-top: 3px;" layout="block">
-					<h:outputText
-						value="Olá, #{loginController.username}     "
+					<h:outputText value="Olá, #{loginController.username}     "
 						rendered="#{request.getUserPrincipal() != null}" />
 					<p:commandButton value="Logout" action="#{loginController.logout}"
 						icon="fa fa-sign-out"
