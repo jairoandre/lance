@@ -28,6 +28,7 @@ public class ClientController extends AbstractController<MvClient> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setLazyModel(new GenericLazyDataModel<MvClient>(service));
+		getLazyModel().getSearchParams().getRelations().add("sectors");
 	}
 
 	@Override

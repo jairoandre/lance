@@ -15,25 +15,60 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:editForm id="sectorPnl" controller="#{serviceController}" columns="3">
+		
+			<p:dialog widgetVar="defaultHistoryDlg" modal="true"
+				header="SELECIONAR HISTÓRICO PADRÃO" width="40%">
+				<p:ajax event="close" update=":#{p:component('historyPnl')}" />
+				<h:panelGroup id="defaultHistoryDlgContent">
+					<lance:dataTable id="defaultHistoryOptions"
+						controller="#{defaultHistoryController}" renderAddBtn="false"
+						renderActionColumn="false">
+						<p:column style="text-align: center" width="50">
+							<p:commandLink
+								actionListener="#{serviceController.toggleDefaultHistory(item)}"
+								ajax="true" styleClass="action-link" process="@this"
+								update=":#{p:component('defaultHistoryDlgContent')}">
+								<span
+									class="fa fa#{serviceController.selectedDefaultHistory(item) ? '-dot' : ''}-circle-o" />
+							</p:commandLink>
+						</p:column>
+						<p:column sortBy="#{item.title}" headerText="Descrição"
+							style="text-align: left;">
+							<h:outputText value="#{item.title}" />
+						</p:column>
+					</lance:dataTable>
+				</h:panelGroup>
+				<f:facet name="footer">
+					<p:commandButton id="closeDefaultHistoryDlgBtn" ajax="true"
+						onclick="PF('defaultHistoryDlg').hide()" value="Fechar diálogo" />
+				</f:facet>
+			</p:dialog>
+
+			<lance:editForm id="sectorPnl" controller="#{serviceController}"
+				columns="3">
 				<uilance:inputText id="name" label="Nome"
 					value="#{serviceController.item.title}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:inputText id="defaultHistory" label="Histórico padrão"
-					value="#{serviceController.item.defaultHistory}"
-					editing="#{serviceController.editing}" required="true" />
+				<h:outputLabel value="Histórico padrão" style="font-weight: bold;" />
+				<h:panelGroup id="historyPnl">
+					<p:inputText id="defaultHistory"
+						value="#{serviceController.item.defaultHistory['id']}"
+						label="Histórico padrão" required="true"
+						style="visibility: hidden; position: absolute;" />
+					<p:inputText placeholder="Selecione..." style="min-width: 250px;"
+						value="#{serviceController.item.defaultHistory['title']}"
+						readonly="true" />
+					<span />
+					<p:commandButton id="selectDefaultHistory"
+						onclick="PF('defaultHistoryDlg').show()"
+						rendered="#{serviceController.editing}" icon="fa fa-search" />
+				</h:panelGroup>
+				<p:message for="defaultHistory" />
 				<uilance:inputText id="documentType" label="Tipo de documento"
 					value="#{serviceController.item.documentType}"
 					editing="#{serviceController.editing}" required="true" />
 				<uilance:inputText id="ledgerAccount" label="Conta contábil"
 					value="#{serviceController.item.ledgerAccount}"
-					editing="#{serviceController.editing}" required="true" />
-				<uilance:inputText id="resultAccount"
-					label="Conta contábil de resultado"
-					value="#{serviceController.item.resultAccount}"
-					editing="#{serviceController.editing}" required="true" />
-				<uilance:inputText id="costAccount" label="Conta de custo"
-					value="#{serviceController.item.costAccount}"
 					editing="#{serviceController.editing}" required="true" />
 				<uilance:selectBoolean id="billable" label="Gera nota"
 					value="#{serviceController.item.billable}"

@@ -17,15 +17,14 @@
 
 <composite:implementation>
 	<h:panelGroup id="#{cc.attrs.id}" layout="block">
-		<h:panelGrid id="#{cc.attrs.id}SearchInputGrid" columns="2"
-			style="width: 100%">
-			<h:panelGroup id="#{cc.attrs.id}SearchInputPnl">
-				<p:inputText id="#{cc.attrs.id}SearchInput"
+		<h:panelGrid id="#{cc.attrs.id}_Grid" columns="2" style="width: 100%">
+			<h:panelGroup id="#{cc.attrs.id}_InputPnl">
+				<p:inputText id="#{cc.attrs.id}_Input"
 					value="#{cc.attrs.controller.searchTerm}"
 					placeholder="Digite o termo..." style="min-width: 200px" />
 				<p:commandButton value="Buscar"
 					action="#{cc.attrs.controller.search}" icon="fa fa-search"
-					ajax="true" process="@form" update="#{cc.attrs.id}Tbl"
+					ajax="true" process="#{cc.attrs.id}_InputPnl" update="#{cc.attrs.id}_Tbl"
 					title="Procurar #{cc.attrs.controller.entityName}"
 					style="margin-left: 5px;" />
 			</h:panelGroup>
@@ -37,7 +36,7 @@
 		</h:panelGrid>
 		<br />
 
-		<p:dataTable id="#{cc.attrs.id}Tbl" var="item"
+		<p:dataTable id="#{cc.attrs.id}_Tbl" var="item"
 			value="#{cc.attrs.controller.lazyModel}" paginator="true"
 			emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
 			rowKey="index"
@@ -84,8 +83,8 @@
 		</p:dataTable>
 
 	</h:panelGroup>
-	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
-		modal="true">
+	<p:dialog id="#{cc.attrs.id}_DeleteDlg" header="Atenção"
+		widgetVar="deleteMdl" modal="true">
 		<h:outputText
 			value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?" />
 		<f:facet name="footer">

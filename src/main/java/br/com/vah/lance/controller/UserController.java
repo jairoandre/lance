@@ -43,6 +43,7 @@ public class UserController extends AbstractController<User> {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
 		setLazyModel(new GenericLazyDataModel<User>(service));
+		getLazyModel().getSearchParams().getRelations().add("roles");
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
 		this.roles = RolesEnum.getSelectItems();
 	}

@@ -7,29 +7,29 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.mv.MvSector;
+import br.com.vah.lance.entity.mv.MvDefaultHistory;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.SectorService;
+import br.com.vah.lance.service.DefaultHistoryService;
 import br.com.vah.lance.util.GenericLazyDataModel;
 
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class SectorController extends AbstractController<MvSector> {
+public class DefaultHistoryController extends AbstractController<MvDefaultHistory> {
 
 	private @Inject transient Logger logger;
 
-	private @Inject SectorService service;
+	private @Inject DefaultHistoryService service;
 
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<MvSector>(service));
+		setLazyModel(new GenericLazyDataModel<MvDefaultHistory>(service));
 	}
 
 	@Override
-	public DataAccessService<MvSector> getService() {
+	public DataAccessService<MvDefaultHistory> getService() {
 		return service;
 	}
 
@@ -39,8 +39,8 @@ public class SectorController extends AbstractController<MvSector> {
 	}
 
 	@Override
-	public MvSector createNewItem() {
-		return new MvSector();
+	public MvDefaultHistory createNewItem() {
+		return new MvDefaultHistory();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class SectorController extends AbstractController<MvSector> {
 
 	@Override
 	public String getEntityName() {
-		return "setor";
+		return "histórico padrão";
 	}
 
 }

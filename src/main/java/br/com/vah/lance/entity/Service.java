@@ -40,7 +40,7 @@ public class Service extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
-	private MvDefaultHistory defaultHistory;
+	private MvDefaultHistory defaultHistory = new MvDefaultHistory();
 
 	@ManyToOne
 	@JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)

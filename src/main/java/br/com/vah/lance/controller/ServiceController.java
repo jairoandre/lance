@@ -11,6 +11,7 @@ import javax.inject.Named;
 
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceType;
+import br.com.vah.lance.entity.mv.MvDefaultHistory;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
 import br.com.vah.lance.service.ServiceTypeService;
@@ -88,6 +89,19 @@ public class ServiceController extends AbstractController<Service> {
 	@Override
 	public String getEntityName() {
 		return "serviço";
+	}
+
+	public String toggleDefaultHistory(MvDefaultHistory defaultHistory) {
+		getItem().setDefaultHistory(defaultHistory);
+		return null;
+	}
+
+	public Boolean selectedDefaultHistory(MvDefaultHistory defaultHistory) {
+		if (getItem().getDefaultHistory() == null) {
+			return false;
+		} else {
+			return getItem().getDefaultHistory().equals(defaultHistory);
+		}
 	}
 
 }

@@ -1,7 +1,9 @@
 package br.com.vah.lance.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PaginatedSearchParam implements Serializable {
@@ -10,19 +12,21 @@ public class PaginatedSearchParam implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Map<String, Object> params;
-	
+
 	private Integer first;
-	
+
 	private Integer pageSize;
-	
+
 	private String orderBy;
-	
+
 	private Boolean asc;
-	
+
 	private Boolean resetPage = false;
-	
+
+	private List<String> relations = new ArrayList<>();
+
 	public PaginatedSearchParam() {
 		params = new HashMap<>();
 		first = 0;
@@ -38,7 +42,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param params the params to set
+	 * @param params
+	 *            the params to set
 	 */
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
@@ -52,7 +57,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param first the first to set
+	 * @param first
+	 *            the first to set
 	 */
 	public void setFirst(Integer first) {
 		this.first = first;
@@ -66,7 +72,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param pageSize the total to set
+	 * @param pageSize
+	 *            the total to set
 	 */
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
@@ -80,7 +87,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param orderBy the orderBy to set
+	 * @param orderBy
+	 *            the orderBy to set
 	 */
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
@@ -94,7 +102,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param asc the asc to set
+	 * @param asc
+	 *            the asc to set
 	 */
 	public void setAsc(Boolean asc) {
 		this.asc = asc;
@@ -108,10 +117,25 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param resetPage the resetPage to set
+	 * @param resetPage
+	 *            the resetPage to set
 	 */
 	public void setResetPage(Boolean resetPage) {
 		this.resetPage = resetPage;
+	}
+
+	/**
+	 * @return the relations
+	 */
+	public List<String> getRelations() {
+		return relations;
+	}
+
+	/**
+	 * @param relations the relations to set
+	 */
+	public void setRelations(List<String> relations) {
+		this.relations = relations;
 	}
 
 }

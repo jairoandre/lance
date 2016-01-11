@@ -14,15 +14,17 @@
 
 <composite:implementation>
 	<p:panel id="#{cc.attrs.id}" header="#{cc.attrs.controller.editLabel}">
-		<h:panelGrid id="grid" columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}" cellpadding="5">
+		<h:panelGrid id="#{cc.attrs.id}_Grid"
+			columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}"
+			cellpadding="5">
 			<composite:insertChildren />
 		</h:panelGrid>
 		<composite:renderFacet name="other" />
-		<h:panelGroup id="#{cc.attrs.id}Btns" layout="block"
+		<h:panelGroup id="#{cc.attrs.id}_Btns" layout="block"
 			style="margin-top: 10px;">
 			<p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
-				update="@form" validateClient="true" style="margin-right:10px"
-				action="#{cc.attrs.controller.doSave}"
+				update="#{cc.attrs.id}_Grid" validateClient="true"
+				style="margin-right:10px" action="#{cc.attrs.controller.doSave}"
 				rendered="#{cc.attrs.controller.editing}" />
 			<p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
 				action="#{cc.attrs.controller.back}" />

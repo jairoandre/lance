@@ -41,7 +41,8 @@
 						onclick="PF('addSectorDlg').hide()" value="Fechar diálogo" />
 				</f:facet>
 			</p:dialog>
-			<lance:editForm id="clienPnl" controller="#{clientController}">
+
+			<lance:editForm id="clientForm" controller="#{clientController}">
 				<h:outputLabel value="Cliente:" style="font-weight: bold;" />
 				<h:outputText value="#{clientController.item.title}" />
 				<f:facet name="other">
@@ -49,8 +50,7 @@
 						onclick="PF('addSectorDlg').show()" value="Adicionar setor"
 						rendered="#{clientController.editing}" />
 					<p:dataTable id="sectorTbl" var="sector"
-						value="#{clientController.item.sectors.toArray()}"
-						lazy="true"
+						value="#{clientController.item.sectors.toArray()}" lazy="true"
 						emptyMessage="Sem setores" style="margin-top: 10px">
 						<p:column headerText="Setor" style="text-align: left;">
 							<h:outputText value="#{sector.title}" />
@@ -67,6 +67,7 @@
 					</p:dataTable>
 				</f:facet>
 			</lance:editForm>
+
 		</h:form>
 	</ui:define>
 </ui:composition>
