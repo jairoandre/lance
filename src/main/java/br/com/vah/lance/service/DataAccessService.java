@@ -11,10 +11,12 @@ import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 
 import br.com.vah.lance.util.PaginatedSearchParam;
 
@@ -28,6 +30,8 @@ import br.com.vah.lance.util.PaginatedSearchParam;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class DataAccessService<T> {
+	
+	public static final String ID = "id";
 
 	@PersistenceContext
 	private EntityManager em;
@@ -216,6 +220,12 @@ public abstract class DataAccessService<T> {
 		query.setFirstResult(start);
 		return query.getResultList();
 	}
+	
+	public Criteria createCriteria() {
+		Session session = em.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(type);
+		return criteria;
+	}
 
 	/**
 	 * Create criteria
@@ -224,8 +234,7 @@ public abstract class DataAccessService<T> {
 	 * @return
 	 */
 	public Criteria createCriteria(PaginatedSearchParam params) {
-		Session session = em.unwrap(Session.class);
-		Criteria criteria = session.createCriteria(type);
+		Criteria criteria = createCriteria();
 
 		for (Map.Entry<String, Object> par : params.getParams().entrySet()) {
 			if (par.getValue() != null) {
@@ -242,22 +251,32 @@ public abstract class DataAccessService<T> {
 	 * @return
 	 */
 	public List<T> paginatedSearch(PaginatedSearchParam params) {
-		Criteria criteria = createCriteria(params);
+		DetachedCriteria searchCriteria = DetachedCriteria.forClass(type);
+		
+		// Applying conditions
+		for (Map.Entry<String, Object> par : params.getParams().entrySet()) {
+			if (par.getValue() != null) {
+				searchCriteria.add(Restrictions.ilike(par.getKey(), (String) par.getValue(), MatchMode.ANYWHERE));
+			}
+		}
+		searchCriteria.setProjection(Projections.distinct(Projections.id()));
+		
+		Criteria selectCriteria = createCriteria();
+		
+		selectCriteria.add(Subqueries.propertyIn(ID, searchCriteria));
 
-		criteria.setFirstResult(params.getFirst());
-		criteria.setMaxResults(params.getPageSize());
+		selectCriteria.setFirstResult(params.getFirst());
+		selectCriteria.setMaxResults(params.getPageSize());
 
 		if (params.getOrderBy() != null) {
 			if (params.getAsc()) {
-				criteria.addOrder(Order.asc(params.getOrderBy()));
+				selectCriteria.addOrder(Order.asc(params.getOrderBy()));
 			} else {
-				criteria.addOrder(Order.desc(params.getOrderBy()));
+				selectCriteria.addOrder(Order.desc(params.getOrderBy()));
 			}
 		}
-		
-		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		
-		return criteria.list();
+
+		return selectCriteria.list();
 	}
 
 	/**

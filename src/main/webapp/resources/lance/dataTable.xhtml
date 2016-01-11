@@ -36,6 +36,7 @@
 				style="float: right;" />
 		</h:panelGrid>
 		<br />
+
 		<p:dataTable id="#{cc.attrs.id}Tbl" var="item"
 			value="#{cc.attrs.controller.lazyModel}" paginator="true"
 			emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
@@ -76,7 +77,12 @@
 				<p:tooltip id="toolDeleteAction" for="deleteAction"
 					value="Excluir #{cc.attrs.controller.entityName}" />
 			</p:column>
+			<f:facet name="footer">
+				<h:outputText
+					value="#{cc.attrs.controller.lazyModel.rowCount} registro(s)" />
+			</f:facet>
 		</p:dataTable>
+
 	</h:panelGroup>
 	<p:dialog id="deleteMdl" header="Atenção" widgetVar="deleteMdl"
 		modal="true">

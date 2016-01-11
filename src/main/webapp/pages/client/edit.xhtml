@@ -50,6 +50,7 @@
 						rendered="#{clientController.editing}" />
 					<p:dataTable id="sectorTbl" var="sector"
 						value="#{clientController.item.sectors.toArray()}"
+						lazy="true"
 						emptyMessage="Sem setores" style="margin-top: 10px">
 						<p:column headerText="Setor" style="text-align: left;">
 							<h:outputText value="#{sector.title}" />
