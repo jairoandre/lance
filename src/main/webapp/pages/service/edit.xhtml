@@ -15,15 +15,15 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-		
+
 			<p:dialog widgetVar="defaultHistoryDlg" modal="true"
 				header="SELECIONAR HISTÓRICO PADRÃO" width="40%">
-				<p:ajax event="close" update=":#{p:component('historyPnl')}" />
+				<p:ajax event="close" update=":#{p:component('defaultHistory_Pnl')}" />
 				<h:panelGroup id="defaultHistoryDlgContent">
 					<lance:dataTable id="defaultHistoryOptions"
 						controller="#{defaultHistoryController}" renderAddBtn="false"
 						renderActionColumn="false">
-						<p:column style="text-align: center" width="50">
+						<p:column style="text-align: center; #{serviceController.selectedDefaultHistory(item) ? 'background: cyan;' : ''}" width="50">
 							<p:commandLink
 								actionListener="#{serviceController.toggleDefaultHistory(item)}"
 								ajax="true" styleClass="action-link" process="@this"
@@ -33,7 +33,7 @@
 							</p:commandLink>
 						</p:column>
 						<p:column sortBy="#{item.title}" headerText="Descrição"
-							style="text-align: left;">
+							style="text-align: left;#{serviceController.selectedDefaultHistory(item) ? 'background: cyan;' : ''}">
 							<h:outputText value="#{item.title}" />
 						</p:column>
 					</lance:dataTable>
@@ -49,21 +49,11 @@
 				<uilance:inputText id="name" label="Nome"
 					value="#{serviceController.item.title}"
 					editing="#{serviceController.editing}" required="true" />
-				<h:outputLabel value="Histórico padrão" style="font-weight: bold;" />
-				<h:panelGroup id="historyPnl">
-					<p:inputText id="defaultHistory"
-						value="#{serviceController.item.defaultHistory['id']}"
-						label="Histórico padrão" required="true"
-						style="visibility: hidden; position: absolute;" />
-					<p:inputText placeholder="Selecione..." style="min-width: 250px;"
-						value="#{serviceController.item.defaultHistory['title']}"
-						readonly="true" />
-					<span />
-					<p:commandButton id="selectDefaultHistory"
-						onclick="PF('defaultHistoryDlg').show()"
-						rendered="#{serviceController.editing}" icon="fa fa-search" />
-				</h:panelGroup>
-				<p:message for="defaultHistory" />
+				<uilance:manyToOne id="defaultHistory" dialog="defaultHistoryDlg"
+					editing="#{serviceController.editing}" label="Histórico padrão"
+					required="true"
+					title="#{serviceController.item.defaultHistory.title}"
+					value="#{serviceController.item.defaultHistory.id}" />
 				<uilance:inputText id="documentType" label="Tipo de documento"
 					value="#{serviceController.item.documentType}"
 					editing="#{serviceController.editing}" required="true" />

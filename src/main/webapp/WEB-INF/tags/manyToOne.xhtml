@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
+	<h:panelGroup id="#{id}_Pnl">
+		<p:inputText id="#{id}" value="#{value}" label="#{label}"
+			required="#{required == null ? false : required}"
+			style="visibility: hidden; position: absolute;" />
+		<p:inputText placeholder="Selecione..." style="min-width: 250px;"
+			value="#{title}" readonly="true" />
+		<span />
+		<p:commandButton id="#{id}_OpenDlgBtn" onclick="PF('#{dialog}').show()"
+			rendered="#{editing == null ? true : editing}" icon="fa fa-search" />
+	</h:panelGroup>
+	<p:message for="#{id}"
+		rendered="#{renderMessage == null ? true : renderMessage}" />
+</ui:composition>
+
+
+

@@ -124,4 +124,39 @@
 			<name>renderMessage</name>
 		</attribute>
 	</tag>
+	<tag>
+		<tag-name>manyToOne</tag-name>
+		<source>tags/manyToOne.xhtml</source>
+		<attribute>
+			<description>Id</description>
+			<name>id</name>
+		</attribute>
+		<attribute>
+			<description>Bean value</description>
+			<name>value</name>
+		</attribute>
+		<attribute>
+			<description>Bean title</description>
+			<name>title</name>
+		</attribute>
+		<attribute>
+			<description>Label</description>
+			<name>label</name>
+		</attribute>
+		<attribute>
+			<description>Dialog</description>
+			<name>dialog</name>
+		</attribute>
+		<attribute>
+			<description>Editing</description>
+			<name>editing</name>
+		</attribute>
+		<attribute>
+			<description>Required</description>
+			<name>required</name>
+		</attribute>
+		<attribute>
+			<name>renderMessage</name>
+		</attribute>
+	</tag>
 </facelet-taglib>
