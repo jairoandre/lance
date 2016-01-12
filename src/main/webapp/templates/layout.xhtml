@@ -18,8 +18,10 @@
 		onerror="PF('statusDialog').hide()"
 		onsuccess="PF('statusDialog').hide()" />
 	<p:dialog widgetVar="statusDialog" modal="false" draggable="false"
-		closable="false" resizable="false" showHeader="false">
-		<span class="fa fa-refresh fa-spin" />
+		closable="false" resizable="false" showHeader="false"
+		hideEffect="fade" position="right bottom"
+		style="margin: 0 20px 20px 0; font-size: 25px !important;">
+		<span class="fa fa-refresh fa-spin" style="" />
 	</p:dialog>
 	<h:panelGroup style="padding: 20px;">
 		<ui:insert name="content">Put default content here, if any.</ui:insert>

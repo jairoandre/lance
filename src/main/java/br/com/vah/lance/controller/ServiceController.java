@@ -30,7 +30,7 @@ public class ServiceController extends AbstractController<Service> {
 	private @Inject ServiceTypeService serviceTypeService;
 
 	private List<SelectItem> serviceTypes;
-
+	
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
@@ -91,17 +91,8 @@ public class ServiceController extends AbstractController<Service> {
 		return "serviço";
 	}
 
-	public String toggleDefaultHistory(MvDefaultHistory defaultHistory) {
-		getItem().setDefaultHistory(defaultHistory);
-		return null;
-	}
-
-	public Boolean selectedDefaultHistory(MvDefaultHistory defaultHistory) {
-		if (getItem().getDefaultHistory() == null) {
-			return false;
-		} else {
-			return getItem().getDefaultHistory().equals(defaultHistory);
-		}
+	public void setDefaultHistory() {
+		System.out.println(getItem().getDefaultHistory());
 	}
 
 }

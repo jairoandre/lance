@@ -17,14 +17,15 @@
 
 <composite:implementation>
 	<h:panelGroup id="#{cc.attrs.id}" layout="block">
-		<h:panelGrid id="#{cc.attrs.id}_Grid" columns="2" style="width: 100%">
-			<h:panelGroup id="#{cc.attrs.id}_InputPnl">
-				<p:inputText id="#{cc.attrs.id}_Input"
+		<h:panelGrid id="#{cc.attrs.id}_grid" columns="2" style="width: 100%">
+			<h:panelGroup id="#{cc.attrs.id}_searchPnl">
+				<p:inputText id="#{cc.attrs.id}_searchInput"
 					value="#{cc.attrs.controller.searchTerm}"
 					placeholder="Digite o termo..." style="min-width: 200px" />
 				<p:commandButton value="Buscar"
 					action="#{cc.attrs.controller.search}" icon="fa fa-search"
-					ajax="true" process="#{cc.attrs.id}_InputPnl" update="#{cc.attrs.id}_Tbl"
+					ajax="true" process="#{cc.attrs.id}_searchPnl"
+					update="#{cc.attrs.id}_table"
 					title="Procurar #{cc.attrs.controller.entityName}"
 					style="margin-left: 5px;" />
 			</h:panelGroup>
@@ -36,7 +37,8 @@
 		</h:panelGrid>
 		<br />
 
-		<p:dataTable id="#{cc.attrs.id}_Tbl" var="item"
+		<p:dataTable id="#{cc.attrs.id}_table" var="item"
+			widgetVar="#{cc.attrs.id}"
 			value="#{cc.attrs.controller.lazyModel}" paginator="true"
 			emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
 			rowKey="index"
@@ -83,16 +85,16 @@
 		</p:dataTable>
 
 	</h:panelGroup>
-	<p:dialog id="#{cc.attrs.id}_DeleteDlg" header="Atenção"
-		widgetVar="deleteMdl" modal="true">
+	<p:dialog id="#{cc.attrs.id}_deleteDlg" header="Atenção"
+		widgetVar="#{cc.attrs.id}_deleteDlg" modal="true">
 		<h:outputText
 			value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?" />
 		<f:facet name="footer">
 			<p:commandButton value="Excluir" ajax="true" update="@form"
 				action="#{cc.attrs.controller.doDelete}"
-				oncomplete="PF('deleteMdl').hide();" icon="fa fa-warning" />
+				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();" icon="fa fa-warning" />
 			<p:commandButton value="Cancelar"
-				oncomplete="PF('deleteMdl').hide();" icon="fa fa-arrow-left" />
+				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();" icon="fa fa-arrow-left" />
 		</f:facet>
 	</p:dialog>
 </composite:implementation>

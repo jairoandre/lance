@@ -16,33 +16,18 @@
 	<ui:define name="content">
 		<h:form id="form">
 
-			<p:dialog widgetVar="defaultHistoryDlg" modal="true"
-				header="SELECIONAR HISTÓRICO PADRÃO" width="40%">
-				<p:ajax event="close" update=":#{p:component('defaultHistory_Pnl')}" />
-				<h:panelGroup id="defaultHistoryDlgContent">
-					<lance:dataTable id="defaultHistoryOptions"
-						controller="#{defaultHistoryController}" renderAddBtn="false"
-						renderActionColumn="false">
-						<p:column style="text-align: center; #{serviceController.selectedDefaultHistory(item) ? 'background: cyan;' : ''}" width="50">
-							<p:commandLink
-								actionListener="#{serviceController.toggleDefaultHistory(item)}"
-								ajax="true" styleClass="action-link" process="@this"
-								update=":#{p:component('defaultHistoryDlgContent')}">
-								<span
-									class="fa fa#{serviceController.selectedDefaultHistory(item) ? '-dot' : ''}-circle-o" />
-							</p:commandLink>
-						</p:column>
-						<p:column sortBy="#{item.title}" headerText="Descrição"
-							style="text-align: left;#{serviceController.selectedDefaultHistory(item) ? 'background: cyan;' : ''}">
-							<h:outputText value="#{item.title}" />
-						</p:column>
-					</lance:dataTable>
-				</h:panelGroup>
-				<f:facet name="footer">
-					<p:commandButton id="closeDefaultHistoryDlgBtn" ajax="true"
-						onclick="PF('defaultHistoryDlg').hide()" value="Fechar diálogo" />
-				</f:facet>
-			</p:dialog>
+			<lance:manyToOneDialog id="defaultHistoryDlg"
+				tableContainerId="defaultHistoryContainer"
+				controller="#{defaultHistoryController}"
+				header="SELECIONAR HISTÓRICO PADRÃO" width="40%" rendered="true"
+				update="defaultHistory"
+				bean="#{serviceController.item.defaultHistory}" />
+
+			<lance:manyToOneDialog id="documentTypeDlg"
+				tableContainerId="documentTypeContainer"
+				controller="#{documentTypeController}"
+				header="SELECIONAR TIPO DE DOCUMENTO" width="40%" rendered="true"
+				update="documentType" bean="#{serviceController.item.documentType}" />
 
 			<lance:editForm id="sectorPnl" controller="#{serviceController}"
 				columns="3">
@@ -54,9 +39,11 @@
 					required="true"
 					title="#{serviceController.item.defaultHistory.title}"
 					value="#{serviceController.item.defaultHistory.id}" />
-				<uilance:inputText id="documentType" label="Tipo de documento"
-					value="#{serviceController.item.documentType}"
-					editing="#{serviceController.editing}" required="true" />
+				<uilance:manyToOne id="documentType" dialog="documentTypeDlg"
+					editing="#{serviceController.editing}" label="Tipo de documento"
+					required="true"
+					title="#{serviceController.item.documentType.title}"
+					value="#{serviceController.item.documentType.id}" />
 				<uilance:inputText id="ledgerAccount" label="Conta contábil"
 					value="#{serviceController.item.ledgerAccount}"
 					editing="#{serviceController.editing}" required="true" />

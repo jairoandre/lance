@@ -3,18 +3,20 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
-	<h:panelGroup id="#{id}_Pnl">
-		<p:inputText id="#{id}" value="#{value}" label="#{label}"
+	<h:outputLabel for="#{id}_hidden" value="#{label}:"
+		style="font-weight:bold" />
+	<h:panelGroup id="#{id}">
+		<p:inputText id="#{id}_hidden" value="#{value}" label="#{label}"
 			required="#{required == null ? false : required}"
 			style="visibility: hidden; position: absolute;" />
 		<p:inputText placeholder="Selecione..." style="min-width: 250px;"
 			value="#{title}" readonly="true" />
 		<span />
-		<p:commandButton id="#{id}_OpenDlgBtn" onclick="PF('#{dialog}').show()"
+		<p:commandButton id="#{id}_OpenDlgBtn"
+			onclick="PF('#{dialog}').show()"
 			rendered="#{editing == null ? true : editing}" icon="fa fa-search" />
 	</h:panelGroup>
-	<p:message for="#{id}"
+	<p:message for="#{id}_hidden"
 		rendered="#{renderMessage == null ? true : renderMessage}" />
 </ui:composition>
 

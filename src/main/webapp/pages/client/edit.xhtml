@@ -16,16 +16,10 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<p:dialog widgetVar="addSectorDlg" modal="true"
-				header="RELACIONAR SETOR" width="80%">
+				header="RELACIONAR SETOR" width="50%">
 				<p:ajax event="close" update=":#{p:component('sectorTbl')}" />
 				<lance:dataTable id="dataTable" controller="#{sectorController}"
 					renderAddBtn="false" renderActionColumn="false">
-					<p:column sortBy="#{item.id}" headerText="Id">
-						<h:outputText value="#{item.id}" />
-					</p:column>
-					<p:column sortBy="#{item.title}" headerText="Nome">
-						<h:outputText value="#{item.title}" />
-					</p:column>
 					<p:column headerText="Relacionar" style="text-align: center"
 						width="100">
 						<p:commandLink id="toggleSector"
@@ -34,6 +28,9 @@
 							<span
 								class="fa fa#{clientController.selected(item) ? '-check' : ''}-square-o" />
 						</p:commandLink>
+					</p:column>
+					<p:column sortBy="#{item.title}" headerText="Nome">
+						<h:outputText value="#{item.title}" />
 					</p:column>
 				</lance:dataTable>
 				<f:facet name="footer">
