@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -38,6 +40,11 @@ public class ServiceValue extends BaseEntity {
 
 	@Column(name = "VL_VALOR")
 	private BigDecimal value;
+
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_SERVICO", nullable = false)
+	private Service service;
 
 	@Override
 	public Long getId() {
@@ -92,6 +99,21 @@ public class ServiceValue extends BaseEntity {
 	 */
 	public void setValue(BigDecimal value) {
 		this.value = value;
+	}
+
+	/**
+	 * @return the service
+	 */
+	public Service getService() {
+		return service;
+	}
+
+	/**
+	 * @param service
+	 *            the service to set
+	 */
+	public void setService(Service service) {
+		this.service = service;
 	}
 
 	@Override

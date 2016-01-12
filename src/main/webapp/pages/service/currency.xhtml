@@ -25,7 +25,8 @@
 
 				<f:facet name="other">
 
-					<p:fieldset legend="Valor" rendered="#{serviceController.editing}">
+					<p:fieldset id="newValueFieldset" legend="Valor"
+						rendered="#{serviceController.editing}">
 						<h:panelGrid columns="3">
 							<uilance:inputDate id="beginDate" label="Data de início"
 								value="#{serviceController.serviceValue.beginDate}"
@@ -35,9 +36,30 @@
 							<uilance:inputText id="value" label="Valor"
 								value="#{serviceController.serviceValue.value}" editing="true" />
 							<p:commandButton id="btnAddValue" value="Adicionar"
-								action="#{serviceController.addValue}" ajax="true" />
+								action="#{serviceController.addValue}" ajax="true"
+								process=":#{p:component('newValueFieldset')}"
+								update=":#{p:component('valuesDataTable')}" />
 						</h:panelGrid>
 					</p:fieldset>
+
+					<p:dataTable id="valuesDataTable"
+						value="#{serviceController.item.values}" var="value">
+						<p:column headerText="Data de início">
+							<h:outputText value="#{value.beginDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Data de término">
+							<h:outputText value="#{value.endDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Valor">
+							<h:outputText value="#{value.value}">
+								<f:convertNumber currencySymbol="R$" locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
 
 				</f:facet>
 

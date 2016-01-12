@@ -52,6 +52,11 @@ public class ServiceController extends AbstractController<Service> {
 		return "/pages/service/edit.xhtml";
 	}
 
+	public void addValue() {
+		getItem().getValues().add(serviceValue);
+		serviceValue = new ServiceValue();
+	}
+
 	@Override
 	public String listPage() {
 		return "/pages/service/list.xhtml";

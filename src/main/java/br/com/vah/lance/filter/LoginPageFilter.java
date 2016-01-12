@@ -29,7 +29,7 @@ public class LoginPageFilter implements Filter {
 													// authenticated
 			String navigateString = "/pages/index.xhtml";
 			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
-				navigateString = "/admin/home.xhtml";
+				navigateString = "/pages/index.xhtml";
 			}
 			response.sendRedirect(request.getContextPath() + navigateString);
 		} else {

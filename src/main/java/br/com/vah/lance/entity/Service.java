@@ -1,7 +1,12 @@
 package br.com.vah.lance.entity;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -55,7 +61,10 @@ public class Service extends BaseEntity {
 
 	@Column(name = "SN_AGRUPAVEL")
 	private Boolean groupable;
-	
+
+	@OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<ServiceValue> values = new LinkedHashSet<>();
+
 	@Override
 	public Long getId() {
 		return id;
@@ -154,6 +163,21 @@ public class Service extends BaseEntity {
 	 */
 	public void setGroupable(Boolean groupable) {
 		this.groupable = groupable;
+	}
+
+	/**
+	 * @return the values
+	 */
+	public Set<ServiceValue> getValues() {
+		return values;
+	}
+
+	/**
+	 * @param values
+	 *            the values to set
+	 */
+	public void setValues(Set<ServiceValue> values) {
+		this.values = values;
 	}
 
 	@Override

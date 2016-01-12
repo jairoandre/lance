@@ -106,7 +106,7 @@ public class LoginController implements Serializable {
 			Principal principal = request.getUserPrincipal();
 
 			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
-				navigateString = "/admin/home.xhtml";
+				navigateString = "/pages/index.xhtml";
 			}
 			try {
 				logger.log(Level.INFO, "User ({0}) loging in #" + DateUtility.getCurrentDateTime(),
