@@ -1,5 +1,6 @@
 package br.com.vah.lance.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Entry;
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.entity.User;
 
 @Stateless
@@ -58,13 +58,13 @@ public class EntryService extends DataAccessService<Entry> {
 		 * para o serviço.
 		 */
 		for (Contract contract : contracts) {
-			for (ServiceContract service : contract.getServices()) {
-				if (user.getServices().contains(service.getService())) {
-					Map<Contract, Entry> map = entries.get(service.getService());
+			for (Service service : contract.getServices()) {
+				if (user.getServices().contains(service)) {
+					Map<Contract, Entry> map = entries.get(service);
 					Entry entry = new Entry(contract);
-					entry.setService(service.getService());
-					entry.setContractValue(service.getAmount());
-					entry.setValue(service.getAmount());
+					entry.setService(service);
+					entry.setContractValue(BigDecimal.ZERO);
+					entry.setValue(BigDecimal.ZERO);
 					entry.setUserForEntry(user);
 					entry.setContract(contract);
 					map.put(contract, entry);

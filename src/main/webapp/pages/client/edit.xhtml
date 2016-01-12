@@ -15,53 +15,26 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
-			<p:dialog widgetVar="addSectorDlg" modal="true"
-				header="RELACIONAR SETOR" width="50%">
-				<p:ajax event="close" update=":#{p:component('sectorTbl')}" />
-				<lance:dataTable id="dataTable" controller="#{sectorController}"
-					renderAddBtn="false" renderActionColumn="false">
-					<p:column headerText="Relacionar" style="text-align: center"
-						width="100">
-						<p:commandLink id="toggleSector"
-							action="#{clientController.toggle(item)}" ajax="true"
-							styleClass="action-link" process="@this" update="@this">
-							<span
-								class="fa fa#{clientController.selected(item) ? '-check' : ''}-square-o" />
-						</p:commandLink>
-					</p:column>
-					<p:column sortBy="#{item.title}" headerText="Nome">
-						<h:outputText value="#{item.title}" />
-					</p:column>
-				</lance:dataTable>
-				<f:facet name="footer">
-					<p:commandButton id="closeSectorDlgBtn" ajax="true"
-						onclick="PF('addSectorDlg').hide()" value="Fechar diálogo" />
-				</f:facet>
-			</p:dialog>
+
+			<lance:manyToManyDialog id="addSectorDlg"
+				bean="#{clientController.sector}" controller="#{sectorController}"
+				header="RELACIONAR SETORES" tableContainerId="addSectorContainer"
+				targetController="#{clientController}"
+				targetItems="#{clientController.item.sectors}" toggleAction="toggle"
+				update="sectors" width="600" />
 
 			<lance:editForm id="clientForm" controller="#{clientController}">
 				<h:outputLabel value="Cliente:" style="font-weight: bold;" />
 				<h:outputText value="#{clientController.item.title}" />
 				<f:facet name="other">
-					<p:commandButton id="addSectorBtn"
-						onclick="PF('addSectorDlg').show()" value="Adicionar setor"
-						rendered="#{clientController.editing}" />
-					<p:dataTable id="sectorTbl" var="sector"
-						value="#{clientController.item.sectors.toArray()}" lazy="true"
-						emptyMessage="Sem setores" style="margin-top: 10px">
-						<p:column headerText="Setor" style="text-align: left;">
-							<h:outputText value="#{sector.title}" />
-						</p:column>
-						<p:column width="100" headerText="Remover"
-							style="text-align: center;"
-							rendered="#{clientController.editing}">
-							<p:commandLink id="removeBtn"
-								action="#{clientController.toggle(sector)}" ajax="true"
-								styleClass="action-link" update="@form" process="@this">
-								<span class="fa fa-trash" />
-							</p:commandLink>
-						</p:column>
-					</p:dataTable>
+
+					<uilance:manyToMany id="sectors" addBtnLabel="Relacionar setores"
+						bean="#{clientController.sector}" columnHeader="Setor"
+						controller="#{clientController}" dialog="addSectorDlg"
+						editing="#{clientController.editing}" emptyMessage="Sem setores"
+						items="#{clientController.item.sectors.toArray()}"
+						toggleAction="toggle" />
+
 				</f:facet>
 			</lance:editForm>
 

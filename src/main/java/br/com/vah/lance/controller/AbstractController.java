@@ -81,7 +81,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	 * 
 	 */
 	public String search() {
-		lazyModel.getSearchParams().getParams().put(searchField, getSearchTerm());
+		lazyModel.getSearchParams().getParams().put(getSearchField(), getSearchTerm());
 		lazyModel.getSearchParams().setResetPage(true);
 		return null;
 	}
@@ -234,6 +234,20 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 		buffer.append(id == null ? "Novo " : editing ? "Editar " : "Visualizar ");
 		buffer.append(getEntityName());
 		return buffer.toString();
+	}
+
+	/**
+	 * @return the searchField
+	 */
+	public String getSearchField() {
+		return searchField;
+	}
+
+	/**
+	 * @param searchField the searchField to set
+	 */
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
 	}
 
 }

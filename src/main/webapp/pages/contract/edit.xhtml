@@ -15,6 +15,17 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
+
+			<lance:manyToOneDialog id="subjectDlg"
+				tableContainerId="subjectContainer" controller="#{clientController}"
+				header="SELECIONAR CONTRATANTE" width="500" rendered="true"
+				update="subject" bean="#{contractController.item.subject}" />
+
+			<lance:manyToOneDialog id="sectorDlg"
+				tableContainerId="sectorContainer" controller="#{sectorController}"
+				header="SELECIONAR SETOR" width="500" rendered="true"
+				update="sector" bean="#{contractController.item.sector}" />
+
 			<lance:editForm id="contractPnl" controller="#{contractController}"
 				columns="3">
 				<uilance:inputText id="name" label="Nome"
@@ -29,55 +40,14 @@
 				<uilance:inputDate id="changeDate" label="Data de reajuste"
 					value="#{contractController.item.changeDate}"
 					editing="#{contractController.editing}" required="true" />
-				<uilance:selectOne id="client" label="Cliente"
-					value="#{contractController.item.client.id}"
-					displayValue="#{contractController.item.client.title}"
-					editing="#{contractController.editing}" required="true">
-					<f:selectItems value="#{contractController.clients}" />
-				</uilance:selectOne>
-				<f:facet name="other">
-					<p:panel id="addServiceGrid" header="Serviços">
-						<h:panelGrid columns="3" rendered="#{contractController.editing}">
-							<uilance:selectOne id="serviceSelectOne" label="Serviço"
-								value="#{contractController.serviceIdToAdd}" editing="true"
-								rendered="#{contractController.editing}" required="false"
-								renderMessage="false">
-								<f:selectItems value="#{contractController.services}" />
-								<p:ajax update="addServiceBtn" process="@this serviceSelectOne" />
-							</uilance:selectOne>
-							<p:commandButton id="addServiceBtn"
-								action="#{contractController.addService}" ajax="true"
-								update="addServiceGrid serviceSelectOne" value="Adicionar"
-								process="@this serviceSelectOne"
-								disabled="#{contractController.serviceIdToAdd == null}" />
-						</h:panelGrid>
-						<table>
-							<ui:repeat id="servicesRepeat" var="service"
-								value="#{contractController.item.services}" varStatus="iter">
-								<tbody>
-									<tr>
-										<td><h:outputLabel for="service"
-												value="#{service.service.title}:" style="font-weight:bold" />
-										</td>
-										<td><h:outputText value="#{service.amount}"
-												rendered="#{!contractController.editing}" /> <p:inputText
-												id="service" value="#{service.amount}" required="true"
-												label="#{service.service.title}"
-												rendered="#{contractController.editing}">
-												<p:ajax process="@this" update="@this" />
-											</p:inputText></td>
-										<td><p:commandButton id="removeBtn"
-												action="#{contractController.removeService(iter.index)}"
-												ajax="true" update=":#{p:component('addServiceGrid')}"
-												rendered="#{contractController.editing}"
-												validateClient="false" value="Remover" process="@this" /></td>
-										<td><p:message for="service" /></td>
-									</tr>
-								</tbody>
-							</ui:repeat>
-						</table>
-					</p:panel>
-				</f:facet>
+				<uilance:manyToOne id="subject" dialog="subjectDlg"
+					editing="#{contractController.editing}" label="Contratante"
+					required="true" title="#{contractController.item.subject.title}"
+					value="#{contractController.item.subject.id}" />
+				<uilance:manyToOne id="sector" dialog="sectorDlg"
+					editing="#{contractController.editing}" label="Setor"
+					required="true" title="#{contractController.item.sector.title}"
+					value="#{contractController.item.sector.id}" />
 			</lance:editForm>
 		</h:form>
 	</ui:define>

@@ -6,11 +6,12 @@
 	<h:outputLabel for="#{id}_hidden" value="#{label}:"
 		style="font-weight:bold" />
 	<h:panelGroup id="#{id}">
+		<h:outputText value="#{title}" rendered="#{!editing}" />
 		<p:inputText id="#{id}_hidden" value="#{value}" label="#{label}"
 			required="#{required == null ? false : required}"
 			style="visibility: hidden; position: absolute;" />
 		<p:inputText placeholder="Selecione..." style="min-width: 250px;"
-			value="#{title}" readonly="true" />
+			value="#{title}" readonly="true" rendered="#{editing}" />
 		<span />
 		<p:commandButton id="#{id}_OpenDlgBtn"
 			onclick="PF('#{dialog}').show()"

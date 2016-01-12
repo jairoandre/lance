@@ -1,22 +1,17 @@
 package br.com.vah.lance.controller;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceType;
-import br.com.vah.lance.entity.mv.MvDefaultHistory;
+import br.com.vah.lance.entity.ServiceValue;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
-import br.com.vah.lance.service.ServiceTypeService;
 import br.com.vah.lance.util.GenericLazyDataModel;
-import br.com.vah.lance.util.LanceUtils;
 
 @SuppressWarnings("serial")
 @Named
@@ -27,38 +22,14 @@ public class ServiceController extends AbstractController<Service> {
 
 	private @Inject ServiceService service;
 
-	private @Inject ServiceTypeService serviceTypeService;
+	private ServiceValue serviceValue;
 
-	private List<SelectItem> serviceTypes;
-	
 	@PostConstruct
 	public void init() {
+		serviceValue = new ServiceValue();
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
 		setLazyModel(new GenericLazyDataModel<Service>(service));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		serviceTypes = LanceUtils.createSelectItem(serviceTypeService.findWithNamedQuery(ServiceType.ALL), true);
-
-	}
-
-	/**
-	 * @return the serviceTypes
-	 */
-	public List<SelectItem> getServiceTypes() {
-		return serviceTypes;
-	}
-
-	/**
-	 * @param serviceTypes
-	 *            the serviceTypes to set
-	 */
-	public void setServiceTypes(List<SelectItem> serviceTypes) {
-		this.serviceTypes = serviceTypes;
 	}
 
 	@Override
@@ -86,6 +57,10 @@ public class ServiceController extends AbstractController<Service> {
 		return "/pages/service/list.xhtml";
 	}
 
+	public String currency(Service item) {
+		return "/pages/service/currency.xhtml" + "?faces-redirect=true&id=" + item.getId() + "&editing=true";
+	}
+
 	@Override
 	public String getEntityName() {
 		return "serviço";
@@ -93,6 +68,21 @@ public class ServiceController extends AbstractController<Service> {
 
 	public void setDefaultHistory() {
 		System.out.println(getItem().getDefaultHistory());
+	}
+
+	/**
+	 * @return the serviceValue
+	 */
+	public ServiceValue getServiceValue() {
+		return serviceValue;
+	}
+
+	/**
+	 * @param serviceValue
+	 *            the serviceValue to set
+	 */
+	public void setServiceValue(ServiceValue serviceValue) {
+		this.serviceValue = serviceValue;
 	}
 
 }

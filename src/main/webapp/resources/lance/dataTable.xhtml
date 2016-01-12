@@ -22,7 +22,7 @@
 				<p:inputText id="#{cc.attrs.id}_searchInput"
 					value="#{cc.attrs.controller.searchTerm}"
 					placeholder="Digite o termo..." style="min-width: 200px" />
-				<p:commandButton value="Buscar"
+				<p:commandButton value="Buscar" id="#{cc.attrs.id}_searchBtn"
 					action="#{cc.attrs.controller.search}" icon="fa fa-search"
 					ajax="true" process="#{cc.attrs.id}_searchPnl"
 					update="#{cc.attrs.id}_table"
@@ -38,10 +38,9 @@
 		<br />
 
 		<p:dataTable id="#{cc.attrs.id}_table" var="item"
-			widgetVar="#{cc.attrs.id}"
-			value="#{cc.attrs.controller.lazyModel}" paginator="true"
-			emptyMessage="Sem registros" paginatorPosition="bottom" rows="10"
-			rowKey="index"
+			widgetVar="#{cc.attrs.id}" value="#{cc.attrs.controller.lazyModel}"
+			paginator="true" emptyMessage="Sem registros"
+			paginatorPosition="bottom" rows="10" rowKey="index"
 			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			lazy="true" rowsPerPageTemplate="10,25,50">
 			<composite:insertChildren />
@@ -84,6 +83,9 @@
 			</f:facet>
 		</p:dataTable>
 
+		<p:defaultCommand target="#{cc.attrs.id}_searchBtn"
+			scope="#{cc.attrs.id}" />
+
 	</h:panelGroup>
 	<p:dialog id="#{cc.attrs.id}_deleteDlg" header="Atenção"
 		widgetVar="#{cc.attrs.id}_deleteDlg" modal="true">
@@ -92,9 +94,11 @@
 		<f:facet name="footer">
 			<p:commandButton value="Excluir" ajax="true" update="@form"
 				action="#{cc.attrs.controller.doDelete}"
-				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();" icon="fa fa-warning" />
+				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();"
+				icon="fa fa-warning" />
 			<p:commandButton value="Cancelar"
-				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();" icon="fa fa-arrow-left" />
+				oncomplete="PF('#{cc.attrs.id}_deleteDlg').hide();"
+				icon="fa fa-arrow-left" />
 		</f:facet>
 	</p:dialog>
 </composite:implementation>

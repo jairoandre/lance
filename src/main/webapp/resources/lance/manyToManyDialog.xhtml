@@ -14,6 +14,9 @@
 	<composite:attribute name="controller" />
 	<composite:attribute name="tableContainerId" />
 	<composite:attribute name="bean" />
+	<composite:attribute name="targetController" />
+	<composite:attribute name="toggleAction" />
+	<composite:attribute name="targetItems" />
 </composite:interface>
 
 <composite:implementation>
@@ -26,28 +29,32 @@
 			<lance:dataTable id="#{cc.attrs.id}_tbl"
 				controller="#{cc.attrs.controller}" renderAddBtn="false"
 				renderActionColumn="false">
-				<p:column
-					styleClass="#{(cc.attrs.bean.id == item.id) ? 'selected-column' : ''}"
+				<p:column id="selector"
+					styleClass="#{cc.attrs.targetItems.contains(item) ? 'selected-column' : ''}"
 					style="text-align: center;" width="50">
-					<p:commandLink ajax="true" styleClass="action-link" process="@this"
+					<p:commandLink ajax="true"
+						action="#{cc.attrs.targetController[cc.attrs.toggleAction]}"
+						styleClass="action-link" process="@this"
 						update=":#{p:component(cc.attrs.tableContainerId)}">
 						<f:setPropertyActionListener value="#{item}"
 							target="#{cc.attrs.bean}" />
 						<h:panelGroup
-							styleClass="fa fa#{(cc.attrs.bean.id == item.id) ? '-dot' : ''}-circle-o" />
+							styleClass="fa fa#{cc.attrs.targetItems.contains(item) ? '-check' : ''}-square-o" />
 					</p:commandLink>
 				</p:column>
-				<p:column sortBy="#{item.title}" headerText="Descrição"
-					styleClass="#{(cc.attrs.bean.id == item.id) ? 'selected-column' : ''}"
+				<p:column id="detail" sortBy="#{item.title}" headerText="Descrição"
+					styleClass="#{cc.attrs.targetItems.contains(item) ? 'selected-column' : ''}"
 					style="text-align: left;">
 					<h:outputText value="#{item.title}" />
 				</p:column>
 			</lance:dataTable>
 		</h:panelGroup>
+
 		<f:facet name="footer">
 			<p:commandButton id="#{cc.attrs.id}_closeDlgBtn" ajax="true"
 				onclick="PF('#{cc.attrs.id}').hide()" value="Fechar diálogo" />
 		</f:facet>
+
 	</p:dialog>
 
 </composite:implementation>

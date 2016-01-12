@@ -42,6 +42,10 @@
 			<description>Required</description>
 			<name>required</name>
 		</attribute>
+		<attribute>
+			<description>Readonly</description>
+			<name>readonly</name>
+		</attribute>
 	</tag>
 	<tag>
 		<tag-name>inputDate</tag-name>
@@ -157,6 +161,58 @@
 		</attribute>
 		<attribute>
 			<name>renderMessage</name>
+		</attribute>
+	</tag>
+	<tag>
+		<tag-name>manyToMany</tag-name>
+		<source>tags/manyToMany.xhtml</source>
+		<attribute>
+			<description>Id</description>
+			<name>id</name>
+		</attribute>
+		<attribute>
+			<description>Dialog</description>
+			<name>dialog</name>
+		</attribute>
+		<attribute>
+			<description>Add button label</description>
+			<name>addBtnLabel</name>
+		</attribute>
+		<attribute>
+			<description>Editing</description>
+			<name>editing</name>
+		</attribute>
+		<attribute>
+			<description>Items</description>
+			<name>items</name>
+		</attribute>
+		<attribute>
+			<description>Empty message</description>
+			<name>emptyMessage</name>
+		</attribute>
+		<attribute>
+			<description>Column header</description>
+			<name>columnHeader</name>
+		</attribute>
+		<attribute>
+			<description>Editing</description>
+			<name>editing</name>
+		</attribute>
+		<attribute>
+			<description>Required</description>
+			<name>required</name>
+		</attribute>
+		<attribute>
+			<description>Controller</description>
+			<name>controller</name>
+		</attribute>
+		<attribute>
+			<description>Toggle action</description>
+			<name>toggleAction</name>
+		</attribute>
+		<attribute>
+			<description>Bean</description>
+			<name>bean</name>
 		</attribute>
 	</tag>
 </facelet-taglib>

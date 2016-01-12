@@ -142,11 +142,15 @@ body {
 	font-weight: bold;
 }
 
-.ui-growl {   
-    position:fixed;
-    top: 40%;
-    left: 37%;
-    width: 250px;
-    height: 110px;
-    z-index:9999; 
+.ui-growl {
+	position: fixed;
+	top: 40%;
+	left: 37%;
+	width: 250px;
+	height: 110px;
+	z-index: 9999;
+}
+
+.selected-column {
+	background-color: #C8DBFF;
 }

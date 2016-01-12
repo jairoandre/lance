@@ -10,35 +10,39 @@
 		<h:form id="form">
 			<p:panel header="Serviços">
 				<lance:dataTable id="dataTable" controller="#{serviceController}">
-					<p:column sortBy="#{item.id}" headerText="Id">
-						<h:outputText value="#{item.id}" />
-					</p:column>
-					<p:column sortBy="#{item.title}" headerText="Nome">
+					<p:column sortBy="#{item.title}" headerText="Nome"
+						style="text-align: left;">
 						<h:outputText value="#{item.title}" />
 					</p:column>
 					<p:column sortBy="#{item.defaultHistory}"
-						headerText="Histórico padrão">
-						<h:outputText value="#{item.defaultHistory}" />
+						headerText="Histórico padrão" style="text-align: left;">
+						<h:outputText value="#{item.defaultHistory.title}" />
 					</p:column>
-					<p:column sortBy="#{item.documentType}" headerText="Tipo">
-						<h:outputText value="#{item.documentType}" />
+					<p:column sortBy="#{item.documentType}" headerText="Tipo"
+						style="text-align: left;">
+						<h:outputText value="#{item.documentType.title}" />
 					</p:column>
 					<p:column sortBy="#{item.ledgerAccount}"
-						headerText="Conta contábil">
-						<h:outputText value="#{item.ledgerAccount}" />
+						headerText="Conta contábil" style="text-align: left;">
+						<h:outputText value="#{item.ledgerAccount.title}" />
 					</p:column>
-					<p:column sortBy="#{item.resultAccount}"
-						headerText="Conta resultado">
-						<h:outputText value="#{item.resultAccount}" />
-					</p:column>
-					<p:column sortBy="#{item.costAccount}" headerText="Conta custo">
-						<h:outputText value="#{item.costAccount}" />
-					</p:column>
-					<p:column sortBy="#{item.billable}" headerText="Gera nota">
+					<p:column sortBy="#{item.billable}" headerText="Gera nota"
+						width="95" style="text-align: left;">
 						<h:outputText value="#{item.billable ? 'Sim' : 'Não'}" />
 					</p:column>
-					<p:column sortBy="#{item.groupable}" headerText="Agrupável">
+					<p:column sortBy="#{item.groupable}" headerText="Agrupável"
+						width="95" style="text-align: left;">
 						<h:outputText value="#{item.groupable ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Valores" style="text-align: center;"
+						width="50">
+						<p:commandLink id="currencyAction"
+							action="#{serviceController.currency(item)}"
+							styleClass="action-link">
+							<span class="fa fa-usd" />
+						</p:commandLink>
+						<p:tooltip id="toolCurrencyAction" for="currencyAction"
+							value="Valores monetários" />
 					</p:column>
 				</lance:dataTable>
 			</p:panel>

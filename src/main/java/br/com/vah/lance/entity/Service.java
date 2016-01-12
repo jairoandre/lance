@@ -44,18 +44,18 @@ public class Service extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
-	private MvDocumentType documentType;
+	private MvDocumentType documentType = new MvDocumentType();
 
 	@ManyToOne
 	@JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
-	private MvAccountChart ledgerAccount;
+	private MvAccountChart ledgerAccount = new MvAccountChart();
 
 	@Column(name = "SN_FATURAVEL")
 	private Boolean billable;
 
 	@Column(name = "SN_AGRUPAVEL")
 	private Boolean groupable;
-
+	
 	@Override
 	public Long getId() {
 		return id;

@@ -5,9 +5,12 @@
 	xmlns:p="http://primefaces.org/ui">
 	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold"
 		rendered="#{label != null}" />
-	<h:outputText value="#{value}" rendered="#{!editing}" />
-	<p:inputText id="#{id}" value="#{value}" required="#{required}"
-		label="#{label}" rendered="#{editing}">
+	<h:outputText value="#{value}"
+		rendered="#{editing == null ? false : !editing}" />
+	<p:inputText id="#{id}" value="#{value}"
+		required="#{required == null ? false : required}" label="#{label}"
+		rendered="#{editing == null ? true : editing}"
+		readonly="#{readonly == null ? false : readonly}">
 		<ui:insert />
 	</p:inputText>
 	<p:message for="#{id}" />

@@ -1,22 +1,17 @@
 package br.com.vah.lance.controller;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.service.ContractService;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.ServiceService;
 import br.com.vah.lance.util.GenericLazyDataModel;
-import br.com.vah.lance.util.LanceUtils;
 
 @SuppressWarnings("serial")
 @Named
@@ -27,11 +22,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	private @Inject ContractService service;
 
-	private @Inject ServiceService serviceService;
-
-	private List<SelectItem> services;
-
-	private Long serviceIdToAdd;
+	private Service beanService;
 
 	@PostConstruct
 	public void init() {
@@ -40,11 +31,9 @@ public class ContractController extends AbstractController<Contract> {
 		setLazyModel(new GenericLazyDataModel<Contract>(service));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
 	}
 
 	@Override
@@ -76,45 +65,13 @@ public class ContractController extends AbstractController<Contract> {
 	public String getEntityName() {
 		return "contrato";
 	}
-	
-	/**
-	 * @return the services
-	 */
-	public List<SelectItem> getServices() {
-		return services;
-	}
 
-	/**
-	 * @return the serviceIdToAdd
-	 */
-	public Long getServiceIdToAdd() {
-		return serviceIdToAdd;
-	}
-
-	/**
-	 * @param serviceIdToAdd
-	 *            the serviceIdToAdd to set
-	 */
-	public void setServiceIdToAdd(Long serviceIdToAdd) {
-		this.serviceIdToAdd = serviceIdToAdd;
-	}
-
-	public String addService() {
-		ServiceContract serviceContract = new ServiceContract();
-		Service service = serviceService.find(serviceIdToAdd);
-		serviceContract.setService(service);
-		serviceContract.setContract(getItem());
-		getItem().getServices().add(serviceContract);
-		services = LanceUtils.splice(services, serviceIdToAdd);
-		serviceIdToAdd = null;
-		return null;
-	}
-
-	public String removeService(Integer index) {
-		ServiceContract cs = getItem().getServices().get(index);
-		getItem().getServices().remove(index.intValue());
-		services.add(new SelectItem(cs.getService().getId(), cs.getService().getTitle()));
-		return null;
+	public void toggleService() {
+		if (getItem().getServices().contains(beanService)) {
+			getItem().getServices().remove(beanService);
+		} else {
+			getItem().getServices().add(beanService);
+		}
 	}
 
 }

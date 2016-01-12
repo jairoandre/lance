@@ -2,13 +2,13 @@ package br.com.vah.lance.service;
 
 import javax.ejb.Stateless;
 
-import br.com.vah.lance.entity.ServiceType;
+import br.com.vah.lance.entity.ServiceValue;
 
 @Stateless
-public class ServiceTypeService extends DataAccessService<ServiceType> {
+public class ServiceTypeService extends DataAccessService<ServiceValue> {
 
 	public ServiceTypeService() {
-		super(ServiceType.class);
+		super(ServiceValue.class);
 	}
 
 }

@@ -11,29 +11,37 @@
 			<p:panel header="Contratos">
 				<lance:dataTable id="dataTable" controller="#{contractController}"
 					label="contrato">
-					<p:column sortBy="#{item.id}" headerText="Id">
-						<h:outputText value="#{item.id}" />
-					</p:column>
-					<p:column sortBy="#{item.title}" headerText="Título">
+					<p:column sortBy="#{item.title}" headerText="Título"
+						style="text-align: left;">
 						<h:outputText value="#{item.title}" />
 					</p:column>
-					<p:column sortBy="#{item.beginDate}" headerText="Data de início">
+					<p:column sortBy="#{item.beginDate}" headerText="Data de início"
+						style="text-align: left;">
 						<h:outputText value="#{item.beginDate}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
-					<p:column sortBy="#{item.endDate}" headerText="Data de término">
+					<p:column sortBy="#{item.endDate}" headerText="Data de término"
+						style="text-align: left;">
 						<h:outputText value="#{item.endDate}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
-					<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste">
+					<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste"
+						style="text-align: left;">
 						<h:outputText value="#{item.changeDate}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
-					<p:column sortBy="#{item.client.title}" headerText="Cliente">
-						<h:outputText value="#{item.client.title}" />
+					<p:column sortBy="#{item.subject.title}" headerText="Locatário"
+						style="text-align: left;">
+						<h:outputText
+							value="#{item.subject == null ? '-' : item.subject.title}" />
+					</p:column>
+					<p:column sortBy="#{item.sector.title}" headerText="Setor"
+						style="text-align: left;">
+						<h:outputText
+							value="#{item.sector == null ? '-' : item.sector.title}" />
 					</p:column>
 				</lance:dataTable>
 			</p:panel>

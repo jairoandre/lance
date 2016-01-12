@@ -29,13 +29,15 @@ public class UserController extends AbstractController<User> {
 
 	private @Inject ServiceService serviceService;
 
+	private Service beanService;
+
 	private List<SelectItem> services;
 
 	private Long serviceIdToAdd;
 
 	private RolesEnum roleToAdd;
 
-	private List<SelectItem> roles;
+	private RolesEnum[] roles;
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -43,9 +45,11 @@ public class UserController extends AbstractController<User> {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
 		setLazyModel(new GenericLazyDataModel<User>(service));
+		getLazyModel().getSearchParams().getRelations().add("services");
 		getLazyModel().getSearchParams().getRelations().add("roles");
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
-		this.roles = RolesEnum.getSelectItems();
+		this.roles = RolesEnum.values();
+		setSearchField("login");
 	}
 
 	@Override
@@ -111,7 +115,7 @@ public class UserController extends AbstractController<User> {
 	/**
 	 * @return the roles
 	 */
-	public List<SelectItem> getRoles() {
+	public RolesEnum[] getRoles() {
 		return roles;
 	}
 
@@ -119,7 +123,7 @@ public class UserController extends AbstractController<User> {
 	 * @param roles
 	 *            the roles to set
 	 */
-	public void setRoles(List<SelectItem> roles) {
+	public void setRoles(RolesEnum[] roles) {
 		this.roles = roles;
 	}
 
@@ -153,19 +157,35 @@ public class UserController extends AbstractController<User> {
 		this.roleToAdd = roleToAdd;
 	}
 
-	public String addService() {
-		Service service = serviceService.find(serviceIdToAdd);
-		getItem().getServices().add(service);
-		services = LanceUtils.splice(services, serviceIdToAdd);
-		serviceIdToAdd = null;
-		return null;
+	/**
+	 * @return the beanService
+	 */
+	public Service getBeanService() {
+		return beanService;
 	}
 
-	public String removeService(Integer index) {
-		Service serv = getItem().getServices().get(index);
-		getItem().getServices().remove(index.intValue());
-		services.add(new SelectItem(serv.getId(), serv.getTitle()));
-		return null;
+	/**
+	 * @param beanService
+	 *            the beanService to set
+	 */
+	public void setBeanService(Service beanService) {
+		this.beanService = beanService;
+	}
+
+	public void toggleService() {
+		if (getItem().getServices().contains(beanService)) {
+			getItem().getServices().remove(beanService);
+		} else {
+			getItem().getServices().add(beanService);
+		}
+	}
+
+	public void toggleRole(RolesEnum role) {
+		if (getItem().getRoles().contains(role)) {
+			getItem().getRoles().remove(role);
+		} else {
+			getItem().getRoles().add(role);
+		}
 	}
 
 	public String addRole() {

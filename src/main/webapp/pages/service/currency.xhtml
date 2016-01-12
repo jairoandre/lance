@@ -1,0 +1,50 @@
+<ui:composition template="/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:lance="http://java.sun.com/jsf/composite/lance"
+	xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{serviceController.id}" />
+			<f:viewParam name="editing" value="#{serviceController.editing}" />
+			<f:viewAction action="#{serviceController.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+
+			<lance:editForm id="serviceForm" controller="#{serviceController}"
+				columns="3">
+
+				<uilance:inputText id="serviceTitle" label="Serviço"
+					value="#{serviceController.item.title}" readonly="true"
+					rendered="false" />
+
+				<f:facet name="other">
+
+					<p:fieldset legend="Valor" rendered="#{serviceController.editing}">
+						<h:panelGrid columns="3">
+							<uilance:inputDate id="beginDate" label="Data de início"
+								value="#{serviceController.serviceValue.beginDate}"
+								editing="true" />
+							<uilance:inputDate id="endDate" label="Data de término"
+								value="#{serviceController.serviceValue.endDate}" editing="true" />
+							<uilance:inputText id="value" label="Valor"
+								value="#{serviceController.serviceValue.value}" editing="true" />
+							<p:commandButton id="btnAddValue" value="Adicionar"
+								action="#{serviceController.addValue}" ajax="true" />
+						</h:panelGrid>
+					</p:fieldset>
+
+				</f:facet>
+
+			</lance:editForm>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

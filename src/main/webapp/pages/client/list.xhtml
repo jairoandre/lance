@@ -11,7 +11,8 @@
 			<p:panel header="Clientes">
 				<lance:dataTable id="dataTable" controller="#{clientController}"
 					renderDeleteAction="false" renderAddBtn="false">
-					<p:column sortBy="#{item.id}" headerText="Código" width="100">
+					<p:column sortBy="#{item.id}" headerText="Código" width="100"
+						style="text-align: left;">
 						<h:outputText value="#{item.id}" />
 					</p:column>
 					<p:column sortBy="#{item.title}" headerText="Nome"

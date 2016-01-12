@@ -19,15 +19,22 @@
 			<lance:manyToOneDialog id="defaultHistoryDlg"
 				tableContainerId="defaultHistoryContainer"
 				controller="#{defaultHistoryController}"
-				header="SELECIONAR HISTÓRICO PADRÃO" width="40%" rendered="true"
+				header="SELECIONAR HISTÓRICO PADRÃO" width="800" rendered="true"
 				update="defaultHistory"
 				bean="#{serviceController.item.defaultHistory}" />
 
 			<lance:manyToOneDialog id="documentTypeDlg"
 				tableContainerId="documentTypeContainer"
 				controller="#{documentTypeController}"
-				header="SELECIONAR TIPO DE DOCUMENTO" width="40%" rendered="true"
+				header="SELECIONAR TIPO DE DOCUMENTO" width="800" rendered="true"
 				update="documentType" bean="#{serviceController.item.documentType}" />
+
+			<lance:manyToOneDialog id="ledgerAccountDlg"
+				tableContainerId="ledgerAccountContainer"
+				controller="#{accountChartController}"
+				header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
+				update="ledgerAccount"
+				bean="#{serviceController.item.ledgerAccount}" />
 
 			<lance:editForm id="sectorPnl" controller="#{serviceController}"
 				columns="3">
@@ -44,13 +51,15 @@
 					required="true"
 					title="#{serviceController.item.documentType.title}"
 					value="#{serviceController.item.documentType.id}" />
-				<uilance:inputText id="ledgerAccount" label="Conta contábil"
-					value="#{serviceController.item.ledgerAccount}"
-					editing="#{serviceController.editing}" required="true" />
+				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
+					editing="#{serviceController.editing}" label="Conta contábil"
+					required="true"
+					title="#{serviceController.item.ledgerAccount.title}"
+					value="#{serviceController.item.ledgerAccount.id}" />
 				<uilance:selectBoolean id="billable" label="Gera nota"
 					value="#{serviceController.item.billable}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:selectBoolean id="groupable" label="Faturável"
+				<uilance:selectBoolean id="groupable" label="Condominial"
 					value="#{serviceController.item.groupable}"
 					editing="#{serviceController.editing}" required="true" />
 			</lance:editForm>

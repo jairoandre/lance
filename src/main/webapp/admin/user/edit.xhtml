@@ -15,84 +15,53 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="form">
+
+			<lance:manyToManyDialog id="addServiceDlg"
+				bean="#{userController.beanService}"
+				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
+				tableContainerId="addServiceContainer"
+				targetController="#{userController}"
+				targetItems="#{userController.item.services}"
+				toggleAction="toggleService" update="services" width="600" />
+
 			<lance:editForm id="contractPnl" controller="#{userController}"
 				columns="3">
 				<uilance:inputText id="name" label="Login"
 					value="#{userController.item.login}"
-					editing="#{userController.editing}" required="true" />
+					editing="#{userController.editing}" readonly="true" />
+
 				<f:facet name="other">
-					<h:panelGrid columns="2" columnClasses="td-align-top">
-						<p:panel id="addServicePnl" header="Serviços">
-							<h:panelGrid columns="3" rendered="#{userController.editing}">
-								<uilance:selectOne id="serviceSelectOne" label="Serviço"
-									value="#{userController.serviceIdToAdd}" editing="true"
-									rendered="#{userController.editing}" required="false"
-									renderMessage="false">
-									<f:selectItems value="#{userController.services}" />
-									<p:ajax update="addServiceBtn" process="@this serviceSelectOne" />
-								</uilance:selectOne>
-								<p:commandButton id="addServiceBtn"
-									action="#{userController.addService}" ajax="true"
-									update="addServicePnl serviceSelectOne" value="Adicionar"
-									process="@this serviceSelectOne"
-									disabled="#{userController.serviceIdToAdd == null}" />
-							</h:panelGrid>
-							<table>
-								<ui:repeat id="servicesRepeat" var="service"
-									value="#{userController.item.services}" varStatus="iter">
-									<tbody>
-										<tr>
-											<td>
-												<h:outputText value="#{service.title}" />
-											</td>
-											<td>
-												<p:commandButton id="removeBtn"
-													action="#{userController.removeService(iter.index)}"
-													ajax="true" update=":#{p:component('addServicePnl')}"
-													rendered="#{userController.editing}" validateClient="false"
-													value="Remover" process="@this" />
-											</td>
-										</tr>
-									</tbody>
-								</ui:repeat>
-							</table>
-						</p:panel>
-						<p:panel id="rolesPnl" header="Perfis">
-							<h:panelGrid columns="3" rendered="#{userController.editing}">
-								<uilance:selectOne id="roleSelectOne" label="Perfil"
-									value="#{userController.roleToAdd}" editing="true"
-									rendered="#{userController.editing}" required="false"
-									renderMessage="false">
-									<f:selectItems value="#{userController.roles}" />
-									<p:ajax update="addRoleBtn" process="@this roleSelectOne" />
-								</uilance:selectOne>
-								<p:commandButton id="addRoleBtn"
-									action="#{userController.addRole}" ajax="true"
-									update="rolesPnl roleSelectOne" value="Adicionar"
-									process="@this roleSelectOne"
-									disabled="#{userController.roleToAdd == null}" />
-							</h:panelGrid>
-							<table>
-								<ui:repeat id="rolesRepeat" var="role"
-									value="#{userController.item.roles.toArray()}" varStatus="iter">
-									<tbody>
-										<tr>
-											<td>
-												<h:outputText value="#{role.label}" />
-											</td>
-											<td>
-												<p:commandButton id="removeBtn"
-													action="#{userController.removeRole(iter.index)}"
-													ajax="true" update=":#{p:component('rolesPnl')}"
-													rendered="#{userController.editing}" validateClient="false"
-													value="Remover" process="@this" />
-											</td>
-										</tr>
-									</tbody>
-								</ui:repeat>
-							</table>
-						</p:panel>
-					</h:panelGrid>
+					<br />
+					<uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
+						bean="#{userController.beanService}" columnHeader="Serviço"
+						controller="#{userController}" dialog="addServiceDlg"
+						editing="#{userController.editing}"
+						emptyMessage="Sem serviços relacionados"
+						items="#{userController.item.services}"
+						toggleAction="toggleService" />
+					<br />
+
+					<h:panelGroup id="rolesContainer">
+						<p:dataTable id="roles" value="#{userController.roles}" var="role">
+							<p:column
+								styleClass="#{userController.item.roles.contains(role) ? 'selected-column' : ''}"
+								style="text-align: center;" width="50">
+								<p:commandLink ajax="true"
+									action="#{userController.toggleRole(role)}"
+									styleClass="action-link" process="@this"
+									update=":#{p:component('rolesContainer')}">
+									<h:panelGroup
+										styleClass="fa fa#{userController.item.roles.contains(role) ? '-check' : ''}-square-o" />
+								</p:commandLink>
+							</p:column>
+							<p:column headerText="Perfil"
+								styleClass="#{userController.item.roles.contains(role) ? 'selected-column' : ''}"
+								style="text-align: left;">
+								<h:outputText value="#{role.label}" />
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+
 
 				</f:facet>
 			</lance:editForm>

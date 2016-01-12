@@ -24,6 +24,8 @@ public class ClientController extends AbstractController<MvClient> {
 
 	private Long sectorIdToAdd;
 
+	private MvSector sector;
+
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
@@ -81,13 +83,27 @@ public class ClientController extends AbstractController<MvClient> {
 		this.sectorIdToAdd = sectorIdToAdd;
 	}
 
-	public String toggle(MvSector sector) {
+	/**
+	 * @return the sector
+	 */
+	public MvSector getSector() {
+		return sector;
+	}
+
+	/**
+	 * @param sector
+	 *            the sector to set
+	 */
+	public void setSector(MvSector sector) {
+		this.sector = sector;
+	}
+
+	public void toggle() {
 		if (getItem().getSectors().contains(sector)) {
 			getItem().getSectors().remove(sector);
 		} else {
 			getItem().getSectors().add(sector);
 		}
-		return null;
 	}
 
 	public Boolean selected(MvSector sector) {
