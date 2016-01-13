@@ -154,3 +154,7 @@ body {
 .selected-column {
 	background-color: #C8DBFF;
 }
+
+.left-align {
+	text-align: left !important;
+}

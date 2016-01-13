@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -229,11 +230,13 @@ public abstract class DataAccessService<T> {
 	public Criteria createCriteria(PaginatedSearchParam params) {
 		Session session = em.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(type);
+		Disjunction disjunction = Restrictions.disjunction();
 		for (Map.Entry<String, Object> par : params.getParams().entrySet()) {
 			if (par.getValue() != null) {
-				criteria.add(Restrictions.ilike(par.getKey(), (String) par.getValue(), MatchMode.ANYWHERE));
+				disjunction.add(Restrictions.ilike(par.getKey(), (String) par.getValue(), MatchMode.ANYWHERE));
 			}
 		}
+		criteria.add(disjunction);
 		return criteria;
 	}
 
@@ -256,7 +259,7 @@ public abstract class DataAccessService<T> {
 				selectCriteria.addOrder(Order.desc(params.getOrderBy()));
 			}
 		}
-		
+
 		for (String relation : params.getRelations()) {
 			selectCriteria.setFetchMode(relation, FetchMode.SELECT);
 		}

@@ -1,8 +1,8 @@
 package br.com.vah.lance.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -77,10 +77,12 @@ public class Contract extends BaseEntity {
 	@JoinTable(name = "TB_LANCA_CONTRATO_SERVICO", joinColumns = {
 			@JoinColumn(name = "ID_CONTRATO") }, inverseJoinColumns = {
 					@JoinColumn(name = "ID_SERVICO") }, schema = "USRDBVAH")
-	private List<Service> services;
+	private Set<Service> services;
 
 	public Contract() {
-		this.services = new ArrayList<>();
+		this.services = new LinkedHashSet<>();
+		this.subject = new MvClient();
+		this.sector = new MvSector();
 	}
 
 	/**
@@ -208,7 +210,7 @@ public class Contract extends BaseEntity {
 	/**
 	 * @return the services
 	 */
-	public List<Service> getServices() {
+	public Set<Service> getServices() {
 		return services;
 	}
 
@@ -216,7 +218,7 @@ public class Contract extends BaseEntity {
 	 * @param services
 	 *            the services to set
 	 */
-	public void setServices(List<Service> services) {
+	public void setServices(Set<Service> services) {
 		this.services = services;
 	}
 

@@ -19,6 +19,7 @@
 	<h:panelGroup id="#{cc.attrs.id}" layout="block">
 		<h:panelGrid id="#{cc.attrs.id}_grid" columns="2" style="width: 100%">
 			<h:panelGroup id="#{cc.attrs.id}_searchPnl">
+				<p:focus context="#{cc.attrs.id}_searchPnl" />
 				<p:inputText id="#{cc.attrs.id}_searchInput"
 					value="#{cc.attrs.controller.searchTerm}"
 					placeholder="Digite o termo..." style="min-width: 200px" />

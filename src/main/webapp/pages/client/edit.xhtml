@@ -18,8 +18,7 @@
 
 			<lance:manyToManyDialog id="addSectorDlg"
 				bean="#{clientController.sector}" controller="#{sectorController}"
-				header="RELACIONAR SETORES" tableContainerId="addSectorContainer"
-				targetController="#{clientController}"
+				header="RELACIONAR SETORES" targetController="#{clientController}"
 				targetItems="#{clientController.item.sectors}" toggleAction="toggle"
 				update="sectors" width="600" />
 

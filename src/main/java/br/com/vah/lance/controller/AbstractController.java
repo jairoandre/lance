@@ -27,6 +27,10 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
 	private String searchField = "title";
 
+	private T selectedItem;
+
+	private T[] selectedItems;
+
 	/**
 	 * @return the service
 	 */
@@ -244,10 +248,41 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 	}
 
 	/**
-	 * @param searchField the searchField to set
+	 * @param searchField
+	 *            the searchField to set
 	 */
 	public void setSearchField(String searchField) {
 		this.searchField = searchField;
+	}
+
+	/**
+	 * @return the selectedItem
+	 */
+	public T getSelectedItem() {
+		return selectedItem;
+	}
+
+	/**
+	 * @param selectedItem
+	 *            the selectedItem to set
+	 */
+	public void setSelectedItem(T selectedItem) {
+		this.selectedItem = selectedItem;
+	}
+
+	/**
+	 * @return the selectedItems
+	 */
+	public T[] getSelectedItems() {
+		return selectedItems;
+	}
+
+	/**
+	 * @param selectedItems
+	 *            the selectedItems to set
+	 */
+	public void setSelectedItems(T[] selectedItems) {
+		this.selectedItems = selectedItems;
 	}
 
 }

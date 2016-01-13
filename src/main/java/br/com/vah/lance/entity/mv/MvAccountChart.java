@@ -28,7 +28,7 @@ public class MvAccountChart extends BaseEntity {
 	private Long id;
 
 	@Column(name = "CD_CONTABIL")
-	private String ledgerAccount;
+	private String accountingCode;
 
 	@Column(name = "DS_CONTA")
 	private String title;
@@ -44,17 +44,18 @@ public class MvAccountChart extends BaseEntity {
 	}
 
 	/**
-	 * @return the ledgerAccount
+	 * @return the accountingCode
 	 */
-	public String getLedgerAccount() {
-		return ledgerAccount;
+	public String getAccountingCode() {
+		return accountingCode;
 	}
 
 	/**
-	 * @param ledgerAccount the ledgerAccount to set
+	 * @param accountingCode
+	 *            the accountingCode to set
 	 */
-	public void setLedgerAccount(String ledgerAccount) {
-		this.ledgerAccount = ledgerAccount;
+	public void setAccountingCode(String accountingCode) {
+		this.accountingCode = accountingCode;
 	}
 
 	/**
@@ -65,7 +66,8 @@ public class MvAccountChart extends BaseEntity {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;

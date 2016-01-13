@@ -3,13 +3,14 @@ package br.com.vah.lance.entity.mv;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -37,9 +38,10 @@ public class MvClient extends BaseEntity {
 	@Column(name = "NM_FORNECEDOR")
 	private String title;
 
-	@ElementCollection(targetClass = MvSector.class, fetch = FetchType.EAGER)
-	@CollectionTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = @JoinColumn(name = "CD_FORNECEDOR"), schema = "USRDBVAH" )
-	@Column(name = "CD_PRESTADOR", nullable = false)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
+			@JoinColumn(name = "CD_FORNECEDOR") }, inverseJoinColumns = {
+					@JoinColumn(name = "CD_SETOR") }, schema = "USRDBVAH")
 	private Set<MvSector> sectors;
 
 	public MvClient() {

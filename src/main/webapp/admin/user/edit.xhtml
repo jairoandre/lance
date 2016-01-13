@@ -19,7 +19,6 @@
 			<lance:manyToManyDialog id="addServiceDlg"
 				bean="#{userController.beanService}"
 				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-				tableContainerId="addServiceContainer"
 				targetController="#{userController}"
 				targetItems="#{userController.item.services}"
 				toggleAction="toggleService" update="services" width="800" />
@@ -43,9 +42,7 @@
 
 					<h:panelGroup id="rolesContainer">
 						<p:dataTable id="roles" value="#{userController.roles}" var="role">
-							<p:column
-								styleClass="#{userController.item.roles.contains(role) ? 'selected-column' : ''}"
-								style="text-align: center;" width="50">
+							<p:column style="text-align: center;" width="50">
 								<p:commandLink ajax="true"
 									action="#{userController.toggleRole(role)}"
 									styleClass="action-link" process="@this"
@@ -54,9 +51,7 @@
 										styleClass="fa fa#{userController.item.roles.contains(role) ? '-check' : ''}-square-o" />
 								</p:commandLink>
 							</p:column>
-							<p:column headerText="Perfil"
-								styleClass="#{userController.item.roles.contains(role) ? 'selected-column' : ''}"
-								style="text-align: left;">
+							<p:column headerText="Perfil" styleClass="left-align">
 								<h:outputText value="#{role.label}" />
 							</p:column>
 						</p:dataTable>

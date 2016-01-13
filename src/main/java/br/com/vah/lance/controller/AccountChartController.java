@@ -58,4 +58,10 @@ public class AccountChartController extends AbstractController<MvAccountChart> {
 		return "conta contábil";
 	}
 
+	@Override
+	public String search() {
+		getLazyModel().getSearchParams().getParams().put("accountingCode", getSearchTerm());
+		return super.search();
+	}
+
 }

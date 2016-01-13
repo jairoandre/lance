@@ -17,19 +17,18 @@
 		<h:form id="form">
 
 			<lance:manyToOneDialog id="subjectDlg"
-				tableContainerId="subjectContainer" controller="#{clientController}"
-				header="SELECIONAR CONTRATANTE" width="500" rendered="true"
-				update="subject" bean="#{contractController.item.subject}" />
+				controller="#{clientController}" header="SELECIONAR CONTRATANTE"
+				width="800" rendered="true" update="subject"
+				bean="#{contractController.item.subject}" />
 
 			<lance:manyToOneDialog id="sectorDlg"
-				tableContainerId="sectorContainer" controller="#{sectorController}"
-				header="SELECIONAR SETOR" width="500" rendered="true"
-				update="sector" bean="#{contractController.item.sector}" />
+				controller="#{sectorController}" header="SELECIONAR SETOR"
+				width="800" rendered="true" update="sector"
+				bean="#{contractController.item.sector}" />
 
 			<lance:manyToManyDialog id="addServiceDlg"
 				bean="#{contractController.beanService}"
 				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-				tableContainerId="addServiceContainer"
 				targetController="#{contractController}"
 				targetItems="#{contractController.item.services}"
 				toggleAction="toggleService" update="services" width="800" />
