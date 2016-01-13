@@ -27,7 +27,7 @@
 
 					<p:fieldset id="newValueFieldset" legend="Valor"
 						rendered="#{serviceController.editing}">
-						<h:panelGrid columns="3">
+						<h:panelGrid id="addServiceGrid" columns="3">
 							<uilance:inputDate id="beginDate" label="Data de início"
 								value="#{serviceController.serviceValue.beginDate}"
 								editing="true" />
@@ -38,25 +38,31 @@
 							<p:commandButton id="btnAddValue" value="Adicionar"
 								action="#{serviceController.addValue}" ajax="true"
 								process=":#{p:component('newValueFieldset')}"
-								update=":#{p:component('valuesDataTable')}" />
+								update=":#{p:component('valuesDataTable')} addServiceGrid" />
 						</h:panelGrid>
 					</p:fieldset>
 
+					<br />
+
 					<p:dataTable id="valuesDataTable"
-						value="#{serviceController.item.values}" var="value">
-						<p:column headerText="Data de início">
+						value="#{serviceController.item.values}" var="value"
+						emptyMessage="Sem valores registrados">
+						<p:column headerText="Data de início" style="text-align: left;"
+							width="100">
 							<h:outputText value="#{value.beginDate}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
-						<p:column headerText="Data de término">
+						<p:column headerText="Data de término" style="text-align: left;"
+							width="100">
 							<h:outputText value="#{value.endDate}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
-						<p:column headerText="Valor">
+						<p:column headerText="Valor" style="text-align: left;">
 							<h:outputText value="#{value.value}">
-								<f:convertNumber currencySymbol="R$" locale="pt_BR" />
+								<f:convertNumber currencySymbol="R$" locale="pt_BR"
+									minFractionDigits="2" />
 							</h:outputText>
 						</p:column>
 					</p:dataTable>

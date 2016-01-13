@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import br.com.vah.lance.entity.mv.MvAccountChart;
 import br.com.vah.lance.entity.mv.MvDefaultHistory;
 import br.com.vah.lance.entity.mv.MvDocumentType;
+import br.com.vah.lance.entity.mv.MvResultItem;
 
 @Entity
 @Table(name = "TB_LANCA_SERVICO", schema = "USRDBVAH")
@@ -55,6 +56,14 @@ public class Service extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
 	private MvAccountChart ledgerAccount = new MvAccountChart();
+
+	@ManyToOne
+	@JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
+	private MvAccountChart resultAccount = new MvAccountChart();
+
+	@ManyToOne
+	@JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
+	private MvResultItem costAccount = new MvResultItem();
 
 	@Column(name = "SN_FATURAVEL")
 	private Boolean billable;
@@ -133,6 +142,26 @@ public class Service extends BaseEntity {
 	 */
 	public void setLedgerAccount(MvAccountChart ledgerAccount) {
 		this.ledgerAccount = ledgerAccount;
+	}
+
+	public MvAccountChart getResultAccount() {
+		return resultAccount;
+	}
+
+	public void setResultAccount(MvAccountChart resultAccount) {
+		this.resultAccount = resultAccount;
+	}
+
+	public MvResultItem getCostAccount() {
+		return costAccount;
+	}
+
+	public void setCostAccount(MvResultItem costAccount) {
+		this.costAccount = costAccount;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	/**

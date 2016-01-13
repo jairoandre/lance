@@ -83,10 +83,9 @@
 			</f:facet>
 		</p:dataTable>
 
-		<p:defaultCommand target="#{cc.attrs.id}_searchBtn"
-			scope="#{cc.attrs.id}" />
-
 	</h:panelGroup>
+	<p:defaultCommand target="#{cc.attrs.id}_searchBtn"
+		scope="#{cc.attrs.id}_searchPnl" />
 	<p:dialog id="#{cc.attrs.id}_deleteDlg" header="Atenção"
 		widgetVar="#{cc.attrs.id}_deleteDlg" modal="true">
 		<h:outputText

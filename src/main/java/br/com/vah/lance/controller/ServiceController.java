@@ -26,9 +26,9 @@ public class ServiceController extends AbstractController<Service> {
 
 	@PostConstruct
 	public void init() {
-		serviceValue = new ServiceValue();
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
+		serviceValue = new ServiceValue();
 		setLazyModel(new GenericLazyDataModel<Service>(service));
 	}
 
@@ -53,6 +53,7 @@ public class ServiceController extends AbstractController<Service> {
 	}
 
 	public void addValue() {
+		serviceValue.setService(getItem());
 		getItem().getValues().add(serviceValue);
 		serviceValue = new ServiceValue();
 	}

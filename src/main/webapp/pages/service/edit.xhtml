@@ -36,6 +36,19 @@
 				update="ledgerAccount"
 				bean="#{serviceController.item.ledgerAccount}" />
 
+			<lance:manyToOneDialog id="resultAccountDlg"
+				tableContainerId="resultAccountContainer"
+				controller="#{accountChartController}"
+				header="SELECIONAR CONTA RESULTADO" width="800" rendered="true"
+				update="resultAccount"
+				bean="#{serviceController.item.resultAccount}" />
+
+			<lance:manyToOneDialog id="costAccountDlg"
+				tableContainerId="costAccountContainer"
+				controller="#{resultItemController}"
+				header="SELECIONAR CONTA DE CUSTO" width="800" rendered="true"
+				update="costAccount" bean="#{serviceController.item.costAccount}" />
+
 			<lance:editForm id="sectorPnl" controller="#{serviceController}"
 				columns="3">
 				<uilance:inputText id="name" label="Nome"
@@ -56,6 +69,15 @@
 					required="true"
 					title="#{serviceController.item.ledgerAccount.title}"
 					value="#{serviceController.item.ledgerAccount.id}" />
+				<uilance:manyToOne id="resultAccount" dialog="resultAccountDlg"
+					editing="#{serviceController.editing}" label="Conta resultado"
+					required="true"
+					title="#{serviceController.item.resultAccount.title}"
+					value="#{serviceController.item.resultAccount.id}" />
+				<uilance:manyToOne id="costAccount" dialog="costAccountDlg"
+					editing="#{serviceController.editing}" label="Conta resultado"
+					required="true" title="#{serviceController.item.costAccount.title}"
+					value="#{serviceController.item.costAccount.id}" />
 				<uilance:selectBoolean id="billable" label="Gera nota"
 					value="#{serviceController.item.billable}"
 					editing="#{serviceController.editing}" required="true" />
