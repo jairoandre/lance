@@ -74,4 +74,12 @@ public class ContractController extends AbstractController<Contract> {
 		}
 	}
 
+	public Service getBeanService() {
+		return beanService;
+	}
+
+	public void setBeanService(Service beanService) {
+		this.beanService = beanService;
+	}
+
 }

@@ -26,6 +26,14 @@
 				header="SELECIONAR SETOR" width="500" rendered="true"
 				update="sector" bean="#{contractController.item.sector}" />
 
+			<lance:manyToManyDialog id="addServiceDlg"
+				bean="#{contractController.beanService}"
+				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
+				tableContainerId="addServiceContainer"
+				targetController="#{contractController}"
+				targetItems="#{contractController.item.services}"
+				toggleAction="toggleService" update="services" width="800" />
+
 			<lance:editForm id="contractPnl" controller="#{contractController}"
 				columns="3">
 				<uilance:inputText id="name" label="Nome"
@@ -48,6 +56,16 @@
 					editing="#{contractController.editing}" label="Setor"
 					required="true" title="#{contractController.item.sector.title}"
 					value="#{contractController.item.sector.id}" />
+
+				<f:facet name="other">
+					<uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
+						bean="#{contractController.beanService}" columnHeader="Serviço"
+						controller="#{contractController}" dialog="addServiceDlg"
+						editing="#{contractController.editing}"
+						emptyMessage="Sem serviços relacionados"
+						items="#{contractController.item.services}"
+						toggleAction="toggleService" />
+				</f:facet>
 			</lance:editForm>
 		</h:form>
 	</ui:define>
