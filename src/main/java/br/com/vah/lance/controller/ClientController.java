@@ -1,8 +1,10 @@
 package br.com.vah.lance.controller;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -110,4 +112,17 @@ public class ClientController extends AbstractController<MvClient> {
 		return getItem().getSectors().contains(sector);
 	}
 
+	@Override
+	public String doSave() {
+		List<String> errors = service.verifySectors(getItem());
+		if (errors.isEmpty()) {
+			return super.doSave();
+		} else {
+			for (String error : errors) {
+				addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", error), false);
+			}
+		}
+		return null;
+
+	}
 }

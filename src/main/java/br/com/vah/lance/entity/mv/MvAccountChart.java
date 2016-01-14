@@ -33,6 +33,9 @@ public class MvAccountChart extends BaseEntity {
 	@Column(name = "DS_CONTA")
 	private String title;
 
+	@Column(name = "CD_ITEM_RES")
+	private Integer resultItemCode;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -76,6 +79,21 @@ public class MvAccountChart extends BaseEntity {
 	@Override
 	public String getLabelForSelectItem() {
 		return title;
+	}
+
+	/**
+	 * @return the resultItemCode
+	 */
+	public Integer getResultItemCode() {
+		return resultItemCode;
+	}
+
+	/**
+	 * @param resultItemCode
+	 *            the resultItemCode to set
+	 */
+	public void setResultItemCode(Integer resultItemCode) {
+		this.resultItemCode = resultItemCode;
 	}
 
 }

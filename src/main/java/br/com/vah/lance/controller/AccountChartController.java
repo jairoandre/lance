@@ -61,6 +61,7 @@ public class AccountChartController extends AbstractController<MvAccountChart> {
 	@Override
 	public String search() {
 		getLazyModel().getSearchParams().getParams().put("accountingCode", getSearchTerm());
+		getLazyModel().getSearchParams().getParams().put("resultItemCode", getSearchTerm());
 		return super.search();
 	}
 

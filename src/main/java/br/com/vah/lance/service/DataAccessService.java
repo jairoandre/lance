@@ -232,8 +232,13 @@ public abstract class DataAccessService<T> {
 		Criteria criteria = session.createCriteria(type);
 		Disjunction disjunction = Restrictions.disjunction();
 		for (Map.Entry<String, Object> par : params.getParams().entrySet()) {
-			if (par.getValue() != null) {
-				disjunction.add(Restrictions.ilike(par.getKey(), (String) par.getValue(), MatchMode.ANYWHERE));
+			Object value = par.getValue();
+			if (value != null) {
+				if (String.class.equals(value.getClass())) {
+					disjunction.add(Restrictions.ilike(par.getKey(), (String) value, MatchMode.ANYWHERE));
+				} else if (Integer.class.equals(value.getClass()) || Long.class.equals(value.getClass())) {
+					disjunction.add(Restrictions.eq(par.getKey(), value));
+				}
 			}
 		}
 		criteria.add(disjunction);

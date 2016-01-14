@@ -1,8 +1,15 @@
 package br.com.vah.lance.entity.mv;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -12,9 +19,9 @@ import br.com.vah.lance.entity.BaseEntity;
 @Entity
 @Table(name = "SETOR", schema = "DBAMV")
 @NamedQueries({ @NamedQuery(name = MvSector.ALL, query = "SELECT s FROM MvSector s"),
-	@NamedQuery(name = MvSector.COUNT, query = "SELECT COUNT(s) FROM MvSector s") })
+		@NamedQuery(name = MvSector.COUNT, query = "SELECT COUNT(s) FROM MvSector s") })
 public class MvSector extends BaseEntity {
-	
+
 	public final static String ALL = "MvSector.populatedItems";
 	public final static String COUNT = "MvSector.countTotal";
 
@@ -29,6 +36,11 @@ public class MvSector extends BaseEntity {
 
 	@Column(name = "NM_SETOR")
 	private String title;
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = { @JoinColumn(name = "CD_SETOR") }, inverseJoinColumns = {
+			@JoinColumn(name = "CD_FORNECEDOR") }, schema = "USRDBVAH")
+	private Set<MvClient> clients;
 
 	/**
 	 * @return the id
@@ -65,6 +77,21 @@ public class MvSector extends BaseEntity {
 	@Override
 	public String getLabelForSelectItem() {
 		return getTitle();
+	}
+
+	/**
+	 * @return the clients
+	 */
+	public Set<MvClient> getClients() {
+		return clients;
+	}
+
+	/**
+	 * @param clients
+	 *            the clients to set
+	 */
+	public void setClients(Set<MvClient> clients) {
+		this.clients = clients;
 	}
 
 }

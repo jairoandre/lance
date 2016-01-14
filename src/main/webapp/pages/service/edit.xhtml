@@ -32,8 +32,12 @@
 				header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
 				update="ledgerAccount"
 				bean="#{serviceController.item.ledgerAccount}">
+				<p:column sortBy="#{item.resultItemCode}" width="125"
+					headerText="Código reduzido" styleClass="left-align">
+					<h:outputText value="#{item.resultItemCode}" />
+				</p:column>
 				<p:column sortBy="#{item.accountingCode}"
-					headerText="Código contábil" styleClass="left-align">
+					headerText="Código contábil" width="125" styleClass="left-align">
 					<h:outputText value="#{item.accountingCode}" />
 				</p:column>
 			</lance:manyToOneDialog>
@@ -43,6 +47,10 @@
 				header="SELECIONAR CONTA RESULTADO" width="800" rendered="true"
 				update="resultAccount"
 				bean="#{serviceController.item.resultAccount}">
+				<p:column sortBy="#{item.resultItemCode}" width="50"
+					headerText="Código reduzido" styleClass="left-align">
+					<h:outputText value="#{item.resultItemCode}" />
+				</p:column>
 				<p:column sortBy="#{item.accountingCode}"
 					headerText="Código contábil" styleClass="left-align">
 					<h:outputText value="#{item.accountingCode}" />
@@ -81,7 +89,7 @@
 					title="#{serviceController.item.resultAccount.title}"
 					value="#{serviceController.item.resultAccount.id}" />
 				<uilance:manyToOne id="costAccount" dialog="costAccountDlg"
-					editing="#{serviceController.editing}" label="Conta resultado"
+					editing="#{serviceController.editing}" label="Conta de custo"
 					required="true" title="#{serviceController.item.costAccount.title}"
 					value="#{serviceController.item.costAccount.id}" />
 				<uilance:selectBoolean id="billable" label="Gera nota"
