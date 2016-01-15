@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:outputLabel for="#{id}" value="#{label}:" style="font-weight:bold" />
+	<h:outputText value="#{value == null ? '-' : value.label}"
+		rendered="#{!editing}" />
+	<p:selectOneMenu id="#{id}" value="#{value}" required="#{required}"
+		label="#{label}" rendered="#{editing}">
+		<f:selectItem itemLabel="Selecione..." />
+		<f:selectItems value="#{options}" var="option"
+			itemLabel="#{option.label}" itemValue="#{option}" />
+	</p:selectOneMenu>
+	<p:message for="#{id}"
+		rendered="#{renderMessage == null ? true : renderMessage}" />
+</ui:composition>

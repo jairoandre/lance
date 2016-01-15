@@ -31,6 +31,7 @@
 				controller="#{accountChartController}"
 				header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
 				update="ledgerAccount"
+				placeholder="Digite o termo (descrição, código)..."
 				bean="#{serviceController.item.ledgerAccount}">
 				<p:column sortBy="#{item.resultItemCode}" width="125"
 					headerText="Código reduzido" styleClass="left-align">
@@ -46,13 +47,14 @@
 				controller="#{accountChartController}"
 				header="SELECIONAR CONTA RESULTADO" width="800" rendered="true"
 				update="resultAccount"
+				placeholder="Digite o termo (descrição, código)..."
 				bean="#{serviceController.item.resultAccount}">
-				<p:column sortBy="#{item.resultItemCode}" width="50"
+				<p:column sortBy="#{item.resultItemCode}" width="125"
 					headerText="Código reduzido" styleClass="left-align">
 					<h:outputText value="#{item.resultItemCode}" />
 				</p:column>
 				<p:column sortBy="#{item.accountingCode}"
-					headerText="Código contábil" styleClass="left-align">
+					headerText="Código contábil" width="125" styleClass="left-align">
 					<h:outputText value="#{item.accountingCode}" />
 				</p:column>
 			</lance:manyToOneDialog>
@@ -98,6 +100,10 @@
 				<uilance:selectBoolean id="groupable" label="Condominial"
 					value="#{serviceController.item.groupable}"
 					editing="#{serviceController.editing}" required="true" />
+				<uilance:selectOneEnum id="type" label="Tipo de serviço"
+					value="#{serviceController.item.type}"
+					editing="#{serviceController.editing}" required="true"
+					options="#{serviceController.types}" />
 			</lance:editForm>
 		</h:form>
 	</ui:define>

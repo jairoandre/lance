@@ -18,20 +18,9 @@
 
 			<lance:manyToOneDialog id="subjectDlg"
 				controller="#{clientController}" header="SELECIONAR CONTRATANTE"
-				width="800" rendered="true" update="subject"
-				bean="#{contractController.item.subject}" />
-
-			<lance:manyToOneDialog id="sectorDlg"
-				controller="#{sectorController}" header="SELECIONAR SETOR"
-				width="800" rendered="true" update="sector"
-				bean="#{contractController.item.sector}" />
-
-			<lance:manyToManyDialog id="addServiceDlg"
-				bean="#{contractController.beanService}"
-				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-				targetController="#{contractController}"
-				targetItems="#{contractController.item.services}"
-				toggleAction="toggleService" update="services" width="800" />
+				width="800" rendered="true" update="subject servicesContract"
+				bean="#{contractController.item.subject}"
+				listener="createServicesBySectors" />
 
 			<lance:editForm id="contractPnl" controller="#{contractController}"
 				columns="3">
@@ -51,19 +40,41 @@
 					editing="#{contractController.editing}" label="Contratante"
 					required="true" title="#{contractController.item.subject.title}"
 					value="#{contractController.item.subject.id}" />
-				<uilance:manyToOne id="sector" dialog="sectorDlg"
-					editing="#{contractController.editing}" label="Setor"
-					required="true" title="#{contractController.item.sector.title}"
-					value="#{contractController.item.sector.id}" />
 
 				<f:facet name="other">
-					<uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
-						bean="#{contractController.beanService}" columnHeader="Serviço"
-						controller="#{contractController}" dialog="addServiceDlg"
-						editing="#{contractController.editing}"
-						emptyMessage="Sem serviços relacionados"
-						items="#{contractController.item.services}"
-						toggleAction="toggleService" />
+
+					<lance:manyToOneDialog id="sectorDlg"
+						controller="#{sectorController}" header="SELECIONAR SETOR"
+						width="800" rendered="true" update="sector"
+						bean="#{contractController.item.sector}" />
+
+					<lance:manyToManyDialog id="addServiceDlg"
+						bean="#{contractController.beanService}"
+						controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
+						targetController="#{contractController}"
+						targetItems="#{contractController.item.services}"
+						toggleAction="toggleService" update="services" width="800" />
+
+					<h:panelGroup id="servicesContract" layout="block">
+
+						<p:accordionPanel value="#{contractController.item.services}"
+							var="service"
+							rendered="#{contractController.item.services.size() > 0}">
+							<p:tab
+								title="#{service.sector == null ? 'Sem setor' : service.sector.title}">
+
+								<uilance:manyToMany id="services_#{service.sector.id}"
+									addBtnLabel="Relacionar serviços"
+									bean="#{contractController.beanService}" columnHeader="Serviço"
+									controller="#{contractController}" dialog="addServiceDlg"
+									editing="#{contractController.editing}"
+									emptyMessage="Sem serviços relacionados"
+									items="#{service.services}" toggleAction="toggleService" />
+
+							</p:tab>
+						</p:accordionPanel>
+
+					</h:panelGroup>
 				</f:facet>
 			</lance:editForm>
 		</h:form>

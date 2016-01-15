@@ -8,11 +8,13 @@
 	xmlns:uilance="http://vah.com.br/lance">
 	<ui:define name="content">
 		<h:form id="form">
-			<lance:dataTable id="dataTable" controller="#{userController}">
-				<p:column sortBy="#{item.login}" headerText="Login">
-					<h:outputText value="#{item.login}" />
-				</p:column>
-			</lance:dataTable>
+			<p:panel header="Usuários">
+				<lance:dataTable id="dataTable" controller="#{userController}">
+					<p:column sortBy="#{item.login}" headerText="Login">
+						<h:outputText value="#{item.login}" />
+					</p:column>
+				</lance:dataTable>
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>

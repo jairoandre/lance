@@ -129,6 +129,37 @@
 		</attribute>
 	</tag>
 	<tag>
+		<tag-name>selectOneEnum</tag-name>
+		<source>tags/selectOneEnum.xhtml</source>
+		<attribute>
+			<description>Id</description>
+			<name>id</name>
+		</attribute>
+		<attribute>
+			<description>Value</description>
+			<name>value</name>
+		</attribute>
+		<attribute>
+			<description>Label</description>
+			<name>label</name>
+		</attribute>
+		<attribute>
+			<description>Editing</description>
+			<name>editing</name>
+		</attribute>
+		<attribute>
+			<description>Options enumeration</description>
+			<name>options</name>
+		</attribute>
+		<attribute>
+			<description>Required</description>
+			<name>required</name>
+		</attribute>
+		<attribute>
+			<name>renderMessage</name>
+		</attribute>
+	</tag>
+	<tag>
 		<tag-name>manyToOne</tag-name>
 		<source>tags/manyToOne.xhtml</source>
 		<attribute>

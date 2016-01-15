@@ -142,20 +142,6 @@ body {
 	font-weight: bold;
 }
 
-.ui-growl {
-	position: fixed;
-	top: 40%;
-	right: 5px;
-	width: 500px !important;
-	height: 110px;
-	z-index: 9999;
-}
-
-.ui-growl-message {
-	width: auto !important;
-	float: left !important;
-}
-
 .selected-column {
 	background-color: #C8DBFF;
 }

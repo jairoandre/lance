@@ -7,6 +7,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceValue;
 import br.com.vah.lance.service.DataAccessService;
@@ -24,12 +25,15 @@ public class ServiceController extends AbstractController<Service> {
 
 	private ServiceValue serviceValue;
 
+	private ServiceTypesEnum[] types;
+
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
 		serviceValue = new ServiceValue();
 		setLazyModel(new GenericLazyDataModel<Service>(service));
+		types = ServiceTypesEnum.values();
 	}
 
 	@Override
@@ -89,6 +93,21 @@ public class ServiceController extends AbstractController<Service> {
 	 */
 	public void setServiceValue(ServiceValue serviceValue) {
 		this.serviceValue = serviceValue;
+	}
+
+	/**
+	 * @return the types
+	 */
+	public ServiceTypesEnum[] getTypes() {
+		return types;
+	}
+
+	/**
+	 * @param types
+	 *            the types to set
+	 */
+	public void setTypes(ServiceTypesEnum[] types) {
+		this.types = types;
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,18 +11,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.vah.lance.entity.mv.MvClient;
-import br.com.vah.lance.entity.mv.MvSector;
 
 /**
  * The persistent class for the TB_LANCA_CONTRATO database table.
@@ -62,27 +59,15 @@ public class Contract extends BaseEntity {
 	private Date changeDate;
 
 	@ManyToOne
-	@JoinColumn(name = "ID_FORNECEDOR_PROPRIETARIO", nullable = true)
-	private MvClient owner;
-
-	@ManyToOne
 	@JoinColumn(name = "ID_FORNECEDOR_CONTRATANTE", nullable = false)
 	private MvClient subject;
 
-	@ManyToOne
-	@JoinColumn(name = "ID_SETOR", nullable = false)
-	private MvSector sector;
-
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "TB_LANCA_CONTRATO_SERVICO", joinColumns = {
-			@JoinColumn(name = "ID_CONTRATO") }, inverseJoinColumns = {
-					@JoinColumn(name = "ID_SERVICO") }, schema = "USRDBVAH")
-	private Set<Service> services;
+	@OneToMany(mappedBy = "contract", fetch = FetchType.EAGER)
+	private Set<ServiceContract> services;
 
 	public Contract() {
 		this.services = new LinkedHashSet<>();
 		this.subject = new MvClient();
-		this.sector = new MvSector();
 	}
 
 	/**
@@ -163,21 +148,6 @@ public class Contract extends BaseEntity {
 	}
 
 	/**
-	 * @return the owner
-	 */
-	public MvClient getOwner() {
-		return owner;
-	}
-
-	/**
-	 * @param owner
-	 *            the owner to set
-	 */
-	public void setOwner(MvClient owner) {
-		this.owner = owner;
-	}
-
-	/**
 	 * @return the subject
 	 */
 	public MvClient getSubject() {
@@ -193,24 +163,9 @@ public class Contract extends BaseEntity {
 	}
 
 	/**
-	 * @return the sector
-	 */
-	public MvSector getSector() {
-		return sector;
-	}
-
-	/**
-	 * @param sector
-	 *            the sector to set
-	 */
-	public void setSector(MvSector sector) {
-		this.sector = sector;
-	}
-
-	/**
 	 * @return the services
 	 */
-	public Set<Service> getServices() {
+	public Set<ServiceContract> getServices() {
 		return services;
 	}
 
@@ -218,7 +173,7 @@ public class Contract extends BaseEntity {
 	 * @param services
 	 *            the services to set
 	 */
-	public void setServices(Set<Service> services) {
+	public void setServices(Set<ServiceContract> services) {
 		this.services = services;
 	}
 

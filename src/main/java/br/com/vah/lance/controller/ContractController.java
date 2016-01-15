@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.entity.Contract;
-import br.com.vah.lance.entity.Service;
+import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.service.ContractService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
@@ -22,7 +22,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	private @Inject ContractService service;
 
-	private Service beanService;
+	private ServiceContract beanService;
 
 	@PostConstruct
 	public void init() {
@@ -74,11 +74,11 @@ public class ContractController extends AbstractController<Contract> {
 		}
 	}
 
-	public Service getBeanService() {
+	public ServiceContract getBeanService() {
 		return beanService;
 	}
 
-	public void setBeanService(Service beanService) {
+	public void setBeanService(ServiceContract beanService) {
 		this.beanService = beanService;
 	}
 

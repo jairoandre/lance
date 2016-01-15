@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.mv.MvAccountChart;
 import br.com.vah.lance.entity.mv.MvDefaultHistory;
 import br.com.vah.lance.entity.mv.MvDocumentType;
@@ -73,6 +76,10 @@ public class Service extends BaseEntity {
 
 	@OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<ServiceValue> values = new LinkedHashSet<>();
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "CD_TIPO")
+	private ServiceTypesEnum type;
 
 	@Override
 	public Long getId() {
@@ -144,24 +151,34 @@ public class Service extends BaseEntity {
 		this.ledgerAccount = ledgerAccount;
 	}
 
+	/**
+	 * @return the resultAccount
+	 */
 	public MvAccountChart getResultAccount() {
 		return resultAccount;
 	}
 
+	/**
+	 * @param resultAccount
+	 *            the resultAccount to set
+	 */
 	public void setResultAccount(MvAccountChart resultAccount) {
 		this.resultAccount = resultAccount;
 	}
 
+	/**
+	 * @return the costAccount
+	 */
 	public MvResultItem getCostAccount() {
 		return costAccount;
 	}
 
+	/**
+	 * @param costAccount
+	 *            the costAccount to set
+	 */
 	public void setCostAccount(MvResultItem costAccount) {
 		this.costAccount = costAccount;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	/**
@@ -207,6 +224,21 @@ public class Service extends BaseEntity {
 	 */
 	public void setValues(Set<ServiceValue> values) {
 		this.values = values;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public ServiceTypesEnum getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(ServiceTypesEnum type) {
+		this.type = type;
 	}
 
 	@Override

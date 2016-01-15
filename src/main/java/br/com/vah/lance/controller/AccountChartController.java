@@ -61,7 +61,15 @@ public class AccountChartController extends AbstractController<MvAccountChart> {
 	@Override
 	public String search() {
 		getLazyModel().getSearchParams().getParams().put("accountingCode", getSearchTerm());
-		getLazyModel().getSearchParams().getParams().put("resultItemCode", getSearchTerm());
+		getLazyModel().getSearchParams().getParams().put("resultItemCode", null);
+		try {
+			Integer convertedValue = Integer.valueOf(getSearchTerm());
+			getLazyModel().getSearchParams().getParams().put("resultItemCode", convertedValue);
+		} catch (Exception e) {
+			/**
+			 * Cannot convert to integer
+			 */
+		}
 		return super.search();
 	}
 

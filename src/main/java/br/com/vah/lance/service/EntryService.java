@@ -13,6 +13,7 @@ import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Entry;
 import br.com.vah.lance.entity.Service;
+import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.entity.User;
 
 @Stateless
@@ -58,11 +59,10 @@ public class EntryService extends DataAccessService<Entry> {
 		 * para o serviço.
 		 */
 		for (Contract contract : contracts) {
-			for (Service service : contract.getServices()) {
+			for (ServiceContract service : contract.getServices()) {
 				if (user.getServices().contains(service)) {
 					Map<Contract, Entry> map = entries.get(service);
 					Entry entry = new Entry(contract);
-					entry.setService(service);
 					entry.setContractValue(BigDecimal.ZERO);
 					entry.setValue(BigDecimal.ZERO);
 					entry.setUserForEntry(user);

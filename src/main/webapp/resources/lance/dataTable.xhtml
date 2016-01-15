@@ -13,31 +13,30 @@
 	<composite:attribute name="renderEditAction" />
 	<composite:attribute name="renderDeleteAction" />
 	<composite:attribute name="renderActionColumn" />
+	<composite:attribute name="placeholder" />
 </composite:interface>
 
 <composite:implementation>
 	<h:panelGroup id="#{cc.attrs.id}" layout="block">
-		<h:panelGrid id="#{cc.attrs.id}_grid" columns="2" style="width: 100%">
-			<h:panelGroup id="#{cc.attrs.id}_searchPnl">
-				<p:focus context="#{cc.attrs.id}_searchPnl" />
-				<p:inputText id="#{cc.attrs.id}_searchInput"
-					value="#{cc.attrs.controller.searchTerm}"
-					placeholder="Digite o termo..." style="min-width: 200px" />
-				<p:commandButton value="Buscar" id="#{cc.attrs.id}_searchBtn"
-					action="#{cc.attrs.controller.search}" icon="fa fa-search"
-					ajax="true" process="#{cc.attrs.id}_searchPnl"
-					update="#{cc.attrs.id}_table"
-					title="Procurar #{cc.attrs.controller.entityName}"
-					style="margin-left: 5px;" />
-			</h:panelGroup>
+		<h:panelGroup id="#{cc.attrs.id}_searchPnl" layout="block"
+			style="margin-bottom: 10px;">
+			<p:focus context="#{cc.attrs.id}_searchPnl" />
+			<p:inputText id="#{cc.attrs.id}_searchInput"
+				value="#{cc.attrs.controller.searchTerm}"
+				placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
+				style="width: 80%" />
+			<p:commandButton value="Buscar" id="#{cc.attrs.id}_searchBtn"
+				action="#{cc.attrs.controller.search}" icon="fa fa-search"
+				ajax="true" process="#{cc.attrs.id}_searchPnl"
+				update="#{cc.attrs.id}_table"
+				title="Procurar #{cc.attrs.controller.entityName}"
+				style="margin-left: 10px;" />
 			<p:commandButton value="Novo #{cc.attrs.controller.entityName}"
 				action="#{cc.attrs.controller.add}" icon="ui-icon-star"
 				title="Criar novo #{cc.attrs.controller.entityName}"
 				rendered="#{cc.attrs.renderAddBtn == null ? true : cc.attrs.renderAddBtn}"
 				style="float: right;" />
-		</h:panelGrid>
-		<br />
-
+		</h:panelGroup>
 		<p:dataTable id="#{cc.attrs.id}_table" var="item"
 			widgetVar="#{cc.attrs.id}" value="#{cc.attrs.controller.lazyModel}"
 			paginator="true" emptyMessage="Sem registros"

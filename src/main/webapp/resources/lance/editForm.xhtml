@@ -14,10 +14,10 @@
 
 <composite:implementation>
 	<p:panel id="#{cc.attrs.id}" header="#{cc.attrs.controller.editLabel}">
+		<p:focus context="#{cc.attrs.id}_Grid" />
 		<h:panelGrid id="#{cc.attrs.id}_Grid"
 			columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}"
 			cellpadding="5">
-			<p:focus context="#{cc.attrs.id}_Grid" />
 			<composite:insertChildren />
 		</h:panelGrid>
 		<composite:renderFacet name="other" />

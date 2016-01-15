@@ -27,11 +27,10 @@ public class ClientService extends DataAccessService<MvClient> {
 		List<String> errors = new ArrayList<String>();
 		for (MvSector sector : item.getSectors()) {
 			MvSector attachedSector = sectorService.find(sector.getId());
-			for (MvClient relatedClient : attachedSector.getClients()) {
-				if (!relatedClient.equals(item)) {
-					errors.add("Setor [" + sector.getTitle() + "] já relacionado.");
-					break;
-				}
+			MvClient relatedClient = attachedSector.getClient();
+			if (relatedClient != null && !relatedClient.equals(item)) {
+				errors.add(String.format("Setor [%s] relacionado com o cliente [%s].", sector.getTitle(),
+						relatedClient.getTitle()));
 			}
 		}
 		return errors;

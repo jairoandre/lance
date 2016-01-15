@@ -1,15 +1,11 @@
 package br.com.vah.lance.entity.mv;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -37,10 +33,10 @@ public class MvSector extends BaseEntity {
 	@Column(name = "NM_SETOR")
 	private String title;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = { @JoinColumn(name = "CD_SETOR") }, inverseJoinColumns = {
 			@JoinColumn(name = "CD_FORNECEDOR") }, schema = "USRDBVAH")
-	private Set<MvClient> clients;
+	private MvClient client;
 
 	/**
 	 * @return the id
@@ -80,18 +76,18 @@ public class MvSector extends BaseEntity {
 	}
 
 	/**
-	 * @return the clients
+	 * @return the client
 	 */
-	public Set<MvClient> getClients() {
-		return clients;
+	public MvClient getClient() {
+		return client;
 	}
 
 	/**
-	 * @param clients
-	 *            the clients to set
+	 * @param client
+	 *            the client to set
 	 */
-	public void setClients(Set<MvClient> clients) {
-		this.clients = clients;
+	public void setClient(MvClient client) {
+		this.client = client;
 	}
 
 }

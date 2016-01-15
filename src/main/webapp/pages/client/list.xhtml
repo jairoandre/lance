@@ -19,6 +19,10 @@
 						style="text-align: left;">
 						<h:outputText value="#{item.title}" />
 					</p:column>
+					<p:column headerText="Setores" style="text-align: left;"
+						width="100">
+						<h:outputText value="#{item.sectors.size()}" />
+					</p:column>
 				</lance:dataTable>
 			</p:panel>
 		</h:form>

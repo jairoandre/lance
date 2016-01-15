@@ -58,8 +58,9 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 		searchParams.setAsc(SortOrder.ASCENDING.equals(sortOrder));
 
 		datasource = crudService.paginatedSearch(searchParams);
-
+		
 		setRowCount(crudService.paginatedCount(searchParams));
+		
 		return datasource;
 	}
 

@@ -13,6 +13,7 @@
 	<composite:attribute name="update" />
 	<composite:attribute name="controller" />
 	<composite:attribute name="bean" />
+	<composite:attribute name="placeholder" />
 </composite:interface>
 
 <composite:implementation>
@@ -23,7 +24,7 @@
 		<p:ajax event="close" update=":#{p:component(cc.attrs.update)}" />
 		<lance:dataTable id="#{cc.attrs.id}_tbl"
 			controller="#{cc.attrs.controller}" renderAddBtn="false"
-			renderActionColumn="false">
+			renderActionColumn="false" placeholder="#{cc.attrs.placeholder}">
 			<p:column style="text-align: center;" width="50">
 				<p:commandLink ajax="true" styleClass="action-link" process="@this"
 					update="@(.action-link)">
