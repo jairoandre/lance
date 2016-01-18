@@ -1,5 +1,7 @@
 package br.com.vah.lance.controller;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -8,7 +10,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.entity.Contract;
+import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceContract;
+import br.com.vah.lance.entity.mv.MvClient;
+import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.ContractService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
@@ -22,7 +27,7 @@ public class ContractController extends AbstractController<Contract> {
 
 	private @Inject ContractService service;
 
-	private ServiceContract beanService;
+	private Service serviceBean;
 
 	@PostConstruct
 	public void init() {
@@ -34,6 +39,21 @@ public class ContractController extends AbstractController<Contract> {
 	@Override
 	public void onLoad() {
 		super.onLoad();
+	}
+
+	public void onLoadSubject() {
+		MvClient subject = getItem().getSubject();
+		if (subject != null) {
+			Set<ServiceContract> services = new LinkedHashSet<>();
+			for (MvSector sector : subject.getSectors()) {
+				ServiceContract service = new ServiceContract();
+				service.setSector(sector);
+				service.setContract(getItem());
+				service.setServices(new LinkedHashSet<Service>());
+				services.add(service);
+			}
+			getItem().setServices(services);
+		}
 	}
 
 	@Override
@@ -66,20 +86,28 @@ public class ContractController extends AbstractController<Contract> {
 		return "contrato";
 	}
 
-	public void toggleService() {
-		if (getItem().getServices().contains(beanService)) {
-			getItem().getServices().remove(beanService);
+	/**
+	 * @return the serviceBean
+	 */
+	public Service getServiceBean() {
+		return serviceBean;
+	}
+
+	/**
+	 * @param serviceBean
+	 *            the serviceBean to set
+	 */
+	public void setServiceBean(Service serviceBean) {
+		this.serviceBean = serviceBean;
+	}
+
+	public void toggleService(ServiceContract service) {
+		if (service.getServices().contains(serviceBean)) {
+			service.getServices().remove(serviceBean);
 		} else {
-			getItem().getServices().add(beanService);
+			service.getServices().add(serviceBean);
 		}
-	}
 
-	public ServiceContract getBeanService() {
-		return beanService;
-	}
-
-	public void setBeanService(ServiceContract beanService) {
-		this.beanService = beanService;
 	}
 
 }

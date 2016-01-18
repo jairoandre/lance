@@ -38,11 +38,6 @@
 						<h:outputText
 							value="#{item.subject == null ? '-' : item.subject.title}" />
 					</p:column>
-					<p:column sortBy="#{item.sector.title}" headerText="Setor"
-						style="text-align: left;">
-						<h:outputText
-							value="#{item.sector == null ? '-' : item.sector.title}" />
-					</p:column>
 				</lance:dataTable>
 			</p:panel>
 		</h:form>

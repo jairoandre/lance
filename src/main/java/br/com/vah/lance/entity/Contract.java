@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -62,7 +63,7 @@ public class Contract extends BaseEntity {
 	@JoinColumn(name = "ID_FORNECEDOR_CONTRATANTE", nullable = false)
 	private MvClient subject;
 
-	@OneToMany(mappedBy = "contract", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "contract", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<ServiceContract> services;
 
 	public Contract() {

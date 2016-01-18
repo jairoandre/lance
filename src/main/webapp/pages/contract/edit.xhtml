@@ -16,11 +16,35 @@
 	<ui:define name="content">
 		<h:form id="form">
 
-			<lance:manyToOneDialog id="subjectDlg"
-				controller="#{clientController}" header="SELECIONAR CONTRATANTE"
-				width="800" rendered="true" update="subject servicesContract"
-				bean="#{contractController.item.subject}"
-				listener="createServicesBySectors" />
+			<!-- Modal de seleção de cliente -->
+			<p:dialog id="subjectDlg" widgetVar="subjectDlg" modal="true"
+				header="SELECIONAR CONTRATANTE" width="800">
+				<p:ajax event="close" listener="#{contractController.onLoadSubject}"
+					update=":#{p:component('subject')} :#{p:component('servicesContract')}"
+					process="@this" />
+				<lance:dataTable id="subjectDlgTbl" controller="#{clientController}"
+					renderAddBtn="false" renderActionColumn="false">
+					<p:column style="text-align: center;" width="50">
+						<p:commandLink ajax="true" styleClass="action-link"
+							process="@this" update="@(.action-link)">
+							<f:setPropertyActionListener value="#{item}"
+								target="#{contractController.item.subject}" />
+							<h:panelGroup
+								styleClass="fa fa#{(contractController.item.subject.id == item.id) ? '-dot' : ''}-circle-o" />
+						</p:commandLink>
+					</p:column>
+					<p:column sortBy="#{item.title}" headerText="Descrição"
+						style="text-align: left;">
+						<h:outputText value="#{item.title}" />
+					</p:column>
+				</lance:dataTable>
+
+				<f:facet name="footer">
+					<p:commandButton id="subjectDlgCloseBtn" ajax="true"
+						onclick="PF('subjectDlg').hide()" value="Fechar diálogo" />
+				</f:facet>
+
+			</p:dialog>
 
 			<lance:editForm id="contractPnl" controller="#{contractController}"
 				columns="3">
@@ -43,39 +67,129 @@
 
 				<f:facet name="other">
 
-					<lance:manyToOneDialog id="sectorDlg"
-						controller="#{sectorController}" header="SELECIONAR SETOR"
-						width="800" rendered="true" update="sector"
-						bean="#{contractController.item.sector}" />
+					<h:panelGroup id="servicesContract"
+						styleClass="services-contract-panel" layout="block">
 
-					<lance:manyToManyDialog id="addServiceDlg"
-						bean="#{contractController.beanService}"
-						controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-						targetController="#{contractController}"
-						targetItems="#{contractController.item.services}"
-						toggleAction="toggleService" update="services" width="800" />
+						<p:dataList id="servicesContractDataList" var="service"
+							emptyMessage="Sem setores" type="none"
+							value="#{contractController.item.services.toArray()}">
 
-					<h:panelGroup id="servicesContract" layout="block">
+							<f:facet name="header">
+								<h:outputText value="SETORES DO CONTRATANTE" />
+							</f:facet>
 
-						<p:accordionPanel value="#{contractController.item.services}"
-							var="service"
-							rendered="#{contractController.item.services.size() > 0}">
-							<p:tab
-								title="#{service.sector == null ? 'Sem setor' : service.sector.title}">
+							<h:panelGroup id="servicesContractPnl" style="padding: 5px"
+								layout="block">
 
-								<uilance:manyToMany id="services_#{service.sector.id}"
-									addBtnLabel="Relacionar serviços"
-									bean="#{contractController.beanService}" columnHeader="Serviço"
-									controller="#{contractController}" dialog="addServiceDlg"
-									editing="#{contractController.editing}"
-									emptyMessage="Sem serviços relacionados"
-									items="#{service.services}" toggleAction="toggleService" />
+								<p:dialog id="serviceDlg#{service.sector.id}"
+									widgetVar="serviceDlg#{service.sector.id}" modal="true"
+									header="SELECIONE OS SERVIÇOS" width="800">
+									<p:ajax event="close"
+										update="@(.servicePnl#{service.sector.id})" />
+									<lance:dataTable id="serviceDlgTbl_#{service.sector.id}"
+										controller="#{serviceController}" renderAddBtn="false"
+										renderActionColumn="false">
+										<p:column id="selector" style="text-align: center;" width="50">
+											<p:commandLink ajax="true"
+												action="#{contractController.toggleService(service)}"
+												styleClass="action-link" process="@this"
+												update="@(.action-link)">
+												<f:setPropertyActionListener value="#{item}"
+													target="#{contractController.serviceBean}" />
+												<h:panelGroup
+													styleClass="fa fa#{service.services.contains(item) ? '-check' : ''}-square-o" />
+											</p:commandLink>
+										</p:column>
+										<p:column id="detail" sortBy="#{item.title}"
+											headerText="Descrição" style="text-align: left;">
+											<h:outputText value="#{item.title}" />
+										</p:column>
+									</lance:dataTable>
 
-							</p:tab>
-						</p:accordionPanel>
+									<f:facet name="footer">
+										<p:commandButton id="serviceDlgCloseBtn" ajax="true"
+											onclick="PF('serviceDlg#{service.sector.id}').hide()"
+											value="Fechar diálogo" />
+									</f:facet>
+								</p:dialog>
+
+								<p:dialog id="tenantDlg#{service.sector.id}"
+									widgetVar="tenantDlg#{service.sector.id}" modal="true"
+									header="SELECIONAR INQUILINO" width="800">
+									<p:ajax event="close" update="@(.tenant#{service.sector.id})"
+										process="@this" />
+									<lance:dataTable id="tenantDlgTbl_#{service.sector.id}"
+										controller="#{clientController}" renderAddBtn="false"
+										renderActionColumn="false">
+										<p:column style="text-align: center;" width="50">
+											<p:commandLink ajax="true" styleClass="action-link"
+												process="@this" update="@(.action-link)">
+												<f:setPropertyActionListener value="#{item}"
+													target="#{service.tenant}" />
+												<h:panelGroup
+													styleClass="fa fa#{(service.tenant.id == item.id) ? '-dot' : ''}-circle-o" />
+											</p:commandLink>
+										</p:column>
+										<p:column sortBy="#{item.title}" headerText="Descrição"
+											style="text-align: left;">
+											<h:outputText value="#{item.title}" />
+										</p:column>
+									</lance:dataTable>
+
+									<f:facet name="footer">
+										<p:commandButton id="subjectDlgCloseBtn" ajax="true"
+											onclick="PF('tenantDlg#{service.sector.id}').hide()"
+											value="Fechar diálogo" />
+									</f:facet>
+								</p:dialog>
+
+								<p:panel toggleable="true"
+									header="#{service.sector == null ? 'Sem setor' : service.sector.title}"
+									styleClass="tenant#{service.sector.id}">
+									<h:panelGroup id="servicePnl"
+										styleClass="servicePnl#{service.sector.id}">
+										<h:panelGrid id="servicePnlGrid" columns="3">
+											<uilance:manyToOne id="tenant"
+												dialog="tenantDlg#{service.sector.id}"
+												editing="#{contractController.editing}" label="Inquilino"
+												required="false" title="#{service.tenant.title}"
+												value="#{service.tenant.id}" />
+										</h:panelGrid>
+										<p:commandButton id="serviceAddBtn"
+											onclick="PF('serviceDlg#{service.sector.id}').show()"
+											value="Relacionar serviços"
+											rendered="#{contractController.editing}"
+											style="margin-top: 10px" />
+										<p:dataTable id="serviceTable" var="item"
+											value="#{service.services}" lazy="true"
+											emptyMessage="Sem serviços relacionados"
+											style="margin-top: 10px">
+											<p:column headerText="Descrição" style="text-align: left;">
+												<h:outputText value="#{item.title}" />
+											</p:column>
+											<p:column width="100" headerText="Remover"
+												style="text-align: center;"
+												rendered="#{contractController.editing}">
+												<p:commandLink id="serviceTableRemoveBtn"
+													action="#{contractController.toggleService(item)}"
+													ajax="true" styleClass="action-link" update="@form"
+													process="@this">
+													<f:setPropertyActionListener value="#{item}"
+														target="#{contractController.serviceBean}" />
+													<span class="fa fa-trash" />
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</h:panelGroup>
+								</p:panel>
+							</h:panelGroup>
+
+						</p:dataList>
+
 
 					</h:panelGroup>
 				</f:facet>
+
 			</lance:editForm>
 		</h:form>
 	</ui:define>

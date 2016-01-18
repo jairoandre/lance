@@ -2,8 +2,8 @@ body {
 	background-color: #dfeeaa;
 }
 
-.ui-widget, .ui-widget .ui-widget {
-	font-size: 90% !important;
+.ui-widget {
+	font-size: 90%;
 }
 
 .ui-datatable .ui-button {
@@ -147,5 +147,9 @@ body {
 }
 
 .left-align {
+	text-align: left !important;
+}
+
+.services-contract-panel .ui-datalist-header {
 	text-align: left !important;
 }
