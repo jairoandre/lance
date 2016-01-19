@@ -62,8 +62,8 @@
 					editing="#{contractController.editing}" required="true" />
 				<uilance:manyToOne id="subject" dialog="subjectDlg"
 					editing="#{contractController.editing}" label="Contratante"
-					required="true" title="#{contractController.item.subject.title}"
-					value="#{contractController.item.subject.id}" />
+					required="true" title="title"
+					value="#{contractController.item.subject}" />
 
 				<f:facet name="other">
 
@@ -137,7 +137,7 @@
 									</lance:dataTable>
 
 									<f:facet name="footer">
-										<p:commandButton id="subjectDlgCloseBtn" ajax="true"
+										<p:commandButton id="tenantDlgCloseBtn" ajax="true"
 											onclick="PF('tenantDlg#{service.sector.id}').hide()"
 											value="Fechar diálogo" />
 									</f:facet>
@@ -152,8 +152,7 @@
 											<uilance:manyToOne id="tenant"
 												dialog="tenantDlg#{service.sector.id}"
 												editing="#{contractController.editing}" label="Inquilino"
-												required="false" title="#{service.tenant.title}"
-												value="#{service.tenant.id}" />
+												required="false" title="title" value="#{service.tenant}" />
 										</h:panelGrid>
 										<p:commandButton id="serviceAddBtn"
 											onclick="PF('serviceDlg#{service.sector.id}').show()"

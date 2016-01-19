@@ -111,7 +111,7 @@ public class Contract extends BaseEntity {
 	}
 
 	/**
-	 * @param finalDate
+	 * @param endDate
 	 *            the finalDate to set
 	 */
 	public void setEndDate(Date endDate) {

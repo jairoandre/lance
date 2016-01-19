@@ -153,3 +153,14 @@ body {
 .services-contract-panel .ui-datalist-header {
 	text-align: left !important;
 }
+
+.lance-input {
+	min-width: 300px;
+}
+
+.lance-info-icon {
+	margin-left: 5px;
+	font-size: 18px;
+	color: #3399ff;
+	cursor: pointer;
+}

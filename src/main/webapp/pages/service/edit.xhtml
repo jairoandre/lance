@@ -72,38 +72,39 @@
 					editing="#{serviceController.editing}" required="true" />
 				<uilance:manyToOne id="defaultHistory" dialog="defaultHistoryDlg"
 					editing="#{serviceController.editing}" label="Histórico padrão"
-					required="true"
-					title="#{serviceController.item.defaultHistory.title}"
-					value="#{serviceController.item.defaultHistory.id}" />
+					required="true" title="title"
+					value="#{serviceController.item.defaultHistory}" />
 				<uilance:manyToOne id="documentType" dialog="documentTypeDlg"
 					editing="#{serviceController.editing}" label="Tipo de documento"
-					required="true"
-					title="#{serviceController.item.documentType.title}"
-					value="#{serviceController.item.documentType.id}" />
+					required="true" title="title"
+					value="#{serviceController.item.documentType}" />
 				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
 					editing="#{serviceController.editing}" label="Conta contábil"
-					required="true"
-					title="#{serviceController.item.ledgerAccount.title}"
-					value="#{serviceController.item.ledgerAccount.id}" />
+					required="true" title="title"
+					value="#{serviceController.item.ledgerAccount}" />
 				<uilance:manyToOne id="resultAccount" dialog="resultAccountDlg"
 					editing="#{serviceController.editing}" label="Conta resultado"
-					required="true"
-					title="#{serviceController.item.resultAccount.title}"
-					value="#{serviceController.item.resultAccount.id}" />
+					required="true" title="title"
+					value="#{serviceController.item.resultAccount}" />
 				<uilance:manyToOne id="costAccount" dialog="costAccountDlg"
 					editing="#{serviceController.editing}" label="Conta de custo"
-					required="true" title="#{serviceController.item.costAccount.title}"
-					value="#{serviceController.item.costAccount.id}" />
-				<uilance:selectBoolean id="billable" label="Gera nota"
-					value="#{serviceController.item.billable}"
-					editing="#{serviceController.editing}" required="true" />
-				<uilance:selectBoolean id="groupable" label="Condominial"
-					value="#{serviceController.item.groupable}"
-					editing="#{serviceController.editing}" required="true" />
+					required="true" title="title"
+					value="#{serviceController.item.costAccount}" />
 				<uilance:selectOneEnum id="type" label="Tipo de serviço"
 					value="#{serviceController.item.type}"
 					editing="#{serviceController.editing}" required="true"
 					options="#{serviceController.types}" />
+				<uilance:selectBoolean id="billable" label="Gera nota?"
+					value="#{serviceController.item.billable}"
+					editing="#{serviceController.editing}" required="true" />
+				<uilance:selectBoolean id="groupable" label="Condominial?"
+					value="#{serviceController.item.groupable}"
+					editing="#{serviceController.editing}" required="true"
+					info="Indique se o serviço entrará no descritivo da cobrança de condomínio." />
+				<uilance:selectBoolean id="compulsory" label="Compulsório?"
+					value="#{serviceController.item.compulsory}"
+					editing="#{serviceController.editing}" required="true"
+					info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato." />
 			</lance:editForm>
 		</h:form>
 	</ui:define>

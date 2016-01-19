@@ -47,7 +47,7 @@ public class ServiceContract extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "ID_CLIENTE", nullable = true)
-	private MvClient tenant = new MvClient();
+	private MvClient tenant;
 
 	@ManyToOne
 	@JoinColumn(name = "ID_SETOR", nullable = true)

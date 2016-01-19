@@ -46,6 +46,9 @@
 			<description>Readonly</description>
 			<name>readonly</name>
 		</attribute>
+		<attribute>
+			<name>info</name>
+		</attribute>
 	</tag>
 	<tag>
 		<tag-name>inputDate</tag-name>
@@ -69,6 +72,9 @@
 		<attribute>
 			<description>Required</description>
 			<name>required</name>
+		</attribute>
+		<attribute>
+			<name>info</name>
 		</attribute>
 	</tag>
 	<tag>
@@ -100,6 +106,9 @@
 		<attribute>
 			<name>renderMessage</name>
 		</attribute>
+		<attribute>
+			<name>info</name>
+		</attribute>
 	</tag>
 	<tag>
 		<tag-name>selectBoolean</tag-name>
@@ -126,6 +135,9 @@
 		</attribute>
 		<attribute>
 			<name>renderMessage</name>
+		</attribute>
+		<attribute>
+			<name>info</name>
 		</attribute>
 	</tag>
 	<tag>
@@ -157,6 +169,9 @@
 		</attribute>
 		<attribute>
 			<name>renderMessage</name>
+		</attribute>
+		<attribute>
+			<name>info</name>
 		</attribute>
 	</tag>
 	<tag>
@@ -192,6 +207,9 @@
 		</attribute>
 		<attribute>
 			<name>renderMessage</name>
+		</attribute>
+		<attribute>
+			<name>info</name>
 		</attribute>
 	</tag>
 	<tag>
@@ -244,6 +262,9 @@
 		<attribute>
 			<description>Bean</description>
 			<name>bean</name>
+		</attribute>
+		<attribute>
+			<name>info</name>
 		</attribute>
 	</tag>
 </facelet-taglib>

@@ -50,29 +50,32 @@ public class Service extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
-	private MvDefaultHistory defaultHistory = new MvDefaultHistory();
+	private MvDefaultHistory defaultHistory;
 
 	@ManyToOne
 	@JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
-	private MvDocumentType documentType = new MvDocumentType();
+	private MvDocumentType documentType;
 
 	@ManyToOne
 	@JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
-	private MvAccountChart ledgerAccount = new MvAccountChart();
+	private MvAccountChart ledgerAccount;
 
 	@ManyToOne
 	@JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
-	private MvAccountChart resultAccount = new MvAccountChart();
+	private MvAccountChart resultAccount;
 
 	@ManyToOne
 	@JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
-	private MvResultItem costAccount = new MvResultItem();
+	private MvResultItem costAccount;
 
 	@Column(name = "SN_FATURAVEL")
 	private Boolean billable;
 
 	@Column(name = "SN_AGRUPAVEL")
 	private Boolean groupable;
+
+	@Column(name = "SN_COMPULSORIO")
+	private Boolean compulsory;
 
 	@OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<ServiceValue> values = new LinkedHashSet<>();
@@ -209,6 +212,21 @@ public class Service extends BaseEntity {
 	 */
 	public void setGroupable(Boolean groupable) {
 		this.groupable = groupable;
+	}
+
+	/**
+	 * @return the compulsory
+	 */
+	public Boolean getCompulsory() {
+		return compulsory;
+	}
+
+	/**
+	 * @param compulsory
+	 *            the compulsory to set
+	 */
+	public void setCompulsory(Boolean compulsory) {
+		this.compulsory = compulsory;
 	}
 
 	/**

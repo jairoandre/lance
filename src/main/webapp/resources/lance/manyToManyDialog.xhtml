@@ -24,11 +24,11 @@
 		header="#{cc.attrs.header}"
 		width="#{cc.attrs.width == null ? '50%' : cc.attrs.width}">
 		<p:ajax event="close" update=":#{p:component(cc.attrs.update)}" />
-		<lance:dataTable id="#{cc.attrs.id}_tbl"
+		<lance:dataTable id="#{cc.attrs.id}Tbl"
 			controller="#{cc.attrs.controller}" renderAddBtn="false"
 			renderActionColumn="false">
 			<p:column id="selector" style="text-align: center;" width="50">
-				<p:commandLink ajax="true"
+				<p:commandLink id="checkbox" ajax="true"
 					action="#{cc.attrs.targetController[cc.attrs.toggleAction]}"
 					styleClass="action-link" process="@this" update="@(.action-link)">
 					<f:setPropertyActionListener value="#{item}"
@@ -44,7 +44,7 @@
 		</lance:dataTable>
 
 		<f:facet name="footer">
-			<p:commandButton id="#{cc.attrs.id}_closeDlgBtn" ajax="true"
+			<p:commandButton id="#{cc.attrs.id}CloseBtn" ajax="true"
 				onclick="PF('#{cc.attrs.id}').hide()" value="Fechar diálogo" />
 		</f:facet>
 
