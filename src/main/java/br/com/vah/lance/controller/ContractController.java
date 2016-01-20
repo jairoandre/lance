@@ -1,6 +1,8 @@
 package br.com.vah.lance.controller;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -14,100 +16,131 @@ import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.entity.mv.MvSector;
+import br.com.vah.lance.service.ClientService;
 import br.com.vah.lance.service.ContractService;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.util.GenericLazyDataModel;
+import br.com.vah.lance.service.ServiceService;
 
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
 public class ContractController extends AbstractController<Contract> {
 
-	private @Inject transient Logger logger;
+  private
+  @Inject
+  transient Logger logger;
 
-	private @Inject ContractService service;
+  private
+  @Inject
+  ContractService service;
 
-	private Service serviceBean;
+  private
+  @Inject
+  ClientService clientService;
 
-	@PostConstruct
-	public void init() {
-		logger.info(this.getClass().getSimpleName() + " created.");
-		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<Contract>(service));
-	}
+  private
+  @Inject
+  ServiceService serviceService;
 
-	@Override
-	public void onLoad() {
-		super.onLoad();
-	}
+  private Map<Long, ClientController> clientControllers;
 
-	public void onLoadSubject() {
-		MvClient subject = getItem().getSubject();
-		if (subject != null) {
-			Set<ServiceContract> services = new LinkedHashSet<>();
-			for (MvSector sector : subject.getSectors()) {
-				ServiceContract service = new ServiceContract();
-				service.setSector(sector);
-				service.setContract(getItem());
-				service.setServices(new LinkedHashSet<Service>());
-				services.add(service);
-			}
-			getItem().setServices(services);
-		}
-	}
+  private Map<Long, ServiceController> serviceControllers;
 
-	@Override
-	public DataAccessService<Contract> getService() {
-		return service;
-	}
+  private Service serviceBean;
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
+  public static final String[] RELATIONS = {"services", "subject"};
 
-	@Override
-	public Contract createNewItem() {
-		return new Contract();
-	}
+  @PostConstruct
+  public void init() {
+    logger.info(this.getClass().getSimpleName() + " created.");
+    setItem(createNewItem());
+    initLazyModel(service, RELATIONS);
+  }
 
-	@Override
-	public String editPage() {
-		return "/pages/contract/edit.xhtml";
-	}
+  @Override
+  public void onLoad() {
+    super.onLoad();
+  }
 
-	@Override
-	public String listPage() {
-		return "/pages/contract/list.xhtml";
-	}
+  public void onLoadSubject() {
+    MvClient subject = getItem().getSubject();
+    clientControllers = new HashMap<>();
+    serviceControllers = new HashMap<>();
+    if (subject != null) {
+      Set<ServiceContract> services = new LinkedHashSet<>();
+      for (MvSector sector : subject.getSectors()) {
+        ServiceContract service = new ServiceContract();
+        service.setSector(sector);
+        service.setContract(getItem());
+        service.setServices(new LinkedHashSet<Service>());
+        services.add(service);
+        clientControllers.put(sector.getId(), new ClientController(clientService));
+        serviceControllers.put(sector.getId(), new ServiceController(serviceService));
+      }
+      getItem().setServices(services);
+    }
+  }
 
-	@Override
-	public String getEntityName() {
-		return "contrato";
-	}
+  @Override
+  public DataAccessService<Contract> getService() {
+    return service;
+  }
 
-	/**
-	 * @return the serviceBean
-	 */
-	public Service getServiceBean() {
-		return serviceBean;
-	}
+  @Override
+  public Logger getLogger() {
+    return logger;
+  }
 
-	/**
-	 * @param serviceBean
-	 *            the serviceBean to set
-	 */
-	public void setServiceBean(Service serviceBean) {
-		this.serviceBean = serviceBean;
-	}
+  @Override
+  public Contract createNewItem() {
+    return new Contract();
+  }
 
-	public void toggleService(ServiceContract service) {
-		if (service.getServices().contains(serviceBean)) {
-			service.getServices().remove(serviceBean);
-		} else {
-			service.getServices().add(serviceBean);
-		}
+  @Override
+  public String editPage() {
+    return "/pages/contract/edit.xhtml";
+  }
 
-	}
+  @Override
+  public String listPage() {
+    return "/pages/contract/list.xhtml";
+  }
+
+  @Override
+  public String getEntityName() {
+    return "contrato";
+  }
+
+
+  public Map<Long, ClientController> getClientControllers() {
+    return clientControllers;
+  }
+
+  public Map<Long, ServiceController> getServiceControllers() {
+    return serviceControllers;
+  }
+
+  /**
+   * @return the serviceBean
+   */
+  public Service getServiceBean() {
+    return serviceBean;
+  }
+
+  /**
+   * @param serviceBean the serviceBean to set
+   */
+  public void setServiceBean(Service serviceBean) {
+    this.serviceBean = serviceBean;
+  }
+
+  public void toggleService(ServiceContract service) {
+    if (service.getServices().contains(serviceBean)) {
+      service.getServices().remove(serviceBean);
+    } else {
+      service.getServices().add(serviceBean);
+    }
+
+  }
 
 }

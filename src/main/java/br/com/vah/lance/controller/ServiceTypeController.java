@@ -25,7 +25,7 @@ public class ServiceTypeController extends AbstractController<ServiceValue> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<ServiceValue>(service));
+		initLazyModel(service);
 	}
 
 	@Override

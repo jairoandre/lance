@@ -1,36 +1,43 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
-	<h:panelGroup>
-		<h:outputLabel for="#{id}Input" value="#{label}"
-			style="font-weight:bold" rendered="#{label != null}" />
-		<h:outputText value="*" style="font-weight: bold; color: red;"
-			rendered="#{required == null ? false : required}" />
-		<h:outputText value=":" style="font-weight: bold;" />
-		<h:panelGroup id="#{id}Info"
-			styleClass="fa fa-info-circle lance-info-icon"
-			rendered="#{info != null}" />
-		<p:tooltip id="#{id}InfoTooltip" for="#{id}Info" value="#{info}"
-			rendered="#{info != null}" />
-	</h:panelGroup>
-	<h:panelGroup id="#{id}">
-		<h:outputText value="#{title}" rendered="#{!editing}" />
-		<p:inputText id="#{id}Hidden" value="#{value.id}" type="hidden"
-			required="#{required}" label="#{label}" rendered="#{value != null}" />
-		<p:inputText id="#{id}Input" placeholder="Selecione..."
-			styleClass="lance-input"
-			value="#{value == null ? null : value[title]}" readonly="true"
-			required="#{required}" />
-		<span />
-		<p:commandButton id="#{id}OpenDlgBtn" onclick="PF('#{dialog}').show()"
-			rendered="#{editing == null ? true : editing}" icon="fa fa-search" />
-	</h:panelGroup>
-	<h:panelGroup
-		rendered="#{renderMessage == null ? true : renderMessage}">
-		<p:message for="#{id}Hidden" rendered="#{value != null}" />
-	</h:panelGroup>
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+  <h:panelGroup>
+    <h:outputLabel
+      for="#{id}Input" value="#{label}"
+      style="font-weight:bold" rendered="#{label != null}"/>
+    <h:outputText value="*" style="font-weight: bold; color: red;"
+                  rendered="#{required == null ? false : required}"/>
+    <h:outputText value=":" style="font-weight: bold;"/>
+    <h:panelGroup id="#{id}Info"
+                  styleClass="fa fa-info-circle lance-info-icon"
+                  rendered="#{info != null}"/>
+    <p:tooltip id="#{id}InfoTooltip" for="#{id}Info" value="#{info}"
+               rendered="#{info != null}"/>
+  </h:panelGroup>
+  <h:panelGroup id="#{id}">
+    <h:outputText
+      value="#{value == null ? null : value[title]}" rendered="#{!editing}"/>
+    <p:inputText
+      id="#{id}Hidden" value="#{value.id}" type="hidden"
+      required="#{required}" label="#{label}" rendered="#{editing and value != null}"/>
+    <p:inputText
+      id="#{id}Input" placeholder="Selecione..."
+      styleClass="lance-input"
+      value="#{value == null ? null : value[title]}"
+      readonly="true"
+      rendered="#{editing}"
+      required="#{required}"/>
+    <span/>
+    <p:commandButton
+      id="#{id}OpenDlgBtn" onclick="PF('#{dialog}').show()"
+      rendered="#{editing == null ? true : editing}" icon="fa fa-search"/>
+  </h:panelGroup>
+  <h:panelGroup
+    rendered="#{renderMessage == null ? true : renderMessage}">
+    <p:message for="#{id}Hidden" rendered="#{value != null}"/>
+  </h:panelGroup>
 
 </ui:composition>
 

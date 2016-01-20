@@ -19,95 +19,107 @@ import br.com.vah.lance.util.GenericLazyDataModel;
 @ViewScoped
 public class ServiceController extends AbstractController<Service> {
 
-	private @Inject transient Logger logger;
+  private
+  @Inject
+  transient Logger logger;
 
-	private @Inject ServiceService service;
+  private
+  @Inject
+  ServiceService service;
 
-	private ServiceValue serviceValue;
+  private ServiceValue serviceValue;
 
-	private ServiceTypesEnum[] types;
+  private ServiceTypesEnum[] types;
 
-	@PostConstruct
-	public void init() {
-		logger.info(this.getClass().getSimpleName() + " created.");
-		setItem(createNewItem());
-		serviceValue = new ServiceValue();
-		setLazyModel(new GenericLazyDataModel<Service>(service));
-		types = ServiceTypesEnum.values();
-	}
+  private static final String[] RELATIONS = {"values"};
 
-	@Override
-	public DataAccessService<Service> getService() {
-		return service;
-	}
+  @PostConstruct
+  public void init() {
+    logger.info(this.getClass().getSimpleName() + " created.");
+    setItem(createNewItem());
+    serviceValue = new ServiceValue();
+    initLazyModel(service, RELATIONS);
+    types = ServiceTypesEnum.values();
+  }
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
+  public ServiceController() {
+  }
 
-	@Override
-	public Service createNewItem() {
-		return new Service();
-	}
+  public ServiceController(ServiceService service) {
+    this();
+    initLazyModel(service, RELATIONS);
+  }
 
-	@Override
-	public String editPage() {
-		return "/pages/service/edit.xhtml";
-	}
+  @Override
+  public DataAccessService<Service> getService() {
+    return service;
+  }
 
-	public void addValue() {
-		serviceValue.setService(getItem());
-		getItem().getValues().add(serviceValue);
-		serviceValue = new ServiceValue();
-	}
+  @Override
+  public Logger getLogger() {
+    return logger;
+  }
 
-	@Override
-	public String listPage() {
-		return "/pages/service/list.xhtml";
-	}
+  @Override
+  public Service createNewItem() {
+    return new Service();
+  }
 
-	public String currency(Service item) {
-		return "/pages/service/currency.xhtml" + "?faces-redirect=true&id=" + item.getId() + "&editing=true";
-	}
+  @Override
+  public String editPage() {
+    return "/pages/service/edit.xhtml";
+  }
 
-	@Override
-	public String getEntityName() {
-		return "serviço";
-	}
+  public void addValue() {
+    serviceValue.setService(getItem());
+    getItem().getValues().add(serviceValue);
+    serviceValue = new ServiceValue();
+  }
 
-	public void setDefaultHistory() {
-		System.out.println(getItem().getDefaultHistory());
-	}
+  @Override
+  public String listPage() {
+    return "/pages/service/list.xhtml";
+  }
 
-	/**
-	 * @return the serviceValue
-	 */
-	public ServiceValue getServiceValue() {
-		return serviceValue;
-	}
+  public String currency(Service item) {
+    return "/pages/service/currency.xhtml" + "?faces-redirect=true&id=" + item.getId() + "&editing=true";
+  }
 
-	/**
-	 * @param serviceValue
-	 *            the serviceValue to set
-	 */
-	public void setServiceValue(ServiceValue serviceValue) {
-		this.serviceValue = serviceValue;
-	}
+  @Override
+  public String getEntityName() {
+    return "serviço";
+  }
 
-	/**
-	 * @return the types
-	 */
-	public ServiceTypesEnum[] getTypes() {
-		return types;
-	}
+  public void setDefaultHistory() {
+    System.out.println(getItem().getDefaultHistory());
+  }
 
-	/**
-	 * @param types
-	 *            the types to set
-	 */
-	public void setTypes(ServiceTypesEnum[] types) {
-		this.types = types;
-	}
+  /**
+   * @return the serviceValue
+   */
+  public ServiceValue getServiceValue() {
+    return serviceValue;
+  }
+
+  /**
+   * @param serviceValue the serviceValue to set
+   */
+  public void setServiceValue(ServiceValue serviceValue) {
+    this.serviceValue = serviceValue;
+  }
+
+  /**
+   * @return the types
+   */
+  public ServiceTypesEnum[] getTypes() {
+    return types;
+  }
+
+  /**
+   * @param types the types to set
+   */
+  public void setTypes(ServiceTypesEnum[] types) {
+    this.types = types;
+  }
 
 }

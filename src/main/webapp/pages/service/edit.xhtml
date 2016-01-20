@@ -60,7 +60,6 @@
 			</lance:manyToOneDialog>
 
 			<lance:manyToOneDialog id="costAccountDlg"
-				tableContainerId="costAccountContainer"
 				controller="#{resultItemController}"
 				header="SELECIONAR CONTA DE CUSTO" width="800" rendered="true"
 				update="costAccount" bean="#{serviceController.item.costAccount}" />
@@ -97,8 +96,8 @@
 				<uilance:selectBoolean id="billable" label="Gera nota?"
 					value="#{serviceController.item.billable}"
 					editing="#{serviceController.editing}" required="true" />
-				<uilance:selectBoolean id="groupable" label="Condominial?"
-					value="#{serviceController.item.groupable}"
+				<uilance:selectBoolean id="clusterable" label="Condominial?"
+					value="#{serviceController.item.clusterable}"
 					editing="#{serviceController.editing}" required="true"
 					info="Indique se o serviço entrará no descritivo da cobrança de condomínio." />
 				<uilance:selectBoolean id="compulsory" label="Compulsório?"

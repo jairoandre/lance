@@ -25,7 +25,7 @@ public class DocumentTypeController extends AbstractController<MvDocumentType> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<MvDocumentType>(service));
+		initLazyModel(service);
 	}
 
 	@Override

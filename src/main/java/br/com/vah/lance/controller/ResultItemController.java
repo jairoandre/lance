@@ -25,7 +25,7 @@ public class ResultItemController extends AbstractController<MvResultItem> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<MvResultItem>(service));
+		initLazyModel(service);
 	}
 
 	@Override

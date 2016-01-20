@@ -25,7 +25,7 @@ public class SectorController extends AbstractController<MvSector> {
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<MvSector>(service));
+		initLazyModel(service);
 	}
 
 	@Override

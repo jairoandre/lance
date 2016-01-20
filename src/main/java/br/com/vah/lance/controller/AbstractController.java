@@ -201,6 +201,13 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 		this.editing = editing;
 	}
 
+	protected void initLazyModel(DataAccessService<T> service, String... relations){
+		setLazyModel(new GenericLazyDataModel<T>(service));
+		if(relations != null && relations.length > 0) {
+			getLazyModel().getSearchParams().addRelations(relations);
+		}
+	}
+
 	/*
 	 * ACTIONS
 	 */

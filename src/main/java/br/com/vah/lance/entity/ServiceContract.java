@@ -53,7 +53,7 @@ public class ServiceContract extends BaseEntity {
 	@JoinColumn(name = "ID_SETOR", nullable = true)
 	private MvSector sector;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	@JoinTable(name = "TB_LANCA_SERVICO_CONTRATO_SERVICO", joinColumns = {
 			@JoinColumn(name = "ID") }, inverseJoinColumns = { @JoinColumn(name = "ID_SERVICO") }, schema = "USRDBVAH")
 	private Set<Service> services = new LinkedHashSet<>();

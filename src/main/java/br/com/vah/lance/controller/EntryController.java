@@ -26,188 +26,191 @@ import br.com.vah.lance.util.LanceUtils;
 @ViewScoped
 public class EntryController extends AbstractController<Entry> {
 
-	private @Inject transient Logger logger;
+  private
+  @Inject
+  transient Logger logger;
 
-	private @Inject EntryService das;
+  private
+  @Inject
+  EntryService das;
 
-	private @Inject LoginController loginController;
+  private
+  @Inject
+  LoginController loginController;
 
-	private List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries;
+  private List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries;
 
-	private Service serviceItem;
+  private Service serviceItem;
 
-	private List<Map.Entry<Contract, Entry>> entryMap;
+  private List<Map.Entry<Contract, Entry>> entryMap;
 
-	private BigDecimal variableValueTotal = BigDecimal.ZERO;
+  private BigDecimal variableValueTotal = BigDecimal.ZERO;
 
-	private BigDecimal contractValueTotal = BigDecimal.ZERO;
+  private BigDecimal contractValueTotal = BigDecimal.ZERO;
 
-	private BigDecimal valueTotal = BigDecimal.ZERO;
+  private BigDecimal valueTotal = BigDecimal.ZERO;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PostConstruct
-	public void init() {
-		logger.info(this.getClass().getSimpleName() + " created.");
-		setItem(createNewItem());
-		// setLazyModel(new GenericLazyDataModel<Entry>(das, new Entry()));
-		Map<Service, Map<Contract, Entry>> modelMap = das.retrieveEntrysForUser(loginController.getUser().getId(),
-				LanceUtils.getDateRangeForThisMonth());
-		Map<Service, Object> transformedMap = new LinkedHashMap<>();
-		for (Service key : modelMap.keySet()) {
-			transformedMap.put(key, LanceUtils.transformMap(modelMap.get(key)));
-		}
-		entries = new ArrayList(transformedMap.entrySet());
-	}
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @PostConstruct
+  public void init() {
+    logger.info(this.getClass().getSimpleName() + " created.");
+    setItem(createNewItem());
+    // setLazyModel(new GenericLazyDataModel<Entry>(das, new Entry()));
+    Map<Service, Map<Contract, Entry>> modelMap = das.retrieveEntrysForUser(loginController.getUser().getId(),
+        LanceUtils.getDateRangeForThisMonth());
+    Map<Service, Object> transformedMap = new LinkedHashMap<>();
+    for (Service key : modelMap.keySet()) {
+      transformedMap.put(key, LanceUtils.transformMap(modelMap.get(key)));
+    }
+    entries = new ArrayList(transformedMap.entrySet());
+  }
 
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		if (getId() != null) {
-			for (Map.Entry<Service, List<Map.Entry<Contract, Entry>>> map : entries) {
-				if (getId().equals(map.getKey().getId())) {
-					serviceItem = map.getKey();
-					entryMap = map.getValue();
-					updateTotals();
-					break;
-				}
-			}
-		}
-	}
+  @Override
+  public void onLoad() {
+    super.onLoad();
+    if (getId() != null) {
+      for (Map.Entry<Service, List<Map.Entry<Contract, Entry>>> map : entries) {
+        if (getId().equals(map.getKey().getId())) {
+          serviceItem = map.getKey();
+          entryMap = map.getValue();
+          updateTotals();
+          break;
+        }
+      }
+    }
+  }
 
-	@Override
-	public DataAccessService<Entry> getService() {
-		return das;
-	}
+  @Override
+  public DataAccessService<Entry> getService() {
+    return das;
+  }
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
+  @Override
+  public Logger getLogger() {
+    return logger;
+  }
 
-	@Override
-	public Entry createNewItem() {
-		return new Entry();
-	}
+  @Override
+  public Entry createNewItem() {
+    return new Entry();
+  }
 
-	@Override
-	public String editPage() {
-		return "/pages/entry/edit.xhtml";
-	}
+  @Override
+  public String editPage() {
+    return "/pages/entry/edit.xhtml";
+  }
 
-	@Override
-	public String listPage() {
-		return "/pages/entry/list.xhtml";
-	}
+  @Override
+  public String listPage() {
+    return "/pages/entry/list.xhtml";
+  }
 
-	@Override
-	public String getEntityName() {
-		return "setor";
-	}
+  @Override
+  public String getEntityName() {
+    return "setor";
+  }
 
-	/**
-	 * @return the entries
-	 */
-	public List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> getEntries() {
-		return entries;
-	}
+  /**
+   * @return the entries
+   */
+  public List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> getEntries() {
+    return entries;
+  }
 
-	/**
-	 * @param entries
-	 *            the entries to set
-	 */
-	public void setEntries(List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries) {
-		this.entries = entries;
-	}
+  /**
+   * @param entries the entries to set
+   */
+  public void setEntries(List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries) {
+    this.entries = entries;
+  }
 
-	/**
-	 * @return the serviceItem
-	 */
-	public Service getServiceItem() {
-		return serviceItem;
-	}
+  /**
+   * @return the serviceItem
+   */
+  public Service getServiceItem() {
+    return serviceItem;
+  }
 
-	/**
-	 * @param serviceItem
-	 *            the serviceItem to set
-	 */
-	public void setServiceItem(Service serviceItem) {
-		this.serviceItem = serviceItem;
-	}
+  /**
+   * @param serviceItem the serviceItem to set
+   */
+  public void setServiceItem(Service serviceItem) {
+    this.serviceItem = serviceItem;
+  }
 
-	/**
-	 * @return the entryMap
-	 */
-	public List<Map.Entry<Contract, Entry>> getEntryMap() {
-		return entryMap;
-	}
+  /**
+   * @return the entryMap
+   */
+  public List<Map.Entry<Contract, Entry>> getEntryMap() {
+    return entryMap;
+  }
 
-	/**
-	 * @param entryMap
-	 *            the entryMap to set
-	 */
-	public void setEntryMap(List<Map.Entry<Contract, Entry>> entryMap) {
-		this.entryMap = entryMap;
-	}
+  /**
+   * @param entryMap the entryMap to set
+   */
+  public void setEntryMap(List<Map.Entry<Contract, Entry>> entryMap) {
+    this.entryMap = entryMap;
+  }
 
-	@Override
-	public GenericLazyDataModel<Entry> getLazyModel() {
-		return super.getLazyModel();
-	}
-	
-	public void updateValue(Entry item){
-		item.setValue(item.getContractValue().add(item.getVariableValue()));
-		updateTotals();
-	}
+  @Override
+  public GenericLazyDataModel<Entry> getLazyModel() {
+    return super.getLazyModel();
+  }
 
-	public void updateTotals() {
-		valueTotal = BigDecimal.ZERO;
-		contractValueTotal = BigDecimal.ZERO;
-		variableValueTotal = BigDecimal.ZERO;
-		for (Map.Entry<Contract, Entry> ent : entryMap) {
-			valueTotal = valueTotal.add(ent.getValue().getValue());
-			contractValueTotal = contractValueTotal.add(ent.getValue().getContractValue());
-			variableValueTotal = variableValueTotal.add(ent.getValue().getVariableValue());
+  public void updateValue(Entry item) {
+    item.setValue(item.getContractValue().add(item.getVariableValue()));
+    updateTotals();
+  }
 
-		}
-	}
+  public void updateTotals() {
+    valueTotal = BigDecimal.ZERO;
+    contractValueTotal = BigDecimal.ZERO;
+    variableValueTotal = BigDecimal.ZERO;
+    for (Map.Entry<Contract, Entry> ent : entryMap) {
+      valueTotal = valueTotal.add(ent.getValue().getValue());
+      contractValueTotal = contractValueTotal.add(ent.getValue().getContractValue());
+      variableValueTotal = variableValueTotal.add(ent.getValue().getVariableValue());
 
-	/**
-	 * @return the variableValueTotal
-	 */
-	public BigDecimal getVariableValueTotal() {
-		return variableValueTotal;
-	}
+    }
+  }
 
-	/**
-	 * @return the contractValueTotal
-	 */
-	public BigDecimal getContractValueTotal() {
-		return contractValueTotal;
-	}
+  /**
+   * @return the variableValueTotal
+   */
+  public BigDecimal getVariableValueTotal() {
+    return variableValueTotal;
+  }
 
-	/**
-	 * @return the valueTotal
-	 */
-	public BigDecimal getValueTotal() {
-		return valueTotal;
-	}
+  /**
+   * @return the contractValueTotal
+   */
+  public BigDecimal getContractValueTotal() {
+    return contractValueTotal;
+  }
 
-	public String saveEntrys() {
-		List<Entry> entries = new ArrayList<>();
-		for (Map.Entry<Contract, Entry> map : entryMap) {
-			Entry curr = map.getValue();
-			curr.setUserForContract(loginController.getUser());
-			curr.setUserForEntry(loginController.getUser());
-			curr.setValue(curr.getContractValue().add(curr.getVariableValue()));
-			entries.add(curr);
-		}
-		das.saveEntrys(entries);
-		addMsg(new FacesMessage("Sucesso!", "Lançamentos atualizados"), true);
-		return back();
-	}
+  /**
+   * @return the valueTotal
+   */
+  public BigDecimal getValueTotal() {
+    return valueTotal;
+  }
 
-	public String validate(Entry item) {
-		return "/pages/entry/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
-	}
+  public String saveEntrys() {
+    List<Entry> entries = new ArrayList<>();
+    for (Map.Entry<Contract, Entry> map : entryMap) {
+      Entry curr = map.getValue();
+      curr.setUserForContract(loginController.getUser());
+      curr.setUserForEntry(loginController.getUser());
+      curr.setValue(curr.getContractValue().add(curr.getVariableValue()));
+      entries.add(curr);
+    }
+    das.saveEntrys(entries);
+    addMsg(new FacesMessage("Sucesso!", "Lançamentos atualizados"), true);
+    return back();
+  }
+
+  public String validate(Entry item) {
+    return "/pages/entry/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
+  }
 
 }

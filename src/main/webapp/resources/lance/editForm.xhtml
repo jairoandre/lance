@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:composite="http://java.sun.com/jsf/composite"
 	xmlns:p="http://primefaces.org/ui">
 
@@ -14,17 +13,17 @@
 
 <composite:implementation>
 	<p:panel id="#{cc.attrs.id}" header="#{cc.attrs.controller.editLabel}">
-		<p:focus context="#{cc.attrs.id}Grid" />
-		<h:panelGrid id="#{cc.attrs.id}Grid"
+		<p:focus context="grid" />
+		<h:panelGrid id="grid"
 			columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}"
 			cellpadding="5">
 			<composite:insertChildren />
 		</h:panelGrid>
 		<composite:renderFacet name="other" />
-		<h:panelGroup id="#{cc.attrs.id}PnlBtns" layout="block"
+		<h:panelGroup id="panelBtns" layout="block"
 			style="margin-top: 10px;">
 			<p:commandButton value="Salvar" icon="fa fa-floppy-o" ajax="true"
-				update="#{cc.attrs.id}Grid" validateClient="true"
+				update="grid" validateClient="true"
 				style="margin-right:10px" action="#{cc.attrs.controller.doSave}"
 				rendered="#{cc.attrs.controller.editing}" />
 			<p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"

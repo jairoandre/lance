@@ -20,109 +20,121 @@ import br.com.vah.lance.util.GenericLazyDataModel;
 @ViewScoped
 public class ClientController extends AbstractController<MvClient> {
 
-	private @Inject transient Logger logger;
+  private
+  @Inject
+  transient Logger logger;
 
-	private @Inject ClientService service;
+  private
+  @Inject
+  ClientService service;
 
-	private Long sectorIdToAdd;
+  private Long sectorIdToAdd;
 
-	private MvSector sector;
+  private MvSector sector;
 
-	@PostConstruct
-	public void init() {
-		logger.info(this.getClass().getSimpleName() + " created.");
-		setLazyModel(new GenericLazyDataModel<MvClient>(service));
-		getLazyModel().getSearchParams().getRelations().add("sectors");
-	}
+  public static final String[] RELATIONS = {"sectors"};
 
-	@Override
-	public void onLoad() {
-		super.onLoad();
-	}
+  @PostConstruct
+  public void init() {
+    logger.info(this.getClass().getSimpleName() + " created.");
+    initLazyModel(service, RELATIONS);
 
-	@Override
-	public DataAccessService<MvClient> getService() {
-		return service;
-	}
+  }
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
+  public ClientController() {
+  }
 
-	@Override
-	public MvClient createNewItem() {
-		return new MvClient();
-	}
+  public ClientController(ClientService service) {
+    this();
+    initLazyModel(service, RELATIONS);
+  }
 
-	@Override
-	public String editPage() {
-		return "/pages/client/edit.xhtml";
-	}
+  @Override
+  public void onLoad() {
+    super.onLoad();
+  }
 
-	@Override
-	public String listPage() {
-		return "/pages/client/list.xhtml";
-	}
+  @Override
+  public DataAccessService<MvClient> getService() {
+    return service;
+  }
 
-	@Override
-	public String getEntityName() {
-		return "cliente";
-	}
+  @Override
+  public Logger getLogger() {
+    return logger;
+  }
 
-	/**
-	 * @return the sectorIdToAdd
-	 */
-	public Long getSectorIdToAdd() {
-		return sectorIdToAdd;
-	}
+  @Override
+  public MvClient createNewItem() {
+    return new MvClient();
+  }
 
-	/**
-	 * @param sectorIdToAdd
-	 *            the sectorIdToAdd to set
-	 */
-	public void setSectorIdToAdd(Long sectorIdToAdd) {
-		this.sectorIdToAdd = sectorIdToAdd;
-	}
+  @Override
+  public String editPage() {
+    return "/pages/client/edit.xhtml";
+  }
 
-	/**
-	 * @return the sector
-	 */
-	public MvSector getSector() {
-		return sector;
-	}
+  @Override
+  public String listPage() {
+    return "/pages/client/list.xhtml";
+  }
 
-	/**
-	 * @param sector
-	 *            the sector to set
-	 */
-	public void setSector(MvSector sector) {
-		this.sector = sector;
-	}
+  @Override
+  public String getEntityName() {
+    return "cliente";
+  }
 
-	public void toggle() {
-		if (getItem().getSectors().contains(sector)) {
-			getItem().getSectors().remove(sector);
-		} else {
-			getItem().getSectors().add(sector);
-		}
-	}
+  /**
+   * @return the sectorIdToAdd
+   */
+  public Long getSectorIdToAdd() {
+    return sectorIdToAdd;
+  }
 
-	public Boolean selected(MvSector sector) {
-		return getItem().getSectors().contains(sector);
-	}
+  /**
+   * @param sectorIdToAdd the sectorIdToAdd to set
+   */
+  public void setSectorIdToAdd(Long sectorIdToAdd) {
+    this.sectorIdToAdd = sectorIdToAdd;
+  }
 
-	@Override
-	public String doSave() {
-		List<String> errors = service.verifySectors(getItem());
-		if (errors.isEmpty()) {
-			return super.doSave();
-		} else {
-			for (String error : errors) {
-				addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", error), false);
-			}
-		}
-		return null;
+  /**
+   * @return the sector
+   */
+  public MvSector getSector() {
+    return sector;
+  }
 
-	}
+  /**
+   * @param sector the sector to set
+   */
+  public void setSector(MvSector sector) {
+    this.sector = sector;
+  }
+
+  public void toggle() {
+    if (getItem().getSectors().contains(sector)) {
+      getItem().getSectors().remove(sector);
+    } else {
+      getItem().getSectors().add(sector);
+    }
+  }
+
+  public Boolean selected(MvSector sector) {
+    return getItem().getSectors().contains(sector);
+  }
+
+  @Override
+  public String doSave() {
+    List<String> errors = service.verifySectors(getItem());
+    if (errors.isEmpty()) {
+      return super.doSave();
+    } else {
+      for (String error : errors) {
+        addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", error), false);
+      }
+    }
+    return null;
+
+  }
 }

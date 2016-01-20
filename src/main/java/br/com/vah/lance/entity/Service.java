@@ -1,3 +1,4 @@
+
 package br.com.vah.lance.entity;
 
 import java.util.LinkedHashSet;
@@ -28,239 +29,223 @@ import br.com.vah.lance.entity.mv.MvResultItem;
 
 @Entity
 @Table(name = "TB_LANCA_SERVICO", schema = "USRDBVAH")
-@NamedQueries({ @NamedQuery(name = Service.ALL, query = "SELECT s FROM Service s"),
-		@NamedQuery(name = Service.COUNT, query = "SELECT COUNT(s) FROM Service s") })
+@NamedQueries({@NamedQuery(name = Service.ALL, query = "SELECT s FROM Service s"),
+    @NamedQuery(name = Service.COUNT, query = "SELECT COUNT(s) FROM Service s")})
 public class Service extends BaseEntity {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public final static String ALL = "Service.all";
-	public final static String COUNT = "Service.total";
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+  public final static String ALL = "Service.all";
+  public final static String COUNT = "Service.total";
 
-	@Id
-	@SequenceGenerator(name = "seqServiceGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceGenerator")
-	@Column(name = "ID")
-	private Long id;
+  @Id
+  @SequenceGenerator(name = "seqServiceGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceGenerator")
+  @Column(name = "ID")
+  private Long id;
 
-	@Column(name = "NM_TITULO")
-	private String title;
+  @Column(name = "NM_TITULO")
+  private String title;
 
-	@ManyToOne
-	@JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
-	private MvDefaultHistory defaultHistory;
+  @ManyToOne
+  @JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
+  private MvDefaultHistory defaultHistory;
 
-	@ManyToOne
-	@JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
-	private MvDocumentType documentType;
+  @ManyToOne
+  @JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
+  private MvDocumentType documentType;
 
-	@ManyToOne
-	@JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
-	private MvAccountChart ledgerAccount;
+  @ManyToOne
+  @JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
+  private MvAccountChart ledgerAccount;
 
-	@ManyToOne
-	@JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
-	private MvAccountChart resultAccount;
+  @ManyToOne
+  @JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
+  private MvAccountChart resultAccount;
 
-	@ManyToOne
-	@JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
-	private MvResultItem costAccount;
+  @ManyToOne
+  @JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
+  private MvResultItem costAccount;
 
-	@Column(name = "SN_FATURAVEL")
-	private Boolean billable;
+  @Column(name = "SN_FATURAVEL")
+  private Boolean billable;
 
-	@Column(name = "SN_AGRUPAVEL")
-	private Boolean groupable;
+  @Column(name = "SN_AGRUPAVEL")
+  private Boolean clusterable;
 
-	@Column(name = "SN_COMPULSORIO")
-	private Boolean compulsory;
+  @Column(name = "SN_COMPULSORIO")
+  private Boolean compulsory;
 
-	@OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<ServiceValue> values = new LinkedHashSet<>();
+  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<ServiceValue> values = new LinkedHashSet<>();
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "CD_TIPO")
-	private ServiceTypesEnum type;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "CD_TIPO")
+  private ServiceTypesEnum type;
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+  @Override
+  public Long getId() {
+    return id;
+  }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+  /**
+   * @return the title
+   */
+  public String getTitle() {
+    return title;
+  }
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  /**
+   * @param title the title to set
+   */
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	/**
-	 * @return the defaultHistory
-	 */
-	public MvDefaultHistory getDefaultHistory() {
-		return defaultHistory;
-	}
+  /**
+   * @return the defaultHistory
+   */
+  public MvDefaultHistory getDefaultHistory() {
+    return defaultHistory;
+  }
 
-	/**
-	 * @param defaultHistory
-	 *            the defaultHistory to set
-	 */
-	public void setDefaultHistory(MvDefaultHistory defaultHistory) {
-		this.defaultHistory = defaultHistory;
-	}
+  /**
+   * @param defaultHistory the defaultHistory to set
+   */
+  public void setDefaultHistory(MvDefaultHistory defaultHistory) {
+    this.defaultHistory = defaultHistory;
+  }
 
-	/**
-	 * @return the documentType
-	 */
-	public MvDocumentType getDocumentType() {
-		return documentType;
-	}
+  /**
+   * @return the documentType
+   */
+  public MvDocumentType getDocumentType() {
+    return documentType;
+  }
 
-	/**
-	 * @param documentType
-	 *            the documentType to set
-	 */
-	public void setDocumentType(MvDocumentType documentType) {
-		this.documentType = documentType;
-	}
+  /**
+   * @param documentType the documentType to set
+   */
+  public void setDocumentType(MvDocumentType documentType) {
+    this.documentType = documentType;
+  }
 
-	/**
-	 * @return the ledgerAccount
-	 */
-	public MvAccountChart getLedgerAccount() {
-		return ledgerAccount;
-	}
+  /**
+   * @return the ledgerAccount
+   */
+  public MvAccountChart getLedgerAccount() {
+    return ledgerAccount;
+  }
 
-	/**
-	 * @param ledgerAccount
-	 *            the ledgerAccount to set
-	 */
-	public void setLedgerAccount(MvAccountChart ledgerAccount) {
-		this.ledgerAccount = ledgerAccount;
-	}
+  /**
+   * @param ledgerAccount the ledgerAccount to set
+   */
+  public void setLedgerAccount(MvAccountChart ledgerAccount) {
+    this.ledgerAccount = ledgerAccount;
+  }
 
-	/**
-	 * @return the resultAccount
-	 */
-	public MvAccountChart getResultAccount() {
-		return resultAccount;
-	}
+  /**
+   * @return the resultAccount
+   */
+  public MvAccountChart getResultAccount() {
+    return resultAccount;
+  }
 
-	/**
-	 * @param resultAccount
-	 *            the resultAccount to set
-	 */
-	public void setResultAccount(MvAccountChart resultAccount) {
-		this.resultAccount = resultAccount;
-	}
+  /**
+   * @param resultAccount the resultAccount to set
+   */
+  public void setResultAccount(MvAccountChart resultAccount) {
+    this.resultAccount = resultAccount;
+  }
 
-	/**
-	 * @return the costAccount
-	 */
-	public MvResultItem getCostAccount() {
-		return costAccount;
-	}
+  /**
+   * @return the costAccount
+   */
+  public MvResultItem getCostAccount() {
+    return costAccount;
+  }
 
-	/**
-	 * @param costAccount
-	 *            the costAccount to set
-	 */
-	public void setCostAccount(MvResultItem costAccount) {
-		this.costAccount = costAccount;
-	}
+  /**
+   * @param costAccount the costAccount to set
+   */
+  public void setCostAccount(MvResultItem costAccount) {
+    this.costAccount = costAccount;
+  }
 
-	/**
-	 * @return the billable
-	 */
-	public Boolean getBillable() {
-		return billable;
-	}
+  /**
+   * @return the billable
+   */
+  public Boolean getBillable() {
+    return billable;
+  }
 
-	/**
-	 * @param billable
-	 *            the billable to set
-	 */
-	public void setBillable(Boolean billable) {
-		this.billable = billable;
-	}
+  /**
+   * @param billable the billable to set
+   */
+  public void setBillable(Boolean billable) {
+    this.billable = billable;
+  }
 
-	/**
-	 * @return the groupable
-	 */
-	public Boolean getGroupable() {
-		return groupable;
-	}
 
-	/**
-	 * @param groupable
-	 *            the groupable to set
-	 */
-	public void setGroupable(Boolean groupable) {
-		this.groupable = groupable;
-	}
+  public Boolean getClusterable() {
+    return clusterable;
+  }
 
-	/**
-	 * @return the compulsory
-	 */
-	public Boolean getCompulsory() {
-		return compulsory;
-	}
+  public void setClusterable(Boolean clusterable) {
+    this.clusterable = clusterable;
+  }
 
-	/**
-	 * @param compulsory
-	 *            the compulsory to set
-	 */
-	public void setCompulsory(Boolean compulsory) {
-		this.compulsory = compulsory;
-	}
+  /**
+   * @return the compulsory
+   */
+  public Boolean getCompulsory() {
+    return compulsory;
+  }
 
-	/**
-	 * @return the values
-	 */
-	public Set<ServiceValue> getValues() {
-		return values;
-	}
+  /**
+   * @param compulsory the compulsory to set
+   */
+  public void setCompulsory(Boolean compulsory) {
+    this.compulsory = compulsory;
+  }
 
-	/**
-	 * @param values
-	 *            the values to set
-	 */
-	public void setValues(Set<ServiceValue> values) {
-		this.values = values;
-	}
+  /**
+   * @return the values
+   */
+  public Set<ServiceValue> getValues() {
+    return values;
+  }
 
-	/**
-	 * @return the type
-	 */
-	public ServiceTypesEnum getType() {
-		return type;
-	}
+  /**
+   * @param values the values to set
+   */
+  public void setValues(Set<ServiceValue> values) {
+    this.values = values;
+  }
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(ServiceTypesEnum type) {
-		this.type = type;
-	}
+  /**
+   * @return the type
+   */
+  public ServiceTypesEnum getType() {
+    return type;
+  }
 
-	@Override
-	public String getLabelForSelectItem() {
-		return getTitle();
-	}
+  /**
+   * @param type the type to set
+   */
+  public void setType(ServiceTypesEnum type) {
+    this.type = type;
+  }
+
+  @Override
+  public String getLabelForSelectItem() {
+    return getTitle();
+  }
 }

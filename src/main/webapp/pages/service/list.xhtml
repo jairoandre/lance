@@ -1,51 +1,43 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="content">
-		<h:form id="form">
-			<p:panel header="Serviços">
-				<lance:dataTable id="dataTable" controller="#{serviceController}">
-					<p:column sortBy="#{item.title}" headerText="Nome"
-						style="text-align: left;">
-						<h:outputText value="#{item.title}" />
-					</p:column>
-					<p:column sortBy="#{item.defaultHistory}"
-						headerText="Histórico padrão" style="text-align: left;">
-						<h:outputText value="#{item.defaultHistory.title}" />
-					</p:column>
-					<p:column sortBy="#{item.documentType}" headerText="Tipo"
-						style="text-align: left;">
-						<h:outputText value="#{item.documentType.title}" />
-					</p:column>
-					<p:column sortBy="#{item.ledgerAccount}"
-						headerText="Conta contábil" style="text-align: left;">
-						<h:outputText value="#{item.ledgerAccount.title}" />
-					</p:column>
-					<p:column sortBy="#{item.billable}" headerText="Gera nota"
-						width="95" style="text-align: left;">
-						<h:outputText value="#{item.billable ? 'Sim' : 'Não'}" />
-					</p:column>
-					<p:column sortBy="#{item.groupable}" headerText="Agrupável"
-						width="95" style="text-align: left;">
-						<h:outputText value="#{item.groupable ? 'Sim' : 'Não'}" />
-					</p:column>
-					<p:column headerText="Valores" style="text-align: center;"
-						width="50">
-						<p:commandLink id="currencyAction"
-							action="#{serviceController.currency(item)}"
-							styleClass="action-link">
-							<span class="fa fa-usd" />
-						</p:commandLink>
-						<p:tooltip id="toolCurrencyAction" for="currencyAction"
-							value="Valores monetários" />
-					</p:column>
-				</lance:dataTable>
-			</p:panel>
-		</h:form>
-	</ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Serviços">
+        <lance:dataTable id="dataTable" controller="#{serviceController}">
+          <p:column sortBy="#{item.title}" headerText="Nome"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.type}" headerText="Tipo de cobrança"
+                    width="140" style="text-align: left;">
+            <h:outputText value="#{item.type.label}"/>
+          </p:column>
+          <p:column sortBy="#{item.billable}" headerText="Gera nota"
+                    width="95" style="text-align: left;">
+            <h:outputText value="#{item.billable ? 'Sim' : 'Não'}"/>
+          </p:column>
+          <p:column sortBy="#{item.clusterable}" headerText="Agrupável"
+                    width="95" style="text-align: left;">
+            <h:outputText value="#{item.clusterable ? 'Sim' : 'Não'}"/>
+          </p:column>
+          <p:column headerText="Valores" style="text-align: center;"
+                    width="50">
+            <p:commandLink id="currencyAction"
+                           action="#{serviceController.currency(item)}"
+                           styleClass="action-link">
+              <span class="fa fa-usd"/>
+            </p:commandLink>
+            <p:tooltip id="toolCurrencyAction" for="currencyAction"
+                       value="Valores monetários"/>
+          </p:column>
+        </lance:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
 </ui:composition>

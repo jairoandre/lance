@@ -1,105 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:p="http://primefaces.org/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
 
 <composite:interface>
-	<composite:attribute name="id" />
-	<composite:attribute name="controller" />
-	<composite:attribute name="renderAddBtn" />
-	<composite:attribute name="renderDetailAction" />
-	<composite:attribute name="renderEditAction" />
-	<composite:attribute name="renderDeleteAction" />
-	<composite:attribute name="renderActionColumn" />
-	<composite:attribute name="placeholder" />
+  <composite:attribute name="id"/>
+  <composite:attribute name="controller"/>
+  <composite:attribute name="renderAddBtn"/>
+  <composite:attribute name="renderDetailAction"/>
+  <composite:attribute name="renderEditAction"/>
+  <composite:attribute name="renderDeleteAction"/>
+  <composite:attribute name="renderActionColumn"/>
+  <composite:attribute name="placeholder"/>
 </composite:interface>
 
 <composite:implementation>
-	<h:panelGroup id="#{cc.attrs.id}" layout="block">
-		<h:panelGroup id="#{cc.attrs.id}SearchPnl" layout="block"
-			style="margin-bottom: 10px; position: relative;">
-			<p:focus context="#{cc.attrs.id}SearchPnl" />
-			<p:inputText id="#{cc.attrs.id}SearchInput"
-				value="#{cc.attrs.controller.searchTerm}"
-				placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
-				style="width: 50%;" />
-			<p:commandButton value="Buscar" id="#{cc.attrs.id}SearchBtn"
-				action="#{cc.attrs.controller.search}" icon="fa fa-search"
-				ajax="true" process="#{cc.attrs.id}SearchPnl"
-				update="#{cc.attrs.id}_table"
-				title="Procurar #{cc.attrs.controller.entityName}"
-				style="margin-left: 10px;" />
-			<p:commandButton value="Novo #{cc.attrs.controller.entityName}"
-				action="#{cc.attrs.controller.add}" icon="fa fa-plus"
-				title="Criar novo #{cc.attrs.controller.entityName}"
-				rendered="#{cc.attrs.renderAddBtn == null ? true : cc.attrs.renderAddBtn}"
-				style="position: absolute; right: 0;" />
-		</h:panelGroup>
-		<p:dataTable id="#{cc.attrs.id}_table" var="item"
-			widgetVar="#{cc.attrs.id}" value="#{cc.attrs.controller.lazyModel}"
-			paginator="true" emptyMessage="Sem registros"
-			paginatorPosition="bottom" rows="10" rowKey="index"
-			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			lazy="true" rowsPerPageTemplate="10,25,50">
-			<composite:insertChildren />
-			<p:column width="100" style="text-align: center"
-				rendered="#{cc.attrs.renderActionColumn == null ? true : cc.attrs.renderActionColumn}">
-				<f:facet name="header">
-					<h:outputText value="Ações" />
-				</f:facet>
-				<composite:renderFacet name="customAction" />
-				<p:commandLink id="detailAction"
-					action="#{cc.attrs.controller.detail(item)}"
-					rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}"
-					styleClass="action-link">
-					<span class="fa fa-search" />
-				</p:commandLink>
-				<p:tooltip id="toolDetailAction" for="detailAction"
-					value="Detalhar #{cc.attrs.controller.entityName}" />
-				<span />
-				<p:commandLink id="editAction"
-					action="#{cc.attrs.controller.edit(item)}" styleClass="action-link"
-					rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}">
-					<span class="fa fa-pencil" />
-				</p:commandLink>
-				<p:tooltip id="toolEditAction" for="editAction"
-					value="Editar #{cc.attrs.controller.entityName}" />
-				<span />
-				<p:commandLink id="deleteAction"
-					action="#{cc.attrs.controller.preDelete(item.id, index)}"
-					ajax="true" oncomplete="PF('#{cc.attrs.id}DeleteDlg').show();"
-					rendered="#{cc.attrs.renderDeleteAction == null ? true : cc.attrs.renderDeleteAction}"
-					styleClass="action-link">
-					<span class="fa fa-trash" />
-				</p:commandLink>
-				<p:tooltip id="toolDeleteAction" for="deleteAction"
-					value="Excluir #{cc.attrs.controller.entityName}" />
-			</p:column>
-			<f:facet name="footer">
-				<h:outputText
-					value="#{cc.attrs.controller.lazyModel.rowCount} registro(s)" />
-			</f:facet>
-		</p:dataTable>
+  <h:panelGroup id="#{cc.attrs.id}" layout="block">
+    <h:panelGroup id="panel" layout="block"
+                  style="margin-bottom: 10px; position: relative;">
+      <p:focus context="panel"/>
+      <p:inputText id="searchInput"
+                   value="#{cc.attrs.controller.searchTerm}"
+                   placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
+                   style="width: 50%;"/>
+      <p:commandButton id="searchBtn" value="Buscar"
+                       action="#{cc.attrs.controller.search}" icon="fa fa-search"
+                       ajax="true" process="panel"
+                       update="table"
+                       title="Procurar #{cc.attrs.controller.entityName}"
+                       style="margin-left: 10px;"/>
+      <p:commandButton value="Novo #{cc.attrs.controller.entityName}"
+                       action="#{cc.attrs.controller.add}" icon="fa fa-plus"
+                       title="Criar novo #{cc.attrs.controller.entityName}"
+                       rendered="#{cc.attrs.renderAddBtn == null ? true : cc.attrs.renderAddBtn}"
+                       style="position: absolute; right: 0;"/>
+    </h:panelGroup>
+    <p:dataTable id="table" var="item" value="#{cc.attrs.controller.lazyModel}"
+                 paginator="true" emptyMessage="Sem registros"
+                 paginatorPosition="bottom" rows="10" rowKey="index"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 lazy="true" rowsPerPageTemplate="10,25,50">
+      <composite:insertChildren/>
+      <p:column width="100" style="text-align: center"
+                rendered="#{cc.attrs.renderActionColumn == null ? true : cc.attrs.renderActionColumn}">
+        <f:facet name="header">
+          <h:outputText value="Ações"/>
+        </f:facet>
+        <composite:renderFacet name="customAction"/>
+        <p:commandLink id="detailAction"
+                       action="#{cc.attrs.controller.detail(item)}"
+                       rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}"
+                       styleClass="action-link">
+          <span class="fa fa-search"/>
+        </p:commandLink>
+        <p:tooltip id="toolDetailAction" for="detailAction"
+                   value="Detalhar #{cc.attrs.controller.entityName}"/>
+        <span/>
+        <p:commandLink id="editAction"
+                       action="#{cc.attrs.controller.edit(item)}" styleClass="action-link"
+                       rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}">
+          <span class="fa fa-pencil"/>
+        </p:commandLink>
+        <p:tooltip id="toolEditAction" for="editAction"
+                   value="Editar #{cc.attrs.controller.entityName}"/>
+        <span/>
+        <p:commandLink id="deleteAction"
+                       action="#{cc.attrs.controller.preDelete(item.id, index)}"
+                       ajax="true" oncomplete="PF('deleteDlg_#{cc.attrs.id}').show();"
+                       rendered="#{cc.attrs.renderDeleteAction == null ? true : cc.attrs.renderDeleteAction}"
+                       styleClass="action-link">
+          <span class="fa fa-trash"/>
+        </p:commandLink>
+        <p:tooltip id="toolDeleteAction" for="deleteAction"
+                   value="Excluir #{cc.attrs.controller.entityName}"/>
+      </p:column>
+      <f:facet name="footer">
+        <h:outputText
+          value="#{cc.attrs.controller.lazyModel.rowCount} registro(s)"/>
+      </f:facet>
+    </p:dataTable>
 
-	</h:panelGroup>
-	<p:defaultCommand target="#{cc.attrs.id}SearchBtn"
-		scope="#{cc.attrs.id}SearchPnl" />
-	<p:dialog id="#{cc.attrs.id}DeleteDlg" header="Atenção"
-		widgetVar="#{cc.attrs.id}DeleteDlg" modal="true">
-		<h:outputText
-			value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?" />
-		<f:facet name="footer">
-			<p:commandButton value="Excluir" ajax="true" update="@form"
-				action="#{cc.attrs.controller.doDelete}"
-				oncomplete="PF('#{cc.attrs.id}DeleteDlg').hide();"
-				icon="fa fa-warning" />
-			<p:commandButton value="Cancelar"
-				oncomplete="PF('#{cc.attrs.id}DeleteDlg').hide();"
-				icon="fa fa-arrow-left" />
-		</f:facet>
-	</p:dialog>
+  </h:panelGroup>
+  <p:defaultCommand target="searchBtn"
+                    scope="panel"/>
+  <p:dialog id="deleteDlg" header="Atenção"
+            widgetVar="deleteDlg_#{cc.attrs.id}" modal="true">
+    <h:outputText
+      value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?"/>
+    <f:facet name="footer">
+      <p:commandButton value="Excluir" ajax="true" update="@form"
+                       action="#{cc.attrs.controller.doDelete}"
+                       oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
+                       icon="fa fa-warning"/>
+      <p:commandButton value="Cancelar"
+                       oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
+                       icon="fa fa-arrow-left"/>
+    </f:facet>
+  </p:dialog>
 </composite:implementation>
 
 </html>

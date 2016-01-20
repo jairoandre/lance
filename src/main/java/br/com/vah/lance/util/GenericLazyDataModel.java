@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 
 import br.com.vah.lance.entity.BaseEntity;
@@ -62,6 +63,11 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 		setRowCount(crudService.paginatedCount(searchParams));
 		
 		return datasource;
+	}
+
+	@Override
+	public List<T> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
+		return super.load(first, pageSize, multiSortMeta, filters);
 	}
 
 	public void remove(Integer index) {

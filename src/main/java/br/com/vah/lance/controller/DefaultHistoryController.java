@@ -25,7 +25,7 @@ public class DefaultHistoryController extends AbstractController<MvDefaultHistor
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		setLazyModel(new GenericLazyDataModel<MvDefaultHistory>(service));
+		initLazyModel(service);
 	}
 
 	@Override

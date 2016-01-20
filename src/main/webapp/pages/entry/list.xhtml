@@ -1,88 +1,90 @@
-<ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="content">
-		<h:form id="form">
-			<p:panel header="Lançamentos">
-				<p:dataTable id="dataTable" value="#{entryController.entries}"
-					var="map" emptyMessage="Sem entradas" rowIndexVar="index">
-					<p:columnGroup type="header">
-						<p:row>
-							<p:column rowspan="2" headerText="Cliente"
-								style="text-align: left;" />
-							<p:column colspan="7" headerText="Lançamento" />
-						</p:row>
-						<p:row>
-							<p:column headerText="Valor contratual" style="text-align: left;" />
-							<p:column headerText="Valor variável" style="text-align: left;" />
-							<p:column headerText="Valor lançado" style="text-align: left;" />
-							<p:column headerText="Data de lançamento"
-								style="text-align: left;" />
-							<p:column headerText="Vigência" style="text-align: left;" />
-							<p:column headerText="Estado" style="text-align: left;" />
-							<p:column headerText="Ação" style="text-align: right;" />
-						</p:row>
-					</p:columnGroup>
-					<p:subTable id="subTable" var="subMap" value="#{map.value}">
-						<p:columnGroup type="header">
-							<p:row>
-								<p:column colspan="8" headerText="#{map.key.title}">
-									<p:commandLink value="#{map.key.title}"
-										action="#{entryController.edit(map.key)}" />
-									<p:commandButton action="#{entryController.edit(map.key)}"
-										icon="ui-icon-pencil" style="float: right;" />
-								</p:column>
-							</p:row>
-						</p:columnGroup>
-						<p:column>
-							<h:outputText value="#{subMap.key.subject.title}" />
-						</p:column>
-						<p:column>
-							<h:outputText value="#{subMap.value.contractValue}" />
-						</p:column>
-						<p:column>
-							<h:outputText value="#{subMap.value.variableValue}" />
-						</p:column>
-						<p:column>
-							<h:outputText value="#{subMap.value.value}" />
-						</p:column>
-						<p:column>
-							<h:outputText value="#{subMap.value.createdOn}"
-								rendered="#{subMap.value.status != 'N'}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-							<h:outputText value="-" rendered="#{subMap.value.status == 'N'}" />
-						</p:column>
-						<p:column>
-							<h:outputText value="#{subMap.value.effectiveOn}"
-								rendered="#{subMap.value.effectiveOn != null}">
-								<f:convertDateTime pattern="MM/yyyy" />
-							</h:outputText>
-							<h:outputText value="-"
-								rendered="#{subMap.value.effectiveOn == null}" />
-						</p:column>
-						<p:column style="color: #{subMap.value.status.color}">
-							<lance:entryStatus status="#{subMap.value.status}" />
-						</p:column>
-						<p:column width="50">
-							<p:commandButton action="#{entryController.edit(map.key)}"
-								icon="ui-icon-pencil" style="float: right;" />
-							<p:commandButton
-								action="#{entryController.validate(subMap.value)}"
-								icon="ui-icon-notice" style="float: right;"
-								disabled="#{subMap.value.status != 'L' and subMap.value.status != 'F'}" />
-							<p:commandButton action="#{entryController.edit(map.key)}"
-								icon="ui-icon-calculator" style="float: right;"
-								disabled="#{subMap.value.status != 'V'}" />
-						</p:column>
-					</p:subTable>
-				</p:dataTable>
-			</p:panel>
-		</h:form>
-	</ui:define>
+<ui:composition
+  template="/templates/layout.xhtml"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:lance="http://java.sun.com/jsf/composite/lance">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Lançamentos">
+        <p:dataTable id="dataTable" value="#{entryController.entries}"
+                     var="map" emptyMessage="Sem entradas" rowIndexVar="index">
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column rowspan="2" headerText="Cliente"
+                        style="text-align: left;"/>
+              <p:column colspan="7" headerText="Lançamento"/>
+            </p:row>
+            <p:row>
+              <p:column headerText="Valor contratual" style="text-align: left;"/>
+              <p:column headerText="Valor variável" style="text-align: left;"/>
+              <p:column headerText="Valor lançado" style="text-align: left;"/>
+              <p:column headerText="Data de lançamento"
+                        style="text-align: left;"/>
+              <p:column headerText="Vigência" style="text-align: left;"/>
+              <p:column headerText="Estado" style="text-align: left;"/>
+              <p:column headerText="Ação" style="text-align: right;"/>
+            </p:row>
+          </p:columnGroup>
+          <p:subTable id="subTable" var="subMap" value="#{map.value}">
+            <p:columnGroup type="header">
+              <p:row>
+                <p:column colspan="8" headerText="#{map.key.title}">
+                  <p:commandLink value="#{map.key.title}"
+                                 action="#{entryController.edit(map.key)}"/>
+                  <p:commandButton action="#{entryController.edit(map.key)}"
+                                   icon="ui-icon-pencil" style="float: right;"/>
+                </p:column>
+              </p:row>
+            </p:columnGroup>
+            <p:column>
+              <h:outputText value="#{subMap.key.subject.title}"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{subMap.value.contractValue}"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{subMap.value.variableValue}"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{subMap.value.value}"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{subMap.value.createdOn}"
+                            rendered="#{subMap.value.status != 'N'}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+              <h:outputText value="-" rendered="#{subMap.value.status == 'N'}"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{subMap.value.effectiveOn}"
+                            rendered="#{subMap.value.effectiveOn != null}">
+                <f:convertDateTime pattern="MM/yyyy"/>
+              </h:outputText>
+              <h:outputText value="-"
+                            rendered="#{subMap.value.effectiveOn == null}"/>
+            </p:column>
+            <p:column style="color: #{subMap.value.status.color}">
+              <lance:entryStatus status="#{subMap.value.status}"/>
+            </p:column>
+            <p:column width="50">
+              <p:commandButton
+                action="#{entryController.edit(map.key)}"
+                icon="ui-icon-pencil" style="float: right;"/>
+              <p:commandButton
+                action="#{entryController.validate(subMap.value)}"
+                icon="ui-icon-notice" style="float: right;"
+                disabled="#{subMap.value.status != 'L' and subMap.value.status != 'F'}"/>
+              <p:commandButton
+                action="#{entryController.edit(map.key)}"
+                icon="ui-icon-calculator" style="float: right;"
+                disabled="#{subMap.value.status != 'V'}"/>
+            </p:column>
+          </p:subTable>
+        </p:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
 </ui:composition>

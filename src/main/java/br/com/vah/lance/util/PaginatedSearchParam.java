@@ -35,6 +35,18 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @param relations
+	 */
+	public void addRelations(String... relations) {
+		if (relations != null) {
+			for (String relation : relations) {
+				this.relations.add(relation);
+			}
+		}
+	}
+
+	/**
 	 * @return the params
 	 */
 	public Map<String, Object> getParams() {
@@ -132,7 +144,8 @@ public class PaginatedSearchParam implements Serializable {
 	}
 
 	/**
-	 * @param relations the relations to set
+	 * @param relations
+	 *            the relations to set
 	 */
 	public void setRelations(List<String> relations) {
 		this.relations = relations;
