@@ -65,10 +65,10 @@ public class Contract extends BaseEntity {
     private MvClient subject;
 
     @OneToMany(mappedBy = "contract", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<ServiceContract> services;
+    private Set<ContractSector> contractSectors;
 
     public Contract() {
-        this.services = new LinkedHashSet<>();
+        this.contractSectors = new LinkedHashSet<>();
         this.subject = new MvClient();
     }
 
@@ -161,15 +161,15 @@ public class Contract extends BaseEntity {
     /**
      * @return the services
      */
-    public Set<ServiceContract> getServices() {
-        return services;
+    public Set<ContractSector> getContractSectors() {
+        return contractSectors;
     }
 
     /**
      * @param services the services to set
      */
-    public void setServices(Set<ServiceContract> services) {
-        this.services = services;
+    public void setContractSectors(Set<ContractSector> services) {
+        this.contractSectors = services;
     }
 
     @Override

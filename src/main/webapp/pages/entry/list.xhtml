@@ -10,79 +10,53 @@
     <h:form id="form">
       <p:panel header="Lançamentos">
         <p:dataTable id="dataTable" value="#{entryController.entries}"
-                     var="map" emptyMessage="Sem entradas" rowIndexVar="index">
-          <p:columnGroup type="header">
-            <p:row>
-              <p:column rowspan="2" headerText="Cliente"
-                        style="text-align: left;"/>
-              <p:column colspan="7" headerText="Lançamento"/>
-            </p:row>
-            <p:row>
-              <p:column headerText="Valor contratual" style="text-align: left;"/>
-              <p:column headerText="Valor variável" style="text-align: left;"/>
-              <p:column headerText="Valor lançado" style="text-align: left;"/>
-              <p:column headerText="Data de lançamento"
-                        style="text-align: left;"/>
-              <p:column headerText="Vigência" style="text-align: left;"/>
-              <p:column headerText="Estado" style="text-align: left;"/>
-              <p:column headerText="Ação" style="text-align: right;"/>
-            </p:row>
-          </p:columnGroup>
-          <p:subTable id="subTable" var="subMap" value="#{map.value}">
-            <p:columnGroup type="header">
-              <p:row>
-                <p:column colspan="8" headerText="#{map.key.title}">
-                  <p:commandLink value="#{map.key.title}"
-                                 action="#{entryController.edit(map.key)}"/>
-                  <p:commandButton action="#{entryController.edit(map.key)}"
-                                   icon="ui-icon-pencil" style="float: right;"/>
-                </p:column>
-              </p:row>
-            </p:columnGroup>
-            <p:column>
-              <h:outputText value="#{subMap.key.subject.title}"/>
-            </p:column>
-            <p:column>
-              <h:outputText value="#{subMap.value.contractValue}"/>
-            </p:column>
-            <p:column>
-              <h:outputText value="#{subMap.value.variableValue}"/>
-            </p:column>
-            <p:column>
-              <h:outputText value="#{subMap.value.value}"/>
-            </p:column>
-            <p:column>
-              <h:outputText value="#{subMap.value.createdOn}"
-                            rendered="#{subMap.value.status != 'N'}">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-              </h:outputText>
-              <h:outputText value="-" rendered="#{subMap.value.status == 'N'}"/>
-            </p:column>
-            <p:column>
-              <h:outputText value="#{subMap.value.effectiveOn}"
-                            rendered="#{subMap.value.effectiveOn != null}">
-                <f:convertDateTime pattern="MM/yyyy"/>
-              </h:outputText>
-              <h:outputText value="-"
-                            rendered="#{subMap.value.effectiveOn == null}"/>
-            </p:column>
-            <p:column style="color: #{subMap.value.status.color}">
-              <lance:entryStatus status="#{subMap.value.status}"/>
-            </p:column>
-            <p:column width="50">
-              <p:commandButton
-                action="#{entryController.edit(map.key)}"
-                icon="ui-icon-pencil" style="float: right;"/>
-              <p:commandButton
-                action="#{entryController.validate(subMap.value)}"
-                icon="ui-icon-notice" style="float: right;"
-                disabled="#{subMap.value.status != 'L' and subMap.value.status != 'F'}"/>
-              <p:commandButton
-                action="#{entryController.edit(map.key)}"
-                icon="ui-icon-calculator" style="float: right;"
-                disabled="#{subMap.value.status != 'V'}"/>
-            </p:column>
-          </p:subTable>
+                     var="entry" emptyMessage="Sem entradas" rowIndexVar="index">
+          <p:column headerText="Serviço" styleClass="left-align">
+            <h:outputText value="#{entry.service.title}"/>
+          </p:column>
+          <p:column headerText="Valor lançado" styleClass="left-align" width="150">
+            <h:outputText value="#{entry.totalValue}"/>
+          </p:column>
+          <p:column headerText="Criação" styleClass="left-align" width="100">
+            <h:outputText value="#{entry.createdOn}"
+                          rendered="#{entry.status != 'N'}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+            <h:outputText value="-" rendered="#{entry.status == 'N'}"/>
+          </p:column>
+          <p:column headerText="Vigência" styleClass="left-align" width="100">
+            <h:outputText value="#{entry.effectiveOn}"
+                          rendered="#{entry.effectiveOn != null}">
+              <f:convertDateTime pattern="MM/yyyy"/>
+            </h:outputText>
+            <h:outputText value="-"
+                          rendered="#{entry.effectiveOn == null}"/>
+          </p:column>
+          <p:column headerText="Estado" style="color: #{entry.status.color}" styleClass="left-align" width="100">
+            <lance:entryStatus status="#{entry.status}"/>
+          </p:column>
+          <p:column headerText="Ações" width="100" styleClass="action-link">
+            <p:commandLink id="editEntry"
+                           action="#{entryController.edit(entry)}">
+              <span class="fa fa-pencil"/>
+            </p:commandLink>
+            <p:tooltip id="tooltipEditEntry" for="editEntry"
+                       value="Editar #{cc.attrs.controller.entityName}"/>
+            <p:commandLink id="validateEntry"
+                           action="#{entryController.validate(entry)}"
+                           disabled="#{entry.status != 'L' and entry.status != 'F'}">
+              <span class="fa fa-gavel"/>
+            </p:commandLink>
+            <p:tooltip id="tooltipValidateEntry" for="validateEntry"
+                       value="Validar #{cc.attrs.controller.entityName}"/>
+            <p:commandLink id="sendEditEntry"
+                           action="#{entryController.edit(entry)}"
+                           disabled="#{entry.status != 'V'}">
+              <span class="fa fa-calculator"/>
+            </p:commandLink>
+            <p:tooltip id="tooltipSendEditEntry" for="sendEditEntry"
+                       value="Emitir #{cc.attrs.controller.entityName}"/>
+          </p:column>
         </p:dataTable>
       </p:panel>
     </h:form>

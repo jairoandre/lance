@@ -1,25 +1,19 @@
 package br.com.vah.lance.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import br.com.vah.lance.entity.Contract;
 import br.com.vah.lance.entity.Entry;
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
-import br.com.vah.lance.util.GenericLazyDataModel;
+import br.com.vah.lance.service.ServiceService;
 import br.com.vah.lance.util.LanceUtils;
+
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 @Named
@@ -32,17 +26,19 @@ public class EntryController extends AbstractController<Entry> {
 
   private
   @Inject
-  EntryService das;
+  EntryService service;
 
   private
   @Inject
   LoginController loginController;
 
-  private List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries;
+  private
+  @Inject
+  ServiceService serviceService;
 
   private Service serviceItem;
 
-  private List<Map.Entry<Contract, Entry>> entryMap;
+  private List<Entry> entries;
 
   private BigDecimal variableValueTotal = BigDecimal.ZERO;
 
@@ -50,39 +46,18 @@ public class EntryController extends AbstractController<Entry> {
 
   private BigDecimal valueTotal = BigDecimal.ZERO;
 
+  private Long serviceId;
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
-    setItem(createNewItem());
-    // setLazyModel(new GenericLazyDataModel<Entry>(das, new Entry()));
-    Map<Service, Map<Contract, Entry>> modelMap = das.retrieveEntrysForUser(loginController.getUser().getId(),
-        LanceUtils.getDateRangeForThisMonth());
-    Map<Service, Object> transformedMap = new LinkedHashMap<>();
-    for (Service key : modelMap.keySet()) {
-      transformedMap.put(key, LanceUtils.transformMap(modelMap.get(key)));
-    }
-    entries = new ArrayList(transformedMap.entrySet());
-  }
-
-  @Override
-  public void onLoad() {
-    super.onLoad();
-    if (getId() != null) {
-      for (Map.Entry<Service, List<Map.Entry<Contract, Entry>>> map : entries) {
-        if (getId().equals(map.getKey().getId())) {
-          serviceItem = map.getKey();
-          entryMap = map.getValue();
-          updateTotals();
-          break;
-        }
-      }
-    }
+    entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRangeForThisMonth());
   }
 
   @Override
   public DataAccessService<Entry> getService() {
-    return das;
+    return service;
   }
 
   @Override
@@ -111,16 +86,16 @@ public class EntryController extends AbstractController<Entry> {
   }
 
   /**
-   * @return the entries
+   * @return
    */
-  public List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> getEntries() {
+  public List<Entry> getEntries() {
     return entries;
   }
 
   /**
-   * @param entries the entries to set
+   * @param entries
    */
-  public void setEntries(List<Map.Entry<Service, List<Map.Entry<Contract, Entry>>>> entries) {
+  public void setEntries(List<Entry> entries) {
     this.entries = entries;
   }
 
@@ -136,42 +111,6 @@ public class EntryController extends AbstractController<Entry> {
    */
   public void setServiceItem(Service serviceItem) {
     this.serviceItem = serviceItem;
-  }
-
-  /**
-   * @return the entryMap
-   */
-  public List<Map.Entry<Contract, Entry>> getEntryMap() {
-    return entryMap;
-  }
-
-  /**
-   * @param entryMap the entryMap to set
-   */
-  public void setEntryMap(List<Map.Entry<Contract, Entry>> entryMap) {
-    this.entryMap = entryMap;
-  }
-
-  @Override
-  public GenericLazyDataModel<Entry> getLazyModel() {
-    return super.getLazyModel();
-  }
-
-  public void updateValue(Entry item) {
-    item.setValue(item.getContractValue().add(item.getVariableValue()));
-    updateTotals();
-  }
-
-  public void updateTotals() {
-    valueTotal = BigDecimal.ZERO;
-    contractValueTotal = BigDecimal.ZERO;
-    variableValueTotal = BigDecimal.ZERO;
-    for (Map.Entry<Contract, Entry> ent : entryMap) {
-      valueTotal = valueTotal.add(ent.getValue().getValue());
-      contractValueTotal = contractValueTotal.add(ent.getValue().getContractValue());
-      variableValueTotal = variableValueTotal.add(ent.getValue().getVariableValue());
-
-    }
   }
 
   /**
@@ -195,22 +134,33 @@ public class EntryController extends AbstractController<Entry> {
     return valueTotal;
   }
 
-  public String saveEntrys() {
-    List<Entry> entries = new ArrayList<>();
-    for (Map.Entry<Contract, Entry> map : entryMap) {
-      Entry curr = map.getValue();
-      curr.setUserForContract(loginController.getUser());
-      curr.setUserForEntry(loginController.getUser());
-      curr.setValue(curr.getContractValue().add(curr.getVariableValue()));
-      entries.add(curr);
-    }
-    das.saveEntrys(entries);
-    addMsg(new FacesMessage("Sucesso!", "Lançamentos atualizados"), true);
-    return back();
+  public Long getServiceId() {
+    return serviceId;
+  }
+
+  public void setServiceId(Long serviceId) {
+    this.serviceId = serviceId;
   }
 
   public String validate(Entry item) {
     return "/pages/entry/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
   }
 
+  @Override
+  public void onLoad() {
+    super.onLoad();
+    if (serviceId != null && getItem().getId() != null) {
+      setItem(service.prepareNewEntry(loginController.getUser().getId(), serviceId));
+    }
+  }
+
+  @Override
+  public String edit(Entry item) {
+    if (item.getId() == null) {
+      return editPage() + String.format("?faces-redirect=true&editing=true&serviceId=%d",
+          item.getService().getId());
+    } else {
+      return super.edit(item);
+    }
+  }
 }

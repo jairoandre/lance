@@ -1,332 +1,239 @@
 package br.com.vah.lance.entity;
 
+import br.com.vah.lance.constant.EntryStatusEnum;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
-import br.com.vah.lance.constant.EntryStatusEnum;
-
 /**
- * Entidade que representa um lançamento.
- * 
- * @author jairoportela
+ * Entidade que representa um conjunto de lançamentos.
  *
+ * @author jairoportela
  */
 @Entity
 @Table(name = "TB_LANCA_LANCAMENTO", schema = "USRDBVAH")
-@NamedQueries({ @NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
-		@NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
-		@NamedQuery(name = Entry.BY_DATE_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services") })
+@NamedQueries({@NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
+    @NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
+    @NamedQuery(name = Entry.BY_DATE_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services")})
 public class Entry extends BaseEntity {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public static final String ALL = "Entry.populatedItems";
-	public static final String COUNT = "Entry.countTotal";
-	public static final String BY_DATE_AND_SERVICE = "Entry.byDateAndService";
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+  public static final String ALL = "Entry.populatedItems";
+  public static final String COUNT = "Entry.countTotal";
 
-	@Id
-	@SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_TB_LANCA_LANCAMENTO", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqEntryGenerator")
-	@Column(name = "ID")
-	private Long id;
+  public static final String BY_DATE_AND_SERVICE = "Entry.byDateAndService";
 
-	/**
-	 * Contrato
-	 */
-	@ManyToOne
-	@JoinColumn(name = "ID_CONTRATO", nullable = false)
-	private Contract contract;
+  @Id
+  @SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_TB_LANCA_LANCAMENTO", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqEntryGenerator")
+  @Column(name = "ID")
+  private Long id;
 
-	/**
-	 * Serviço referenciado
-	 */
-	@ManyToOne
-	@JoinColumn(name = "ID_SERVICO", nullable = false)
-	private Service service;
+  /**
+   * Usuário autor do lançamento
+   */
+  @ManyToOne
+  @JoinColumn(name = "ID_USU_LANCADOR", nullable = false)
+  private User userForEntry;
 
-	/**
-	 * Usuário do contrato?
-	 */
-	@ManyToOne
-	@JoinColumn(name = "ID_USU_CONTRATO", nullable = false)
-	private User userForContract;
+  /**
+   * Comentários do lançamento
+   */
+  @OneToMany(mappedBy = "entry", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<Comment> comments;
 
-	/**
-	 * Usuário autor do lançamento
-	 */
-	@ManyToOne
-	@JoinColumn(name = "ID_USU_LANCADOR", nullable = false)
-	private User userForEntry;
+  /**
+   * Serviço ao qual o lançamento se refere
+   */
+  @ManyToOne
+  @JoinColumn(name = "ID_SERVICO", nullable = false)
+  private Service service;
 
-	/**
-	 * Comentários do lançamento
-	 */
-	@OneToMany(mappedBy = "entry", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Comment> comments;
+  /**
+   * Valor total do lançamento
+   */
+  @Column(name = "VL_TOTAL")
+  private BigDecimal totalValue = BigDecimal.ZERO;
 
-	/**
-	 * Valor do lançamento
-	 */
-	@Column(name = "VL_LANCAMENTO")
-	private BigDecimal value;
+  /**
+   * Data de criação do lançamento
+   */
+  @Column(name = "DT_LANCAMENTO")
+  private Date createdOn;
 
-	/**
-	 * Valor base do lançamento
-	 */
-	@Column(name = "VL_FIXO")
-	private BigDecimal contractValue;
+  /**
+   * Data de vigência
+   */
+  @Column(name = "DT_VIGENCIA")
+  private Date effectiveOn;
 
-	/**
-	 * Valor variável do lançamento
-	 */
-	@Column(name = "VL_VARIAVEL")
-	private BigDecimal variableValue;
+  /**
+   * Estado do lançamento, valores possíveis:
+   * <ul>
+   * <li>Não lançado</li>
+   * <li>Lançado</li>
+   * <li>Validado</li>
+   * <li>Pendente</li>
+   * <li>Corrigido</li>
+   * <li>Transmitido</li>
+   * <li>Excluído</li>
+   * </ul>
+   */
+  @Column(name = "CD_STATUS", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private EntryStatusEnum status;
 
-	/**
-	 * Data de criação do lançamento
-	 */
-	@Column(name = "DT_LANCAMENTO")
-	private Date createdOn;
+  /**
+   * Os valores individuais de lançamento (por cliente/contrato)
+   */
+  @OneToMany(mappedBy = "entry", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Set<EntryValue> values;
 
-	/**
-	 * Data de vigência
-	 */
-	@Column(name = "DT_VIGENCIA")
-	private Date effectiveOn;
+  public Entry() {
+    this.status = EntryStatusEnum.N;
+    this.createdOn = new Date();
+    this.effectiveOn = new Date();
+    this.totalValue = BigDecimal.ZERO;
+    this.comments = new LinkedHashSet<>();
+    this.values = new LinkedHashSet<>();
+  }
 
-	/**
-	 * Estado do lançamento, valores possíveis:
-	 * <ul>
-	 * <li>Não lançado</li>
-	 * <li>Lançado</li>
-	 * <li>Validado</li>
-	 * <li>Pendente</li>
-	 * <li>Corrigido</li>
-	 * <li>Transmitido</li>
-	 * <li>Excluído</li>
-	 * </ul>
-	 */
-	@Column(name = "CD_STATUS", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private EntryStatusEnum status;
+  public Entry(Service service) {
+    this();
+    this.service = service;
+  }
 
-	public Entry() {
-		this.status = EntryStatusEnum.N;
-		this.createdOn = new Date();
-		this.effectiveOn = new Date();
-		this.value = BigDecimal.ZERO;
-		this.contractValue = BigDecimal.ZERO;
-		this.variableValue = BigDecimal.ZERO;
-		this.comments = new LinkedHashSet<>();
-	}
+  @Override
+  public Long getId() {
+    return id;
+  }
 
-	public Entry(Contract contract) {
-		this();
-		this.contract = contract;
-	}
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+  /**
+   * @return the userForEntry
+   */
+  public User getUserForEntry() {
+    return userForEntry;
+  }
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+  /**
+   * @param userForEntry the userForEntry to set
+   */
+  public void setUserForEntry(User userForEntry) {
+    this.userForEntry = userForEntry;
+  }
 
-	/**
-	 * @return the contract
-	 */
-	public Contract getContract() {
-		return contract;
-	}
+  /**
+   * @return the comments
+   */
+  public Set<Comment> getComments() {
+    return comments;
+  }
 
-	/**
-	 * @param contract
-	 *            the contract to set
-	 */
-	public void setContract(Contract contract) {
-		this.contract = contract;
-	}
+  /**
+   * @param comments the comments to set
+   */
+  public void setComments(Set<Comment> comments) {
+    this.comments = comments;
+  }
 
-	/**
-	 * @return the service
-	 */
-	public Service getService() {
-		return service;
-	}
+  /**
+   * @return
+   */
+  public Service getService() {
+    return service;
+  }
 
-	/**
-	 * @param service
-	 *            the service to set
-	 */
-	public void setService(Service service) {
-		this.service = service;
-	}
+  /**
+   * @param service
+   */
+  public void setService(Service service) {
+    this.service = service;
+  }
 
-	/**
-	 * @return the userForContract
-	 */
-	public User getUserForContract() {
-		return userForContract;
-	}
+  /**
+   * @return the value
+   */
+  public BigDecimal getTotalValue() {
+    return totalValue;
+  }
 
-	/**
-	 * @param userForContract
-	 *            the userForContract to set
-	 */
-	public void setUserForContract(User userForContract) {
-		this.userForContract = userForContract;
-	}
+  /**
+   * @param value the value to set
+   */
+  public void setTotalValue(BigDecimal value) {
+    this.totalValue = value;
+  }
 
-	/**
-	 * @return the userForEntry
-	 */
-	public User getUserForEntry() {
-		return userForEntry;
-	}
+  /**
+   * @return the createdOn
+   */
+  public Date getCreatedOn() {
+    return createdOn;
+  }
 
-	/**
-	 * @param userForEntry
-	 *            the userForEntry to set
-	 */
-	public void setUserForEntry(User userForEntry) {
-		this.userForEntry = userForEntry;
-	}
+  /**
+   * @param createdOn the createdOn to set
+   */
+  public void setCreatedOn(Date createdOn) {
+    this.createdOn = createdOn;
+  }
 
-	/**
-	 * @return the comments
-	 */
-	public Set<Comment> getComments() {
-		return comments;
-	}
+  /**
+   * @return the effectiveOn
+   */
+  public Date getEffectiveOn() {
+    return effectiveOn;
+  }
 
-	/**
-	 * @param comments the comments to set
-	 */
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
-	}
+  /**
+   * @param effectiveOn the effectiveOn to set
+   */
+  public void setEffectiveOn(Date effectiveOn) {
+    this.effectiveOn = effectiveOn;
+  }
 
-	/**
-	 * @return the value
-	 */
-	public BigDecimal getValue() {
-		return value;
-	}
+  /**
+   * @return the status
+   */
+  public EntryStatusEnum getStatus() {
+    return status;
+  }
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(BigDecimal value) {
-		this.value = value;
-	}
+  /**
+   * @param status the status to set
+   */
+  public void setStatus(EntryStatusEnum status) {
+    this.status = status;
+  }
 
-	/**
-	 * @return the contractValue
-	 */
-	public BigDecimal getContractValue() {
-		return contractValue;
-	}
+  /**
+   * @return
+   */
+  public Set<EntryValue> getValues() {
+    return values;
+  }
 
-	/**
-	 * @param contractValue
-	 *            the contractValue to set
-	 */
-	public void setContractValue(BigDecimal contractValue) {
-		this.contractValue = contractValue;
-	}
+  /**
+   * @param values
+   */
+  public void setValues(Set<EntryValue> values) {
+    this.values = values;
+  }
 
-	/**
-	 * @return the variableValue
-	 */
-	public BigDecimal getVariableValue() {
-		return variableValue;
-	}
-
-	/**
-	 * @param variableValue
-	 *            the variableValue to set
-	 */
-	public void setVariableValue(BigDecimal variableValue) {
-		this.variableValue = variableValue;
-	}
-
-	/**
-	 * @return the createdOn
-	 */
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-
-	/**
-	 * @param createdOn
-	 *            the createdOn to set
-	 */
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
-
-	/**
-	 * @return the effectiveOn
-	 */
-	public Date getEffectiveOn() {
-		return effectiveOn;
-	}
-
-	/**
-	 * @param effectiveOn
-	 *            the effectiveOn to set
-	 */
-	public void setEffectiveOn(Date effectiveOn) {
-		this.effectiveOn = effectiveOn;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public EntryStatusEnum getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(EntryStatusEnum status) {
-		this.status = status;
-	}
-
-	@Override
-	public String getLabelForSelectItem() {
-		return null;
-	}
-
-	public BigDecimal getTotal() {
-		return contractValue.add(variableValue);
-	}
+  @Override
+  public String getLabelForSelectItem() {
+    return null;
+  }
 
 }

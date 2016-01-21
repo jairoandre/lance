@@ -57,8 +57,7 @@ body {
 }
 
 .homeWrapper {
-	background-color: #7F6A00;
-	background-image: url('./bg.png');
+	background: #7F6A00 url("#{resource['img/bg.png']}");
 	margin-top: -15px;
 }
 
@@ -129,17 +128,17 @@ body {
 	border-color: #374213 !important;
 }
 
-.action-link {
-	padding: 5px;
+td.action-link {
+	text-align: center;
 }
 
-.action-link span {
+span.action-link span, a.action-link span, td.action-link a span, td.action-link span span {
 	font-size: 18px;
+	padding: 2px;
 }
 
-.action-link:HOVER {
+a.action-link:HOVER, td.action-link a:HOVER {
 	color: red;
-	font-weight: bold;
 }
 
 .selected-column {
@@ -148,6 +147,10 @@ body {
 
 .left-align {
 	text-align: left !important;
+}
+
+.right-align {
+	text-align: right !important;
 }
 
 .services-contract-panel .ui-datalist-header {

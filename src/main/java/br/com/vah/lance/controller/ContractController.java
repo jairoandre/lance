@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.entity.Contract;
+import br.com.vah.lance.entity.ContractSector;
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceContract;
 import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.ClientService;
@@ -48,7 +48,7 @@ public class ContractController extends AbstractController<Contract> {
 
   private Service serviceBean;
 
-  public static final String[] RELATIONS = {"services", "subject"};
+  public static final String[] RELATIONS = {"contractSectors", "subject"};
 
   @PostConstruct
   public void init() {
@@ -67,9 +67,9 @@ public class ContractController extends AbstractController<Contract> {
     clientControllers = new HashMap<>();
     serviceControllers = new HashMap<>();
     if (subject != null) {
-      Set<ServiceContract> services = new LinkedHashSet<>();
+      Set<ContractSector> services = new LinkedHashSet<>();
       for (MvSector sector : subject.getSectors()) {
-        ServiceContract service = new ServiceContract();
+        ContractSector service = new ContractSector();
         service.setSector(sector);
         service.setContract(getItem());
         service.setServices(new LinkedHashSet<Service>());
@@ -77,7 +77,7 @@ public class ContractController extends AbstractController<Contract> {
         clientControllers.put(sector.getId(), new ClientController(clientService));
         serviceControllers.put(sector.getId(), new ServiceController(serviceService));
       }
-      getItem().setServices(services);
+      getItem().setContractSectors(services);
     }
   }
 
@@ -134,7 +134,7 @@ public class ContractController extends AbstractController<Contract> {
     this.serviceBean = serviceBean;
   }
 
-  public void toggleService(ServiceContract service) {
+  public void toggleService(ContractSector service) {
     if (service.getServices().contains(serviceBean)) {
       service.getServices().remove(serviceBean);
     } else {

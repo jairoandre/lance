@@ -9,8 +9,7 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<p:panel header="Contratos">
-				<lance:dataTable id="dataTable" controller="#{contractController}"
-					label="contrato">
+				<lance:dataTable id="dataTable" controller="#{contractController}">
 
 					<p:column sortBy="#{item.title}" headerText="Título"
 						style="text-align: left;">
@@ -34,7 +33,7 @@
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
-					<p:column sortBy="#{item.subject.title}" headerText="Locatário"
+					<p:column sortBy="#{item.subject.title}" headerText="Contratante"
 						style="text-align: left;">
 						<h:outputText
 							value="#{item.subject == null ? '-' : item.subject.title}" />

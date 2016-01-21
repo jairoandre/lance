@@ -1,5 +1,6 @@
 package br.com.vah.lance.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +38,11 @@ public class LanceUtils {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List<Map.Entry<? extends Object, ? extends Object>> transformMap(Map<?, ?> map) {
 		return new ArrayList(map.entrySet());
+	}
+
+	public static String getCurrentDateAsString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+		return sdf.format(getCalendarForNow());
 	}
 
 	public static Date[] getDateRangeForThisMonth() {
