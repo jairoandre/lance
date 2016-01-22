@@ -5,12 +5,57 @@ public enum ServiceTypesEnum {
 
 	private String label;
 
-	private ServiceTypesEnum(String label) {
+	ServiceTypesEnum(String label) {
 		this.label = label;
 	}
 
 	public String getLabel() {
 		return this.label;
+	}
+
+	public String getCompALabel() {
+		switch (this) {
+			case T:
+				return "Variável";
+			case V:
+				return "Valor de venda";
+			case E:
+				return "Leitura anterior";
+			case C:
+				return "Valor de cobrança";
+			default:
+				return "N/A";
+		}
+	}
+
+	public Boolean getRenderCompB(){
+		switch (this) {
+			case T:
+				return false;
+			case V:
+				return true;
+			case E:
+				return true;
+			case C:
+				return false;
+			default:
+				return true;
+		}
+	}
+
+	public String getCompBLabel() {
+		switch (this) {
+			case T:
+				return "N/A";
+			case V:
+				return "% Comissão";
+			case E:
+				return "Leitura atual";
+			case C:
+				return "N/A";
+			default:
+				return "N/A";
+		}
 	}
 
 }

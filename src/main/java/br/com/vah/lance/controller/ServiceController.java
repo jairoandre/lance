@@ -1,18 +1,21 @@
 package br.com.vah.lance.controller;
 
-import java.util.logging.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.Service;
 import br.com.vah.lance.entity.ServiceValue;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
-import br.com.vah.lance.util.GenericLazyDataModel;
+import br.com.vah.lance.util.LanceUtils;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 @Named
@@ -33,13 +36,28 @@ public class ServiceController extends AbstractController<Service> {
 
   private static final String[] RELATIONS = {"values"};
 
+  private List<ServiceValue> values;
+
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     setItem(createNewItem());
-    serviceValue = new ServiceValue();
+    prepareNewServiceValue();
     initLazyModel(service, RELATIONS);
     types = ServiceTypesEnum.values();
+  }
+
+  public void prepareNewServiceValue() {
+    serviceValue = new ServiceValue();
+    Date[] range = LanceUtils.getDateRangeForThisMonth();
+    serviceValue.setBeginDate(range[0]);
+    serviceValue.setEndDate(range[1]);
+  }
+
+  @Override
+  public void onLoad() {
+    super.onLoad();
+    values = new ArrayList<>(getItem().getValues());
   }
 
   public ServiceController() {
@@ -72,8 +90,18 @@ public class ServiceController extends AbstractController<Service> {
 
   public void addValue() {
     serviceValue.setService(getItem());
-    getItem().getValues().add(serviceValue);
-    serviceValue = new ServiceValue();
+    if(service.canAddServiceValue(getItem(), serviceValue)){
+      getItem().getValues().add(serviceValue);
+      values = new ArrayList<>(getItem().getValues());
+      prepareNewServiceValue();
+    } else {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Período de vigência já utilizado."), false);
+    }
+  }
+
+  public void removeValue(ServiceValue value) {
+    getItem().getValues().remove(value);
+    values = new ArrayList<>(getItem().getValues());
   }
 
   @Override
@@ -82,7 +110,7 @@ public class ServiceController extends AbstractController<Service> {
   }
 
   public String currency(Service item) {
-    return "/pages/service/currency.xhtml" + "?faces-redirect=true&id=" + item.getId() + "&editing=true";
+    return String.format("/pages/service/currency.xhtml?faces-redirect=true&id=%d&editing=true", item.getId());
   }
 
   @Override
@@ -122,4 +150,19 @@ public class ServiceController extends AbstractController<Service> {
     this.types = types;
   }
 
+  /**
+   *
+   * @return
+   */
+  public List<ServiceValue> getValues() {
+    return values;
+  }
+
+  /**
+   *
+   * @param values
+   */
+  public void setValues(List<ServiceValue> values) {
+    this.values = values;
+  }
 }

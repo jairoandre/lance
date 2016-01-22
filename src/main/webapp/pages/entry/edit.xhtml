@@ -3,33 +3,75 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
   <ui:define name="metadata">
     <f:metadata>
       <f:viewParam name="id" value="#{entryController.id}"/>
       <f:viewParam name="editing" value="#{entryController.editing}"/>
+      <f:viewParam name="serviceId" value="#{entryController.serviceId}"/>
       <f:viewAction action="#{entryController.onLoad}"/>
     </f:metadata>
   </ui:define>
   <ui:define name="content">
     <h:form id="form">
-      <p:panel header="Lançamento">
-        <p:dataTable id="dataTable" var="entryValue"
-                     value="#{entryController.item.values}">
-          <p:column headerText="Setor" styleClass="left-align">
-            <h:outputText value="#{entryValue.contractSector.sector.title}"/>
-          </p:column>
-        </p:dataTable>
-        <h:panelGroup id="entrySaveBtnPnl" layout="block"
-                      style="margin-top: 10px;">
-          <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
-                           update="@form" validateClient="true" style="margin-right:10px"
-                           action="#{entryController.saveEntrys}"
-                           rendered="#{entryController.editing}"/>
-          <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-                           action="#{entryController.back}"/>
-        </h:panelGroup>
-      </p:panel>
+      <h:panelGroup id="container" layout="block" style="position: relative;">
+        <p:panel header="Lançamento - #{entryController.item.service.title}">
+
+          <h:panelGrid columns="8" cellpadding="10">
+            <h:outputLabel value="Estado:" styleClass="label"/>
+            <lance:entryStatus status="#{entryController.item.status}"/>
+            <h:outputLabel value="Tipo:" styleClass="label"/>
+            <h:outputText value="#{entryController.item.service.type.label}"/>
+            <h:outputLabel value="Valor do serviço:" styleClass="label"/>
+            <h:outputText value="#{entryController.item.serviceValue}">
+              <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="#,##0.00"/>
+            </h:outputText>
+          </h:panelGrid>
+
+          <h:panelGroup layout="block" style="position: absolute; top: 5px; right: 10px; font-size: 20px; color: #fff">
+            <h:panelGrid columns="2">
+              <h:outputLabel value="TOTAL LANÇAMENTO:" styleClass="label"/>
+              <h:outputText value="#{entryController.item.totalValue}">
+                <f:convertNumber currencySymbol="R$" currencyCode="R$" minFractionDigits="2"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
+
+          <p:dataTable id="dataTable" var="entryValue"
+                       value="#{entryController.item.values}">
+            <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
+              <h:outputText value="#{entryValue.contractSector.sector.title}"/>
+            </p:column>
+            <p:column headerText="#{entryController.item.service.type.compALabel}" styleClass="left-align" width="150">
+              <uilance:inputCurrency id="compValueA" renderMessage="false"
+                                     value="#{entryValue.compValueA}" editing="true"/>
+            </p:column>
+            <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align" width="150"
+                      rendered="#{entryController.item.service.type.renderCompB}">
+              <uilance:inputCurrency id="compValueB" renderMessage="false"
+                                     value="#{entryValue.compValueB}" editing="true"/>
+            </p:column>
+            <p:column headerText="Valor" styleClass="left-align" width="150">
+              <h:outputText value="#{entryValue.value}">
+                <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="#,##0.00"/>
+              </h:outputText>
+            </p:column>
+          </p:dataTable>
+
+          <h:panelGroup id="entrySaveBtnPnl" layout="block"
+                        style="margin-top: 10px;">
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true" style="margin-right:10px"
+                             action="#{entryController.saveEntrys}"
+                             rendered="#{entryController.editing}"/>
+            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
+                             action="#{entryController.back}"/>
+          </h:panelGroup>
+
+        </p:panel>
+      </h:panelGroup>
     </h:form>
   </ui:define>
 </ui:composition>

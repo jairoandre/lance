@@ -58,6 +58,12 @@ public class Entry extends BaseEntity {
   /**
    * Valor total do lançamento
    */
+  @Column(name = "VL_SERVICO")
+  private BigDecimal serviceValue = BigDecimal.ZERO;
+
+  /**
+   * Valor total do lançamento
+   */
   @Column(name = "VL_TOTAL")
   private BigDecimal totalValue = BigDecimal.ZERO;
 
@@ -229,6 +235,22 @@ public class Entry extends BaseEntity {
    */
   public void setValues(Set<EntryValue> values) {
     this.values = values;
+  }
+
+  /**
+   *
+   * @return
+   */
+  public BigDecimal getServiceValue() {
+    return serviceValue;
+  }
+
+  /**
+   *
+   * @param serviceValue
+   */
+  public void setServiceValue(BigDecimal serviceValue) {
+    this.serviceValue = serviceValue;
   }
 
   @Override

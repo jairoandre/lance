@@ -2,6 +2,7 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.entity.*;
+import br.com.vah.lance.util.LanceUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -123,6 +124,14 @@ public class EntryService extends DataAccessService<Entry> {
     Entry entry = new Entry(service);
     entry.setTotalValue(BigDecimal.ZERO);
     entry.setUserForEntry(user);
+
+    Date[] dateRange = LanceUtils.getDateRangeForThisMonth();
+    for (ServiceValue serviceValue : entry.getService().getValues()) {
+      if (LanceUtils.checkBetweenDates(dateRange[0], dateRange[1], serviceValue.getBeginDate(), serviceValue.getEndDate())) {
+        entry.setServiceValue(serviceValue.getValue());
+        break;
+      }
+    }
 
     /*
      * Para cada contrato vigente, verifica se o mesmo possui serviços

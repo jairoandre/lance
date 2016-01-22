@@ -2,6 +2,7 @@ package br.com.vah.lance.controller;
 
 import br.com.vah.lance.entity.Entry;
 import br.com.vah.lance.entity.Service;
+import br.com.vah.lance.entity.ServiceValue;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
@@ -12,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -149,7 +151,7 @@ public class EntryController extends AbstractController<Entry> {
   @Override
   public void onLoad() {
     super.onLoad();
-    if (serviceId != null && getItem().getId() != null) {
+    if (serviceId != null && getItem().getId() == null) {
       setItem(service.prepareNewEntry(loginController.getUser().getId(), serviceId));
     }
   }

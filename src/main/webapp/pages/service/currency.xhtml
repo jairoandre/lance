@@ -1,78 +1,94 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="metadata">
-		<f:metadata>
-			<f:viewParam name="id" value="#{serviceController.id}" />
-			<f:viewParam name="editing" value="#{serviceController.editing}" />
-			<f:viewAction action="#{serviceController.onLoad}" />
-		</f:metadata>
-	</ui:define>
-	<ui:define name="content">
-		<h:form id="form">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{serviceController.id}"/>
+      <f:viewParam name="editing" value="#{serviceController.editing}"/>
+      <f:viewAction action="#{serviceController.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
 
-			<lance:editForm id="serviceForm" controller="#{serviceController}"
-				columns="3">
+      <lance:editForm id="serviceForm" controller="#{serviceController}"
+                      columns="3">
 
-				<uilance:inputText id="serviceTitle" label="Serviço"
-					value="#{serviceController.item.title}" readonly="true"
-					rendered="false" />
+        <uilance:inputText id="serviceTitle" label="Serviço"
+                           value="#{serviceController.item.title}" readonly="true"
+                           rendered="false"/>
 
-				<f:facet name="other">
+        <f:facet name="other">
 
-					<p:fieldset id="newValueFieldset" legend="Valor"
-						rendered="#{serviceController.editing}">
-						<h:panelGrid id="addServiceGrid" columns="3">
-							<uilance:inputDate id="beginDate" label="Data de início"
-								value="#{serviceController.serviceValue.beginDate}"
-								editing="true" />
-							<uilance:inputDate id="endDate" label="Data de término"
-								value="#{serviceController.serviceValue.endDate}" editing="true" />
-							<uilance:inputText id="value" label="Valor"
-								value="#{serviceController.serviceValue.value}" editing="true" />
-							<p:commandButton id="btnAddValue" value="Adicionar"
-								action="#{serviceController.addValue}" ajax="true"
-								process=":#{p:component('newValueFieldset')}"
-								update=":#{p:component('valuesDataTable')} addServiceGrid" />
-						</h:panelGrid>
-					</p:fieldset>
+          <p:fieldset id="newValueFieldset" legend="Valor"
+                      rendered="#{serviceController.editing}">
+            <h:panelGrid id="addServiceGrid" columns="3">
+              <uilance:inputDate id="beginDate" label="Data de início"
+                                 value="#{serviceController.serviceValue.beginDate}"
+                                 required="true"
+                                 editing="true"/>
+              <uilance:inputDate id="endDate" label="Data de término"
+                                 required="true"
+                                 value="#{serviceController.serviceValue.endDate}" editing="true"/>
+              <uilance:inputCurrency id="value" label="Valor" required="true"
+                                     value="#{serviceController.serviceValue.value}" editing="true"/>
+              <p:commandButton id="btnAddValue" value="Adicionar"
+                               action="#{serviceController.addValue}" ajax="true" validateClient="true"
+                               process=":#{p:component('newValueFieldset')}"
+                               update=":#{p:component('valuesDataTable')} addServiceGrid"/>
+            </h:panelGrid>
+          </p:fieldset>
 
-					<br />
+          <br/>
 
-					<p:dataTable id="valuesDataTable"
-						value="#{serviceController.item.values}" var="value"
-						emptyMessage="Sem valores registrados">
-						<p:column headerText="Data de início" style="text-align: left;"
-							width="100">
-							<h:outputText value="#{value.beginDate}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-						</p:column>
-						<p:column headerText="Data de término" style="text-align: left;"
-							width="100">
-							<h:outputText value="#{value.endDate}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-						</p:column>
-						<p:column headerText="Valor" style="text-align: left;">
-							<h:outputText value="#{value.value}">
-								<f:convertNumber currencySymbol="R$" locale="pt_BR"
-									minFractionDigits="2" />
-							</h:outputText>
-						</p:column>
-					</p:dataTable>
+          <p:dataTable id="valuesDataTable"
+                       value="#{serviceController.values}" var="value"
+                       paginator="true"
+                       rows="10"
+                       paginatorPosition="bottom"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                       emptyMessage="Sem valores registrados" rowKey="index">
+            <p:column sortBy="#{value.beginDate}" headerText="Data de início" styleClass="left-align"
+                      width="150">
+              <h:outputText value="#{value.beginDate}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column sortBy="#{value.endDate}" headerText="Data de término" styleClass="left-align"
+                      width="150">
+              <h:outputText value="#{value.endDate}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column sortBy="#{value.value}" headerText="Valor" styleClass="left-align">
+              <h:outputText value="#{value.value}">
+                <f:convertNumber currencySymbol="R$" locale="pt_BR"
+                                 minFractionDigits="2"/>
+              </h:outputText>
+            </p:column>
+            <p:column width="100" headerText="Ações" styleClass="action-link">
+              <p:commandLink id="deleteAction"
+                             action="#{serviceController.removeValue(value)}"
+                             ajax="true" rendered="#{serviceController.editing}"
+                             process="@this"
+                             update="valuesDataTable">
+                <span class="fa fa-trash"/>
+              </p:commandLink>
+              <p:tooltip id="toolDeleteAction" for="deleteAction"
+                         value="Excluir"/>
+            </p:column>
+          </p:dataTable>
 
-				</f:facet>
+        </f:facet>
 
-			</lance:editForm>
+      </lance:editForm>
 
 
-
-		</h:form>
-	</ui:define>
+    </h:form>
+  </ui:define>
 </ui:composition>
