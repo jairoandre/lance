@@ -1,0 +1,70 @@
+CONTRACTS
+
+VERSION BUILD=8961227 RECORDER=FX
+TAB T=1
+URL GOTO=http://localhost:8080/lance/pages/contract/edit.xhtml?editing=true
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:contractPnl:name CONTENT=Contrato
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:contractPnl:beginDate_input CONTENT=01/01/2014
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:contractPnl:endDate_input CONTENT=01/01/2020
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:contractPnl:changeDate_input CONTENT=01/01/2018
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:contractPnl:subjectInput
+TAG POS=1 TYPE=BUTTON FORM=ID:form ATTR=ID:form:contractPnl:subjectOpenDlgBtn
+TAG POS=1 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+TAG POS=1 TYPE=BUTTON FORM=ID:form ATTR=ID:form:subjectDlgCloseBtn
+
+SERVICES
+
+VERSION BUILD=8340723 RECORDER=CR
+URL GOTO=http://localhost:8080/lance/pages/service/list.xhtml
+SET !VAR1 EVAL("var randomNumber=Math.floor(Math.random()*10 + 1); randomNumber;")
+TAG POS=1 TYPE=SPAN ATTR=TXT:Novo<SP>serviço
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:form ATTR=ID:form:sectorPnl:name CONTENT=Serviço<SP>{{!VAR1}}
+TAG POS=2 TYPE=SPAN ATTR=TXT:ui-button
+TAG POS=1 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=2 TYPE=SPAN ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=4 TYPE=SPAN ATTR=TXT:ui-button
+TAG POS=10 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=4 TYPE=SPAN ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=8 TYPE=SPAN ATTR=CLASS:ui-button-icon-left<SP>ui-icon<SP>ui-c<SP>fa<SP>fa-search&&TXT:
+TAG POS=19 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=6 TYPE=SPAN ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=8 TYPE=SPAN ATTR=TXT:ui-button
+TAG POS=29 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=8 TYPE=SPAN ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=10 TYPE=SPAN ATTR=TXT:ui-button
+TAG POS=38 TYPE=SPAN ATTR=CLASS:fa<SP>fa-circle-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=10 TYPE=SPAN ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=1 TYPE=SPAN ATTR=CLASS:ui-icon<SP>ui-icon-triangle-1-s<SP>ui-c&&TXT:
+TAG POS=1 TYPE=LI ATTR=ID:form:sectorPnl:type_1
+TAG POS=2 TYPE=SPAN ATTR=CLASS:ui-radiobutton-icon<SP>ui-icon<SP>ui-icon-blank<SP>ui-c&&TXT:
+TAG POS=1 TYPE=INPUT:RADIO FORM=ID:form ATTR=ID:form:sectorPnl:billable:1
+TAG POS=3 TYPE=SPAN ATTR=CLASS:ui-radiobutton-icon<SP>ui-icon<SP>ui-icon-blank<SP>ui-c&&TXT:
+TAG POS=1 TYPE=INPUT:RADIO FORM=ID:form ATTR=ID:form:sectorPnl:clusterable:1
+TAG POS=4 TYPE=SPAN ATTR=CLASS:ui-radiobutton-icon<SP>ui-icon<SP>ui-icon-blank<SP>ui-c&&TXT:
+TAG POS=1 TYPE=INPUT:RADIO FORM=ID:form ATTR=ID:form:sectorPnl:compulsory:1
+WAIT SECONDS=0.2
+TAG POS=1 TYPE=SPAN ATTR=TXT:Salvar
+
+SECTORS
+
+VERSION BUILD=8961227 RECORDER=FX
+TAB T=1
+URL GOTO=http://localhost:8080/lance/pages/client/list.xhtml
+TAG POS=1 TYPE=SPAN ATTR=CLASS:fa<SP>fa-pencil&&TXT:
+TAG POS=1 TYPE=BUTTON FORM=ID:form ATTR=ID:form:clientForm:sectors_addBtn
+TAG POS=1 TYPE=SPAN ATTR=CLASS:fa<SP>fa-square-o&&TXT:
+WAIT SECONDS=0.2
+TAG POS=1 TYPE=DIV ATTR=TXT:Fechar<SP>diálogo
+WAIT SECONDS=0.2
+TAG POS=1 TYPE=BUTTON FORM=ID:form ATTR=ID:form:addSectorDlg:addSectorDlgCloseBtn
+TAG POS=1 TYPE=BUTTON FORM=ID:form ATTR=ID:form:clientForm:saveBtn
