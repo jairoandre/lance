@@ -1,110 +1,116 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="metadata">
-		<f:metadata>
-			<f:viewParam name="id" value="#{serviceController.id}" />
-			<f:viewParam name="editing" value="#{serviceController.editing}" />
-			<f:viewAction action="#{serviceController.onLoad}" />
-		</f:metadata>
-	</ui:define>
-	<ui:define name="content">
-		<h:form id="form">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{serviceController.id}"/>
+      <f:viewParam name="editing" value="#{serviceController.editing}"/>
+      <f:viewAction action="#{serviceController.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
 
-			<lance:manyToOneDialog id="defaultHistoryDlg"
-				controller="#{defaultHistoryController}"
-				header="SELECIONAR HISTÓRICO PADRÃO" width="800" rendered="true"
-				update="defaultHistory"
-				bean="#{serviceController.item.defaultHistory}" />
+      <lance:manyToOneDialog id="defaultHistoryDlg"
+                             controller="#{defaultHistoryController}"
+                             header="SELECIONAR HISTÓRICO PADRÃO" width="800" rendered="true"
+                             update="defaultHistory"
+                             bean="#{serviceController.item.defaultHistory}"/>
 
-			<lance:manyToOneDialog id="documentTypeDlg"
-				controller="#{documentTypeController}"
-				header="SELECIONAR TIPO DE DOCUMENTO" width="800" rendered="true"
-				update="documentType" bean="#{serviceController.item.documentType}" />
+      <lance:manyToOneDialog id="documentTypeDlg"
+                             controller="#{documentTypeController}"
+                             header="SELECIONAR TIPO DE DOCUMENTO" width="800" rendered="true"
+                             update="documentType" bean="#{serviceController.item.documentType}"/>
 
-			<lance:manyToOneDialog id="ledgerAccountDlg"
-				controller="#{accountChartController}"
-				header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
-				update="ledgerAccount"
-				placeholder="Digite o termo (descrição, código)..."
-				bean="#{serviceController.item.ledgerAccount}">
-				<p:column sortBy="#{item.resultItemCode}" width="125"
-					headerText="Código reduzido" styleClass="left-align">
-					<h:outputText value="#{item.resultItemCode}" />
-				</p:column>
-				<p:column sortBy="#{item.accountingCode}"
-					headerText="Código contábil" width="125" styleClass="left-align">
-					<h:outputText value="#{item.accountingCode}" />
-				</p:column>
-			</lance:manyToOneDialog>
+      <lance:manyToOneDialog id="ledgerAccountDlg"
+                             controller="#{accountChartController}"
+                             header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
+                             update="ledgerAccount"
+                             placeholder="Digite o termo (descrição, código)..."
+                             bean="#{serviceController.item.ledgerAccount}">
+        <p:column sortBy="#{item.resultItemCode}" width="125"
+                  headerText="Código reduzido" styleClass="left-align">
+          <h:outputText value="#{item.resultItemCode}"/>
+        </p:column>
+        <p:column sortBy="#{item.accountingCode}"
+                  headerText="Código contábil" width="125" styleClass="left-align">
+          <h:outputText value="#{item.accountingCode}"/>
+        </p:column>
+      </lance:manyToOneDialog>
 
-			<lance:manyToOneDialog id="resultAccountDlg"
-				controller="#{accountChartController}"
-				header="SELECIONAR CONTA RESULTADO" width="800" rendered="true"
-				update="resultAccount"
-				placeholder="Digite o termo (descrição, código)..."
-				bean="#{serviceController.item.resultAccount}">
-				<p:column sortBy="#{item.resultItemCode}" width="125"
-					headerText="Código reduzido" styleClass="left-align">
-					<h:outputText value="#{item.resultItemCode}" />
-				</p:column>
-				<p:column sortBy="#{item.accountingCode}"
-					headerText="Código contábil" width="125" styleClass="left-align">
-					<h:outputText value="#{item.accountingCode}" />
-				</p:column>
-			</lance:manyToOneDialog>
+      <lance:manyToOneDialog id="resultAccountDlg"
+                             controller="#{accountChartController}"
+                             header="SELECIONAR CONTA RESULTADO" width="800" rendered="true"
+                             update="resultAccount"
+                             placeholder="Digite o termo (descrição, código)..."
+                             bean="#{serviceController.item.resultAccount}">
+        <p:column sortBy="#{item.resultItemCode}" width="125"
+                  headerText="Código reduzido" styleClass="left-align">
+          <h:outputText value="#{item.resultItemCode}"/>
+        </p:column>
+        <p:column sortBy="#{item.accountingCode}"
+                  headerText="Código contábil" width="125" styleClass="left-align">
+          <h:outputText value="#{item.accountingCode}"/>
+        </p:column>
+      </lance:manyToOneDialog>
 
-			<lance:manyToOneDialog id="costAccountDlg"
-				controller="#{resultItemController}"
-				header="SELECIONAR CONTA DE CUSTO" width="800" rendered="true"
-				update="costAccount" bean="#{serviceController.item.costAccount}" />
+      <lance:manyToOneDialog id="costAccountDlg"
+                             controller="#{resultItemController}"
+                             header="SELECIONAR CONTA DE CUSTO" width="800" rendered="true"
+                             update="costAccount" bean="#{serviceController.item.costAccount}"/>
 
-			<lance:editForm id="sectorPnl" controller="#{serviceController}"
-				columns="3">
-				<uilance:inputText id="name" label="Nome"
-					value="#{serviceController.item.title}"
-					editing="#{serviceController.editing}" required="true" />
-				<uilance:manyToOne id="defaultHistory" dialog="defaultHistoryDlg"
-					editing="#{serviceController.editing}" label="Histórico padrão"
-					required="true" title="title"
-					value="#{serviceController.item.defaultHistory}" />
-				<uilance:manyToOne id="documentType" dialog="documentTypeDlg"
-					editing="#{serviceController.editing}" label="Tipo de documento"
-					required="true" title="title"
-					value="#{serviceController.item.documentType}" />
-				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
-					editing="#{serviceController.editing}" label="Conta contábil"
-					required="true" title="title"
-					value="#{serviceController.item.ledgerAccount}" />
-				<uilance:manyToOne id="resultAccount" dialog="resultAccountDlg"
-					editing="#{serviceController.editing}" label="Conta resultado"
-					required="true" title="title"
-					value="#{serviceController.item.resultAccount}" />
-				<uilance:manyToOne id="costAccount" dialog="costAccountDlg"
-					editing="#{serviceController.editing}" label="Conta de custo"
-					required="true" title="title"
-					value="#{serviceController.item.costAccount}" />
-				<uilance:selectOneEnum id="type" label="Tipo de serviço"
-					value="#{serviceController.item.type}"
-					editing="#{serviceController.editing}" required="true"
-					options="#{serviceController.types}" />
-				<uilance:selectBoolean id="billable" label="Gera nota?"
-					value="#{serviceController.item.billable}"
-					editing="#{serviceController.editing}" required="true" />
-				<uilance:selectBoolean id="clusterable" label="Condominial?"
-					value="#{serviceController.item.clusterable}"
-					editing="#{serviceController.editing}" required="true"
-					info="Indique se o serviço entrará no descritivo da cobrança de condomínio." />
-				<uilance:selectBoolean id="compulsory" label="Compulsório?"
-					value="#{serviceController.item.compulsory}"
-					editing="#{serviceController.editing}" required="true"
-					info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato." />
-			</lance:editForm>
-		</h:form>
-	</ui:define>
+      <lance:editForm id="sectorPnl" controller="#{serviceController}"
+                      columns="3">
+        <uilance:inputText id="name" label="Nome"
+                           value="#{serviceController.item.title}"
+                           editing="#{serviceController.editing}" required="true"/>
+        <uilance:manyToOne id="defaultHistory" dialog="defaultHistoryDlg"
+                           editing="#{serviceController.editing}" label="Histórico padrão"
+                           required="true" title="title"
+                           value="#{serviceController.item.defaultHistory}"/>
+        <uilance:manyToOne id="documentType" dialog="documentTypeDlg"
+                           editing="#{serviceController.editing}" label="Tipo de documento"
+                           required="true" title="title"
+                           value="#{serviceController.item.documentType}"/>
+        <uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
+                           editing="#{serviceController.editing}" label="Conta contábil"
+                           required="true" title="title"
+                           value="#{serviceController.item.ledgerAccount}"/>
+        <uilance:manyToOne id="resultAccount" dialog="resultAccountDlg"
+                           editing="#{serviceController.editing}" label="Conta resultado"
+                           required="true" title="title"
+                           value="#{serviceController.item.resultAccount}"/>
+        <uilance:manyToOne id="costAccount" dialog="costAccountDlg"
+                           editing="#{serviceController.editing}" label="Conta de custo"
+                           required="true" title="title"
+                           value="#{serviceController.item.costAccount}"/>
+        <uilance:selectOneEnum id="type" label="Tipo de serviço"
+                               value="#{serviceController.item.type}"
+                               editing="#{serviceController.editing}" required="true"
+                               options="#{serviceController.types}"/>
+        <uilance:selectBoolean id="billable" label="Gera nota?"
+                               value="#{serviceController.item.billable}"
+                               editing="#{serviceController.editing}" required="true"/>
+        <uilance:selectBoolean id="clusterable" label="Condominial?"
+                               value="#{serviceController.item.clusterable}"
+                               editing="#{serviceController.editing}" required="true"
+                               info="Indique se o serviço entrará no descritivo da cobrança de condomínio."/>
+        <uilance:selectBoolean id="compulsory" label="Compulsório?"
+                               value="#{serviceController.item.compulsory}"
+                               editing="#{serviceController.editing}" required="true"
+                               info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
+
+        <f:facet name="other">
+
+          <ui:include src="values.xhtml"/>
+
+        </f:facet>
+      </lance:editForm>
+    </h:form>
+  </ui:define>
 </ui:composition>

@@ -45,14 +45,17 @@ public class EntryValue extends BaseEntity {
   /**
    * Valor do lançamento (calculado): valor base + valor variável
    */
-  @Column(name = "VL_LANCAMENTO", nullable = false)
+  @Column(name = "VL_LANCAMENTO", nullable = false, precision = 4)
   private BigDecimal value;
 
   /**
-   * Valor do serviço na vigência do lançamento
+   * Valor complementar de lançamento:
+   * - Leitura de energia
+   * - Venda de produto
+   * - etc...
    */
-  @Column(name = "VL_BASE_SERVICO", nullable = true)
-  private BigDecimal baseValue;
+  @Column(name = "VL_VALOR_A", nullable = true, precision = 4)
+  private BigDecimal valueA;
 
   /**
    * Valor complementar de lançamento:
@@ -60,17 +63,8 @@ public class EntryValue extends BaseEntity {
    * - Venda de produto
    * - etc...
    */
-  @Column(name = "VL_COMPLEMENTAR_A", nullable = true)
-  private BigDecimal compValueA;
-
-  /**
-   * Valor complementar de lançamento:
-   * - Leitura de energia
-   * - Venda de produto
-   * - etc...
-   */
-  @Column(name = "VL_COMPLEMENTAR_B", nullable = true)
-  private BigDecimal compValueB;
+  @Column(name = "VL_VALOR_B", nullable = true, precision = 4)
+  private BigDecimal valueB;
 
   /**
    * Data de criação do lançamento
@@ -88,23 +82,29 @@ public class EntryValue extends BaseEntity {
     this.createdOn = new Date();
     this.updatedOn = new Date();
     this.value = BigDecimal.ZERO;
-    this.baseValue = BigDecimal.ZERO;
-    this.compValueA = BigDecimal.ZERO;
-    this.compValueB = BigDecimal.ZERO;
+    this.valueA = BigDecimal.ZERO;
+    this.valueB = BigDecimal.ZERO;
   }
 
   public EntryValue(Entry entry, ContractSector contractSector) {
     this();
     this.entry = entry;
     this.contractSector = contractSector;
-    this.value = entry.getServiceValue();
   }
 
+  /**
+   *
+   * @return
+   */
   @Override
   public Long getId() {
     return id;
   }
 
+  /**
+   *
+   * @param id
+   */
   @Override
   public void setId(Long id) {
     this.id = id;
@@ -134,28 +134,20 @@ public class EntryValue extends BaseEntity {
     this.value = value;
   }
 
-  public BigDecimal getBaseValue() {
-    return baseValue;
+  public BigDecimal getValueA() {
+    return valueA;
   }
 
-  public void setBaseValue(BigDecimal contractValue) {
-    this.baseValue = contractValue;
+  public void setValueA(BigDecimal valueA) {
+    this.valueA = valueA;
   }
 
-  public BigDecimal getCompValueA() {
-    return compValueA;
+  public BigDecimal getValueB() {
+    return valueB;
   }
 
-  public void setCompValueA(BigDecimal complementaryValueA) {
-    this.compValueA = complementaryValueA;
-  }
-
-  public BigDecimal getCompValueB() {
-    return compValueB;
-  }
-
-  public void setCompValueB(BigDecimal complementaryValueB) {
-    this.compValueB = complementaryValueB;
+  public void setValueB(BigDecimal valueB) {
+    this.valueB = valueB;
   }
 
   public Date getCreatedOn() {
@@ -174,6 +166,10 @@ public class EntryValue extends BaseEntity {
     this.updatedOn = updatedOn;
   }
 
+  /**
+   *
+   * @return
+   */
   @Override
   public String getLabelForSelectItem() {
     return null;

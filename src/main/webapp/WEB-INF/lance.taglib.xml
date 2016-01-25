@@ -84,6 +84,47 @@
         <attribute>
             <name>renderMessage</name>
         </attribute>
+        <attribute>
+            <name>rendered</name>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>inputPercentage</tag-name>
+        <source>tags/inputPercentage.xhtml</source>
+        <attribute>
+            <description>Id</description>
+            <name>id</name>
+        </attribute>
+        <attribute>
+            <description>Value</description>
+            <name>value</name>
+        </attribute>
+        <attribute>
+            <description>Label</description>
+            <name>label</name>
+        </attribute>
+        <attribute>
+            <description>Editing</description>
+            <name>editing</name>
+        </attribute>
+        <attribute>
+            <description>Required</description>
+            <name>required</name>
+        </attribute>
+        <attribute>
+            <description>Readonly</description>
+            <name>readonly</name>
+        </attribute>
+        <attribute>
+            <description>Info</description>
+            <name>info</name>
+        </attribute>
+        <attribute>
+            <name>renderMessage</name>
+        </attribute>
+        <attribute>
+            <name>rendered</name>
+        </attribute>
     </tag>
     <tag>
         <tag-name>inputDate</tag-name>

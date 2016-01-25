@@ -30,7 +30,7 @@
                     width="50">
             <p:commandLink id="currencyAction"
                            action="#{serviceController.currency(item)}"
-                           styleClass="action-link">
+                           styleClass="action-link" disabled="#{item.type == 'V' || item.type == 'C'}">
               <span class="fa fa-usd"/>
             </p:commandLink>
             <p:tooltip id="toolCurrencyAction" for="currencyAction"

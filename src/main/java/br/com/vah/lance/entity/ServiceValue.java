@@ -38,9 +38,17 @@ public class ServiceValue extends BaseEntity {
 	@Column(name = "DT_INICIO")
 	private Date beginDate;
 
-	@Column(name = "VL_VALOR")
+	@Column(name = "VL_VALOR", precision = 4)
 	private BigDecimal value;
 
+	@Column(name = "VL_VALOR_A", precision = 4)
+	private BigDecimal valueA;
+
+	@Column(name = "VL_VALOR_B", precision = 4)
+	private BigDecimal valueB;
+
+	@Column(name = "VL_VALOR_C", precision = 4)
+	private BigDecimal valueC;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_SERVICO", nullable = false)
@@ -102,13 +110,61 @@ public class ServiceValue extends BaseEntity {
 	}
 
 	/**
-	 * @return the service
-	 */
-	public Service getService() {
-		return service;
+	 *
+	 * @return
+   */
+	public BigDecimal getValueA() {
+		return valueA;
 	}
 
 	/**
+	 *
+	 * @param compValueA
+   */
+	public void setValueA(BigDecimal compValueA) {
+		this.valueA = compValueA;
+	}
+
+	/**
+	 *
+	 * @return
+   */
+	public BigDecimal getValueB() {
+		return valueB;
+	}
+
+	/**
+	 *
+	 * @param compValueB
+   */
+	public void setValueB(BigDecimal compValueB) {
+		this.valueB = compValueB;
+	}
+
+	/**
+	 *
+	 * @return
+   */
+	public BigDecimal getValueC() {
+		return valueC;
+	}
+
+	/**
+	 *
+	 * @param compValueC
+   */
+	public void setValueC(BigDecimal compValueC) {
+		this.valueC = compValueC;
+	}
+
+  /**
+   * @return the service
+   */
+  public Service getService() {
+    return service;
+  }
+
+  /**
 	 * @param service
 	 *            the service to set
 	 */

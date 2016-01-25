@@ -103,7 +103,7 @@ public class EntryService extends DataAccessService<Entry> {
     return currentEntries;
   }
 
-  private List<Contract> validesContracts(){
+  private List<Contract> validesContracts() {
     Map<String, Object> contractParams = new LinkedHashMap<>();
     contractParams.put("date", new Date());
 
@@ -116,7 +116,7 @@ public class EntryService extends DataAccessService<Entry> {
     return contracts;
   }
 
-  public Entry prepareNewEntry(Long userId, Long serviceId){
+  public Entry prepareNewEntry(Long userId, Long serviceId) {
 
     User user = userService.find(userId);
     Service service = serviceService.find(serviceId);
@@ -128,7 +128,7 @@ public class EntryService extends DataAccessService<Entry> {
     Date[] dateRange = LanceUtils.getDateRangeForThisMonth();
     for (ServiceValue serviceValue : entry.getService().getValues()) {
       if (LanceUtils.checkBetweenDates(dateRange[0], dateRange[1], serviceValue.getBeginDate(), serviceValue.getEndDate())) {
-        entry.setServiceValue(serviceValue.getValue());
+        entry.setServiceValue(serviceValue);
         break;
       }
     }
@@ -146,7 +146,7 @@ public class EntryService extends DataAccessService<Entry> {
         for (Service iterator : contractSector.getServices()) {
 
           if (service.equals(iterator)) {
-           entry.getValues().add(new EntryValue(entry, contractSector));
+            entry.getValues().add(new EntryValue(entry, contractSector));
           }
 
         }
@@ -176,6 +176,48 @@ public class EntryService extends DataAccessService<Entry> {
       changeStatus(entry);
     }
     return update(entries);
+  }
+
+  /**
+   * @param entry
+   */
+  public void computeValues(Entry entry) {
+    ServiceValue currentServiceValue = entry.getServiceValue();
+
+    entry.setTotalValue(BigDecimal.ZERO);
+
+    for (EntryValue entryValue : entry.getValues()) {
+
+      entryValue.setValue(BigDecimal.ZERO);
+
+      switch (entry.getService().getType()) {
+        // Tabelado
+        case T:
+          // Soma o valor vigente do serviço com o valor variável informado pelo usuário.
+          entryValue.setValue(currentServiceValue.getValue().add(entryValue.getValueA()));
+          break;
+        // Energia
+        case E:
+          BigDecimal delta = entryValue.getValueB().subtract(entryValue.getValueA());
+          BigDecimal outPeakValue = delta.multiply(currentServiceValue.getValueA()).multiply(currentServiceValue.getValue());
+          BigDecimal peakValue = delta.multiply(currentServiceValue.getValueC()).multiply(currentServiceValue.getValueB());
+          entryValue.setValue(outPeakValue.add(peakValue));
+          break;
+        // Venda (venda comissionada)
+        case V:
+          BigDecimal sellValue = entryValue.getValueA();
+          BigDecimal commission = entryValue.getValueB();
+          entryValue.setValue(sellValue.add(sellValue.multiply(commission)));
+          break;
+        // Cobrança (ex: taxas de residência)
+        case C:
+          entryValue.setValue(entryValue.getValueA());
+        default:
+          break;
+      }
+      // Soma os valores
+      entry.setTotalValue(entry.getTotalValue().add(entryValue.getValue()));
+    }
   }
 
 }

@@ -35,8 +35,21 @@
               <uilance:inputDate id="endDate" label="Data de término"
                                  required="true"
                                  value="#{serviceController.serviceValue.endDate}" editing="true"/>
+              <uilance:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
+                                     value="#{serviceController.serviceValue.value}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}"/>
+              <uilance:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
+                                     value="#{serviceController.serviceValue.valueA}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}"/>
+              <uilance:inputCurrency id="peakValue" label="Tarifa de ponta" required="true"
+                                     value="#{serviceController.serviceValue.valueB}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}"/>
+              <uilance:inputPercentage id="peakPercent" label="% Hora de ponta" required="true"
+                                     value="#{serviceController.serviceValue.valueC}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}"/>
               <uilance:inputCurrency id="value" label="Valor" required="true"
-                                     value="#{serviceController.serviceValue.value}" editing="true"/>
+                                     value="#{serviceController.serviceValue.value}" editing="true"
+                                     rendered="#{serviceController.item.type == 'T'}"/>
               <p:commandButton id="btnAddValue" value="Adicionar"
                                action="#{serviceController.addValue}" ajax="true" validateClient="true"
                                process=":#{p:component('newValueFieldset')}"
@@ -46,43 +59,7 @@
 
           <br/>
 
-          <p:dataTable id="valuesDataTable"
-                       value="#{serviceController.values}" var="value"
-                       paginator="true"
-                       rows="10"
-                       paginatorPosition="bottom"
-                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                       emptyMessage="Sem valores registrados" rowKey="index">
-            <p:column sortBy="#{value.beginDate}" headerText="Data de início" styleClass="left-align"
-                      width="150">
-              <h:outputText value="#{value.beginDate}">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-              </h:outputText>
-            </p:column>
-            <p:column sortBy="#{value.endDate}" headerText="Data de término" styleClass="left-align"
-                      width="150">
-              <h:outputText value="#{value.endDate}">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-              </h:outputText>
-            </p:column>
-            <p:column sortBy="#{value.value}" headerText="Valor" styleClass="left-align">
-              <h:outputText value="#{value.value}">
-                <f:convertNumber currencySymbol="R$" locale="pt_BR"
-                                 minFractionDigits="2"/>
-              </h:outputText>
-            </p:column>
-            <p:column width="100" headerText="Ações" styleClass="action-link">
-              <p:commandLink id="deleteAction"
-                             action="#{serviceController.removeValue(value)}"
-                             ajax="true" rendered="#{serviceController.editing}"
-                             process="@this"
-                             update="valuesDataTable">
-                <span class="fa fa-trash"/>
-              </p:commandLink>
-              <p:tooltip id="toolDeleteAction" for="deleteAction"
-                         value="Excluir"/>
-            </p:column>
-          </p:dataTable>
+          <ui:include src="values.xhtml"/>
 
         </f:facet>
 

@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+  <p:dataTable id="valuesDataTable"
+               value="#{serviceController.values}" var="value"
+               paginator="true"
+               rows="10"
+               paginatorPosition="bottom"
+               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+               emptyMessage="Sem valores registrados" rowKey="index"
+               rendered="#{serviceController.item.id != null}">
+    <f:facet name="header">
+      <h:outputText value="Valores"/>
+    </f:facet>
+    <p:column sortBy="#{value.beginDate}" headerText="Data de início" styleClass="left-align"
+              width="150">
+      <h:outputText value="#{value.beginDate}">
+        <f:convertDateTime pattern="dd/MM/yyyy"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.endDate}" headerText="Data de término" styleClass="left-align"
+              width="150">
+      <h:outputText value="#{value.endDate}">
+        <f:convertDateTime pattern="dd/MM/yyyy"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.value}" headerText="Valor" styleClass="left-align"
+              rendered="#{serviceController.item.type == 'T'}" width="200">
+      <h:outputText value="#{value.value}">
+        <f:convertNumber currencySymbol="R$" locale="pt_BR"
+                         minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.value}" headerText="Tarifa fora de ponta" styleClass="left-align" width="100"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.value}">
+        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueA}" headerText="% fora de ponta" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueA}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueB}" headerText="Tarifa de ponta" styleClass="left-align" width="100"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueB}">
+        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueC}" headerText="% de ponta" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueC}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column width="50" headerText="Ações" styleClass="action-link" rendered="#{serviceController.editing}">
+      <p:commandLink id="deleteAction"
+                     action="#{serviceController.removeValue(value)}"
+                     ajax="true"
+                     process="@this"
+                     update="valuesDataTable">
+        <span class="fa fa-trash"/>
+      </p:commandLink>
+      <p:tooltip id="toolDeleteAction" for="deleteAction"
+                 value="Excluir"/>
+    </p:column>
+  </p:dataTable>
+
+</ui:composition>

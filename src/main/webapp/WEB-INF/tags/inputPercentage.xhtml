@@ -23,13 +23,12 @@
                  styleClass="#{id}"
                  readonly="#{readonly == null ? false : readonly}">
       <ui:insert/>
-      <f:convertNumber minFractionDigits="2"
-                       pattern="R$ #,##0.00"/>
+      <f:convertNumber minFractionDigits="2" type="percent"/>
     </p:inputText>
     <script>
       $(function () {
         $('.#{id}').maskMoney({
-          prefix: "R$ ",
+          suffix: "%",
           allowNegative: true,
           allowZero: true,
           thousands: '.',
