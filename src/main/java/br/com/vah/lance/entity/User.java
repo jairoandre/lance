@@ -59,8 +59,8 @@ public class User extends BaseEntity {
 	private Set<RolesEnum> roles;
 
 	public User() {
-		services = new LinkedHashSet<Service>();
-		roles = new LinkedHashSet<RolesEnum>();
+		services = new LinkedHashSet<>();
+		roles = new LinkedHashSet<>();
 	}
 
 	@Override
