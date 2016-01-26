@@ -116,6 +116,12 @@ public class EntryService extends DataAccessService<Entry> {
     return contracts;
   }
 
+  @Override
+  public Entry create(Entry entry) {
+    changeStatus(entry);
+    return super.create(entry);
+  }
+
   public Entry prepareNewEntry(Long userId, Long serviceId) {
 
     User user = userService.find(userId);
@@ -132,6 +138,7 @@ public class EntryService extends DataAccessService<Entry> {
         break;
       }
     }
+
 
     /*
      * Para cada contrato vigente, verifica se o mesmo possui serviços
@@ -158,24 +165,30 @@ public class EntryService extends DataAccessService<Entry> {
     return entry;
   }
 
+
+
+  /**
+   * Modifica o estado do lançamento
+   *
+   * TODO: Incluir outros estados
+   *
+   * @param entry
+   */
   public void changeStatus(Entry entry) {
     switch (entry.getStatus()) {
+      // Estado não lançado
       case N:
+        // Estado lançado
         entry.setStatus(EntryStatusEnum.L);
         break;
+      // Estado pendente
       case P:
+        // Estado corrigido
         entry.setStatus(EntryStatusEnum.F);
         break;
       default:
         break;
     }
-  }
-
-  public List<Entry> saveEntries(List<Entry> entries) {
-    for (Entry entry : entries) {
-      changeStatus(entry);
-    }
-    return update(entries);
   }
 
   /**

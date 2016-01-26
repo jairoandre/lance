@@ -1,8 +1,9 @@
 package br.com.vah.lance.controller;
 
+import br.com.vah.lance.constant.EntryStatusEnum;
+import br.com.vah.lance.entity.Comment;
 import br.com.vah.lance.entity.Entry;
-import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceValue;
+import br.com.vah.lance.entity.EntryValue;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
@@ -12,7 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -38,17 +39,13 @@ public class EntryController extends AbstractController<Entry> {
   @Inject
   ServiceService serviceService;
 
-  private Service serviceItem;
-
   private List<Entry> entries;
 
-  private BigDecimal variableValueTotal = BigDecimal.ZERO;
-
-  private BigDecimal contractValueTotal = BigDecimal.ZERO;
-
-  private BigDecimal valueTotal = BigDecimal.ZERO;
+  private List<EntryValue> entrieValues;
 
   private Long serviceId;
+
+  private Comment comment;
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
@@ -87,53 +84,12 @@ public class EntryController extends AbstractController<Entry> {
     return "setor";
   }
 
-  /**
-   * @return
-   */
   public List<Entry> getEntries() {
     return entries;
   }
 
-  /**
-   * @param entries
-   */
   public void setEntries(List<Entry> entries) {
     this.entries = entries;
-  }
-
-  /**
-   * @return the serviceItem
-   */
-  public Service getServiceItem() {
-    return serviceItem;
-  }
-
-  /**
-   * @param serviceItem the serviceItem to set
-   */
-  public void setServiceItem(Service serviceItem) {
-    this.serviceItem = serviceItem;
-  }
-
-  /**
-   * @return the variableValueTotal
-   */
-  public BigDecimal getVariableValueTotal() {
-    return variableValueTotal;
-  }
-
-  /**
-   * @return the contractValueTotal
-   */
-  public BigDecimal getContractValueTotal() {
-    return contractValueTotal;
-  }
-
-  /**
-   * @return the valueTotal
-   */
-  public BigDecimal getValueTotal() {
-    return valueTotal;
   }
 
   public Long getServiceId() {
@@ -142,6 +98,14 @@ public class EntryController extends AbstractController<Entry> {
 
   public void setServiceId(Long serviceId) {
     this.serviceId = serviceId;
+  }
+
+  public Comment getComment() {
+    return comment;
+  }
+
+  public void setComment(Comment comment) {
+    this.comment = comment;
   }
 
   public String validate(Entry item) {
@@ -155,6 +119,9 @@ public class EntryController extends AbstractController<Entry> {
       setItem(service.prepareNewEntry(loginController.getUser().getId(), serviceId));
       service.computeValues(getItem());
     }
+    //
+    comment = createComment();
+    entrieValues = new ArrayList<>(getItem().getValues());
   }
 
   public void computeValues() {
@@ -169,5 +136,38 @@ public class EntryController extends AbstractController<Entry> {
     } else {
       return super.edit(item);
     }
+  }
+
+  public Comment createComment() {
+    Comment comment = new Comment();
+    comment.setAuthor(loginController.getUser());
+    comment.setCreatedOn(new Date());
+    comment.setEntry(getItem());
+    return comment;
+  }
+
+  public String addComment() {
+    getItem().getComments().add(comment);
+    comment = createComment();
+    return null;
+  }
+
+  public List<EntryValue> getEntrieValues() {
+    return entrieValues;
+  }
+
+  public String doValideSave() {
+    getItem().setStatus(EntryStatusEnum.V);
+    return doSave();
+  }
+
+  public String doDenySave() {
+    getItem().setStatus(EntryStatusEnum.P);
+    return doSave();
+  }
+
+  public String doFixSave() {
+    getItem().setStatus(EntryStatusEnum.F);
+    return doSave();
   }
 }

@@ -1,77 +1,70 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="metadata">
-		<f:metadata>
-			<f:viewParam name="id" value="#{entryValidateController.id}" />
-			<f:viewParam name="editing"
-				value="#{entryValidateController.editing}" />
-			<f:viewAction action="#{entryValidateController.onLoad}" />
-		</f:metadata>
-	</ui:define>
-	<ui:define name="content">
-		<h:form id="form">
-			<p:panel id="validatePnl" header="Validar lançamento">
-				<h:panelGrid columns="4">
-					<h:outputLabel value="Serviço:" style="font-weight: bold;" />
-					<h:outputText value="#{entryValidateController.item.service.title}" />
-					<h:outputLabel value="Valor:" style="font-weight: bold;" />
-					<h:outputText value="#{entryValidateController.item.total}" />
-				</h:panelGrid>
-				<br />
-				<p:dataTable id="commentsTbl" var="comment"
-					value="#{entryValidateController.item.comments}"
-					emptyMessage="Sem comentários">
-					<p:columnGroup type="header">
-						<p:row>
-							<p:column headerText="Comentários" colspan="3"
-								style="text-align: left;" />
-						</p:row>
-						<p:row>
-							<p:column headerText="Autor" style="text-align: left;" />
-							<p:column headerText="Conteúdo" style="text-align: left;" />
-							<p:column headerText="Data" style="text-align: left;" />
-						</p:row>
-					</p:columnGroup>
-					<p:column>
-						<h:outputText value="#{comment.author.login}" />
-					</p:column>
-					<p:column>
-						<h:outputText value="#{comment.details}" />
-					</p:column>
-					<p:column>
-						<h:outputText value="#{comment.createdOn}">
-							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-						</h:outputText>
-					</p:column>
-				</p:dataTable>
-				<br />
-				<h:panelGrid columns="1">
-					<p:inputTextarea id="comment" cols="60"
-						value="#{entryValidateController.comment.details}" />
-					<p:commandButton id="commentBtn" icon="fa fa-comment"
-						value="Adicionar" action="#{entryValidateController.addComment}"
-						process="@this comment" update="commentsTbl comment" ajax="true" />
-				</h:panelGrid>
-			</p:panel>
-			<h:panelGroup id="entrySaveBtnPnl" layout="block"
-				style="margin-top: 10px;">
-				<p:commandButton value="Validar" icon="ui-icon-check" ajax="true"
-					update="@form" validateClient="true" style="margin-right:10px"
-					action="#{entryValidateController.doSave}"
-					rendered="#{entryValidateController.editing}" />
-				<p:commandButton value="Indeferir" icon="ui-icon-cancel" ajax="true"
-					update="@form" validateClient="true" style="margin-right:10px"
-					action="#{entryValidateController.doDenySave}"
-					rendered="#{entryValidateController.editing}" />
-				<p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-					action="#{entryValidateController.back}" />
-			</h:panelGroup>
-		</h:form>
-	</ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{entryController.id}"/>
+      <f:viewParam name="editing" value="#{entryController.editing}"/>
+      <f:viewParam name="serviceId" value="#{entryController.serviceId}"/>
+      <f:viewAction action="#{entryController.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel id="validatePnl"
+               header="Validar lançamento - #{entryController.item.service.title}"
+               styleClass="lance-container">
+
+        <ui:include src="totalBlock.xhtml"/>
+
+        <h:panelGroup id="dataTableBlock" styleClass="margin-top" layout="block">
+          <p:dataTable id="dataTable" var="entryValue"
+                       value="#{entryController.item.values}" styleClass="table-left-header">
+            <f:facet name="header">
+              <h:outputText value="Lançamentos"/>
+            </f:facet>
+            <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
+              <h:outputText value="#{entryValue.contractSector.sector.title}"/>
+            </p:column>
+            <p:column headerText="Valor" styleClass="left-align" width="150">
+              <h:panelGroup id="itemValue">
+                <h:outputText value="#{entryValue.value}">
+                  <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
+                </h:outputText>
+              </h:panelGroup>
+            </p:column>
+          </p:dataTable>
+        </h:panelGroup>
+
+        <ui:include src="commentsBlock.xhtml"/>
+
+        <h:panelGroup id="commentsBlock" styleClass="margin-top" layout="block">
+          <h:panelGrid columns="1">
+            <p:inputTextarea id="comment" cols="60"
+                             value="#{entryController.comment.details}"/>
+            <p:commandButton id="commentBtn" icon="fa fa-comment"
+                             value="Adicionar" action="#{entryController.addComment}"
+                             process="@this comment" update="commentsTbl comment" ajax="true"/>
+          </h:panelGrid>
+        </h:panelGroup>
+
+      </p:panel>
+      <h:panelGroup id="entrySaveBtnPnl" layout="block"
+                    style="margin-top: 10px;">
+        <p:commandButton value="Validar" icon="ui-icon-check" ajax="true"
+                         update="@form" validateClient="true" style="margin-right:10px"
+                         action="#{entryController.doValideSave}"
+                         rendered="#{entryController.editing}"/>
+        <p:commandButton value="Indeferir" icon="ui-icon-cancel" ajax="true"
+                         update="@form" validateClient="true" style="margin-right:10px"
+                         action="#{entryController.doDenySave}"
+                         rendered="#{entryController.editing}"/>
+        <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
+                         action="#{entryController.back}"/>
+      </h:panelGroup>
+    </h:form>
+  </ui:define>
 </ui:composition>

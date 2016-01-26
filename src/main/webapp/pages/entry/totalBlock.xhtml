@@ -1,0 +1,17 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:panelGroup id="totalValue" layout="block"
+                styleClass="entry-total-block">
+    <h:panelGrid columns="2">
+      <h:outputLabel value="TOTAL LANÇAMENTO:"/>
+      <h:outputText value="#{entryController.item.totalValue}" styleClass="label">
+        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </h:panelGrid>
+  </h:panelGroup>
+
+</ui:composition>

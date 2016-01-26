@@ -117,6 +117,7 @@ public class LoginController implements Serializable {
 				context.addMessage(null, new FacesMessage("Error!", "Exception occured"));
 			}
 		} catch (ServletException e) {
+			e.printStackTrace();
 			logger.log(Level.SEVERE, e.toString());
 			context.addMessage(null, new FacesMessage("Erro!", "Usuário ou senha inválida."));
 		}

@@ -16,7 +16,7 @@
   </ui:define>
   <ui:define name="content">
     <h:form id="form">
-      <h:panelGroup id="container" layout="block" style="position: relative;">
+      <h:panelGroup id="container" layout="block" styleClass="lance-container">
         <p:panel header="Lançamento - #{entryController.item.service.title}">
 
           <h:panelGrid columns="4" cellpadding="10">
@@ -56,37 +56,44 @@
             </h:outputText>
           </h:panelGrid>
 
-          <h:panelGroup id="totalValue" layout="block"
-                        style="position: absolute; top: 5px; right: 10px; font-size: 20px; color: #fff">
-            <h:panelGrid columns="2">
-              <h:outputLabel value="TOTAL LANÇAMENTO:" styleClass="label"/>
-              <h:outputText value="#{entryController.item.totalValue}">
-                <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
-              </h:outputText>
-            </h:panelGrid>
-          </h:panelGroup>
+          <ui:include src="totalBlock.xhtml"/>
 
           <p:dataTable id="dataTable" var="entryValue"
-                       value="#{entryController.item.values}">
+                       value="#{entryController.entrieValues}" styleClass="table-left-header">
+            <f:facet name="header">
+              <h:outputText value="Setores"/>
+            </f:facet>
             <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
               <h:outputText value="#{entryValue.contractSector.sector.title}"/>
             </p:column>
             <p:column headerText="#{entryController.item.service.type.compALabel}" styleClass="left-align" width="150">
               <uilance:inputCurrency id="compValueA" renderMessage="false"
                                      value="#{entryValue.valueA}" editing="true"
-                                     prefix="#{entryController.item.service.type == 'E' ? '' : 'R$ '}">
+                                     rendered="#{entryController.item.service.type != 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputCurrency>
+              <uilance:inputNumber id="compValueANumber" renderMessage="false"
+                                     value="#{entryValue.valueA}" editing="true"
+                                     rendered="#{entryController.item.service.type == 'E'}">
+                <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
+                        update=":#{p:component('totalValue')} itemValue"/>
+              </uilance:inputNumber>
             </p:column>
             <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align" width="150"
                       rendered="#{entryController.item.service.type.renderCompB}">
               <uilance:inputCurrency id="compValueB" renderMessage="false"
                                      value="#{entryValue.valueB}" editing="true"
-                                     prefix="#{entryController.item.service.type == 'E' ? '' : 'R$ '}">
+                                     rendered="#{entryController.item.service.type != 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputCurrency>
+              <uilance:inputNumber id="compValueBNumber" renderMessage="false"
+                                   value="#{entryValue.valueB}" editing="true"
+                                   rendered="#{entryController.item.service.type == 'E'}">
+                <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
+                        update=":#{p:component('totalValue')} itemValue"/>
+              </uilance:inputNumber>
             </p:column>
             <p:column headerText="Valor" styleClass="left-align" width="150">
               <h:panelGroup id="itemValue">
@@ -97,14 +104,20 @@
             </p:column>
           </p:dataTable>
 
+          <ui:include src="commentsBlock.xhtml"/>
+
           <h:panelGroup id="entrySaveBtnPnl" layout="block"
-                        style="margin-top: 10px;">
+                        styleClass="margin-top">
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
-                             update="@form" validateClient="true" style="margin-right:10px"
-                             action="#{entryController.saveEntrys}"
-                             rendered="#{entryController.editing}"/>
+                             update="@form" validateClient="true"
+                             action="#{entryController.doSave}"
+                             rendered="#{entryController.editing and entryController.item.status != 'P'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{entryController.doFixSave}"
+                             rendered="#{entryController.editing and entryController.item.status == 'P'}"/>
             <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-                             action="#{entryController.back}"/>
+                             action="#{entryController.back}" styleClass="margin-left"/>
           </h:panelGroup>
 
         </p:panel>

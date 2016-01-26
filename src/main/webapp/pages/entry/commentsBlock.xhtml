@@ -1,0 +1,29 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:panelGroup id="commentsTableBlock" styleClass="margin-top" layout="block">
+    <p:dataTable id="commentsTbl" var="comment"
+                 value="#{entryController.item.comments}"
+                 emptyMessage="Sem comentários" styleClass="table-left-header">
+      <f:facet name="header">
+        <h:outputText value="Comentários"/>
+      </f:facet>
+      <p:column headerText="Autor" styleClass="left-align">
+        <h:outputText value="#{comment.author.login}"/>
+      </p:column>
+      <p:column headerText="Conteúdo" styleClass="left-align">
+        <h:outputText value="#{comment.details}"/>
+      </p:column>
+      <p:column headerText="Data de criação" styleClass="left-align" width="150">
+        <h:outputText value="#{comment.createdOn}">
+          <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+        </h:outputText>
+      </p:column>
+    </p:dataTable>
+  </h:panelGroup>
+
+</ui:composition>

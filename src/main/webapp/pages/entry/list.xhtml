@@ -15,7 +15,9 @@
             <h:outputText value="#{entry.service.title}"/>
           </p:column>
           <p:column headerText="Valor lançado" styleClass="left-align" width="150">
-            <h:outputText value="#{entry.totalValue}"/>
+            <h:outputText value="#{entry.totalValue}">
+              <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+            </h:outputText>
           </p:column>
           <p:column headerText="Criação" styleClass="left-align" width="100">
             <h:outputText value="#{entry.createdOn}"
@@ -42,6 +44,7 @@
             </p:commandLink>
             <p:tooltip id="tooltipEditEntry" for="editEntry"
                        value="Editar #{cc.attrs.controller.entityName}"/>
+            <span/>
             <p:commandLink id="validateEntry"
                            action="#{entryController.validate(entry)}"
                            disabled="#{entry.status != 'L' and entry.status != 'F'}">
@@ -49,6 +52,7 @@
             </p:commandLink>
             <p:tooltip id="tooltipValidateEntry" for="validateEntry"
                        value="Validar #{cc.attrs.controller.entityName}"/>
+            <span/>
             <p:commandLink id="sendEditEntry"
                            action="#{entryController.edit(entry)}"
                            disabled="#{entry.status != 'V'}">

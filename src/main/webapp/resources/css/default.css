@@ -155,7 +155,7 @@ a.action-link:HOVER, td.action-link a:HOVER {
 	text-align: right !important;
 }
 
-.services-contract-panel .ui-datalist-header {
+.services-contract-panel .ui-datalist-header, .table-left-header .ui-datatable-header {
 	text-align: left !important;
 }
 
@@ -172,6 +172,26 @@ a.action-link:HOVER, td.action-link a:HOVER {
 
 .label {
 	font-weight: bold;
+}
+
+.margin-top {
+	margin-top: 10px;
+}
+
+.margin-left {
+	margin-left: 5px;
+}
+
+.lance-container {
+	position: relative;
+}
+
+.entry-total-block {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	font-size: 20px;
+	color: #fff
 }
 
 #particles-js {
