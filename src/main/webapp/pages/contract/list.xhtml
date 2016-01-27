@@ -9,7 +9,7 @@
 	<ui:define name="content">
 		<h:form id="form">
 			<p:panel header="Contratos">
-				<lance:dataTable id="dataTable" controller="#{contractController}">
+				<lance:dataTable id="dataTable" controller="#{contractController}" renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
 
 					<p:column sortBy="#{item.title}" headerText="Título"
 						style="text-align: left;">

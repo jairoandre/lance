@@ -18,17 +18,21 @@
                     action="/admin/user/list.xhtml?faces-redirect=true" ajax="false"
                     icon="ui-icon-person"/>
       </c:if>
-      <p:submenu label="Cadastro" icon="ui-icon-document">
-        <p:menuitem value="Clientes"
-                    action="/pages/client/list.xhtml?faces-redirect=true"/>
-        <p:menuitem value="Serviços"
-                    action="/pages/service/list.xhtml?faces-redirect=true"/>
-        <p:menuitem value="Contratos"
-                    action="/pages/contract/list.xhtml?faces-redirect=true"/>
-      </p:submenu>
-      <p:menuitem value="Lançamentos"
-                  action="/pages/entry/list.xhtml?faces-redirect=true"
-                  icon="ui-icon-flag"/>
+      <c:if test="#{request.isUserInRole('ADMINISTRATOR') || request.isUserInRole('MANAGER')}">
+        <p:submenu label="Cadastro" icon="ui-icon-document">
+          <p:menuitem value="Clientes"
+                      action="/pages/client/list.xhtml?faces-redirect=true"/>
+          <p:menuitem value="Serviços"
+                      action="/pages/service/list.xhtml?faces-redirect=true"/>
+          <p:menuitem value="Contratos"
+                      action="/pages/contract/list.xhtml?faces-redirect=true"/>
+        </p:submenu>
+      </c:if>
+      <c:if test="#{request.isUserInRole('ADMINISTRATOR') || request.isUserInRole('MANAGER')}">
+        <p:menuitem value="Lançamentos"
+                    action="/pages/entry/list.xhtml?faces-redirect=true"
+                    icon="ui-icon-flag"/>
+      </c:if>
       <f:facet name="options">
         <h:panelGroup style="margin-top: 3px;" layout="block">
           <h:outputText value="Olá, #{loginController.username}     "

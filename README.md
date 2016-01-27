@@ -20,7 +20,7 @@ Instale o Jboss tools através do Eclipse marketplace.
 
 ### Instalação do driver jdbc Oracle
 
-- Copie o driver jdbc `ojdbc[version].jar` para este local `[wildfly folder]modules\system\layers\base\com\oracle\main` (crie se necessário).
+- Copie o driver jdbc `ojdbc[version].jar` para este local `[wildfly-folder]\modules\system\layers\base\com\oracle\main` (crie se necessário).
 - Dentro dessa pasta, crie o arquivo `module.xml` com o seguinte conteúdo:
 
 ```
@@ -38,7 +38,10 @@ Instale o Jboss tools através do Eclipse marketplace.
 ### Configuração do datasource
 
 Adicione o servidor do WildFly em seu eclipse.
-Edite o arquivo `standalone.xml`:
+
+Edite o arquivo `[wildfly-folder]\standalone\configuration\standalone.xml`:
+
+#### Base Oracle
 
 ```
 <datasources>
@@ -57,7 +60,7 @@ Edite o arquivo `standalone.xml`:
 	    </security>
 	</datasource>
 </datasources>
-
+...
 <drivers>
 ...
 	<driver name="oracle" module="com.oracle">
@@ -67,39 +70,75 @@ Edite o arquivo `standalone.xml`:
 
 ```
 
+#### Base H2
+
+```
+<security-domain name="lance" cache-type="default">
+  <authentication>
+      <login-module code="Database" flag="required">
+          <module-option name="dsJndiName" value="java:jboss/datasources/lanceH2"/>
+          <module-option name="principalsQuery" 
+            value="select ds_senha from usrdbvah.tb_ptc_usuario_puser where ds_login=?"/>
+          <module-option name="rolesQuery" 
+            value="select tur.cd_role, 'Roles' from usrdbvah.tb_lanca_usuario_role tur, usrdbvah.tb_ptc_usuario_puser tu where tu.id_puser = tur.id_puser and tu.ds_login=?"/>
+      </login-module>
+  </authentication>
+</security-domain>
+```
+
 ### Configuração de autenticação/autorização
 
-No arquivo `standalone.xhtml`:
+Edite o arquivo `[wildfly-folder]\standalone\configuration\standalone.xml`:
+
+#### Utilizando tabelas
 
 ```
 <security-domains>
 	<security-domain name="lance" cache-type="default">
 	    <authentication>
 	        <login-module code="Database" flag="required">
-	            <module-option name="dsJndiName" value="java:jboss/datasources/lance"/>
-	            <module-option name="principalsQuery" value="select ds_senha from tb_ptc_usuario_puser where ds_login=?"/>
-	            <module-option name="rolesQuery" value="select tpa.ds_perfil_acesso, 'Roles' from tb_ptc_perfil_acesso tpa, tb_ptc_perfil_acesso_usuario tpau, tb_ptc_usuario_puser tu where tpa.id_perfil_acesso = tpau.id_perfil_acesso and tu.id_puser = tpau.id_puser and tu.ds_login=?"/>
+	            <authentication>                                      
+                <module-option name="dsJndiName" value="java:jboss/datasources/lanceH2"/>
+                <module-option name="principalsQuery" value="select ds_senha from usrdbvah.tb_ptc_usuario_puser where ds_login=?"/>
+                <module-option name="rolesQuery" value="select tur.cd_role, 'Roles' from usrdbvah.tb_lanca_usuario_role tur, usrdbvah.tb_ptc_usuario_puser tu where tu.id_puser = tur.id_puser and tu.ds_login=?"/>
+              </authentication>
 	        </login-module>
 	    </authentication>
 	</security-domain>
 </security-domains>
 ```
 
-Para base H2:
+#### LDAP
 
 ```
-<security-domain name="lance" cache-type="default">
-                    <authentication>
-                        <login-module code="Database" flag="required">
-                            <module-option name="dsJndiName" value="java:jboss/datasources/lanceH2"/>
-                            <module-option name="principalsQuery" 
-                            	value="select ds_senha from usrdbvah.tb_ptc_usuario_puser where ds_login=?"/>
-                            <module-option name="rolesQuery" 
-                            	value="select tur.cd_role, 'Roles' from usrdbvah.tb_lanca_usuario_role tur, usrdbvah.tb_ptc_usuario_puser tu where tu.id_puser = tur.id_puser and tu.ds_login=?"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
+<security-realms>
+  ...
+  <security-realm name="LanceADRealm">
+    <authentication>
+        <ldap connection="MyAD" base-dn="DC=vitoriaapart,DC=com,DC=br" recursive="true">
+            <username-filter attribute="sAMAccountName"/>
+        </ldap>
+    </authentication>
+  </security-realm>
+</security-realms>
+<outbound-connections>
+  <ldap name="MyAD" url="ldap://10.1.0.10:389" search-dn="CN=lance,OU=SERVICOS,DC=vitoriaapart,DC=com,DC=br" search-credential="lance@vah"/>
+</outbound-connections>
+...
+<security-domain name="ldap-vah" cache-type="default">
+    <authentication>
+        <login-module code="Remoting" flag="optional">
+            <module-option name="password-stacking" value="useFirstPass"/>
+        </login-module>
+        <login-module code="RealmDirect" flag="sufficient">
+            <module-option name="password-stacking" value="useFirstPass"/>
+            <module-option name="realm" value="LanceADRealm"/>
+        </login-module>
+    </authentication>
+</security-domain>
 ```
+
+
 
 ## Geração de pacote
 

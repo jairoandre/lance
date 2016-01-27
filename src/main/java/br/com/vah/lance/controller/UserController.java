@@ -33,12 +33,6 @@ public class UserController extends AbstractController<User> {
 
 	private List<SelectItem> services;
 
-	private Long serviceIdToAdd;
-
-	private RolesEnum roleToAdd;
-
-	private RolesEnum[] roles;
-
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void init() {
@@ -47,7 +41,6 @@ public class UserController extends AbstractController<User> {
 		setLazyModel(new GenericLazyDataModel<User>(service));
 		getLazyModel().getSearchParams().addRelations("services", "roles");
 		this.services = LanceUtils.createSelectItem(serviceService.findWithNamedQuery(Service.ALL), true);
-		this.roles = RolesEnum.values();
 		setSearchField("login");
 	}
 
@@ -81,94 +74,24 @@ public class UserController extends AbstractController<User> {
 		return "usuário";
 	}
 
-	/**
-	 * @return the serviceService
-	 */
-	public ServiceService getServiceService() {
-		return serviceService;
+	public void setService(UserService service) {
+		this.service = service;
 	}
 
-	/**
-	 * @param serviceService
-	 *            the serviceService to set
-	 */
-	public void setServiceService(ServiceService serviceService) {
-		this.serviceService = serviceService;
-	}
-
-	/**
-	 * @return the services
-	 */
-	public List<SelectItem> getServices() {
-		return services;
-	}
-
-	/**
-	 * @param services
-	 *            the services to set
-	 */
-	public void setServices(List<SelectItem> services) {
-		this.services = services;
-	}
-
-	/**
-	 * @return the roles
-	 */
-	public RolesEnum[] getRoles() {
-		return roles;
-	}
-
-	/**
-	 * @param roles
-	 *            the roles to set
-	 */
-	public void setRoles(RolesEnum[] roles) {
-		this.roles = roles;
-	}
-
-	/**
-	 * @return the serviceIdToAdd
-	 */
-	public Long getServiceIdToAdd() {
-		return serviceIdToAdd;
-	}
-
-	/**
-	 * @param serviceIdToAdd
-	 *            the serviceIdToAdd to set
-	 */
-	public void setServiceIdToAdd(Long serviceIdToAdd) {
-		this.serviceIdToAdd = serviceIdToAdd;
-	}
-
-	/**
-	 * @return the roleToAdd
-	 */
-	public RolesEnum getRoleToAdd() {
-		return roleToAdd;
-	}
-
-	/**
-	 * @param roleToAdd
-	 *            the roleToAdd to set
-	 */
-	public void setRoleToAdd(RolesEnum roleToAdd) {
-		this.roleToAdd = roleToAdd;
-	}
-
-	/**
-	 * @return the beanService
-	 */
 	public Service getBeanService() {
 		return beanService;
 	}
 
-	/**
-	 * @param beanService
-	 *            the beanService to set
-	 */
 	public void setBeanService(Service beanService) {
 		this.beanService = beanService;
+	}
+
+	public List<SelectItem> getServices() {
+		return services;
+	}
+
+	public void setServices(List<SelectItem> services) {
+		this.services = services;
 	}
 
 	public void toggleService() {
@@ -178,24 +101,4 @@ public class UserController extends AbstractController<User> {
 			getItem().getServices().add(beanService);
 		}
 	}
-
-	public void toggleRole(RolesEnum role) {
-		if (getItem().getRoles().contains(role)) {
-			getItem().getRoles().remove(role);
-		} else {
-			getItem().getRoles().add(role);
-		}
-	}
-
-	public String addRole() {
-		getItem().getRoles().add(roleToAdd);
-		roleToAdd = null;
-		return null;
-	}
-
-	public String removeRole(RolesEnum role) {
-		getItem().getRoles().remove(role);
-		return null;
-	}
-
 }

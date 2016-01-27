@@ -1,6 +1,7 @@
 package br.com.vah.lance.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -22,7 +23,8 @@ public class UserService extends DataAccessService<User> {
 	public User findByLogin(String login){
 		Map<String, Object> params = new HashMap<>();
 		params.put("login", login);
-		return (User) findWithNamedQuery(User.FIND_BY_LOGIN, params).get(0);
+		List<User> resultList = findWithNamedQuery(User.FIND_BY_LOGIN, params);
+		return resultList.isEmpty() ? null : resultList.get(0);
 	}
 
 }

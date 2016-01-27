@@ -1,10 +1,10 @@
 package br.com.vah.lance.controller;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import br.com.vah.lance.constant.RolesEnum;
+import br.com.vah.lance.entity.User;
+import br.com.vah.lance.service.UserService;
+import br.com.vah.lance.util.DateUtility;
+import br.com.vah.lance.util.LanceUtils;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -15,11 +15,11 @@ import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import br.com.vah.lance.constant.RolesEnum;
-import br.com.vah.lance.entity.User;
-import br.com.vah.lance.service.UserService;
-import br.com.vah.lance.util.DateUtility;
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.Principal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Login Controller class allows only authenticated users to log in to the web
@@ -32,112 +32,150 @@ import br.com.vah.lance.util.DateUtility;
 @SessionScoped
 public class LoginController implements Serializable {
 
-	private @Inject transient Logger logger;
+  private
+  transient Logger logger = Logger.getLogger("LoginController");
 
-	private @Inject UserService userService;
+  private
+  @Inject
+  UserService userService;
 
-	private String username;
-	private String password;
-	private User user;
+  private String username;
+  private String password;
+  private User user;
 
-	/**
-	 * Creates a new instance of LoginController
-	 */
-	public LoginController() {
-	}
+  /**
+   * Creates a new instance of LoginController
+   */
+  public LoginController() {
+  }
 
-	// Getters and Setters
-	/**
-	 * @return username
-	 */
-	public String getUsername() {
-		return username;
-	}
+  // Getters and Setters
 
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return user;
-	}
+  /**
+   * @return username
+   */
+  public String getUsername() {
+    return username;
+  }
 
-	/**
-	 *
-	 * @param username
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
+  /**
+   * @return the user
+   */
+  public User getUser() {
+    return user;
+  }
 
-	/**
-	 *
-	 * @return password
-	 */
-	public String getPassword() {
-		return password;
-	}
+  /**
+   * @param username
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-	/**
-	 *
-	 * @param password
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  /**
+   * @return password
+   */
+  public String getPassword() {
+    return password;
+  }
 
-	/**
-	 * Listen for button clicks on the #{loginController.login} action,
-	 * validates the username and password entered by the user and navigates to
-	 * the appropriate page.
-	 *
-	 * @param actionEvent
-	 */
-	public void login(ActionEvent actionEvent) {
+  /**
+   * @param password
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-		try {
-			String navigateString = "/pages/index.xhtml";
-			// Checks if username and password are valid if not throws a
-			// ServletException
-			request.login(username, password);
-			// gets the user principle and navigates to the appropriate page
-			user = userService.findByLogin(username);
-			Principal principal = request.getUserPrincipal();
+  /**
+   * Listen for button clicks on the #{loginController.login} action,
+   * validates the username and password entered by the user and navigates to
+   * the appropriate page.
+   *
+   * @param actionEvent
+   */
+  public void login(ActionEvent actionEvent) {
 
-			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
-				navigateString = "/pages/index.xhtml";
-			}
-			try {
-				logger.log(Level.INFO, "User ({0}) loging in #" + DateUtility.getCurrentDateTime(),
-						request.getUserPrincipal().getName());
-				context.getExternalContext().redirect(request.getContextPath() + navigateString);
-			} catch (IOException ex) {
-				logger.log(Level.SEVERE, "IOException, Login Controller" + "Username : " + principal.getName(), ex);
-				context.addMessage(null, new FacesMessage("Error!", "Exception occured"));
-			}
-		} catch (ServletException e) {
-			e.printStackTrace();
-			logger.log(Level.SEVERE, e.toString());
-			context.addMessage(null, new FacesMessage("Erro!", "Usuário ou senha inválida."));
-		}
-	}
+    FacesContext context = FacesContext.getCurrentInstance();
+    HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+    try {
+      String navigateString = "/pages/index.xhtml";
+      // Checks if username and password are valid if not throws a
+      // ServletException
+      request.login(username, password);
 
-	/**
-	 * Listen for logout button clicks on the #{loginController.logout} action
-	 * and navigates to login screen.
-	 */
-	public void logout() {
+      user = userService.findByLogin(username);
 
-		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-				.getRequest();
-		logger.log(Level.INFO, "User ({0}) loging out #" + DateUtility.getCurrentDateTime(),
-				request.getUserPrincipal().getName());
-		if (session != null) {
-			session.invalidate();
-		}
-		FacesContext.getCurrentInstance().getApplication().getNavigationHandler()
-				.handleNavigation(FacesContext.getCurrentInstance(), null, "/login.xhtml?faces-redirect=true");
-	}
+      // Verifica se o usuário possui alguma role definida, isto é, se o usuário possui entrada no arquivo lance.properties do servidor.
+      boolean hasAnyRole = false;
+
+      for (RolesEnum rolesEnum : RolesEnum.values()) {
+        if (request.isUserInRole(rolesEnum.name())) {
+          hasAnyRole = true;
+          break;
+        }
+      }
+
+      if (hasAnyRole) {
+        user = userService.findByLogin(username);
+      } else {
+        LanceUtils.addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Seu acesso ao sistema não está configurado. Procure o administrador de sistemas para solicitar a configuração."), true);
+      }
+
+      if (user == null) {
+        user = new User();
+        user.setLogin(username);
+      }
+
+      // gets the user principle and navigates to the appropriate page
+
+      Principal principal = request.getUserPrincipal();
+
+      // TODO: Definir tela inicial para cada perfil
+      if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
+        navigateString = "/pages/index.xhtml";
+      }
+      try {
+        logger.log(Level.INFO, "User ({0}) loging in #" + DateUtility.getCurrentDateTime(),
+            request.getUserPrincipal().getName());
+        context.getExternalContext().redirect(request.getContextPath() + navigateString);
+      } catch (IOException ex) {
+        logger.log(Level.SEVERE, "IOException, Login Controller" + "Username : " + principal.getName(), ex);
+        context.addMessage(null, new FacesMessage("Error!", "Exception occured"));
+      }
+    } catch (ServletException e) {
+      e.printStackTrace();
+      logger.log(Level.SEVERE, e.toString());
+      context.addMessage(null, new FacesMessage("Erro!", "Usuário ou senha inválida."));
+    }
+  }
+
+  /**
+   * Listen for logout button clicks on the #{loginController.logout} action
+   * and navigates to login screen.
+   */
+  public void logout() {
+
+    HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+    HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+        .getRequest();
+    logger.log(Level.INFO, "User ({0}) loging out #" + DateUtility.getCurrentDateTime(),
+        request.getUserPrincipal().getName());
+    if (session != null) {
+      session.invalidate();
+    }
+    FacesContext.getCurrentInstance().getApplication().getNavigationHandler()
+        .handleNavigation(FacesContext.getCurrentInstance(), null, "/login.xhtml?faces-redirect=true");
+  }
+
+  public boolean isUserInRoles(String roles){
+    boolean atLeastOneRole = false;
+    HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    for(String role : roles.split(",")){
+      if(request.isUserInRole(role)){
+        atLeastOneRole = true;
+        break;
+      }
+    }
+    return atLeastOneRole;
+  }
 }

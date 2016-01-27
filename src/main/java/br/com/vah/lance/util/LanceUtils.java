@@ -2,6 +2,8 @@ package br.com.vah.lance.util;
 
 import br.com.vah.lance.entity.BaseEntity;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -96,6 +98,14 @@ public class LanceUtils {
     calendar.set(Calendar.MINUTE, 59);
     calendar.set(Calendar.SECOND, 59);
     calendar.set(Calendar.MILLISECOND, 999);
+  }
+
+  public static void addMsg(FacesMessage msg, boolean flash) {
+    FacesContext ctx = FacesContext.getCurrentInstance();
+    ctx.addMessage(null, msg);
+    if (flash) {
+      ctx.getExternalContext().getFlash().setKeepMessages(true);
+    }
   }
 
 }

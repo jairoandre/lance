@@ -1,5 +1,6 @@
 package br.com.vah.lance.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import br.com.vah.lance.util.PaginatedSearchParam;
  */
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public abstract class DataAccessService<T> {
+public abstract class DataAccessService<T> implements Serializable {
 
 	public static final String ID = "id";
 

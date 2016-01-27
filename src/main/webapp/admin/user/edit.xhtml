@@ -1,65 +1,48 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="metadata">
-		<f:metadata>
-			<f:viewParam name="id" value="#{userController.id}" />
-			<f:viewParam name="editing" value="#{userController.editing}" />
-			<f:viewAction action="#{userController.onLoad}" />
-		</f:metadata>
-	</ui:define>
-	<ui:define name="content">
-		<h:form id="form">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{userController.id}"/>
+      <f:viewParam name="editing" value="#{userController.editing}"/>
+      <f:viewAction action="#{userController.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
 
-			<lance:manyToManyDialog id="addServiceDlg"
-				bean="#{userController.beanService}"
-				controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-				targetController="#{userController}"
-				targetItems="#{userController.item.services}"
-				toggleAction="toggleService" update="services" width="800" />
+      <lance:manyToManyDialog id="addServiceDlg"
+                              bean="#{userController.beanService}"
+                              controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
+                              targetController="#{userController}"
+                              targetItems="#{userController.item.services}"
+                              toggleAction="toggleService" update="services" width="800"/>
+      <lance:editForm id="contractPnl" controller="#{userController}"
+                      columns="3">
+        <uilance:inputText id="name" label="Login"
+                           value="#{userController.item.login}"
+                           editing="#{userController.editing}"/>
+        <uilance:inputText id="title" label="Descrição"
+                           value="#{userController.item.title}"
+                           editing="#{userController.editing}"/>
 
-			<lance:editForm id="contractPnl" controller="#{userController}"
-				columns="3">
-				<uilance:inputText id="name" label="Login"
-					value="#{userController.item.login}"
-					editing="#{userController.editing}" readonly="true" />
-
-				<f:facet name="other">
-					<br />
-					<uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
-						bean="#{userController.beanService}" columnHeader="Serviço"
-						controller="#{userController}" dialog="addServiceDlg"
-						editing="#{userController.editing}"
-						emptyMessage="Sem serviços relacionados"
-						items="#{userController.item.services}"
-						toggleAction="toggleService" />
-					<br />
-
-					<h:panelGroup id="rolesContainer">
-						<p:dataTable id="roles" value="#{userController.roles}" var="role">
-							<p:column style="text-align: center;" width="50">
-								<p:commandLink ajax="true"
-									action="#{userController.toggleRole(role)}"
-									styleClass="action-link" process="@this"
-									update=":#{p:component('rolesContainer')}">
-									<h:panelGroup
-										styleClass="fa fa#{userController.item.roles.contains(role) ? '-check' : ''}-square-o" />
-								</p:commandLink>
-							</p:column>
-							<p:column headerText="Perfil" styleClass="left-align">
-								<h:outputText value="#{role.label}" />
-							</p:column>
-						</p:dataTable>
-					</h:panelGroup>
-
-
-				</f:facet>
-			</lance:editForm>
-		</h:form>
-	</ui:define>
+        <f:facet name="other">
+          <h:panelGroup id="servicesPnl" layout="block" styleClass="margin-top">
+            <uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
+                                bean="#{userController.beanService}" columnHeader="Serviço"
+                                controller="#{userController}" dialog="addServiceDlg"
+                                editing="#{userController.editing}"
+                                emptyMessage="Sem serviços relacionados"
+                                items="#{userController.item.services}"
+                                toggleAction="toggleService"/>
+          </h:panelGroup>
+        </f:facet>
+      </lance:editForm>
+    </h:form>
+  </ui:define>
 </ui:composition>
