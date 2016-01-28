@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CLIENTE_SETOR</OriginalElement>
+  <nodes>
+    <node x="1167.2743055555557" y="22.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.ITEM_RES</node>
+    <node x="855.8038194444443" y="1035.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_COMENTARIOS</node>
+    <node x="161.33333333333337" y="556.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.SETOR</node>
+    <node x="1001.3038194444443" y="812.5">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO_SERVICO</node>
+    <node x="322.55381944444446" y="1068.5">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_CONTRATO_SERVICO</node>
+    <node x="595.8038194444445" y="1002.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO_VALORES</node>
+    <node x="705.2743055555557" y="22.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.HISTORICO_PADRAO</node>
+    <node x="346.33333333333337" y="512.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO</node>
+    <node x="456.2743055555556" y="0.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.PLANO_CONTAS</node>
+    <node x="318.19097222222234" y="790.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR</node>
+    <node x="601.1493055555557" y="490.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_VALORES</node>
+    <node x="715.8038194444443" y="746.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO</node>
+    <node x="918.8038194444443" y="545.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO</node>
+    <node x="662.0416666666667" y="168.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO</node>
+    <node x="37.875" y="812.5">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CLIENTE_SETOR</node>
+    <node x="316.94618055555554" y="267.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.FORNECEDOR</node>
+    <node x="971.2743055555555" y="22.0">6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.TIP_DOC</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO_VALORES" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR">
+      <point x="-60.0" y="-103.0" />
+      <point x="655.8038194444445" y="972.0" />
+      <point x="467.44097222222234" y="972.0" />
+      <point x="49.75" y="59.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CLIENTE_SETOR" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.FORNECEDOR">
+      <point x="-51.25" y="-36.5" />
+      <point x="89.125" y="721.0" />
+      <point x="114.5" y="721.0" />
+      <point x="114.5" y="465.0" />
+      <point x="351.11284722222223" y="465.0" />
+      <point x="-68.33333333333331" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO">
+      <point x="0.0" y="-103.0" />
+      <point x="835.8038194444443" y="721.0" />
+      <point x="851.6493055555557" y="721.0" />
+      <point x="851.6493055555557" y="465.0" />
+      <point x="849.5416666666667" y="465.0" />
+      <point x="37.5" y="136.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO">
+      <point x="80.0" y="-103.0" />
+      <point x="915.8038194444443" y="721.0" />
+      <point x="942.8038194444443" y="721.0" />
+      <point x="-48.0" y="48.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.PLANO_CONTAS">
+      <point x="-120.0" y="-136.0" />
+      <point x="692.0416666666667" y="148.0" />
+      <point x="513.5243055555557" y="148.0" />
+      <point x="-57.25" y="59.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.FORNECEDOR">
+      <point x="66.33333333333326" y="-59.0" />
+      <point x="484.0243055555556" y="721.0" />
+      <point x="556.8333333333334" y="721.0" />
+      <point x="556.8333333333334" y="465.0" />
+      <point x="487.77951388888886" y="465.0" />
+      <point x="68.33333333333331" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO_VALORES" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO">
+      <point x="60.0" y="-103.0" />
+      <point x="-60.0" y="103.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.FORNECEDOR">
+      <point x="-5.6843418860808015E-14" y="-81.0" />
+      <point x="446.3333333333333" y="465.0" />
+      <point x="419.44618055555554" y="465.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO">
+      <point x="-5.6843418860808015E-14" y="-59.0" />
+      <point x="417.6909722222223" y="721.0" />
+      <point x="446.33333333333337" y="721.0" />
+      <point x="0.0" y="81.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.ITEM_RES">
+      <point x="120.0" y="-136.0" />
+      <point x="932.0416666666667" y="148.0" />
+      <point x="1258.2743055555557" y="148.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO">
+      <point x="-48.75" y="-36.5" />
+      <point x="1050.0538194444443" y="721.0" />
+      <point x="1038.8038194444443" y="721.0" />
+      <point x="48.0" y="48.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO">
+      <point x="48.75" y="-36.5" />
+      <point x="1147.5538194444443" y="465.0" />
+      <point x="924.5416666666667" y="465.0" />
+      <point x="112.5" y="136.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.SETOR">
+      <point x="-66.33333333333337" y="-59.0" />
+      <point x="351.35763888888897" y="721.0" />
+      <point x="285.08333333333337" y="721.0" />
+      <point x="41.25" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_COMENTARIOS" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_USUARIO">
+      <point x="45.0" y="-70.0" />
+      <point x="0.0" y="48.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_CONTRATO_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CONTRATO_SETOR">
+      <point x="-65.25000000000006" y="-36.5" />
+      <point x="387.8038194444444" y="982.0" />
+      <point x="367.94097222222234" y="982.0" />
+      <point x="-49.75" y="59.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_CLIENTE_SETOR" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.SETOR">
+      <point x="51.25" y="-36.5" />
+      <point x="191.625" y="721.0" />
+      <point x="202.58333333333337" y="721.0" />
+      <point x="-41.25" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_VALORES" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO">
+      <point x="0.0" y="-103.0" />
+      <point x="721.1493055555557" y="465.0" />
+      <point x="774.5416666666667" y="465.0" />
+      <point x="-37.5" y="136.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.TIP_DOC">
+      <point x="60.0" y="-136.0" />
+      <point x="872.0416666666667" y="138.0" />
+      <point x="1059.2743055555557" y="138.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_VALORES">
+      <point x="-80.0" y="-103.0" />
+      <point x="755.8038194444443" y="721.0" />
+      <point x="721.1493055555557" y="721.0" />
+      <point x="0.0" y="103.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.DBAMV.HISTORICO_PADRAO">
+      <point x="0.0" y="-136.0" />
+      <point x="812.0416666666667" y="148.0" />
+      <point x="828.2743055555557" y="148.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_COMENTARIOS" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_LANCAMENTO">
+      <point x="-45.0" y="-70.0" />
+      <point x="900.8038194444443" y="982.0" />
+      <point x="895.8038194444443" y="982.0" />
+      <point x="60.0" y="103.0" />
+    </edge>
+    <edge source="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO_CONTRATO_SERVICO" target="6f404f5f-f58c-4e7c-97c0-759928b5fca9.TABLE:TEST.USRDBVAH.TB_LANCA_SERVICO">
+      <point x="65.24999999999994" y="-36.5" />
+      <point x="518.3038194444443" y="982.0" />
+      <point x="584.1666666666667" y="982.0" />
+      <point x="584.1666666666667" y="465.0" />
+      <point x="699.5416666666667" y="465.0" />
+      <point x="-112.5" y="136.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.31596091205211724" x="675.3247422680413" y="544.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+

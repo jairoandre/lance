@@ -38,24 +38,24 @@
                        style="position: absolute; right: 0;"/>
     </h:panelGroup>
     <p:dataTable id="table" var="item" value="#{cc.attrs.controller.lazyModel}"
-                 paginator="true" emptyMessage="Sem registros"
+                 paginator="true" emptyMessage="Sem registros" styleClass="table-left-header"
                  paginatorPosition="bottom" rows="10" rowKey="index" rowIndexVar="indexVar"
                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                  lazy="true" rowsPerPageTemplate="10,25,50">
+      <f:facet name="header">
+        <h:outputText value="Listagem"/>
+      </f:facet>
       <composite:insertChildren/>
       <p:column width="100" headerText="Ações" styleClass="action-link"
                 rendered="#{cc.attrs.renderActionColumn == null ? true : cc.attrs.renderActionColumn}">
         <composite:renderFacet name="customAction"/>
-        <span id="detail#{indexVar}">
-          <p:commandLink id="detailAction"
-                         action="#{cc.attrs.controller.detail(item)}"
-                         rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}">
-            <span class="fa fa-search"/>
-          </p:commandLink>
-        </span>
-        <div class="mdl-tooltip mdl-tooltip--large" for="detail#{indexVar}">
-          <h:outputText value="Detalhar #{cc.attrs.controller.entityName}"/>
-        </div>
+        <p:commandLink id="detailAction"
+                       action="#{cc.attrs.controller.detail(item)}"
+                       rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}">
+          <span class="fa fa-search"/>
+        </p:commandLink>
+        <p:tooltip id="toolDetailAction" for="detailAction"
+                   value="Detalhar #{cc.attrs.controller.entityName}"/>
         <span/>
         <p:commandLink id="editAction"
                        action="#{cc.attrs.controller.edit(item)}"

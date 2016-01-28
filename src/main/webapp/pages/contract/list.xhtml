@@ -1,46 +1,47 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
-	<ui:define name="content">
-		<h:form id="form">
-			<p:panel header="Contratos">
-				<lance:dataTable id="dataTable" controller="#{contractController}" renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Contratos">
+        <lance:dataTable id="dataTable" controller="#{contractController}"
+                         renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
 
-					<p:column sortBy="#{item.title}" headerText="Título"
-						style="text-align: left;">
-						<h:outputText value="#{item.title}" />
-					</p:column>
-					<p:column sortBy="#{item.beginDate}" headerText="Data de início"
-						style="text-align: left;">
-						<h:outputText value="#{item.beginDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-					<p:column sortBy="#{item.endDate}" headerText="Data de término"
-						style="text-align: left;">
-						<h:outputText value="#{item.endDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-					<p:column sortBy="#{item.changeDate}" headerText="Data de reajuste"
-						style="text-align: left;">
-						<h:outputText value="#{item.changeDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-					<p:column sortBy="#{item.subject.title}" headerText="Contratante"
-						style="text-align: left;">
-						<h:outputText
-							value="#{item.subject == null ? '-' : item.subject.title}" />
-					</p:column>
+          <p:column sortBy="#{item.title}" headerText="Título"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.beginDate}" headerText="Data de início"
+                    style="text-align: left;">
+            <h:outputText value="#{item.beginDate}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+          </p:column>
+          <p:column sortBy="#{item.endDate}" headerText="Data de término"
+                    style="text-align: left;">
+            <h:outputText value="#{item.endDate}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+          </p:column>
+          <p:column sortBy="#{item.changeDate}" headerText="Data de reajuste"
+                    style="text-align: left;">
+            <h:outputText value="#{item.changeDate}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+          </p:column>
+          <p:column sortBy="#{item.subject.title}" headerText="Contratante"
+                    style="text-align: left;">
+            <h:outputText
+              value="#{item.subject == null ? '-' : item.subject.title}"/>
+          </p:column>
 
-				</lance:dataTable>
-			</p:panel>
-		</h:form>
-	</ui:define>
+        </lance:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
 </ui:composition>

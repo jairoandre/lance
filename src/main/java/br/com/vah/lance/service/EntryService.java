@@ -40,6 +40,10 @@ public class EntryService extends DataAccessService<Entry> {
 
     List<Entry> entries = new ArrayList<>();
 
+    if (userId == null) {
+      return entries;
+    }
+
     User user = userService.find(userId);
 
     Map<String, Object> contractParams = new LinkedHashMap<>();
@@ -166,10 +170,9 @@ public class EntryService extends DataAccessService<Entry> {
   }
 
 
-
   /**
    * Modifica o estado do lançamento
-   *
+   * <p/>
    * TODO: Incluir outros estados
    *
    * @param entry

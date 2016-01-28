@@ -1,15 +1,14 @@
 <ui:composition template="/templates/layout.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:lance="http://java.sun.com/jsf/composite/lance"
-                xmlns:uilance="http://vah.com.br/lance">
+                xmlns:lance="http://java.sun.com/jsf/composite/lance">
   <ui:define name="content">
     <h:form id="form">
       <p:panel header="Serviços">
-        <lance:dataTable id="dataTable" controller="#{serviceController}">
+        <lance:dataTable id="dataTable" controller="#{serviceController}"
+                         renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
