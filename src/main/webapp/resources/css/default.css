@@ -209,3 +209,8 @@ a.action-link:HOVER, td.action-link a:HOVER {
 	width: 100%;
 	height: 100%;
 }
+
+.login-input-pnl {
+	padding: 20px;
+	text-align: center;
+}

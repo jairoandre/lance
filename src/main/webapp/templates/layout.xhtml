@@ -8,26 +8,29 @@
 <h:head>
   <title>Sistema lance</title>
   <h:outputStylesheet library="css" name="default.css"/>
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.orange-amber.min.css" />
   <h:outputScript library="js" name="locales.js"/>
   <h:outputScript library="js" name="jquery.maskMoney.min.js"/>
   <h:outputScript library="js" name="particles.min.js"/>
   <h:outputScript library="js" name="jquery.numberMask.min.js"/>
+  <h:outputScript library="js" name="material.min.js"/>
   <link rel="shortcut icon" type="image/x-icon"
         href="#{resource['img/favicon.ico']}"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </h:head>
 <h:body>
   <ui:include src="../templates/tiles/top-menu.xhtml"/>
 
   <p:ajaxStatus onstart="PF('statusDialog').show()"
-                onerror="PF('statusDialog').hide()"
-                onsuccess="PF('statusDialog').hide()"/>
+                onerror="PF('statusDialog').hide(); componentHandler.upgradeDom();"
+                onsuccess="PF('statusDialog').hide(); componentHandler.upgradeDom();"/>
   <p:dialog widgetVar="statusDialog" modal="false" draggable="false"
             closable="false" resizable="false" showHeader="false"
             hideEffect="fade" position="right bottom"
             style="margin: 0 20px 20px 0; font-size: 25px !important;">
     <span class="fa fa-refresh fa-spin" style=""/>
   </p:dialog>
-  <h:panelGroup style="padding: 20px;">
+  <h:panelGroup layout="block" style="padding: 20px;">
     <ui:insert name="content"/>
   </h:panelGroup>
 </h:body>
