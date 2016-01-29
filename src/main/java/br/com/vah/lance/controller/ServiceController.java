@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,6 @@ public class ServiceController extends AbstractController<Service> {
     serviceValue = new ServiceValue();
     Date[] range = LanceUtils.getDateRangeForThisMonth();
     serviceValue.setBeginDate(range[0]);
-    serviceValue.setEndDate(range[1]);
   }
 
   @Override
@@ -91,6 +91,12 @@ public class ServiceController extends AbstractController<Service> {
   public void addValue() {
     serviceValue.setService(getItem());
     if(service.canAddServiceValue(getItem(), serviceValue)){
+      for(ServiceValue serviceValueIterator : getItem().getValues()){
+        if(serviceValueIterator.getEndDate() == null){
+          serviceValueIterator.setEndDate(serviceValue.getBeginDate());
+          break;
+        }
+      }
       getItem().getValues().add(serviceValue);
       values = new ArrayList<>(getItem().getValues());
       prepareNewServiceValue();
@@ -164,5 +170,9 @@ public class ServiceController extends AbstractController<Service> {
    */
   public void setValues(List<ServiceValue> values) {
     this.values = values;
+  }
+
+  public void updatePeakValue(){
+    serviceValue.setValueC(BigDecimal.ONE.subtract(serviceValue.getValueA()));
   }
 }

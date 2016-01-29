@@ -20,7 +20,7 @@
                       columns="3">
 
         <uilance:inputText id="serviceTitle" label="Serviço"
-                           value="#{serviceController.item.title}" readonly="true"
+                           value="#{serviceController.item.title}" editing="false"
                            rendered="false"/>
 
         <f:facet name="other">
@@ -32,15 +32,14 @@
                                  value="#{serviceController.serviceValue.beginDate}"
                                  required="true"
                                  editing="true"/>
-              <uilance:inputDate id="endDate" label="Data de término"
-                                 required="true"
-                                 value="#{serviceController.serviceValue.endDate}" editing="true"/>
               <uilance:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.value}" editing="true"
                                      rendered="#{serviceController.item.type == 'E'}"/>
               <uilance:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueA}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E'}"/>
+                                     rendered="#{serviceController.item.type == 'E'}">
+                <p:ajax event="change" listener="#{serviceController.updatePeakValue}" process="@this" update="peakPercent"/>
+              </uilance:inputPercentage>
               <uilance:inputCurrency id="peakValue" label="Tarifa de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueB}" editing="true"
                                      rendered="#{serviceController.item.type == 'E'}"/>
