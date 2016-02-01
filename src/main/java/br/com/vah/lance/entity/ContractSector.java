@@ -36,7 +36,7 @@ public class ContractSector extends BaseEntity {
   public static final String COUNT = "ContractSector.countTotal";
 
   @Id
-  @SequenceGenerator(name = "seqContractSectorGenerator", sequenceName = "SEQ_TB_LANCA_CONTRATO_SETOR", allocationSize = 1)
+  @SequenceGenerator(name = "seqContractSectorGenerator", sequenceName = "SEQ_LANCA_CONTRATO_SETOR", schema = "USRDBVAH", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqContractSectorGenerator")
   @Column(name = "ID")
   private Long id;
@@ -54,7 +54,7 @@ public class ContractSector extends BaseEntity {
   private MvSector sector;
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-  @JoinTable(name = "TB_LANCA_SERVICO_CONTRATO_SERVICO", joinColumns = {
+  @JoinTable(name = "TB_LANCA_SER_CON_SER", joinColumns = {
       @JoinColumn(name = "ID")}, inverseJoinColumns = {@JoinColumn(name = "ID_SERVICO")}, schema = "USRDBVAH")
   private Set<Service> services = new LinkedHashSet<>();
 

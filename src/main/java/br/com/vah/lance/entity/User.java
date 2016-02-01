@@ -23,7 +23,7 @@ public class User extends BaseEntity {
   public static final String FIND_BY_LOGIN = "User.findByLogin";
 
   @Id
-  @SequenceGenerator(name = "seqUserGenerator", sequenceName = "SEQ_TB_LANCA_USUARIO", allocationSize = 1)
+  @SequenceGenerator(name = "seqUserGenerator", sequenceName = "SEQ_LANCA_USUARIO", schema = "USRDBVAH", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqUserGenerator")
   @Column(name = "ID")
   private Long id;

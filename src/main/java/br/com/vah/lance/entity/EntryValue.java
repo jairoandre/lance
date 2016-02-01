@@ -23,7 +23,7 @@ public class EntryValue extends BaseEntity {
   public static final String COUNT = "EntryValue.countTotal";
 
   @Id
-  @SequenceGenerator(name = "seqEntryValueGenerator", sequenceName = "SEQ_TB_LANCA_LANCAMENTO_VALORES", allocationSize = 1)
+  @SequenceGenerator(name = "seqEntryValueGenerator", sequenceName = "SEQ_LANCA_LANC_VALORES", schema = "USRDBVAH", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqEntryValueGenerator")
   @Column(name = "ID")
   private Long id;

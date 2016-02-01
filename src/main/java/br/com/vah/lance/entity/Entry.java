@@ -32,7 +32,7 @@ public class Entry extends BaseEntity {
   public static final String BY_PERIOD = "Entry.byPeriod";
 
   @Id
-  @SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_TB_LANCA_LANCAMENTO", allocationSize = 1)
+  @SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_LANCA_LANCAMENTO", schema = "USRDBVAH", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqEntryGenerator")
   @Column(name = "ID")
   private Long id;

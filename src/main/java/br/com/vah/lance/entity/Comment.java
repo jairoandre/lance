@@ -28,7 +28,7 @@ public class Comment extends BaseEntity {
 	public static final String COUNT = "Comment.countTotal";
 
 	@Id
-	@SequenceGenerator(name = "seqCommentGenerator", sequenceName = "SEQ_TB_LANCA_COMENTARIOS", allocationSize = 1)
+	@SequenceGenerator(name = "seqCommentGenerator", sequenceName = "SEQ_LANCA_COMENTARIOS", schema = "USRDBVAH", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqCommentGenerator")
 	@Column(name = "ID")
 	private Long id;

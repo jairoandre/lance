@@ -40,7 +40,7 @@ public class Contract extends BaseEntity {
     public static final String VALIDS_IN_DATE = "Contract.validsInDate";
 
     @Id
-    @SequenceGenerator(name = "seqContractGenerator", sequenceName = "SEQ_TB_LANCA_CONTRATO", allocationSize = 1)
+    @SequenceGenerator(name = "seqContractGenerator", sequenceName = "SEQ_LANCA_CONTRATO", schema = "USRDBVAH", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqContractGenerator")
     @Column(name = "ID")
     private Long id;

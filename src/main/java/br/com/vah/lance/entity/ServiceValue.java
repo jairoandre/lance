@@ -25,7 +25,7 @@ public class ServiceValue extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "seqServiceValuesGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO_VALORES", allocationSize = 1)
+	@SequenceGenerator(name = "seqServiceValuesGenerator", sequenceName = "SEQ_LANCA_SERV_VALORES", schema = "USRDBVAH", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceValuesGenerator")
 	@Column(name = "ID")
 	private Long id;

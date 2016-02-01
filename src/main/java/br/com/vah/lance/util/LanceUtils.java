@@ -42,10 +42,10 @@ public class LanceUtils {
   }
 
   public static boolean checkBetween(Date when, Date begin, Date end) {
-    if (when == null || begin == null || end == null) {
+    if (when == null || begin == null) {
       throw new IllegalArgumentException("Cannot verify null objects.");
     } else {
-      return when.compareTo(begin) >= 0 && when.compareTo(end) <= 0;
+      return when.compareTo(begin) >= 0 && (end == null ? true : when.compareTo(end) <= 0);
     }
 
   }

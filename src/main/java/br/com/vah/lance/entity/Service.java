@@ -41,7 +41,7 @@ public class Service extends BaseEntity {
   public final static String COUNT = "Service.total";
 
   @Id
-  @SequenceGenerator(name = "seqServiceGenerator", sequenceName = "SEQ_TB_LANCA_SERVICO", allocationSize = 1)
+  @SequenceGenerator(name = "seqServiceGenerator", sequenceName = "SEQ_LANCA_SERVICO", schema = "USRDBVAH", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqServiceGenerator")
   @Column(name = "ID")
   private Long id;
