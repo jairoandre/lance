@@ -36,11 +36,6 @@ public class LanceUtils {
     return new ArrayList(map.entrySet());
   }
 
-  public static String getCurrentDateAsString() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-    return sdf.format(getCalendarForNow());
-  }
-
   public static boolean checkBetween(Date when, Date begin, Date end) {
     if (when == null || begin == null) {
       throw new IllegalArgumentException("Cannot verify null objects.");
@@ -55,34 +50,38 @@ public class LanceUtils {
 
   }
 
-  public static Date[] getDateRangeForThisMonth() {
-    Date begining, end;
+  public static Date[] getDateRange(Date date) {
+    Date begin, end;
 
     Date[] array = new Date[2];
 
     {
-      Calendar calendar = getCalendarForNow();
+      Calendar calendar = getCalendar(date);
       calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
       setTimeToBeginningOfDay(calendar);
-      begining = calendar.getTime();
+      begin = calendar.getTime();
     }
 
     {
-      Calendar calendar = getCalendarForNow();
+      Calendar calendar = getCalendar(date);
       calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
       setTimeToEndofDay(calendar);
       end = calendar.getTime();
     }
 
-    array[0] = begining;
+    array[0] = begin;
     array[1] = end;
 
     return array;
   }
 
-  private static Calendar getCalendarForNow() {
+  public static Date[] getDateRangeForThisMonth() {
+    return getDateRange(new Date());
+  }
+
+  private static Calendar getCalendar(Date date) {
     Calendar calendar = GregorianCalendar.getInstance();
-    calendar.setTime(new Date());
+    calendar.setTime(date);
     return calendar;
   }
 

@@ -47,12 +47,12 @@ public class EntryService extends DataAccessService<Entry> {
     User user = userService.find(userId);
 
     Map<String, Object> contractParams = new LinkedHashMap<>();
-    contractParams.put("date", new Date());
+    contractParams.put("date", range[1]);
 
 		/*
      * Recupera os contratos vigentes para a data
 		 */
-    List<Contract> contracts = validesContracts();
+    List<Contract> contracts = validesContracts(range[1]);
 
     Map<String, Object> entriesParams = new LinkedHashMap<>();
     entriesParams.put("begin", range[0]);
@@ -117,9 +117,9 @@ public class EntryService extends DataAccessService<Entry> {
     return currentEntries;
   }
 
-  private List<Contract> validesContracts() {
+  private List<Contract> validesContracts(Date date) {
     Map<String, Object> contractParams = new LinkedHashMap<>();
-    contractParams.put("date", new Date());
+    contractParams.put("date", date);
 
 		/*
      * Recupera os contratos vigentes para a data
@@ -160,7 +160,7 @@ public class EntryService extends DataAccessService<Entry> {
 		 * para o serviço.
 		 *
 		 */
-    for (Contract contract : validesContracts()) {
+    for (Contract contract : validesContracts(new Date())) {
 
       for (ContractSector contractSector : contract.getContractSectors()) {
 

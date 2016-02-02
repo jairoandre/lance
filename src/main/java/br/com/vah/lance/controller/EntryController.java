@@ -41,17 +41,23 @@ public class EntryController extends AbstractController<Entry> {
 
   private List<Entry> entries;
 
-  private List<EntryValue> entrieValues;
+  private List<EntryValue> entryValues;
 
   private Long serviceId;
 
   private Comment comment;
+
+  private Date searchMonth = new Date();
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRangeForThisMonth());
+  }
+
+  public void filterByDate() {
+    entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRange(searchMonth));
   }
 
   @Override
@@ -77,6 +83,14 @@ public class EntryController extends AbstractController<Entry> {
   @Override
   public String listPage() {
     return "/pages/entry/list.xhtml";
+  }
+
+  public Date getSearchMonth() {
+    return searchMonth;
+  }
+
+  public void setSearchMonth(Date searchMonth) {
+    this.searchMonth = searchMonth;
   }
 
   @Override
@@ -121,7 +135,7 @@ public class EntryController extends AbstractController<Entry> {
     }
     //
     comment = createComment();
-    entrieValues = new ArrayList<>(getItem().getValues());
+    entryValues = new ArrayList<>(getItem().getValues());
   }
 
   public void computeValues() {
@@ -152,8 +166,8 @@ public class EntryController extends AbstractController<Entry> {
     return null;
   }
 
-  public List<EntryValue> getEntrieValues() {
-    return entrieValues;
+  public List<EntryValue> getEntryValues() {
+    return entryValues;
   }
 
   public String doValideSave() {

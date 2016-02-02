@@ -9,7 +9,20 @@
   <ui:define name="content">
     <h:form id="form">
       <p:panel header="Lançamentos">
-        <p:dataTable id="dataTable" value="#{entryController.entries}"
+        <p:outputLabel value="Vigência:" styleClass="label"/>
+        <h:panelGroup id="searchMonthPnl" styleClass="margin-left">
+          <p:inputText id="searchMonth" styleClass="searchMonth" value="#{entryController.searchMonth}">
+            <f:convertDateTime pattern="MM/yyyy" dateStyle="short"/>
+          </p:inputText>
+          <script>
+            $(".searchMonth").mask('99/9999');
+          </script>
+        </h:panelGroup>
+        <p:commandButton id="searchMonthBtn" action="#{entryController.filterByDate}" value="Filtrar" ajax="true"
+                         process="@this searchMonth" update="dataTable"
+                         icon="fa fa-search" styleClass="margin-left"/>
+
+        <p:dataTable id="dataTable" value="#{entryController.entries}" styleClass="margin-top"
                      var="entry" emptyMessage="Sem entradas" rowIndexVar="index">
           <p:column headerText="Serviço" styleClass="left-align">
             <h:outputText value="#{entry.service.title}"/>

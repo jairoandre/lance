@@ -13,7 +13,6 @@ import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.ClientService;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.util.GenericLazyDataModel;
 
 @SuppressWarnings("serial")
 @Named
