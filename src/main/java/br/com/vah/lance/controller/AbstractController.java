@@ -129,6 +129,11 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     }
   }
 
+  public void onLoadForDetail() {
+    onLoad();
+    this.editing = false;
+  }
+
   public void addMsg(FacesMessage msg, boolean flash) {
     FacesContext ctx = FacesContext.getCurrentInstance();
     ctx.addMessage(null, msg);
@@ -250,7 +255,6 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   }
 
   public String add() {
-    this.editing = true;
     return editPage() + _FACES_REDIRECT;
   }
 
@@ -259,12 +263,10 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   }
 
   public String edit(T item) {
-    this.editing = true;
     return editPage() + _FACES_REDIRECT + _ID_PARAM + item.getId();
   }
 
   public String detail(T item) {
-    this.editing = false;
     return detailPage() + _FACES_REDIRECT + _ID_PARAM + item.getId();
   }
 

@@ -49,11 +49,6 @@ public class ClientController extends AbstractController<MvClient> {
   }
 
   @Override
-  public void onLoad() {
-    super.onLoad();
-  }
-
-  @Override
   public DataAccessService<MvClient> getService() {
     return service;
   }

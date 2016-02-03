@@ -60,21 +60,25 @@
                          value="Editar #{cc.attrs.controller.entityName}"/>
               <span/>
             </h:panelGroup>
-            <p:commandLink id="validateEntry"
-                           action="#{entryController.validate(entry)}"
-                           disabled="#{entry.status != 'L' and entry.status != 'F'}">
-              <span class="fa fa-gavel"/>
-            </p:commandLink>
-            <p:tooltip id="tooltipValidateEntry" for="validateEntry"
-                       value="Validar #{cc.attrs.controller.entityName}"/>
-            <span/>
-            <p:commandLink id="sendEditEntry"
-                           action="#{entryController.edit(entry)}"
-                           disabled="#{entry.status != 'V'}">
-              <span class="fa fa-calculator"/>
-            </p:commandLink>
-            <p:tooltip id="tooltipSendEditEntry" for="sendEditEntry"
-                       value="Emitir #{cc.attrs.controller.entityName}"/>
+            <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+              <p:commandLink id="validateEntry"
+                             action="#{entryController.validate(entry)}"
+                             disabled="#{entry.status != 'L' and entry.status != 'F'}">
+                <span class="fa fa-gavel"/>
+              </p:commandLink>
+              <p:tooltip id="tooltipValidateEntry" for="validateEntry"
+                         value="Validar #{cc.attrs.controller.entityName}"/>
+              <span/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
+              <p:commandLink id="sendEditEntry"
+                             action="#{entryController.edit(entry)}"
+                             disabled="#{entry.status != 'V'}">
+                <span class="fa fa-calculator"/>
+              </p:commandLink>
+              <p:tooltip id="tooltipSendEditEntry" for="sendEditEntry"
+                         value="Emitir #{cc.attrs.controller.entityName}"/>
+            </h:panelGroup>
           </p:column>
         </p:dataTable>
       </p:panel>

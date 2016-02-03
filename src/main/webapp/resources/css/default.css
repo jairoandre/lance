@@ -212,4 +212,5 @@ a.action-link:HOVER, td.action-link a:HOVER {
 .login-input-pnl {
 	padding: 20px;
 	text-align: center;
+	position: relative;
 }
