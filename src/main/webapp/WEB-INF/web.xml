@@ -2,141 +2,76 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>com.nz</display-name>
-    <context-param>
-        <param-name>primefaces.THEME</param-name>
-        <param-value>sunny</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>primefaces.FONT_AWESOME</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
-        <param-value>/WEB-INF/lance.taglib.xml</param-value>
-    </context-param>
-    <welcome-file-list>
-        <welcome-file>login.xhtml</welcome-file>
-    </welcome-file-list>
-    <filter>
-        <filter-name>LoginPageFilter</filter-name>
-        <filter-class>br.com.vah.lance.filter.LoginPageFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>LoginPageFilter</filter-name>
-        <url-pattern>/login.xhtml</url-pattern>
-    </filter-mapping>
-    <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>/login.xhtml</welcome-file>
-    </welcome-file-list>
-    <security-constraint>
-        <display-name>Pages</display-name>
-        <web-resource-collection>
-            <web-resource-name>App pages</web-resource-name>
-            <url-pattern>/pages/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>Pages</description>
-            <role-name>ADMINISTRATOR</role-name>
-            <role-name>USER</role-name>
-            <role-name>ACCOUNTANT</role-name>
-            <role-name>SUPERVISOR</role-name>
-            <role-name>MANAGER</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <display-name>Administrator pages</display-name>
-        <web-resource-collection>
-            <web-resource-name>Administrator pages</web-resource-name>
-            <url-pattern>/admin/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>Administrator pages</description>
-            <role-name>ADMINISTRATOR</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <display-name>Service editing pages</display-name>
-        <web-resource-collection>
-            <web-resource-name>App pages</web-resource-name>
-            <url-pattern>/pages/service/edit.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>Service editing pages</description>
-            <role-name>ADMINISTRATOR</role-name>
-            <role-name>SUPERVISOR</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <display-name>Client editing pages</display-name>
-        <web-resource-collection>
-            <web-resource-name>App pages</web-resource-name>
-            <url-pattern>/pages/client/edit.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>Client editing pages</description>
-            <role-name>ADMINISTRATOR</role-name>
-            <role-name>SUPERVISOR</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <display-name>Contract editing pages</display-name>
-        <web-resource-collection>
-            <web-resource-name>App pages</web-resource-name>
-            <url-pattern>/pages/contract/edit.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>Contract editing pages</description>
-            <role-name>ADMINISTRATOR</role-name>
-            <role-name>SUPERVISOR</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>ldap-vah</realm-name>
-        <form-login-config>
-            <form-login-page>/login.xhtml</form-login-page>
-            <form-error-page>/login.xhtml</form-error-page>
-        </form-login-config>
-    </login-config>
-    <security-role>
-        <role-name>ADMINISTRATOR</role-name>
-    </security-role>
-    <security-role>
-        <role-name>MANAGER</role-name>
-    </security-role>
-    <security-role>
-        <role-name>USER</role-name>
-    </security-role>
-    <security-role>
-        <role-name>SUPERVISOR</role-name>
-    </security-role>
-    <security-role>
-        <role-name>ACCOUNTANT</role-name>
-    </security-role>
-    <error-page>
-        <error-code>403</error-code>
-        <location>/error-access-denied.xhtml</location>
-    </error-page>
-    <error-page>
-        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/login.xhtml</location>
-    </error-page>
-    <context-param>
-        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
-        <param-value>true</param-value>
-    </context-param>
+  <display-name>com.nz</display-name>
+  <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>sunny</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.FONT_AWESOME</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+    <param-value>/WEB-INF/lance.taglib.xml</param-value>
+  </context-param>
+  <welcome-file-list>
+    <welcome-file>login.xhtml</welcome-file>
+  </welcome-file-list>
+  <filter>
+    <filter-name>AuthorizationPageFilter</filter-name>
+    <filter-class>br.com.vah.lance.filter.AuthorizationPageFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthorizationPageFilter</filter-name>
+    <url-pattern>/pages/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AuthorizationPageFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>LoginPageFilter</filter-name>
+    <filter-class>br.com.vah.lance.filter.LoginPageFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LoginPageFilter</filter-name>
+    <url-pattern>/login.xhtml</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>/login.xhtml</welcome-file>
+  </welcome-file-list>
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>ldap-vah</realm-name>
+    <form-login-config>
+      <form-login-page>/login.xhtml</form-login-page>
+      <form-error-page>/login.xhtml</form-error-page>
+    </form-login-config>
+  </login-config>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/error-access-denied.xhtml</location>
+  </error-page>
+  <error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/login.xhtml</location>
+  </error-page>
+  <context-param>
+    <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+    <param-value>true</param-value>
+  </context-param>
 </web-app>

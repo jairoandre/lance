@@ -13,9 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
@@ -57,7 +55,10 @@ public class EntryController extends AbstractController<Entry> {
   }
 
   public void filterByDate() {
-    entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRange(searchMonth));
+    Calendar cld = GregorianCalendar.getInstance();
+    cld.setTime(searchMonth);
+    cld.add(Calendar.DAY_OF_YEAR, 15);
+    entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRange(cld.getTime()));
   }
 
   @Override
@@ -76,13 +77,8 @@ public class EntryController extends AbstractController<Entry> {
   }
 
   @Override
-  public String editPage() {
-    return "/pages/entry/edit.xhtml";
-  }
-
-  @Override
-  public String listPage() {
-    return "/pages/entry/list.xhtml";
+  public String path() {
+    return "entry";
   }
 
   public Date getSearchMonth() {

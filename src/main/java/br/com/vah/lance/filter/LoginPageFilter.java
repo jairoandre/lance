@@ -15,33 +15,28 @@ import br.com.vah.lance.constant.RolesEnum;
 
 /**
  * To prevent user from going back to Login page if the user already logged in
- * 
+ *
  * @author Emre Simtay <emre@simtay.com>
  */
 public class LoginPageFilter implements Filter {
-	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-			throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) servletRequest;
-		HttpServletResponse response = (HttpServletResponse) servletResponse;
+  @Override
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+      throws IOException, ServletException {
+    HttpServletRequest request = (HttpServletRequest) servletRequest;
+    HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-		if (request.getUserPrincipal() != null) { // If user is already
-													// authenticated
-			String navigateString = "/pages/index.xhtml";
-			if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
-				navigateString = "/pages/index.xhtml";
-			}
-			response.sendRedirect(request.getContextPath() + navigateString);
-		} else {
-			filterChain.doFilter(servletRequest, servletResponse);
-		}
-	}
+    if (request.getUserPrincipal() != null) {
+      response.sendRedirect(request.getContextPath() + "/pages/index.xhtml");
+    } else {
+      filterChain.doFilter(servletRequest, servletResponse);
+    }
+  }
 
-	@Override
-	public void destroy() {
-	}
+  @Override
+  public void destroy() {
+  }
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+  }
 }

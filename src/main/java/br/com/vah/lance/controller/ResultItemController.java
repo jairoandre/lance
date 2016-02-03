@@ -44,13 +44,8 @@ public class ResultItemController extends AbstractController<MvResultItem> {
 	}
 
 	@Override
-	public String editPage() {
-		return null;
-	}
-
-	@Override
-	public String listPage() {
-		return null;
+	public String path() {
+		return "resultItem";
 	}
 
 	@Override

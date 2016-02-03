@@ -9,7 +9,6 @@
   <ui:define name="metadata">
     <f:metadata>
       <f:viewParam name="id" value="#{userController.id}"/>
-      <f:viewParam name="editing" value="#{userController.editing}"/>
       <f:viewAction action="#{userController.onLoad}"/>
     </f:metadata>
   </ui:define>
@@ -41,6 +40,24 @@
                                 items="#{userController.item.services}"
                                 toggleAction="toggleService"/>
           </h:panelGroup>
+
+          <h:panelGroup id="rolesContainer" layout="block" styleClass="margin-top">
+            <p:dataTable id="roles" value="#{userController.roles}" var="role">
+              <p:column style="text-align: center;" width="50">
+                <p:commandLink ajax="true"
+                               action="#{userController.toggleRole(role)}"
+                               styleClass="action-link" process="@this"
+                               update=":#{p:component('rolesContainer')}">
+                  <h:panelGroup
+                    styleClass="fa fa#{userController.item.roles.contains(role) ? '-check' : ''}-square-o"/>
+                </p:commandLink>
+              </p:column>
+              <p:column headerText="Perfil" styleClass="left-align">
+                <h:outputText value="#{role.label}"/>
+              </p:column>
+            </p:dataTable>
+          </h:panelGroup>
+
         </f:facet>
       </lance:editForm>
     </h:form>

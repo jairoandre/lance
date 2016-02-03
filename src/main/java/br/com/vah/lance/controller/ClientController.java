@@ -69,13 +69,8 @@ public class ClientController extends AbstractController<MvClient> {
   }
 
   @Override
-  public String editPage() {
-    return "/pages/client/edit.xhtml";
-  }
-
-  @Override
-  public String listPage() {
-    return "/pages/client/list.xhtml";
+  public String path() {
+    return "client";
   }
 
   @Override

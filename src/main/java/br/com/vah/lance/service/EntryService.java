@@ -73,32 +73,40 @@ public class EntryService extends DataAccessService<Entry> {
        */
       entriesParams.put("services", userServices);
       currentEntries = findWithNamedQuery(Entry.BY_PERIOD_AND_SERVICE, entriesParams);
-      Set<Service> includedServices = new HashSet<>();
 
       /**
-       * Realiza um mapeamento dos serviços que já foram lançados
+       * Verifica se o período consultado é da mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
        */
-      for (Entry entry : currentEntries) {
-        includedServices.add(entry.getService());
-      }
+      if(LanceUtils.checkBetween(new Date(), range[0], range[1])){
 
-      /**
-       * Para cada contrato vigente, verifica se o mesmo possui serviços
-       * associados ao usuário. Caso possua, cria uma instância de lançamento
-       * para o serviço.
-       */
-      for (Contract contract : contracts) {
+        Set<Service> includedServices = new HashSet<>();
 
-        for (ContractSector contractSector : contract.getContractSectors()) {
+        /**
+         * Realiza um mapeamento dos serviços que já foram lançados
+         */
+        for (Entry entry : currentEntries) {
+          includedServices.add(entry.getService());
+        }
 
-          for (Service service : contractSector.getServices()) {
+        /**
+         * Para cada contrato vigente, verifica se o mesmo possui serviços
+         * associados ao usuário. Caso possua, cria uma instância de lançamento
+         * para o serviço.
+         */
+        for (Contract contract : contracts) {
 
-            if (user.getServices().contains(service)) {
+          for (ContractSector contractSector : contract.getContractSectors()) {
 
-              // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
-              if (!includedServices.contains(service)) {
-                entries.add(new Entry(service));
-                includedServices.add(service);
+            for (Service service : contractSector.getServices()) {
+
+              if (user.getServices().contains(service)) {
+
+                // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
+                if (!includedServices.contains(service)) {
+                  entries.add(new Entry(service));
+                  includedServices.add(service);
+                }
+
               }
 
             }
@@ -107,10 +115,10 @@ public class EntryService extends DataAccessService<Entry> {
 
         }
 
+        // "Concatena" entradas persistidas com entradas pendentes.
+        currentEntries.addAll(entries);
       }
 
-      // "Concatena" entradas persistidas com entradas pendentes.
-      currentEntries.addAll(entries);
     }
 
 

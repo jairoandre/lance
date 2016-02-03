@@ -40,15 +40,15 @@ public class User extends BaseEntity {
       @JoinColumn(name = "ID_SERVICO")}, schema = "USRDBVAH")
   private Set<Service> services;
 
-//  @ElementCollection(targetClass = RolesEnum.class, fetch = FetchType.EAGER)
-//  @CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER"), schema = "USRDBVAH")
-//  @Column(name = "CD_ROLE", nullable = false)
-//  @Enumerated(EnumType.STRING)
-//  private Set<RolesEnum> roles;
+  @ElementCollection(targetClass = RolesEnum.class, fetch = FetchType.EAGER)
+  @CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER"), schema = "USRDBVAH")
+  @Column(name = "CD_ROLE", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private Set<RolesEnum> roles;
 
   public User() {
     services = new LinkedHashSet<>();
-    //roles = new LinkedHashSet<>();
+    roles = new LinkedHashSet<>();
   }
 
   @Override
@@ -86,13 +86,13 @@ public class User extends BaseEntity {
     this.services = services;
   }
 
-//  public Set<RolesEnum> getRoles() {
-//    return roles;
-//  }
-//
-//  public void setRoles(Set<RolesEnum> roles) {
-//    this.roles = roles;
-//  }
+  public Set<RolesEnum> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<RolesEnum> roles) {
+    this.roles = roles;
+  }
 
   @Override
   public String getLabelForSelectItem() {

@@ -1,15 +1,13 @@
 <ui:composition template="/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:lance="http://java.sun.com/jsf/composite/lance"
-	xmlns:uilance="http://vah.com.br/lance">
+								xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:f="http://java.sun.com/jsf/core"
+								xmlns:h="http://java.sun.com/jsf/html"
+								xmlns:ui="http://java.sun.com/jsf/facelets"
+								xmlns:lance="http://java.sun.com/jsf/composite/lance"
+								xmlns:uilance="http://vah.com.br/lance">
 	<ui:define name="metadata">
 		<f:metadata>
 			<f:viewParam name="id" value="#{clientController.id}" />
-			<f:viewParam name="editing" value="#{clientController.editing}" />
 			<f:viewAction action="#{clientController.onLoad}" />
 		</f:metadata>
 	</ui:define>

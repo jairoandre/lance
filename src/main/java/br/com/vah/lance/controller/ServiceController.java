@@ -84,8 +84,8 @@ public class ServiceController extends AbstractController<Service> {
   }
 
   @Override
-  public String editPage() {
-    return "/pages/service/edit.xhtml";
+  public String path() {
+    return "service";
   }
 
   public void addValue() {
@@ -108,11 +108,6 @@ public class ServiceController extends AbstractController<Service> {
   public void removeValue(ServiceValue value) {
     getItem().getValues().remove(value);
     values = new ArrayList<>(getItem().getValues());
-  }
-
-  @Override
-  public String listPage() {
-    return "/pages/service/list.xhtml";
   }
 
   public String currency(Service item) {

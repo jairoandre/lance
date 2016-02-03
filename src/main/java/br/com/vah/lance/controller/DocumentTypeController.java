@@ -44,13 +44,8 @@ public class DocumentTypeController extends AbstractController<MvDocumentType> {
 	}
 
 	@Override
-	public String editPage() {
-		return null;
-	}
-
-	@Override
-	public String listPage() {
-		return null;
+	public String path() {
+		return "documentType";
 	}
 
 	@Override

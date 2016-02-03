@@ -99,41 +99,31 @@ public class LoginController implements Serializable {
     HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
     try {
       String navigateString = "/pages/index.xhtml";
-      // Checks if username and password are valid if not throws a
-      // ServletException
+      /**
+       * Realiza autenticação
+       */
       request.login(username, password);
 
+      /**
+       * Verifica se o usuário já está configurado no sistema
+       */
       user = userService.findByLogin(username);
 
-      // Verifica se o usuário possui alguma role definida, isto é, se o usuário possui entrada no arquivo lance.properties do servidor.
-      boolean hasAnyRole = false;
-
-      for (RolesEnum rolesEnum : RolesEnum.values()) {
-        if (request.isUserInRole(rolesEnum.name())) {
-          hasAnyRole = true;
-          break;
-        }
-      }
-
-      if (hasAnyRole) {
-        user = userService.findByLogin(username);
-      } else {
-        LanceUtils.addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Seu acesso ao sistema não está configurado. Procure o administrador de sistemas para solicitar a configuração."), true);
-      }
-
+      /**
+       * Primeiro acesso
+       */
       if (user == null) {
         user = new User();
         user.setLogin(username);
+        user.getRoles().add(RolesEnum.USER);
+        userService.create(user);
+        LanceUtils.addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Solicite configuração de acesso ao administrador do sistema"), true);
       }
 
       // gets the user principle and navigates to the appropriate page
 
       Principal principal = request.getUserPrincipal();
 
-      // TODO: Definir tela inicial para cada perfil
-      if (request.isUserInRole(RolesEnum.ADMINISTRATOR.name())) {
-        navigateString = "/pages/index.xhtml";
-      }
       try {
         logger.log(Level.INFO, "User ({0}) loging in #" + DateUtility.getCurrentDateTime(),
             request.getUserPrincipal().getName());
@@ -167,11 +157,10 @@ public class LoginController implements Serializable {
         .handleNavigation(FacesContext.getCurrentInstance(), null, "/login.xhtml?faces-redirect=true");
   }
 
-  public boolean isUserInRoles(String roles){
+  public boolean isUserInRoles(String roles) {
     boolean atLeastOneRole = false;
-    HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    for(String role : roles.split(",")){
-      if(request.isUserInRole(role)){
+    for (String role : roles.split(",")) {
+      if (user.getRoles().contains(RolesEnum.valueOf(role))) {
         atLeastOneRole = true;
         break;
       }

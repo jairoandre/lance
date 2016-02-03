@@ -44,13 +44,8 @@ public class DefaultHistoryController extends AbstractController<MvDefaultHistor
 	}
 
 	@Override
-	public String editPage() {
-		return null;
-	}
-
-	@Override
-	public String listPage() {
-		return null;
+	public String path() {
+		return "defaultHistory";
 	}
 
 	@Override

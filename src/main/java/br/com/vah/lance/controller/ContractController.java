@@ -97,13 +97,8 @@ public class ContractController extends AbstractController<Contract> {
   }
 
   @Override
-  public String editPage() {
-    return "/pages/contract/edit.xhtml";
-  }
-
-  @Override
-  public String listPage() {
-    return "/pages/contract/list.xhtml";
+  public String path() {
+    return "contract";
   }
 
   @Override
