@@ -51,23 +51,30 @@
             <lance:entryStatus status="#{entry.status}"/>
           </p:column>
           <p:column headerText="Ações" width="100" styleClass="action-link">
+            <p:commandLink id="detailEntry"
+                           action="#{entryController.detail(entry)}">
+              <span class="fa fa-search"/>
+            </p:commandLink>
+            <lance:toolTip id="tooltipDetailEntry" for="#{p:component('detailEntry')}"
+                           value="Detalhar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
+            <span/>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,MANAGER')}">
               <p:commandLink id="editEntry"
                              action="#{entryController.edit(entry)}">
                 <span class="fa fa-pencil"/>
               </p:commandLink>
-              <p:tooltip id="tooltipEditEntry" for="editEntry"
-                         value="Editar #{cc.attrs.controller.entityName}"/>
+              <lance:toolTip id="tooltipEditEntry" for="#{p:component('editEntry')}"
+                             value="Editar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
               <span/>
             </h:panelGroup>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
               <p:commandLink id="validateEntry"
                              action="#{entryController.validate(entry)}"
-                             disabled="#{entry.status != 'L' and entry.status != 'F'}">
+                             disabled="#{entry.status != 'L' and entry.status != 'F' and entry.status != 'M'}">
                 <span class="fa fa-gavel"/>
               </p:commandLink>
-              <p:tooltip id="tooltipValidateEntry" for="validateEntry"
-                         value="Validar #{cc.attrs.controller.entityName}"/>
+              <lance:toolTip id="tooltipValidateEntry" for="#{p:component('validateEntry')}"
+                             value="Validar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
               <span/>
             </h:panelGroup>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
@@ -76,8 +83,8 @@
                              disabled="#{entry.status != 'V'}">
                 <span class="fa fa-calculator"/>
               </p:commandLink>
-              <p:tooltip id="tooltipSendEditEntry" for="sendEditEntry"
-                         value="Emitir #{cc.attrs.controller.entityName}"/>
+              <lance:toolTip id="tooltipSendEditEntry" for="#{p:component('sendEditEntry')}"
+                             value="Emitir #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
             </h:panelGroup>
           </p:column>
         </p:dataTable>

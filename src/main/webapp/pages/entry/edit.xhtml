@@ -67,13 +67,13 @@
             </p:column>
             <p:column headerText="#{entryController.item.service.type.compALabel}" styleClass="left-align" width="150">
               <uilance:inputCurrency id="compValueA" renderMessage="false"
-                                     value="#{entryValue.valueA}" editing="true"
+                                     value="#{entryValue.valueA}" editing="#{entryController.editing}"
                                      rendered="#{entryController.item.service.type != 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputCurrency>
               <uilance:inputNumber id="compValueANumber" renderMessage="false"
-                                     value="#{entryValue.valueA}" editing="true"
+                                     value="#{entryValue.valueA}" editing="#{entryController.editing}"
                                      rendered="#{entryController.item.service.type == 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
@@ -82,13 +82,13 @@
             <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align" width="150"
                       rendered="#{entryController.item.service.type.renderCompB}">
               <uilance:inputCurrency id="compValueB" renderMessage="false"
-                                     value="#{entryValue.valueB}" editing="true"
+                                     value="#{entryValue.valueB}" editing="#{entryController.editing}"
                                      rendered="#{entryController.item.service.type != 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputCurrency>
               <uilance:inputNumber id="compValueBNumber" renderMessage="false"
-                                   value="#{entryValue.valueB}" editing="true"
+                                   value="#{entryValue.valueB}" editing="#{entryController.editing}"
                                    rendered="#{entryController.item.service.type == 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
@@ -110,11 +110,15 @@
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
                              action="#{entryController.doSave}"
-                             rendered="#{entryController.editing and entryController.item.status != 'P'}"/>
+                             rendered="#{entryController.editing and entryController.item.status != 'P' and entryController.item.status != 'V'}"/>
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
                              action="#{entryController.doFixSave}"
                              rendered="#{entryController.editing and entryController.item.status == 'P'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{entryController.doModifySave}"
+                             rendered="#{entryController.editing and entryController.item.status == 'V'}"/>
             <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
                              action="#{entryController.back}" styleClass="margin-left"/>
           </h:panelGroup>

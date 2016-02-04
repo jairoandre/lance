@@ -16,7 +16,9 @@
   </h:panelGroup>
   <h:panelGroup rendered="#{rendered == null ? true : rendered}">
     <h:outputText value="#{value}"
-                  rendered="#{editing == null ? false : !editing}"/>
+                  rendered="#{editing == null ? false : !editing}">
+      <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
+    </h:outputText>
     <p:inputText id="#{id}" value="#{value}"
                  required="#{required == null ? false : required}" label="#{label}"
                  rendered="#{editing == null ? true : editing}"

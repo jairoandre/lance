@@ -12,7 +12,13 @@ import static br.com.vah.lance.constant.RolesEnum.*;
 public enum RestrictViewsEnum {
 
   USER_LIST("/admin/user/edit.xhtml", ADMINISTRATOR),
-  USER_EDIT("/admin/user/list.xhtml", ADMINISTRATOR, ACCOUNTANT);
+  USER_EDIT("/admin/user/list.xhtml", ADMINISTRATOR, ACCOUNTANT),
+  CLIENT_EDIT("/pages/client/edit.xhtml", ADMINISTRATOR, ACCOUNTANT, SUPERVISOR),
+  SERVICE_EDIT("/pages/service/edit.xhtml", ADMINISTRATOR, ACCOUNTANT, SUPERVISOR),
+  SERVICE_CURRENCY("/pages/service/currency.xhtml", ADMINISTRATOR, MANAGER),
+  CONTRACT_EDIT("/pages/contract/edit.xhtml", ADMINISTRATOR, ACCOUNTANT),
+  ENTRY_EDIT("/pages/entry/edit.xhtml", ADMINISTRATOR, MANAGER),
+  ENTRY_VALIDATE("/pages/entry/validate.xhtml", ADMINISTRATOR, SUPERVISOR);
 
   private String view;
 

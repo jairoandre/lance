@@ -15,9 +15,8 @@ public class ServiceService extends DataAccessService<Service> {
 
   public boolean canAddServiceValue(Service service, ServiceValue serviceValueToAdd) {
     for (ServiceValue serviceValue : service.getValues()) {
-      if (LanceUtils.checkBetweenDates(
+      if (LanceUtils.checkBetween(
           serviceValueToAdd.getBeginDate(),
-          serviceValueToAdd.getEndDate(),
           serviceValue.getBeginDate(),
           serviceValue.getEndDate())) {
         return false;

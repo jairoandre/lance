@@ -3,7 +3,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:composite="http://java.sun.com/jsf/composite"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:lance="http://java.sun.com/jsf/composite/lance">
 
 <composite:interface>
   <composite:attribute name="id"/>
@@ -54,16 +55,16 @@
                        rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}">
           <span class="fa fa-search"/>
         </p:commandLink>
-        <p:tooltip id="toolDetailAction" for="detailAction"
-                   value="Detalhar #{cc.attrs.controller.entityName}"/>
+        <lance:toolTip id="detailToolTip" for="#{p:component('detailAction')}"
+                       value="Detalhar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
         <span/>
         <p:commandLink id="editAction"
                        action="#{cc.attrs.controller.edit(item)}"
                        rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}">
           <span class="fa fa-pencil"/>
         </p:commandLink>
-        <p:tooltip id="toolEditAction" for="editAction"
-                   value="Editar #{cc.attrs.controller.entityName}"/>
+        <lance:toolTip id="editToolTip" for="#{p:component('editAction')}"
+                       value="Editar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
         <span/>
         <p:commandLink id="deleteAction"
                        action="#{cc.attrs.controller.preDelete(item.id, index)}"
@@ -71,8 +72,9 @@
                        rendered="#{cc.attrs.renderDeleteAction == null ? true : cc.attrs.renderDeleteAction}">
           <span class="fa fa-trash"/>
         </p:commandLink>
-        <p:tooltip id="toolDeleteAction" for="deleteAction"
-                   value="Excluir #{cc.attrs.controller.entityName}"/>
+        <lance:toolTip id="deleteToolTip" for="#{p:component('deleteAction')}"
+                       value="Deletar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
+
       </p:column>
       <f:facet name="footer">
         <h:outputText

@@ -75,7 +75,7 @@ public class EntryService extends DataAccessService<Entry> {
       currentEntries = findWithNamedQuery(Entry.BY_PERIOD_AND_SERVICE, entriesParams);
 
       /**
-       * Verifica se o período consultado é da mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
+       * Verifica se o período consultado é do mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
        */
       if(LanceUtils.checkBetween(new Date(), range[0], range[1])){
 
@@ -187,6 +187,11 @@ public class EntryService extends DataAccessService<Entry> {
     return entry;
   }
 
+
+  @Override
+  public Entry update(Entry item) {
+    return super.update(item);
+  }
 
   /**
    * Modifica o estado do lançamento

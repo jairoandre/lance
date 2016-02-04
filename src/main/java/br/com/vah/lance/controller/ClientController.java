@@ -29,7 +29,17 @@ public class ClientController extends AbstractController<MvClient> {
 
   private Long sectorIdToAdd;
 
+  @Override
+  public String getSearchTerm() {
+    return super.getSearchTerm();
+  }
+
   private MvSector sector;
+
+  @Override
+  public String search() {
+    return super.search();
+  }
 
   public static final String[] RELATIONS = {"sectors"};
 
@@ -37,7 +47,7 @@ public class ClientController extends AbstractController<MvClient> {
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     initLazyModel(service, RELATIONS);
-
+    getLazyModel().getSearchParams().getParams().put("type",new Object[] {"A","C"});
   }
 
   public ClientController() {
@@ -71,6 +81,14 @@ public class ClientController extends AbstractController<MvClient> {
   @Override
   public String getEntityName() {
     return "cliente";
+  }
+
+  @Override
+  public void onLoad() {
+    super.onLoad();
+    if(getItem().getId() == null){
+
+    }
   }
 
   /**

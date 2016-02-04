@@ -180,4 +180,9 @@ public class EntryController extends AbstractController<Entry> {
     getItem().setStatus(EntryStatusEnum.F);
     return doSave();
   }
+
+  public String doModifySave() {
+    getItem().setStatus(EntryStatusEnum.M);
+    return doSave();
+  }
 }

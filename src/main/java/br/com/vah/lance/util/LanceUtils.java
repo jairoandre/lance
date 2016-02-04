@@ -40,7 +40,7 @@ public class LanceUtils {
     if (when == null || begin == null) {
       throw new IllegalArgumentException("Cannot verify null objects.");
     } else {
-      return when.compareTo(begin) >= 0 && (end == null ? true : when.compareTo(end) <= 0);
+      return when.compareTo(begin) >= 0 && (end == null ? false : when.compareTo(end) <= 0);
     }
 
   }

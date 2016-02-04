@@ -8,6 +8,9 @@
 		<h:form id="form">
 			<p:panel header="Usuários">
 				<lance:dataTable id="dataTable" controller="#{userController}">
+					<p:column sortBy="#{item.id}" headerText="Id" width="50" styleClass="left-align">
+						<h:outputText value="#{item.id}" />
+					</p:column>
 					<p:column sortBy="#{item.login}" headerText="Login" width="150" styleClass="left-align">
 						<h:outputText value="#{item.login}" />
 					</p:column>

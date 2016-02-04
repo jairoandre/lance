@@ -19,85 +19,75 @@ import br.com.vah.lance.entity.BaseEntity;
 
 @Entity
 @Table(name = "FORNECEDOR", schema = "DBAMV")
-@NamedQueries({ @NamedQuery(name = MvClient.ALL, query = "SELECT c FROM MvClient c"),
-		@NamedQuery(name = MvClient.COUNT, query = "SELECT COUNT(c) FROM MvClient c") })
+@NamedQueries({@NamedQuery(name = MvClient.ALL, query = "SELECT c FROM MvClient c"),
+    @NamedQuery(name = MvClient.COUNT, query = "SELECT COUNT(c) FROM MvClient c")})
 public class MvClient extends BaseEntity {
 
-	public final static String ALL = "MvClient.populatedItems";
-	public final static String COUNT = "MvClient.countTotal";
+  public final static String ALL = "MvClient.populatedItems";
+  public final static String COUNT = "MvClient.countTotal";
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "CD_FORNECEDOR")
-	private Long id;
+  @Id
+  @Column(name = "CD_FORNECEDOR")
+  private Long id;
 
-	@Column(name = "NM_FORNECEDOR")
-	private String title;
+  @Column(name = "NM_FORNECEDOR")
+  private String title;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
-			@JoinColumn(name = "CD_FORNECEDOR") }, inverseJoinColumns = {
-					@JoinColumn(name = "CD_SETOR") }, schema = "USRDBVAH")
-	private Set<MvSector> sectors;
+  @Column(name = "TP_CLIENTE_FORN")
+  private String type;
 
-	public MvClient() {
-		sectors = new LinkedHashSet<>();
-	}
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
+      @JoinColumn(name = "CD_FORNECEDOR")}, inverseJoinColumns = {
+      @JoinColumn(name = "CD_SETOR")}, schema = "USRDBVAH")
+  private Set<MvSector> sectors;
 
-	/**
-	 * @return the id
-	 */
-	@Override
-	public Long getId() {
-		return id;
-	}
+  public MvClient() {
+    sectors = new LinkedHashSet<>();
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
+  @Override
+  public Long getId() {
+    return id;
+  }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  public String getTitle() {
+    return title;
+  }
 
-	/**
-	 * @return the sectors
-	 */
-	public Set<MvSector> getSectors() {
-		return sectors;
-	}
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	/**
-	 * @param sectors
-	 *            the sectors to set
-	 */
-	public void setSectors(Set<MvSector> sectors) {
-		this.sectors = sectors;
-	}
+  public Set<MvSector> getSectors() {
+    return sectors;
+  }
 
-	@Override
-	public String getLabelForSelectItem() {
-		return getTitle();
-	}
+  public void setSectors(Set<MvSector> sectors) {
+    this.sectors = sectors;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  @Override
+  public String getLabelForSelectItem() {
+    return getTitle();
+  }
 
 }
