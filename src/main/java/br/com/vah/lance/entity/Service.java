@@ -51,23 +51,23 @@ public class Service extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "CD_HISTORICO_PADRAO", nullable = false)
-  private MvDefaultHistory defaultHistory;
+  private MvDefaultHistory defaultHistory = new MvDefaultHistory();
 
   @ManyToOne
   @JoinColumn(name = "CD_TP_DOCUMENTO", nullable = false)
-  private MvDocumentType documentType;
+  private MvDocumentType documentType = new MvDocumentType();
 
   @ManyToOne
-  @JoinColumn(name = "CD_CONTA_CONTABIL", nullable = false)
-  private MvAccountChart ledgerAccount;
+  @JoinColumn(name = "CD_CONTA_CONTABIL", nullable = true)
+  private MvAccountChart ledgerAccount = new MvAccountChart();
 
   @ManyToOne
   @JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
-  private MvAccountChart resultAccount;
+  private MvAccountChart resultAccount = new MvAccountChart();
 
   @ManyToOne
   @JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
-  private MvResultItem costAccount;
+  private MvResultItem costAccount = new MvResultItem();
 
   @Column(name = "SN_FATURAVEL")
   private Boolean billable;
@@ -78,8 +78,14 @@ public class Service extends BaseEntity {
   @Column(name = "SN_COMPULSORIO")
   private Boolean compulsory;
 
+  @Column(name = "SN_CONTA_SETOR")
+  private Boolean accountBySector = false;
+
   @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<ServiceValue> values = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<ServiceSectorAccount> sectorAccounts = new LinkedHashSet<>();
 
   @Enumerated(EnumType.STRING)
   @Column(name = "CD_TIPO")
@@ -242,6 +248,22 @@ public class Service extends BaseEntity {
    */
   public void setType(ServiceTypesEnum type) {
     this.type = type;
+  }
+
+  public Boolean getAccountBySector() {
+    return accountBySector;
+  }
+
+  public void setAccountBySector(Boolean accountBySector) {
+    this.accountBySector = accountBySector;
+  }
+
+  public Set<ServiceSectorAccount> getSectorAccounts() {
+    return sectorAccounts;
+  }
+
+  public void setSectorAccounts(Set<ServiceSectorAccount> sectorAccounts) {
+    this.sectorAccounts = sectorAccounts;
   }
 
   @Override

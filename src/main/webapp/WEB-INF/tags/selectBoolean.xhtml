@@ -20,6 +20,7 @@
 		label="#{label}" rendered="#{editing}" style="cursor: pointer;">
 		<f:selectItem itemLabel="Sim" itemValue="true" />
 		<f:selectItem itemLabel="Não" itemValue="false" />
+		<ui:insert/>
 	</p:selectOneRadio>
 	<p:message for="#{id}"
 		rendered="#{renderMessage == null ? true : renderMessage}" />

@@ -8,6 +8,8 @@
     <h:form id="form">
       <p:panel header="Serviços">
         <lance:dataTable id="dataTable" controller="#{serviceController}"
+                         renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                         renderDeleteAction="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
                          renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">

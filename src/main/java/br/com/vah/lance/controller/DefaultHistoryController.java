@@ -53,4 +53,17 @@ public class DefaultHistoryController extends AbstractController<MvDefaultHistor
 		return "histórico padrão";
 	}
 
+	@Override
+	public String search() {
+    getLazyModel().getSearchParams().getParams().put("id", null);
+    try {
+      Long convertedValue = Long.valueOf(getSearchTerm());
+      getLazyModel().getSearchParams().getParams().put("id", convertedValue);
+    } catch (Exception e) {
+      /**
+       * Cannot convert to integer
+       */
+    }
+		return super.search();
+	}
 }

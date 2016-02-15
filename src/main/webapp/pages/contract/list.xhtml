@@ -9,6 +9,8 @@
     <h:form id="form">
       <p:panel header="Contratos">
         <lance:dataTable id="dataTable" controller="#{contractController}"
+                         renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                         renderDeleteAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
                          renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
 
           <p:column sortBy="#{item.title}" headerText="Título"

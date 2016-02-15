@@ -2,6 +2,7 @@ package br.com.vah.lance.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,10 +28,10 @@ public class ClientService extends DataAccessService<MvClient> {
 		List<String> errors = new ArrayList<String>();
 		for (MvSector sector : item.getSectors()) {
 			MvSector attachedSector = sectorService.find(sector.getId());
-			MvClient relatedClient = attachedSector.getClient();
-			if (relatedClient != null && !relatedClient.equals(item)) {
-				errors.add(String.format("Setor [%s] relacionado com o cliente [%s].", sector.getTitle(),
-						relatedClient.getTitle()));
+			Set<MvClient> relatedClients = attachedSector.getClients();
+			if (relatedClients.size() > 0) {
+				MvClient client = (MvClient) relatedClients.toArray()[0];
+				errors.add(String.format("Setor [%s] já relacionado com o cliente [%s].", sector.getTitle(), client.getTitle()));
 			}
 		}
 		return errors;
