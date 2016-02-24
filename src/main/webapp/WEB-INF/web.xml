@@ -51,6 +51,9 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>*.xhtml</url-pattern>
   </servlet-mapping>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
   <welcome-file-list>
     <welcome-file>/login.xhtml</welcome-file>
   </welcome-file-list>
@@ -68,7 +71,7 @@
   </error-page>
   <error-page>
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-    <location>/login.xhtml</location>
+    <location>/login.xhtml?faces-redirect=true</location>
   </error-page>
   <context-param>
     <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>

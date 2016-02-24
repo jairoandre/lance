@@ -26,6 +26,22 @@
         </p:column>
       </lance:manyToOneDialog>
 
+      <lance:manyToOneDialog id="ledgerAccountDlg"
+                             controller="#{accountChartController}"
+                             header="SELECIONAR CONTA CONTÁBIL" width="800"
+                             update="ledgerAccount"
+                             placeholder="Digite o termo (descrição, código)..."
+                             bean="#{serviceController.item.ledgerAccount}">
+        <p:column sortBy="#{item.id}" width="125"
+                  headerText="Código reduzido" styleClass="left-align">
+          <h:outputText value="#{item.id}"/>
+        </p:column>
+        <p:column sortBy="#{item.accountingCode}"
+                  headerText="Código contábil" width="125" styleClass="left-align">
+          <h:outputText value="#{item.accountingCode}"/>
+        </p:column>
+      </lance:manyToOneDialog>
+
       <lance:manyToOneDialog id="documentTypeDlg"
                              controller="#{documentTypeController}"
                              header="SELECIONAR TIPO DE DOCUMENTO" width="800" rendered="true"
@@ -70,6 +86,15 @@
                            editing="#{serviceController.editing}" label="Tipo de documento"
                            required="true" title="title"
                            value="#{serviceController.item.documentType}"/>
+        <uilance:selectBoolean id="accountBySector" label="Conta contábil por setor?"
+                               value="#{serviceController.item.accountBySector}"
+                               editing="#{serviceController.editing}" required="true"
+                               info="Indique se o serviço possui conta contábil atrelado ao setor.">
+        </uilance:selectBoolean>
+        <uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
+                           editing="#{serviceController.editing}" label="Conta contábil"
+                           required="true" title="title"
+                           value="#{serviceController.item.ledgerAccount}"/>
         <uilance:manyToOne id="resultAccount" dialog="resultAccountDlg"
                            editing="#{serviceController.editing}" label="Conta Contáb. Compart."
                            required="true" title="title"
@@ -95,116 +120,6 @@
                                info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
 
         <f:facet name="other">
-
-          <p:fieldset id="ledgerAccountGrp" legend="Conta contábil">
-            <h:panelGrid columns="3">
-              <uilance:selectBoolean id="accountBySector" label="Conta contábil por setor?"
-                                     value="#{serviceController.item.accountBySector}"
-                                     editing="#{serviceController.editing}" required="true"
-                                     info="Indique se o serviço possui conta contábil atrelado ao setor.">
-                <p:ajax process="accountBySector" update="ledgerAccountGrp sectorsAccounts"/>
-              </uilance:selectBoolean>
-              <uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
-                                 editing="#{serviceController.editing}" label="Conta contábil"
-                                 required="true" title="title"
-                                 rendered="#{!serviceController.item.accountBySector}"
-                                 value="#{serviceController.item.ledgerAccount}"/>
-            </h:panelGrid>
-            <lance:manyToOneDialog id="ledgerAccountDlg"
-                                   controller="#{accountChartController}"
-                                   header="SELECIONAR CONTA CONTÁBIL" width="800"
-                                   rendered="#{!serviceController.item.accountBySector}"
-                                   update="ledgerAccount"
-                                   placeholder="Digite o termo (descrição, código)..."
-                                   bean="#{serviceController.item.ledgerAccount}">
-              <p:column sortBy="#{item.id}" width="125"
-                        headerText="Código reduzido" styleClass="left-align">
-                <h:outputText value="#{item.id}"/>
-              </p:column>
-              <p:column sortBy="#{item.accountingCode}"
-                        headerText="Código contábil" width="125" styleClass="left-align">
-                <h:outputText value="#{item.accountingCode}"/>
-              </p:column>
-            </lance:manyToOneDialog>
-            <h:panelGroup id="sectorsAccounts" rendered="#{serviceController.item.accountBySector}">
-              <lance:manyToOneDialog id="sectorAccountDlg"
-                                     controller="#{sectorController}"
-                                     header="SELECIONAR SETOR" width="800" rendered="true"
-                                     update="sectorToAdd" bean="#{serviceController.sectorAccountToAdd.sector}">
-                <p:column sortBy="#{item.id}" width="125"
-                          headerText="Código" styleClass="left-align">
-                  <h:outputText value="#{item.id}"/>
-                </p:column>
-              </lance:manyToOneDialog>
-              <lance:manyToOneDialog id="accountToAddDlg"
-                                     controller="#{accountChartController}"
-                                     header="SELECIONAR CONTA CONTÁBIL" width="800" rendered="true"
-                                     update="accountToAdd"
-                                     placeholder="Digite o termo (descrição, código)..."
-                                     bean="#{serviceController.sectorAccountToAdd.account}">
-                <p:column sortBy="#{item.id}" width="125"
-                          headerText="Código reduzido" styleClass="left-align">
-                  <h:outputText value="#{item.id}"/>
-                </p:column>
-                <p:column sortBy="#{item.accountingCode}"
-                          headerText="Código contábil" width="125" styleClass="left-align">
-                  <h:outputText value="#{item.accountingCode}"/>
-                </p:column>
-              </lance:manyToOneDialog>
-              <p:commandButton id="addNewSectorBtn" value="Adicionar setor/conta"
-                               action="#{serviceController.addNewSector}"
-                               ajax="true"
-                               rendered="#{serviceController.editing and !serviceController.addingNewSector}"
-                               process="@this" update="sectorsAccounts"/>
-              <h:panelGroup id="addingNewSectorPnl" rendered="#{serviceController.addingNewSector}">
-                <p:fieldset legend="Adicionar setor/conta">
-                  <h:panelGrid id="gridSectorToAdd" columns="3">
-                    <uilance:manyToOne id="sectorToAdd" dialog="sectorAccountDlg"
-                                       editing="#{serviceController.editing}" label="Setor"
-                                       required="true" title="title"
-                                       value="#{serviceController.sectorAccountToAdd.sector}"/>
-                    <uilance:manyToOne id="accountToAdd" dialog="accountToAddDlg"
-                                       editing="#{serviceController.editing}" label="Conta contábil"
-                                       required="true" title="title"
-                                       value="#{serviceController.sectorAccountToAdd.account}"/>
-                  </h:panelGrid>
-                </p:fieldset>
-
-                <p:commandButton id="addSectorBtn" value="Confirmar" action="#{serviceController.addSector}"
-                                 ajax="true" process="@this sectorsAccounts" update="sectorsAccounts"
-                                 style="margin-top: 5px"/>
-                <p:commandButton id="cancelAddSectorBtn" value="Cancelar" action="#{serviceController.cancelAddSector}"
-                                 ajax="true" process="@this" update="sectorsAccounts" style="margin-left: 5px"/>
-              </h:panelGroup>
-
-              <h:panelGroup id="sectorAccountPnl" layout="block" styleClass="margin-top">
-                <p:dataTable id="sectorAccountsDtl" value="#{serviceController.item.sectorAccounts}" var="sectorAccount"
-                             rowIndexVar="indexVar" emptyMessage="Não há relacionamentos">
-                  <p:column headerText="Setor" styleClass="left-align">
-                    <h:outputText value="#{sectorAccount.sector.title}"/>
-                  </p:column>
-                  <p:column headerText="Conta contábil" styleClass="left-align">
-                    <h:outputText value="#{sectorAccount.account.title}"/>
-                  </p:column>
-                  <p:column style="text-align: center;" width="50">
-                    <p:commandLink id="deleteAction"
-                                   action="#{serviceController.removeSectorAccount(sectorAccount)}"
-                                   ajax="true"
-                                   process="@this"
-                                   update=":#{p:component('sectorAccountPnl')}"
-                                   rendered="#{serviceController.editing}">
-                      <span class="fa fa-trash"/>
-                    </p:commandLink>
-                    <lance:toolTip id="deleteToolTip" for="#{p:component('deleteAction')}"
-                                   value="Remover relação com o setor #{sectorAccount.sector.title}"
-                                   index="#{indexVar}"/>
-                  </p:column>
-                </p:dataTable>
-              </h:panelGroup>
-
-
-            </h:panelGroup>
-          </p:fieldset>
 
           <ui:include src="values.xhtml"/>
 

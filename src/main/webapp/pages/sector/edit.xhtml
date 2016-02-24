@@ -1,0 +1,46 @@
+<ui:composition template="/templates/layout.xhtml"
+								xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:f="http://java.sun.com/jsf/core"
+								xmlns:h="http://java.sun.com/jsf/html"
+								xmlns:ui="http://java.sun.com/jsf/facelets"
+								xmlns:lance="http://java.sun.com/jsf/composite/lance"
+								xmlns:p="http://primefaces.org/ui"
+								xmlns:uilance="http://vah.com.br/lance">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{sectorController.id}" />
+			<f:viewAction action="#{sectorController.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+
+			<lance:manyToOneDialog id="ledgerAccountDlg"
+														 controller="#{accountChartController}"
+														 header="SELECIONAR CONTA CONTÁBIL" width="800"
+														 update="ledgerAccount"
+														 placeholder="Digite o termo (descrição, código)..."
+														 bean="#{sectorController.item.accountChart}">
+				<p:column sortBy="#{item.id}" width="125"
+									headerText="Código reduzido" styleClass="left-align">
+					<h:outputText value="#{item.id}"/>
+				</p:column>
+				<p:column sortBy="#{item.accountingCode}"
+									headerText="Código contábil" width="125" styleClass="left-align">
+					<h:outputText value="#{item.accountingCode}"/>
+				</p:column>
+			</lance:manyToOneDialog>
+
+			<lance:editForm id="sectorForm" controller="#{sectorController}" columns="3">
+				<h:outputLabel value="Setor:" style="font-weight: bold;" />
+				<h:outputText value="#{sectorController.item.title}" />
+				<h:panelGroup/>
+				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
+													 editing="#{sectorController.editing}" label="Conta contábil"
+													 required="true" title="title"
+													 value="#{sectorController.item.accountChart}"/>
+			</lance:editForm>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

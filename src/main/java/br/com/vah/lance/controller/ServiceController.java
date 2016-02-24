@@ -2,7 +2,6 @@ package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.Service;
-import br.com.vah.lance.entity.ServiceSectorAccount;
 import br.com.vah.lance.entity.ServiceValue;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServiceService;
@@ -39,10 +38,6 @@ public class ServiceController extends AbstractController<Service> {
   private static final String[] RELATIONS = {"values"};
 
   private List<ServiceValue> values;
-
-  private ServiceSectorAccount sectorAccountToAdd;
-
-  private Boolean addingNewSector = false;
 
   @PostConstruct
   public void init() {
@@ -164,22 +159,6 @@ public class ServiceController extends AbstractController<Service> {
     return values;
   }
 
-  public ServiceSectorAccount getSectorAccountToAdd() {
-    return sectorAccountToAdd;
-  }
-
-  public void setSectorAccountToAdd(ServiceSectorAccount sectorAccountToAdd) {
-    this.sectorAccountToAdd = sectorAccountToAdd;
-  }
-
-  public Boolean getAddingNewSector() {
-    return addingNewSector;
-  }
-
-  public void setAddingNewSector(Boolean addingNewSector) {
-    this.addingNewSector = addingNewSector;
-  }
-
   /**
    *
    * @param values
@@ -192,27 +171,4 @@ public class ServiceController extends AbstractController<Service> {
     serviceValue.setValueC(BigDecimal.ONE.subtract(serviceValue.getValueA()));
   }
 
-  public void addNewSector() {
-    addingNewSector = true;
-    sectorAccountToAdd = new ServiceSectorAccount();
-    sectorAccountToAdd.setService(getItem());
-  }
-
-  public void addSector() {
-    if(service.isSectorRelated(getItem(), sectorAccountToAdd.getSector())){
-      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Serviço já relacionado."), false);
-    }else{
-      getItem().getSectorAccounts().add(sectorAccountToAdd);
-      cancelAddSector();
-    }
-  }
-
-  public void cancelAddSector() {
-    addingNewSector = false;
-    sectorAccountToAdd = null;
-  }
-
-  public void removeSectorAccount(ServiceSectorAccount sectorAccount) {
-    getItem().getSectorAccounts().remove(sectorAccount);
-  }
 }

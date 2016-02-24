@@ -2,6 +2,7 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.entity.*;
+import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.util.LanceUtils;
 
 import javax.ejb.Stateless;
@@ -40,12 +41,6 @@ public class EntryService extends DataAccessService<Entry> {
 
     List<Entry> entries = new ArrayList<>();
 
-    if (userId == null) {
-      return entries;
-    }
-
-    User user = userService.find(userId);
-
     Map<String, Object> contractParams = new LinkedHashMap<>();
     contractParams.put("date", range[1]);
 
@@ -58,7 +53,13 @@ public class EntryService extends DataAccessService<Entry> {
     entriesParams.put("begin", range[0]);
     entriesParams.put("end", range[1]);
 
-    Set<Service> userServices = user.getServices();
+    Set<Service> userServices = null;
+
+    if (userId != null) {
+      userServices = userService.find(userId).getServices();
+    }
+
+
 
     List<Entry> currentEntries;
 
@@ -77,7 +78,7 @@ public class EntryService extends DataAccessService<Entry> {
       /**
        * Verifica se o período consultado é do mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
        */
-      if(LanceUtils.checkBetween(new Date(), range[0], range[1])){
+      if (LanceUtils.checkBetween(new Date(), range[0], range[1])) {
 
         Set<Service> includedServices = new HashSet<>();
 
@@ -99,7 +100,7 @@ public class EntryService extends DataAccessService<Entry> {
 
             for (Service service : contractSector.getServices()) {
 
-              if (user.getServices().contains(service)) {
+              if (userServices.contains(service)) {
 
                 // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
                 if (!includedServices.contains(service)) {
@@ -257,6 +258,30 @@ public class EntryService extends DataAccessService<Entry> {
       // Soma os valores
       entry.setTotalValue(entry.getTotalValue().add(entryValue.getValue()));
     }
+  }
+
+  public Map<MvClient, Map<Service, BigDecimal>> groupByClient(List<Entry> entries) {
+
+    Map<MvClient, Map<Service, BigDecimal>> groups = new HashMap<>();
+
+    for (Entry entry : entries) {
+      Service service = entry.getService();
+      for(EntryValue entryValue : entry.getValues()){
+        MvClient client = entryValue.getContractSector().getTenant();
+        if (groups.get(client) == null) {
+          groups.put(client, new HashMap<Service, BigDecimal>());
+        }
+        Map<Service, BigDecimal> values = groups.get(client);
+        if (values.get(service) == null) {
+          values.put(service, BigDecimal.ZERO);
+        }
+        BigDecimal currValue = values.get(service);
+        values.put(service, currValue.add(entryValue.getValue()));
+      }
+    }
+
+    return groups;
+
   }
 
 }

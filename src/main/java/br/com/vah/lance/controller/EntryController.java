@@ -4,6 +4,8 @@ import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.entity.Comment;
 import br.com.vah.lance.entity.Entry;
 import br.com.vah.lance.entity.EntryValue;
+import br.com.vah.lance.entity.Service;
+import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
@@ -13,6 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -41,11 +45,15 @@ public class EntryController extends AbstractController<Entry> {
 
   private List<EntryValue> entryValues;
 
+  private List groupValues;
+
   private Long serviceId;
 
   private Comment comment;
 
   private Date searchMonth = new Date();
+
+  private String groupDateStr;
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
@@ -134,6 +142,25 @@ public class EntryController extends AbstractController<Entry> {
     entryValues = new ArrayList<>(getItem().getValues());
   }
 
+  public void loadGroupByClient() {
+    if(groupDateStr != null){
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+      try {
+        Date date = sdf.parse(groupDateStr);
+        entries = service.retrieveEntriesForUser(null, LanceUtils.getDateRange(date));
+        Map<MvClient, Map<Service, BigDecimal>> values = service.groupByClient(entries);
+        Map<MvClient, List<Map.Entry<Service, BigDecimal>>> mapOfList = new HashMap<>();
+        for (MvClient client : values.keySet()) {
+          mapOfList.put(client, new ArrayList(values.get(client).entrySet()));
+        }
+        groupValues = new ArrayList(mapOfList.entrySet());
+
+      }catch (Exception e){
+        // Exceção
+      }
+    }
+  }
+
   public void computeValues() {
     service.computeValues(getItem());
   }
@@ -154,6 +181,14 @@ public class EntryController extends AbstractController<Entry> {
     comment.setCreatedOn(new Date());
     comment.setEntry(getItem());
     return comment;
+  }
+
+  public String getGroupDateStr() {
+    return groupDateStr;
+  }
+
+  public void setGroupDateStr(String groupDateStr) {
+    this.groupDateStr = groupDateStr;
   }
 
   public String addComment() {
@@ -184,5 +219,13 @@ public class EntryController extends AbstractController<Entry> {
   public String doModifySave() {
     getItem().setStatus(EntryStatusEnum.M);
     return doSave();
+  }
+
+  public List getGroupValues() {
+    return groupValues;
+  }
+
+  public void setGroupValues(List groupValues) {
+    this.groupValues = groupValues;
   }
 }

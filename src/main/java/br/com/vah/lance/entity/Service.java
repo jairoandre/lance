@@ -84,9 +84,6 @@ public class Service extends BaseEntity {
   @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<ServiceValue> values = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private Set<ServiceSectorAccount> sectorAccounts = new LinkedHashSet<>();
-
   @Enumerated(EnumType.STRING)
   @Column(name = "CD_TIPO")
   private ServiceTypesEnum type;
@@ -256,14 +253,6 @@ public class Service extends BaseEntity {
 
   public void setAccountBySector(Boolean accountBySector) {
     this.accountBySector = accountBySector;
-  }
-
-  public Set<ServiceSectorAccount> getSectorAccounts() {
-    return sectorAccounts;
-  }
-
-  public void setSectorAccounts(Set<ServiceSectorAccount> sectorAccounts) {
-    this.sectorAccounts = sectorAccounts;
   }
 
   @Override
