@@ -20,8 +20,8 @@
     <h:outputText
       value="#{value == null ? null : value[title]}" rendered="#{!editing}"/>
     <p:inputText
-      id="#{id}Hidden" value="#{value == null ? null : value.id}" type="hidden"
-      required="#{required == null ? false : required}" label="#{label}" rendered="#{editing}"/>
+      id="#{id}Hidden" value="#{value.id}" type="hidden"
+      required="#{required == null ? false : required}" label="#{label}" rendered="#{editing and value.id != null}"/>
     <p:inputText
       id="#{id}Input" placeholder="Selecione..."
       styleClass="lance-input"
@@ -33,6 +33,10 @@
     <p:commandButton
       id="#{id}OpenDlgBtn" onclick="PF('#{dialog}').show()"
       rendered="#{editing == null ? true : editing}" icon="fa fa-search"/>
+    <p:commandButton ajax="true" process="@this" update=":#{p:component(id)}"
+      id="#{id}ClearBtn" rendered="#{editing == null ? true : editing}" icon="fa fa-trash">
+      <f:setPropertyActionListener value="#{null}" target="#{value}"/>
+    </p:commandButton>
   </h:panelGroup>
   <h:panelGroup rendered="#{rendered == null ? true : rendered}">
     <h:panelGroup

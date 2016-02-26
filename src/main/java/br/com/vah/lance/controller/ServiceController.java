@@ -46,6 +46,7 @@ public class ServiceController extends AbstractController<Service> {
     prepareNewServiceValue();
     initLazyModel(service, RELATIONS);
     types = ServiceTypesEnum.values();
+    getLazyModel().getSearchParams().setOrderBy("title");
   }
 
   public void prepareNewServiceValue() {

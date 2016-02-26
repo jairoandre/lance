@@ -11,6 +11,9 @@
 		<p:dataTable id="#{id}_table" var="item" value="#{items}" lazy="true"
 			emptyMessage="#{emptyMessage == null ? 'Sem items' : emptyMessage}"
 			style="margin-top: 10px">
+			<p:column headerText="Id" style="text-align: left;" width="100">
+				<h:outputText value="#{item.id}" />
+			</p:column>
 			<p:column headerText="#{columnHeader}" style="text-align: left;">
 				<h:outputText value="#{item.title}" />
 			</p:column>

@@ -11,6 +11,10 @@
                          renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
                          renderDeleteAction="#{false}"
                          renderAddBtn="#{false}">
+          <p:column sortBy="#{item.id}" headerText="Código"
+                    style="text-align: left;" width="100">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>

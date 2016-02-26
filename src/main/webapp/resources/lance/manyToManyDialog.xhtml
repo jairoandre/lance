@@ -37,6 +37,7 @@
 						styleClass="fa fa#{cc.attrs.targetItems.contains(item) ? '-check' : ''}-square-o" />
 				</p:commandLink>
 			</p:column>
+			<composite:insertChildren/>
 			<p:column id="detail" sortBy="#{item.title}" headerText="Descrição"
 				style="text-align: left;">
 				<h:outputText value="#{item.title}" />

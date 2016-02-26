@@ -36,18 +36,13 @@ public class ClientController extends AbstractController<MvClient> {
 
   private MvSector sector;
 
-  @Override
-  public String search() {
-    return super.search();
-  }
-
   public static final String[] RELATIONS = {"sectors"};
 
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     initLazyModel(service, RELATIONS);
-    getLazyModel().getSearchParams().getParams().put("type",new Object[] {"A","C"});
+    getLazyModel().getSearchParams().getParams().put("type",new Object[] {"A","C","T"});
   }
 
   public ClientController() {
@@ -143,5 +138,19 @@ public class ClientController extends AbstractController<MvClient> {
     }
     return null;
 
+  }
+
+  @Override
+  public String search() {
+    getLazyModel().getSearchParams().getParams().put("id", null);
+    try {
+      Long convertedValue = Long.valueOf(getSearchTerm());
+      getLazyModel().getSearchParams().getParams().put("id", convertedValue);
+    } catch (Exception e) {
+      /**
+       * Cannot convert to integer
+       */
+    }
+    return super.search();
   }
 }

@@ -236,6 +236,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     if (relations != null && relations.length > 0) {
       getLazyModel().getSearchParams().addRelations(relations);
     }
+    getLazyModel().getSearchParams().setOrderBy("title");
   }
 
   /*
@@ -249,8 +250,12 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   public String doDelete() {
     getService().delete(id);
-    getLazyModel().remove(index);
-    addMsg(new FacesMessage("Sucesso", "Registro removido [id=" + id + "]"), false);
+    try{
+      getLazyModel().remove(index);
+      addMsg(new FacesMessage("Sucesso", "Registro removido [id=" + id + "]"), false);
+    }catch(Exception e){
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Não foi possível excluir o registro"), false);
+    }
     return null;
   }
 

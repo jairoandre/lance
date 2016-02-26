@@ -32,12 +32,15 @@
 			</lance:manyToOneDialog>
 
 			<lance:editForm id="sectorForm" controller="#{sectorController}" columns="3">
+				<h:outputLabel value="Cód:" style="font-weight: bold;" />
+				<h:outputText value="#{sectorController.item.id}" />
+				<h:panelGroup/>
 				<h:outputLabel value="Setor:" style="font-weight: bold;" />
 				<h:outputText value="#{sectorController.item.title}" />
 				<h:panelGroup/>
 				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
 													 editing="#{sectorController.editing}" label="Conta contábil"
-													 required="true" title="title"
+													 required="false" title="title"
 													 value="#{sectorController.item.accountChart}"/>
 			</lance:editForm>
 

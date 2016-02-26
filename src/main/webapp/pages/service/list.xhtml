@@ -19,9 +19,9 @@
                     width="140" style="text-align: left;">
             <h:outputText value="#{item.type.label}"/>
           </p:column>
-          <p:column sortBy="#{item.billable}" headerText="Gera nota"
+          <p:column sortBy="#{item.ledgerAccount.id}" headerText="Conta Contábil"
                     width="95" style="text-align: left;">
-            <h:outputText value="#{item.billable ? 'Sim' : 'Não'}"/>
+            <h:outputText value="#{item.ledgerAccount == null ? '-' : (item.ledgerAccount.id + ' - ' + item.ledgerAccount.title)}"/>
           </p:column>
           <p:column sortBy="#{item.clusterable}" headerText="Agrupável"
                     width="95" style="text-align: left;">

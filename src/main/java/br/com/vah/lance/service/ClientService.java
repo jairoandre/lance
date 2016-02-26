@@ -30,8 +30,12 @@ public class ClientService extends DataAccessService<MvClient> {
 			MvSector attachedSector = sectorService.find(sector.getId());
 			Set<MvClient> relatedClients = attachedSector.getClients();
 			if (relatedClients.size() > 0) {
-				MvClient client = (MvClient) relatedClients.toArray()[0];
-				errors.add(String.format("Setor [%s] já relacionado com o cliente [%s].", sector.getTitle(), client.getTitle()));
+				for (MvClient iter : relatedClients){
+					if(!iter.getId().equals(item.getId())){
+						MvClient client = (MvClient) relatedClients.toArray()[0];
+						errors.add(String.format("Setor [%s] já relacionado com o cliente [%s].", sector.getTitle(), client.getTitle()));
+					}
+				}
 			}
 		}
 		return errors;
