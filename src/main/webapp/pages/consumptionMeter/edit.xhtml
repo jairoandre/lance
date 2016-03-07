@@ -1,0 +1,83 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance"
+                xmlns:uilance="http://vah.com.br/lance">
+
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{consumptionMeterController.id}"/>
+      <f:viewAction action="#{consumptionMeterController.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="content">
+
+    <h:form id="form">
+
+      <lance:manyToManyDialog id="addSectorDlg"
+                              bean="#{consumptionMeterController.sector}" controller="#{sectorController}"
+                              header="RELACIONAR SETORES" targetController="#{consumptionMeterController}"
+                              targetItems="#{consumptionMeterController.sectors}" toggleAction="toggle"
+                              update="sectors" width="800">
+        <p:column sortBy="#{item.id}" headerText="Código" width="100">
+          #{item.id}
+        </p:column>
+      </lance:manyToManyDialog>
+
+      <lance:editForm id="consumptionMeterPnl" controller="#{consumptionMeterController}"
+                      columns="3">
+        <uilance:inputText id="code" label="Código"
+                           value="#{consumptionMeterController.item.code}"
+                           editing="#{consumptionMeterController.editing}" required="true"/>
+        <uilance:inputText id="title" label="Título"
+                           value="#{consumptionMeterController.item.title}"
+                           editing="#{consumptionMeterController.editing}" required="true"/>
+        <uilance:inputText id="detail" label="Detalhes"
+                           value="#{consumptionMeterController.item.detail}"
+                           editing="#{consumptionMeterController.editing}"/>
+
+        <uilance:selectOne id="type" label="Tipo"
+                           value="#{consumptionMeterController.item.type}" required="true"
+                           displayValue="#{consumptionMeterController.item.type.label}"
+                           editing="#{consumptionMeterController.editing}">
+          <f:selectItem itemLabel="Selecionar" itemValue=""/>
+          <f:selectItem itemLabel="Energia" itemValue="E"/>
+          <f:selectItem itemLabel="Gás" itemValue="G"/>
+        </uilance:selectOne>
+        <f:facet name="other">
+          <uilance:manyToMany id="sectors" addBtnLabel="Relacionar setores"
+                              bean="#{consumptionMeterController.sector}" columnHeader="Setor"
+                              controller="#{consumptionMeterController}" dialog="addSectorDlg"
+                              editing="#{consumptionMeterController.editing}" emptyMessage="Sem setores"
+                              items="#{consumptionMeterController.getItem().sectors.toArray()}"
+                              toggleAction="toggle">
+            <p:column headerText="Setor" style="text-align: left;">
+              <h:outputText value="#{item.sector.title}"/>
+            </p:column>
+            <p:column headerText="Valor" style="text-align: left;" width="200">
+              <uilance:inputPercentage id="sector"
+                                       value="#{item.percent}"
+                                       required="true"
+                                       editing="#{consumptionMeterController.editing}">
+                <p:ajax event="change" process="@this" update="@this"/>
+              </uilance:inputPercentage>
+            </p:column>
+            <p:column width="100" headerText="Remover"
+                      style="text-align: center;" rendered="#{consumptionMeterController.editing}">
+              <p:commandLink id="removeBtn"
+                             action="#{consumptionMeterController.removeSector}" ajax="true"
+                             styleClass="action-link" update="@form" process="@this">
+                <f:setPropertyActionListener value="#{item}" target="#{consumptionMeterController.itemToRemove}"/>
+                <span class="fa fa-trash"/>
+              </p:commandLink>
+            </p:column>
+          </uilance:manyToMany>
+        </f:facet>
+      </lance:editForm>
+    </h:form>
+  </ui:define>
+</ui:composition>

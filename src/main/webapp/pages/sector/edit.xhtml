@@ -20,7 +20,7 @@
 														 header="SELECIONAR CONTA CONTÁBIL" width="800"
 														 update="ledgerAccount"
 														 placeholder="Digite o termo (descrição, código)..."
-														 bean="#{sectorController.item.accountChart}">
+														 bean="#{sectorController.item.sectorAccount.ledgerAccount}">
 				<p:column sortBy="#{item.id}" width="125"
 									headerText="Código reduzido" styleClass="left-align">
 					<h:outputText value="#{item.id}"/>
@@ -38,10 +38,15 @@
 				<h:outputLabel value="Setor:" style="font-weight: bold;" />
 				<h:outputText value="#{sectorController.item.title}" />
 				<h:panelGroup/>
+				<uilance:inputNumber id="sectorArea" renderMessage="false"
+														 value="#{sectorController.item.sectorAccount.area}"
+														 label="Área (m2)"
+														 editing="#{sectorController.editing}"/>
+				<h:panelGroup/>
 				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
 													 editing="#{sectorController.editing}" label="Conta contábil"
 													 required="false" title="title"
-													 value="#{sectorController.item.accountChart}"/>
+													 value="#{sectorController.item.sectorAccount.ledgerAccount}"/>
 			</lance:editForm>
 
 		</h:form>

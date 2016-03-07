@@ -23,7 +23,8 @@
     </p:column>
     <p:column sortBy="#{value.endDate}" headerText="Data de término" styleClass="left-align"
               width="150">
-      <h:outputText value="#{value.endDate}">
+      <h:outputText value="Corrente" rendered="#{value.endDate == null}"/>
+      <h:outputText value="#{value.endDate}" rendered="#{value.endDate != null}">
         <f:convertDateTime pattern="dd/MM/yyyy"/>
       </h:outputText>
     </p:column>
@@ -58,7 +59,31 @@
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
-    <p:column width="50" headerText="Ações" styleClass="action-link" rendered="#{serviceController.editing}">
+    <p:column sortBy="#{value.value}" headerText="% VAH" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}">
+      <h:outputText value="#{value.value}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueA}" headerText="% Terceiros" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}">
+      <h:outputText value="#{value.valueA}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueB}" headerText="% Consultórios" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}">
+      <h:outputText value="#{value.valueB}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueC}" headerText="% Shopping" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}">
+      <h:outputText value="#{value.valueC}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column width="50" headerText="Ações" styleClass="action-link" rendered="#{serviceController.editing and loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
       <p:commandLink id="deleteAction"
                      action="#{serviceController.removeValue(value)}"
                      ajax="true"

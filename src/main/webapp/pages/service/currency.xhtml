@@ -24,13 +24,25 @@
 
         <f:facet name="other">
 
-          <p:fieldset id="newValueFieldset" legend="Valor"
+          <p:fieldset id="newValueFieldset" legend="Novo Valor"
                       rendered="#{serviceController.editing}">
             <h:panelGrid id="addServiceGrid" columns="3">
               <uilance:inputDate id="beginDate" label="Data de início"
                                  value="#{serviceController.serviceValue.beginDate}"
                                  required="true"
                                  editing="true"/>
+              <uilance:inputPercentage id="vahPercent" label="Percentual VAH" required="true"
+                                     value="#{serviceController.serviceValue.value}" editing="true"
+                                     rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}"/>
+              <uilance:inputPercentage id="thirdsPercent" label="Percentual Terceiros" required="true"
+                                     value="#{serviceController.serviceValue.valueA}" editing="true"
+                                     rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}"/>
+              <uilance:inputPercentage id="consultingRoomsPercent" label="Percentual Consultórios" required="true"
+                                       value="#{serviceController.serviceValue.valueB}" editing="true"
+                                       rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}"/>
+              <uilance:inputPercentage id="shoopingPercent" label="Percentual Shopping" required="true"
+                                       value="#{serviceController.serviceValue.valueC}" editing="true"
+                                       rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP'}"/>
               <uilance:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.value}" editing="true"
                                      rendered="#{serviceController.item.type == 'E'}"/>

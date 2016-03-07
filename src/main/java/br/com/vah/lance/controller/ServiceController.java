@@ -39,6 +39,8 @@ public class ServiceController extends AbstractController<Service> {
 
   private List<ServiceValue> values;
 
+  private List<Service> services;
+
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");

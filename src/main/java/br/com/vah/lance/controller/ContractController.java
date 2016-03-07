@@ -1,9 +1,6 @@
 package br.com.vah.lance.controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -48,6 +45,8 @@ public class ContractController extends AbstractController<Contract> {
 
   private Service serviceBean;
 
+  private List<Service> compulsoryService = new ArrayList<>();
+
   public static final String[] RELATIONS = {"contractSectors", "subject"};
 
   @PostConstruct
@@ -55,6 +54,12 @@ public class ContractController extends AbstractController<Contract> {
     logger.info(this.getClass().getSimpleName() + " created.");
     setItem(createNewItem());
     initLazyModel(service, RELATIONS);
+    List<Service> allServices = serviceService.findWithNamedQuery(Service.ALL);
+    for (Service item : allServices) {
+      if(item.getCompulsory()) {
+        compulsoryService.add(item);
+      }
+    }
   }
 
   @Override
@@ -72,7 +77,7 @@ public class ContractController extends AbstractController<Contract> {
         ContractSector service = new ContractSector();
         service.setSector(sector);
         service.setContract(getItem());
-        service.setServices(new LinkedHashSet<Service>());
+        service.setServices(new LinkedHashSet<>(compulsoryService));
         services.add(service);
         clientControllers.put(sector.getId(), new ClientController(clientService));
         serviceControllers.put(sector.getId(), new ServiceController(serviceService));

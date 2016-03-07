@@ -16,12 +16,12 @@
             <h:outputText value="#{item.title}"/>
           </p:column>
           <p:column sortBy="#{item.type}" headerText="Tipo de cobrança"
-                    width="140" style="text-align: left;">
+                    width="160" style="text-align: left;">
             <h:outputText value="#{item.type.label}"/>
           </p:column>
           <p:column sortBy="#{item.ledgerAccount.id}" headerText="Conta Contábil"
-                    width="95" style="text-align: left;">
-            <h:outputText value="#{item.ledgerAccount == null ? '-' : (item.ledgerAccount.id + ' - ' + item.ledgerAccount.title)}"/>
+                    width="150" style="text-align: left;">
+            <h:outputText value="#{item.ledgerAccount == null ? '-' : item.ledgerAccount.id}"/>
           </p:column>
           <p:column sortBy="#{item.clusterable}" headerText="Agrupável"
                     width="95" style="text-align: left;">
@@ -31,7 +31,7 @@
                     width="50">
             <p:commandLink id="currencyAction"
                            action="#{serviceController.currency(item)}"
-                           styleClass="action-link" disabled="#{item.type == 'V' || item.type == 'C'}">
+                           styleClass="action-link" disabled="#{item.type == 'V' || item.type == 'C' || item.type == 'CI'}">
               <span class="fa fa-usd"/>
             </p:commandLink>
             <p:tooltip id="toolCurrencyAction" for="currencyAction"

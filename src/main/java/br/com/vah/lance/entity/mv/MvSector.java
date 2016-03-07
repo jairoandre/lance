@@ -1,6 +1,8 @@
 package br.com.vah.lance.entity.mv;
 
 import br.com.vah.lance.entity.BaseEntity;
+import br.com.vah.lance.entity.SectorConsumptionMeter;
+import br.com.vah.lance.entity.SectorAccount;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -31,12 +33,11 @@ public class MvSector extends BaseEntity {
       @JoinColumn(name = "CD_FORNECEDOR")}, schema = "USRDBVAH")
   private Set<MvClient> clients;
 
-  @ManyToOne
-  @JoinTable(name = "TB_LANCA_SETOR_CONTA",
-      joinColumns = {@JoinColumn(name = "CD_SETOR")},
-      inverseJoinColumns = {@JoinColumn(name = "CD_REDUZIDO")},
-      schema = "USRDBVAH")
-  private MvAccountChart accountChart;
+  @OneToOne(mappedBy = "sector", fetch = FetchType.EAGER)
+  private SectorAccount sectorAccount = new SectorAccount();
+
+  @OneToMany(mappedBy = "sector")
+  private Set<SectorConsumptionMeter> meters;
 
   /**
    * @return the id
@@ -87,11 +88,23 @@ public class MvSector extends BaseEntity {
     this.clients = clients;
   }
 
-  public MvAccountChart getAccountChart() {
-    return accountChart;
+  public void setClients(Set<MvClient> clients) {
+    this.clients = clients;
   }
 
-  public void setAccountChart(MvAccountChart accountChart) {
-    this.accountChart = accountChart;
+  public SectorAccount getSectorAccount() {
+    return sectorAccount;
+  }
+
+  public void setSectorAccount(SectorAccount sectorAccount) {
+    this.sectorAccount = sectorAccount;
+  }
+
+  public Set<SectorConsumptionMeter> getMeters() {
+    return meters;
+  }
+
+  public void setMeters(Set<SectorConsumptionMeter> meters) {
+    this.meters = meters;
   }
 }

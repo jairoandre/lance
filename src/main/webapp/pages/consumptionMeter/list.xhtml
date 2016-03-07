@@ -1,0 +1,32 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Medidores">
+        <lance:dataTable id="dataTable" controller="#{consumptionMeterController}"
+                         renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                         renderDeleteAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                         renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
+
+          <p:column sortBy="#{item.code}" headerText="Código"
+                    style="text-align: left;">
+            <h:outputText value="#{item.code}"/>
+          </p:column>
+          <p:column sortBy="#{item.title}" headerText="Título"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.detail}" headerText="Detalhes"
+                    style="text-align: left;">
+            <h:outputText value="#{item.detail}"/>
+          </p:column>
+
+        </lance:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>
