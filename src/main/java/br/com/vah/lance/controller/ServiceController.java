@@ -91,6 +91,11 @@ public class ServiceController extends AbstractController<Service> {
     return "service";
   }
 
+  @Override
+  public String doSave() {
+    return super.doSave();
+  }
+
   public void addValue() {
     serviceValue.setService(getItem());
     if(service.canAddServiceValue(getItem(), serviceValue)){

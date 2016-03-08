@@ -88,14 +88,22 @@
   <p:dialog id="deleteDlg" header="Atenção"
             widgetVar="deleteDlg_#{cc.attrs.id}" modal="true">
     <h:outputText
-      value="Você deseja realmente excluir o #{cc.attrs.controller.entityName}?"/>
+      value="#{cc.attrs.controller.deleteConfirmMessage}"
+      escape="false"/>
+    <br/>
+    <h:panelGroup layout="block">
+      <p:inputText id="deleteConfirmAnswer" value="#{cc.attrs.controller.deleteConfirmAnswer}">
+        <p:ajax event="change" process="@this" update="deleteConfirmBtn"/>
+      </p:inputText>
+    </h:panelGroup>
     <f:facet name="footer">
-      <p:commandButton value="Excluir" ajax="true" update="@form"
+      <p:commandButton id="deleteConfirmBtn" value="Excluir" ajax="true" update="@form"
                        action="#{cc.attrs.controller.doDelete}"
                        oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
-                       icon="fa fa-warning"/>
+                       icon="fa fa-warning" disabled="#{cc.attrs.controller.deleteConfirmAnswer.toUpperCase() != 'DELETAR'}"/>
       <p:commandButton value="Cancelar"
                        oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
+                       style="margin-left: 5px"
                        icon="fa fa-arrow-left"/>
     </f:facet>
   </p:dialog>

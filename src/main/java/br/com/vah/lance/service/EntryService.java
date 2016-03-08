@@ -222,7 +222,17 @@ public class EntryService extends DataAccessService<Entry> {
    * @param entry
    */
   public void computeValues(Entry entry) {
+
     ServiceValue currentServiceValue = entry.getServiceValue();
+
+    // Para quando o serviço não possuir valor definido
+    if (currentServiceValue == null) {
+      currentServiceValue = new ServiceValue();
+      currentServiceValue.setValue(BigDecimal.ZERO);
+      currentServiceValue.setValueA(BigDecimal.ZERO);
+      currentServiceValue.setValueB(BigDecimal.ZERO);
+      currentServiceValue.setValueC(BigDecimal.ZERO);
+    }
 
     entry.setTotalValue(BigDecimal.ZERO);
 
@@ -236,12 +246,14 @@ public class EntryService extends DataAccessService<Entry> {
           // Soma o valor vigente do serviço com o valor variável informado pelo usuário.
           entryValue.setValue(currentServiceValue.getValue().add(entryValue.getValueA()));
           break;
-        // Energia
+        // Energia Individual
         case E:
           BigDecimal delta = entryValue.getValueB().subtract(entryValue.getValueA());
           BigDecimal outPeakValue = delta.multiply(currentServiceValue.getValueA()).multiply(currentServiceValue.getValue());
           BigDecimal peakValue = delta.multiply(currentServiceValue.getValueC()).multiply(currentServiceValue.getValueB());
           entryValue.setValue(outPeakValue.add(peakValue));
+          break;
+        case CR:
           break;
         // Venda (venda comissionada)
         case V:

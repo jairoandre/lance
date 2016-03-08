@@ -81,7 +81,7 @@ public class Service extends BaseEntity {
   @Column(name = "SN_CONTA_SETOR")
   private Boolean accountBySector = false;
 
-  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<ServiceValue> values = new LinkedHashSet<>();
 
   @Enumerated(EnumType.STRING)

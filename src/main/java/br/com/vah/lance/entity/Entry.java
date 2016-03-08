@@ -104,6 +104,11 @@ public class Entry extends BaseEntity {
   @OneToMany(mappedBy = "entry", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private Set<EntryValue> values;
 
+  /**
+   *
+   */
+  private BigDecimal totalArea;
+
   public Entry() {
     this.status = EntryStatusEnum.N;
     this.createdOn = new Date();

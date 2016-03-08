@@ -43,6 +43,8 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   private final String _ID_PARAM = "&id=";
 
+  private String deleteConfirmAnswer;
+
   /**
    * @return the service
    */
@@ -256,6 +258,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     }catch(Exception e){
       addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Não foi possível excluir o registro"), false);
     }
+    this.deleteConfirmAnswer = "";
     return null;
   }
 
@@ -324,4 +327,15 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     this.selectedItems = selectedItems;
   }
 
+  public String getDeleteConfirmMessage() {
+    return "Você deseja realmente excluir o " + getEntityName() + "? Se sim, escreva <b>DELETAR</b> na caixa de texto abaixo:";
+  }
+
+  public String getDeleteConfirmAnswer() {
+    return deleteConfirmAnswer;
+  }
+
+  public void setDeleteConfirmAnswer(String deleteConfirmAnswer) {
+    this.deleteConfirmAnswer = deleteConfirmAnswer;
+  }
 }

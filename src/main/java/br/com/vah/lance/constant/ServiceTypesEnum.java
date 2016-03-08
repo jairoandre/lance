@@ -1,7 +1,7 @@
 package br.com.vah.lance.constant;
 
 public enum ServiceTypesEnum {
-  T("Tabelado"), V("Venda"), E("Condomínio - Indiv. Energia"), CR("Condomínio - Rateio"), CP("Condomínio - Rateio Parcial"), CI("Condomínio - Individual"), G("Condomínio - Indiv. Gás"), C("Cobrança");
+  T("Tabelado"), V("Venda"), E("Condomínio - Indiv. Energia"), CR("Condomínio - Rateio"), CRE("Condomínio - Energia Área Comum"), CP("Condomínio - Rateio Parcial"), CI("Condomínio - Individual"), G("Condomínio - Indiv. Gás"), C("Cobrança");
 
   private String label;
 
@@ -23,9 +23,11 @@ public enum ServiceTypesEnum {
         return "Leitura anterior";
       case C:
         return "Valor de cobrança";
+      case CRE:
       case CR:
+        return "Valor rateado";
       case CP:
-        return "Valor total";
+        return "Valor rateado";
       default:
         return "N/A";
     }
@@ -40,6 +42,9 @@ public enum ServiceTypesEnum {
       case E:
         return true;
       case C:
+      case CR:
+      case CRE:
+      case CP:
         return false;
       default:
         return true;
