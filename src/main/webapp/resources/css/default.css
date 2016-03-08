@@ -222,3 +222,7 @@ a.action-link:HOVER, td.action-link a:HOVER {
   color: #4e88cc;
   cursor: pointer;
 }
+
+.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+  background: #ffc535;
+}

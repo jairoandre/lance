@@ -9,12 +9,14 @@ import java.util.Set;
 @Entity
 @Table(name = "TB_LANCA_MEDIDOR", schema = "USRDBVAH")
 @NamedQueries({@NamedQuery(name = ConsumptionMeter.ALL, query = "SELECT c FROM ConsumptionMeter c"),
-    @NamedQuery(name = ConsumptionMeter.COUNT, query = "SELECT COUNT(c) FROM ConsumptionMeter c")})
+    @NamedQuery(name = ConsumptionMeter.COUNT, query = "SELECT COUNT(c) FROM ConsumptionMeter c"),
+    @NamedQuery(name = ConsumptionMeter.BY_TYPE, query = "SELECT c FROM ConsumptionMeter c WHERE c.type = :type")})
 public class ConsumptionMeter extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
   public static final String ALL = "ConsumptionMeter.populatedItems";
   public static final String COUNT = "ConsumptionMeter.countTotal";
+  public static final String BY_TYPE = "ConsumptionMeter.byType";
 
   @Id
   @SequenceGenerator(name = "seqConsumptionMeterGenerator", sequenceName = "SEQ_LANCA_MEDIDOR", schema = "USRDBVAH", allocationSize = 1)

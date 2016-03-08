@@ -49,6 +49,18 @@ public class ServiceValue extends BaseEntity {
 
 	@Column(name = "VL_VALOR_C", precision = 4)
 	private BigDecimal valueC;
+
+	@Column(name = "VL_VALOR_D", precision = 4)
+	private BigDecimal valueD;
+
+	@Column(name = "VL_VALOR_E", precision = 4)
+	private BigDecimal valueE;
+
+	@Column(name = "VL_VALOR_F", precision = 4)
+	private BigDecimal valueF;
+
+	@Column(name = "VL_VALOR_G", precision = 4)
+	private BigDecimal valueG;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_SERVICO", nullable = false)
@@ -147,6 +159,38 @@ public class ServiceValue extends BaseEntity {
    */
 	public BigDecimal getValueC() {
 		return valueC;
+	}
+
+	public BigDecimal getValueD() {
+		return valueD;
+	}
+
+	public void setValueD(BigDecimal valueD) {
+		this.valueD = valueD;
+	}
+
+	public BigDecimal getValueE() {
+		return valueE;
+	}
+
+	public void setValueE(BigDecimal valueE) {
+		this.valueE = valueE;
+	}
+
+	public BigDecimal getValueF() {
+		return valueF;
+	}
+
+	public void setValueF(BigDecimal valueF) {
+		this.valueF = valueF;
+	}
+
+	public BigDecimal getValueG() {
+		return valueG;
+	}
+
+	public void setValueG(BigDecimal valueG) {
+		this.valueG = valueG;
 	}
 
 	/**

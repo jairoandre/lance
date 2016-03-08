@@ -105,9 +105,10 @@ public class Entry extends BaseEntity {
   private Set<EntryValue> values;
 
   /**
-   *
+   * Os valores individuais de leituras de medidores (para os caso de Energia e Gás)
    */
-  private BigDecimal totalArea;
+  @OneToMany(mappedBy = "entry", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Set<EntryMeterValue> meterValues;
 
   public Entry() {
     this.status = EntryStatusEnum.N;
@@ -116,6 +117,7 @@ public class Entry extends BaseEntity {
     this.totalValue = BigDecimal.ZERO;
     this.comments = new LinkedHashSet<>();
     this.values = new LinkedHashSet<>();
+    this.meterValues = new LinkedHashSet<>();
   }
 
   public Entry(Service service) {
@@ -259,6 +261,14 @@ public class Entry extends BaseEntity {
    */
   public void setValues(Set<EntryValue> values) {
     this.values = values;
+  }
+
+  public Set<EntryMeterValue> getMeterValues() {
+    return meterValues;
+  }
+
+  public void setMeterValues(Set<EntryMeterValue> meterValues) {
+    this.meterValues = meterValues;
   }
 
   @Override

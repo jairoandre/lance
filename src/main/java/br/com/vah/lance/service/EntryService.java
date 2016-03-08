@@ -1,6 +1,7 @@
 package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
+import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.*;
 import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.util.LanceUtils;
@@ -24,6 +25,10 @@ public class EntryService extends DataAccessService<Entry> {
   private
   @Inject
   UserService userService;
+
+  private
+  @Inject
+  ConsumptionMeterService meterService;
 
   public EntryService() {
     super(Entry.class);
@@ -122,6 +127,13 @@ public class EntryService extends DataAccessService<Entry> {
 
     }
 
+    Collections.sort(currentEntries, new Comparator<Entry>() {
+      @Override
+      public int compare(Entry o1, Entry o2) {
+        return o1.getService().getTitle().compareTo(o2.getService().getTitle());
+      }
+    });
+
 
     return currentEntries;
   }
@@ -154,9 +166,16 @@ public class EntryService extends DataAccessService<Entry> {
     entry.setTotalValue(BigDecimal.ZERO);
     entry.setUserForEntry(user);
 
-    Date[] dateRange = LanceUtils.getDateRangeForThisMonth();
+    // Verifica necessidade de se carregar lista de medidores (Energia Individual, Gás, etc...)
+    if (ServiceTypesEnum.E.equals(service.getType())) {
+      List<ConsumptionMeter> meters = meterService.findByType(ServiceTypesEnum.E);
+      for (ConsumptionMeter meter : meters) {
+        entry.getMeterValues().add(new EntryMeterValue(entry, meter));
+      }
+    }
+
     for (ServiceValue serviceValue : entry.getService().getValues()) {
-      if (LanceUtils.checkBetweenDates(dateRange[0], dateRange[1], serviceValue.getBeginDate(), serviceValue.getEndDate())) {
+      if (serviceValue.getEndDate() == null){
         entry.setServiceValue(serviceValue);
         break;
       }
@@ -232,6 +251,10 @@ public class EntryService extends DataAccessService<Entry> {
       currentServiceValue.setValueA(BigDecimal.ZERO);
       currentServiceValue.setValueB(BigDecimal.ZERO);
       currentServiceValue.setValueC(BigDecimal.ZERO);
+      currentServiceValue.setValueD(BigDecimal.ZERO);
+      currentServiceValue.setValueE(BigDecimal.ZERO);
+      currentServiceValue.setValueF(BigDecimal.ZERO);
+      currentServiceValue.setValueG(BigDecimal.ZERO);
     }
 
     entry.setTotalValue(BigDecimal.ZERO);

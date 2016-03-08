@@ -17,12 +17,15 @@
     <h:form id="form">
       <h:panelGroup id="container" layout="block" styleClass="lance-container">
         <p:panel header="Lançamento - #{entryController.item.service.title}">
+          <ui:include src="totalBlock.xhtml"/>
 
           <h:panelGrid columns="4" cellpadding="10">
             <h:outputLabel value="Estado:" styleClass="label"/>
             <lance:entryStatus status="#{entryController.item.status}"/>
             <h:outputLabel value="Tipo:" styleClass="label"/>
             <h:outputText value="#{entryController.item.service.type.label}"/>
+          </h:panelGrid>
+          <h:panelGrid columns="4" cellpadding="10">
             <h:outputLabel value="Valor do serviço:" styleClass="label"
                            rendered="#{entryController.item.service.type == 'T'}"/>
             <h:outputText value="#{entryController.item.serviceValue.value}"
@@ -30,40 +33,95 @@
               <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
             </h:outputText>
             <h:outputLabel value="Tarifa fora de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E'}"/>
+                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
             <h:outputText value="#{entryController.item.serviceValue.value}"
-                          rendered="#{entryController.item.service.type == 'E'}">
+                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
               <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
             </h:outputText>
             <h:outputLabel value="Percentual fora de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E'}"/>
+                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
             <h:outputText value="#{entryController.item.serviceValue.valueA}"
-                          rendered="#{entryController.item.service.type == 'E'}">
+                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
               <f:convertNumber type="percent" minFractionDigits="2"/>
             </h:outputText>
             <h:outputLabel value="Tarifa de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E'}"/>
+                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
             <h:outputText value="#{entryController.item.serviceValue.valueB}"
-                          rendered="#{entryController.item.service.type == 'E'}">
+                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
               <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
             </h:outputText>
             <h:outputLabel value="Percentual de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E'}"/>
+                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
             <h:outputText value="#{entryController.item.serviceValue.valueC}"
-                          rendered="#{entryController.item.service.type == 'E'}">
+                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
+              <f:convertNumber type="percent" minFractionDigits="2"/>
+            </h:outputText>
+            <h:outputLabel value="Percentual VAH:" styleClass="label"
+                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+            <h:outputText value="#{entryController.item.serviceValue.valueD}"
+                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+              <f:convertNumber type="percent" minFractionDigits="2"/>
+            </h:outputText>
+            <h:outputLabel value="Percentual Terceiros:" styleClass="label"
+                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+            <h:outputText value="#{entryController.item.serviceValue.valueE}"
+                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+              <f:convertNumber type="percent" minFractionDigits="2"/>
+            </h:outputText>
+            <h:outputLabel value="Percentual Consultórios:" styleClass="label"
+                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+            <h:outputText value="#{entryController.item.serviceValue.valueF}"
+                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+              <f:convertNumber type="percent" minFractionDigits="2"/>
+            </h:outputText>
+            <h:outputLabel value="Percentual Shopping:" styleClass="label"
+                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+            <h:outputText value="#{entryController.item.serviceValue.valueG}"
+                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
               <f:convertNumber type="percent" minFractionDigits="2"/>
             </h:outputText>
           </h:panelGrid>
 
-          <ui:include src="totalBlock.xhtml"/>
+          <p:outputPanel
+            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+            <uilance:inputCurrency id="totalValueInput" label="Valor a ratear" value="#{entryController.item.totalValue}"/>
+          </p:outputPanel>
+
+          <p:dataTable id="metersGrid" value="#{entryController.item.meterValues}" var="meter"
+                       rendered="#{entryController.item.service.type == 'E'}" styleClass="table-left-header margin-top">
+            <f:facet name="header">
+              <h:outputText value="Leituras dos Medidores"/>
+            </f:facet>
+            <p:column headerText="Medidor" styleClass="left-align">
+              <h:outputText value="#{meter.consumptionMeter.code}"/>
+            </p:column>
+            <p:column headerText="Leitura Anterior" styleClass="left-align" width="150">
+              <uilance:inputNumber id="previousValue" renderMessage="false"
+                                   value="#{meter.previousValue}" editing="#{entryController.editing}"/>
+            </p:column>
+            <p:column headerText="Leitura Atual" styleClass="left-align" width="150">
+              <uilance:inputNumber id="currentValue" renderMessage="false"
+                                   value="#{meter.currentValue}" editing="#{entryController.editing}"/>
+            </p:column>
+            <p:column headerText="Consumo" styleClass="left-align" width="150">
+              <h:outputText id="deltaReads" value="#{meter.currentValue - meter.previousValue}"/>
+            </p:column>
+          </p:dataTable>
+
 
           <p:dataTable id="dataTable" var="entryValue"
-                       value="#{entryController.entryValues}" styleClass="table-left-header">
+                       value="#{entryController.entryValues}" styleClass="table-left-header margin-top">
             <f:facet name="header">
               <h:outputText value="Setores"/>
             </f:facet>
             <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
               <h:outputText value="#{entryValue.contractSector.sector.title}"/>
+            </p:column>
+            <p:column headerText="Área (m²)" styleClass="left-align" width="100">
+              <h:outputText value="-" rendered="#{entryValue.contractSector.sector.sectorAccount == null}"/>
+              <h:outputText value="#{entryValue.contractSector.sector.sectorAccount.area}" rendered="#{entryValue.contractSector.sector.sectorAccount != null}">
+                <f:convertNumber minFractionDigits="2" pattern="#,##0.00"/>
+              </h:outputText>
             </p:column>
             <p:column headerText="#{entryController.item.service.type.compALabel}" styleClass="left-align" width="150">
               <uilance:inputCurrency id="compValueA" renderMessage="false"
@@ -73,8 +131,8 @@
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputCurrency>
               <uilance:inputNumber id="compValueANumber" renderMessage="false"
-                                     value="#{entryValue.valueA}" editing="#{entryController.editing}"
-                                     rendered="#{entryController.item.service.type == 'E'}">
+                                   value="#{entryValue.valueA}" editing="#{entryController.editing}"
+                                   rendered="#{entryController.item.service.type == 'E'}">
                 <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputNumber>
@@ -94,7 +152,7 @@
                         update=":#{p:component('totalValue')} itemValue"/>
               </uilance:inputNumber>
             </p:column>
-            <p:column headerText="Valor" styleClass="left-align" width="150">
+            <p:column headerText="Valor computado" styleClass="left-align" width="150">
               <h:panelGroup id="itemValue">
                 <h:outputText value="#{entryValue.value}">
                   <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
