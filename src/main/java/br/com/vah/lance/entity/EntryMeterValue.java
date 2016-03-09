@@ -39,7 +39,7 @@ public class EntryMeterValue extends BaseEntity {
    * Medidor de consumo
    */
   @ManyToOne
-  @JoinColumn(name = "ID_LEITOR", nullable = false)
+  @JoinColumn(name = "ID_MEDIDOR", nullable = false)
   private ConsumptionMeter consumptionMeter;
 
   /**

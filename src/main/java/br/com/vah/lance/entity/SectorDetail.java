@@ -1,5 +1,6 @@
 package br.com.vah.lance.entity;
 
+import br.com.vah.lance.constant.SectorTypeEnum;
 import br.com.vah.lance.entity.mv.MvAccountChart;
 import br.com.vah.lance.entity.mv.MvSector;
 
@@ -10,17 +11,17 @@ import java.math.BigDecimal;
  * Created by jairoportela on 29/02/2016.
  */
 @Entity
-@Table(name = "TB_LANCA_SETOR_CONTA", schema = "USRDBVAH")
-@NamedQueries({@NamedQuery(name = SectorAccount.ALL, query = "SELECT s FROM SectorAccount s"),
-    @NamedQuery(name = SectorAccount.COUNT, query = "SELECT COUNT(s) FROM SectorAccount s")})
-public class SectorAccount extends BaseEntity {
+@Table(name = "TB_LANCA_SETOR_DETALHE", schema = "USRDBVAH")
+@NamedQueries({@NamedQuery(name = SectorDetail.ALL, query = "SELECT s FROM SectorDetail s"),
+    @NamedQuery(name = SectorDetail.COUNT, query = "SELECT COUNT(s) FROM SectorDetail s")})
+public class SectorDetail extends BaseEntity {
 
-  public final static String ALL = "SectorAccount.populatedItems";
-  public final static String COUNT = "SectorAccount.countTotal";
+  public final static String ALL = "SectorDetail.populatedItems";
+  public final static String COUNT = "SectorDetail.countTotal";
 
   @Id
-  @SequenceGenerator(name = "seqSectorValueGenerator", sequenceName = "SEQ_LANCA_SETOR_CONTA", schema = "USRDBVAH", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqSectorValueGenerator")
+  @SequenceGenerator(name = "seqSectorDetailGenerator", sequenceName = "SEQ_LANCA_SETOR_DETALHE", schema = "USRDBVAH", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqSectorDetailGenerator")
   @Column(name = "ID")
   private Long id;
 
@@ -34,6 +35,10 @@ public class SectorAccount extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "CD_REDUZIDO", nullable = true)
   private MvAccountChart ledgerAccount;
+
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "CD_TIPO")
+  private SectorTypeEnum type;
 
   public static String getALL() {
     return ALL;
@@ -71,6 +76,14 @@ public class SectorAccount extends BaseEntity {
 
   public void setLedgerAccount(MvAccountChart ledgerAccount) {
     this.ledgerAccount = ledgerAccount;
+  }
+
+  public SectorTypeEnum getType() {
+    return type;
+  }
+
+  public void setType(SectorTypeEnum type) {
+    this.type = type;
   }
 
   @Override

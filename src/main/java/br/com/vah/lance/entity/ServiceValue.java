@@ -38,9 +38,6 @@ public class ServiceValue extends BaseEntity {
 	@Column(name = "DT_INICIO")
 	private Date beginDate;
 
-	@Column(name = "VL_VALOR", precision = 4)
-	private BigDecimal value;
-
 	@Column(name = "VL_VALOR_A", precision = 4)
 	private BigDecimal valueA;
 
@@ -52,15 +49,6 @@ public class ServiceValue extends BaseEntity {
 
 	@Column(name = "VL_VALOR_D", precision = 4)
 	private BigDecimal valueD;
-
-	@Column(name = "VL_VALOR_E", precision = 4)
-	private BigDecimal valueE;
-
-	@Column(name = "VL_VALOR_F", precision = 4)
-	private BigDecimal valueF;
-
-	@Column(name = "VL_VALOR_G", precision = 4)
-	private BigDecimal valueG;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_SERVICO", nullable = false)
@@ -76,89 +64,44 @@ public class ServiceValue extends BaseEntity {
 		this.id = id;
 	}
 
-	/**
-	 * @return the endDate
-	 */
 	public Date getEndDate() {
 		return endDate;
 	}
 
-	/**
-	 * @param endDate
-	 *            the endDate to set
-	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
-	/**
-	 * @return the beginDate
-	 */
 	public Date getBeginDate() {
 		return beginDate;
 	}
 
-	/**
-	 * @param beginDate
-	 *            the beginDate to set
-	 */
 	public void setBeginDate(Date beginDate) {
 		this.beginDate = beginDate;
 	}
 
-	/**
-	 * @return the value
-	 */
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(BigDecimal value) {
-		this.value = value;
-	}
-
-	/**
-	 *
-	 * @return
-   */
 	public BigDecimal getValueA() {
 		return valueA;
 	}
 
-	/**
-	 *
-	 * @param compValueA
-   */
-	public void setValueA(BigDecimal compValueA) {
-		this.valueA = compValueA;
+	public void setValueA(BigDecimal valueA) {
+		this.valueA = valueA;
 	}
 
-	/**
-	 *
-	 * @return
-   */
 	public BigDecimal getValueB() {
 		return valueB;
 	}
 
-	/**
-	 *
-	 * @param compValueB
-   */
-	public void setValueB(BigDecimal compValueB) {
-		this.valueB = compValueB;
+	public void setValueB(BigDecimal valueB) {
+		this.valueB = valueB;
 	}
 
-	/**
-	 *
-	 * @return
-   */
 	public BigDecimal getValueC() {
 		return valueC;
+	}
+
+	public void setValueC(BigDecimal valueC) {
+		this.valueC = valueC;
 	}
 
 	public BigDecimal getValueD() {
@@ -169,49 +112,10 @@ public class ServiceValue extends BaseEntity {
 		this.valueD = valueD;
 	}
 
-	public BigDecimal getValueE() {
-		return valueE;
+	public Service getService() {
+		return service;
 	}
 
-	public void setValueE(BigDecimal valueE) {
-		this.valueE = valueE;
-	}
-
-	public BigDecimal getValueF() {
-		return valueF;
-	}
-
-	public void setValueF(BigDecimal valueF) {
-		this.valueF = valueF;
-	}
-
-	public BigDecimal getValueG() {
-		return valueG;
-	}
-
-	public void setValueG(BigDecimal valueG) {
-		this.valueG = valueG;
-	}
-
-	/**
-	 *
-	 * @param compValueC
-   */
-	public void setValueC(BigDecimal compValueC) {
-		this.valueC = compValueC;
-	}
-
-  /**
-   * @return the service
-   */
-  public Service getService() {
-    return service;
-  }
-
-  /**
-	 * @param service
-	 *            the service to set
-	 */
 	public void setService(Service service) {
 		this.service = service;
 	}

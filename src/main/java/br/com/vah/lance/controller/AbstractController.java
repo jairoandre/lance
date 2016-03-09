@@ -239,6 +239,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
       getLazyModel().getSearchParams().addRelations(relations);
     }
     getLazyModel().getSearchParams().setOrderBy("title");
+    getLazyModel().getSearchParams().setAsc(true);
   }
 
   /*

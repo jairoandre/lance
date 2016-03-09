@@ -2,7 +2,7 @@ package br.com.vah.lance.entity.mv;
 
 import br.com.vah.lance.entity.BaseEntity;
 import br.com.vah.lance.entity.SectorConsumptionMeter;
-import br.com.vah.lance.entity.SectorAccount;
+import br.com.vah.lance.entity.SectorDetail;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -33,8 +33,8 @@ public class MvSector extends BaseEntity {
       @JoinColumn(name = "CD_FORNECEDOR")}, schema = "USRDBVAH")
   private Set<MvClient> clients;
 
-  @OneToOne(mappedBy = "sector", fetch = FetchType.EAGER)
-  private SectorAccount sectorAccount = new SectorAccount();
+  @OneToOne(mappedBy = "sector", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+  private SectorDetail sectorDetail = new SectorDetail();
 
   @OneToMany(mappedBy = "sector")
   private Set<SectorConsumptionMeter> meters;
@@ -92,12 +92,12 @@ public class MvSector extends BaseEntity {
     this.clients = clients;
   }
 
-  public SectorAccount getSectorAccount() {
-    return sectorAccount;
+  public SectorDetail getSectorDetail() {
+    return sectorDetail;
   }
 
-  public void setSectorAccount(SectorAccount sectorAccount) {
-    this.sectorAccount = sectorAccount;
+  public void setSectorDetail(SectorDetail sectorDetail) {
+    this.sectorDetail = sectorDetail;
   }
 
   public Set<SectorConsumptionMeter> getMeters() {

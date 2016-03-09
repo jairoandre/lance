@@ -54,9 +54,12 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 		} else {
 			searchParams.setFirst(first);
 		}
-		searchParams.setOrderBy(sortField);
 		searchParams.setPageSize(pageSize);
-		searchParams.setAsc(SortOrder.ASCENDING.equals(sortOrder));
+
+		if (sortField != null && !sortField.isEmpty()) {
+			searchParams.setOrderBy(sortField);
+			searchParams.setAsc(SortOrder.ASCENDING.equals(sortOrder));
+		}
 
 		datasource = crudService.paginatedSearch(searchParams);
 		

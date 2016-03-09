@@ -19,73 +19,125 @@
         <p:panel header="Lançamento - #{entryController.item.service.title}">
           <ui:include src="totalBlock.xhtml"/>
 
-          <h:panelGrid columns="4" cellpadding="10">
-            <h:outputLabel value="Estado:" styleClass="label"/>
-            <lance:entryStatus status="#{entryController.item.status}"/>
-            <h:outputLabel value="Tipo:" styleClass="label"/>
-            <h:outputText value="#{entryController.item.service.type.label}"/>
-          </h:panelGrid>
-          <h:panelGrid columns="4" cellpadding="10">
-            <h:outputLabel value="Valor do serviço:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'T'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.value}"
-                          rendered="#{entryController.item.service.type == 'T'}">
-              <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
-            </h:outputText>
-            <h:outputLabel value="Tarifa fora de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.value}"
-                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual fora de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueA}"
-                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-            <h:outputLabel value="Tarifa de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueB}"
-                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual de ponta:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueC}"
-                          rendered="#{entryController.item.service.type == 'E' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual VAH:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueD}"
-                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual Terceiros:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueE}"
-                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual Consultórios:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueF}"
-                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-            <h:outputLabel value="Percentual Shopping:" styleClass="label"
-                           rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
-            <h:outputText value="#{entryController.item.serviceValue.valueG}"
-                          rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
-              <f:convertNumber type="percent" minFractionDigits="2"/>
-            </h:outputText>
-          </h:panelGrid>
+          <h:panelGroup layout="block" style="float:left;">
+            <h:panelGrid columns="2" cellpadding="10">
+              <h:outputLabel value="Estado:" styleClass="label"/>
+              <lance:entryStatus status="#{entryController.item.status}"/>
+              <h:outputLabel value="Tipo:" styleClass="label"/>
+              <h:outputText value="#{entryController.item.service.type.label}"/>
+            </h:panelGrid>
+            <h:panelGrid columns="2" cellpadding="10"
+                         rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+              <uilance:inputCurrency id="totalAreas" label="Valor total a ratear"
+                                     value="#{entryController.item.ammountToShare}" renderMessage="false">
+                <p:ajax event="keyup" process="@this" update="areasValuesPnl"
+                        listener="#{entryController.shareAmmount}"/>
+              </uilance:inputCurrency>
+            </h:panelGrid>
+            <p:commandButton id="shareAmmountButton" value="Realizar rateio"
+                             action="#{entryController.fillSharedFields}"
+                             update="dataTable :#{p:component('totalValue')}"
+                             rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+          </h:panelGroup>
 
-          <p:outputPanel
-            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
-            <uilance:inputCurrency id="totalValueInput" label="Valor a ratear" value="#{entryController.item.totalValue}"/>
-          </p:outputPanel>
+          <h:panelGroup id="areasValuesPnl" layout="block" style="float:left;"
+                        rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+            <h:panelGrid columns="4" cellpadding="10">
+              <h:outputLabel value="Rateio VAH:" styleClass="label"/>
+              <h:outputText value="#{entryController.ammoutVah}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Terceiros:" styleClass="label"/>
+              <h:outputText value="#{entryController.ammountProviders}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Consultórios:" styleClass="label"/>
+              <h:outputText value="#{entryController.ammountClinics}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Shopping:" styleClass="label"/>
+              <h:outputText value="#{entryController.ammountShopping}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Terceiros:" styleClass="label"/>
+              <h:outputText value="#{entryController.taxProviders}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Consultórios:" styleClass="label"/>
+              <h:outputText value="#{entryController.taxClinics}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Shopping:" styleClass="label"/>
+              <h:outputText value="#{entryController.taxShopping}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
+
+          <!-- TAXAS E PERCENTUAIS -->
+
+          <h:panelGroup id="taxesPnl" layout="block" style="float:left;">
+            <h:panelGrid columns="4" cellpadding="10">
+              <h:outputLabel value="Valor do serviço:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'T'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueA}"
+                            rendered="#{entryController.item.service.type == 'T'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Tarifa fora de ponta:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'E'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueA}"
+                            rendered="#{entryController.item.service.type == 'E'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual fora de ponta:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'E'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueB}"
+                            rendered="#{entryController.item.service.type == 'E'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Tarifa de ponta:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'E'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueC}"
+                            rendered="#{entryController.item.service.type == 'E'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual de ponta:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'E'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueD}"
+                            rendered="#{entryController.item.service.type == 'E'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual VAH:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueD}"
+                            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Terceiros:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueA}"
+                            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Consultórios:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueB}"
+                            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Shopping:" styleClass="label"
+                             rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueC}"
+                            rendered="#{entryController.item.service.type == 'CR' or entryController.item.service.type == 'CP' or entryController.item.service.type == 'CRE'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
+
+          <h:panelGroup style="clear: both;" layout="block"/>
+
+          <!-- MEDIDORES -->
 
           <p:dataTable id="metersGrid" value="#{entryController.item.meterValues}" var="meter"
                        rendered="#{entryController.item.service.type == 'E'}" styleClass="table-left-header margin-top">
@@ -117,9 +169,15 @@
             <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
               <h:outputText value="#{entryValue.contractSector.sector.title}"/>
             </p:column>
+            <p:column headerText="Categoria" styleClass="left-align" width="100">
+              <h:outputText value="-" rendered="#{entryValue.contractSector.sector.sectorDetail == null}"/>
+              <h:outputText value="#{entryValue.contractSector.sector.sectorDetail.type.label}"
+                            rendered="#{entryValue.contractSector.sector.sectorDetail != null}"/>
+            </p:column>
             <p:column headerText="Área (m²)" styleClass="left-align" width="100">
-              <h:outputText value="-" rendered="#{entryValue.contractSector.sector.sectorAccount == null}"/>
-              <h:outputText value="#{entryValue.contractSector.sector.sectorAccount.area}" rendered="#{entryValue.contractSector.sector.sectorAccount != null}">
+              <h:outputText value="-" rendered="#{entryValue.contractSector.sector.sectorDetail == null}"/>
+              <h:outputText value="#{entryValue.contractSector.sector.sectorDetail.area}"
+                            rendered="#{entryValue.contractSector.sector.sectorDetail != null}">
                 <f:convertNumber minFractionDigits="2" pattern="#,##0.00"/>
               </h:outputText>
             </p:column>

@@ -21,7 +21,7 @@
           </p:column>
           <p:column headerText="Conta contábil" width="200"
                     style="text-align: left;">
-            <h:outputText value="#{item.sectorAccount == null or item.sectorAccount.ledgerAccount == null ? '-' : item.sectorAccount.ledgerAccount.title}"/>
+            <h:outputText value="#{item.sectorDetail == null or item.sectorDetail.ledgerAccount == null ? '-' : item.sectorDetail.ledgerAccount.title}"/>
           </p:column>
         </lance:dataTable>
       </p:panel>

@@ -176,7 +176,7 @@ public class ServiceController extends AbstractController<Service> {
   }
 
   public void updatePeakValue(){
-    serviceValue.setValueC(BigDecimal.ONE.subtract(serviceValue.getValueA()));
+    serviceValue.setValueD(BigDecimal.ONE.subtract(serviceValue.getValueB()));
   }
 
 }

@@ -195,6 +195,23 @@ public class EntryService extends DataAccessService<Entry> {
         for (Service iterator : contractSector.getServices()) {
 
           if (service.equals(iterator)) {
+            SectorDetail sectorDetail = contractSector.getSector().getSectorDetail();
+            if (sectorDetail != null && sectorDetail.getArea() != null) {
+              switch (sectorDetail.getType()){
+                case TERCEIROS:
+                  entry.setTotalAreaA(entry.getTotalAreaA().add(sectorDetail.getArea()));
+                  break;
+                case CONSULTORIOS:
+                  entry.setTotalAreaB(entry.getTotalAreaB().add(sectorDetail.getArea()));
+                  break;
+                case SHOPPING:
+                  entry.setTotalAreaC(entry.getTotalAreaC().add(sectorDetail.getArea()));
+                  break;
+                default:
+                  break;
+              }
+
+            }
             entry.getValues().add(new EntryValue(entry, contractSector));
           }
 
@@ -247,14 +264,10 @@ public class EntryService extends DataAccessService<Entry> {
     // Para quando o serviço não possuir valor definido
     if (currentServiceValue == null) {
       currentServiceValue = new ServiceValue();
-      currentServiceValue.setValue(BigDecimal.ZERO);
       currentServiceValue.setValueA(BigDecimal.ZERO);
       currentServiceValue.setValueB(BigDecimal.ZERO);
       currentServiceValue.setValueC(BigDecimal.ZERO);
       currentServiceValue.setValueD(BigDecimal.ZERO);
-      currentServiceValue.setValueE(BigDecimal.ZERO);
-      currentServiceValue.setValueF(BigDecimal.ZERO);
-      currentServiceValue.setValueG(BigDecimal.ZERO);
     }
 
     entry.setTotalValue(BigDecimal.ZERO);
@@ -267,17 +280,9 @@ public class EntryService extends DataAccessService<Entry> {
         // Tabelado
         case T:
           // Soma o valor vigente do serviço com o valor variável informado pelo usuário.
-          entryValue.setValue(currentServiceValue.getValue().add(entryValue.getValueA()));
+          entryValue.setValue(currentServiceValue.getValueA().add(entryValue.getValueA()));
           break;
         // Energia Individual
-        case E:
-          BigDecimal delta = entryValue.getValueB().subtract(entryValue.getValueA());
-          BigDecimal outPeakValue = delta.multiply(currentServiceValue.getValueA()).multiply(currentServiceValue.getValue());
-          BigDecimal peakValue = delta.multiply(currentServiceValue.getValueC()).multiply(currentServiceValue.getValueB());
-          entryValue.setValue(outPeakValue.add(peakValue));
-          break;
-        case CR:
-          break;
         // Venda (venda comissionada)
         case V:
           BigDecimal sellValue = entryValue.getValueA();
@@ -287,6 +292,15 @@ public class EntryService extends DataAccessService<Entry> {
         // Cobrança (ex: taxas de residência)
         case C:
           entryValue.setValue(entryValue.getValueA());
+          break;
+        case E:
+          entryValue.setValue(entryValue.getValueA());
+          break;
+        case CR:
+        case CRE:
+          entryValue.setValue(entryValue.getValueA());
+          break;
+
         default:
           break;
       }

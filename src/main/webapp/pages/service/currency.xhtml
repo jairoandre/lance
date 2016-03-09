@@ -31,37 +31,36 @@
                                  value="#{serviceController.serviceValue.beginDate}"
                                  required="true"
                                  editing="true"/>
-
               <uilance:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
-                                     value="#{serviceController.serviceValue.value}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}"/>
-              <uilance:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueA}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}">
+                                     rendered="#{serviceController.item.type == 'E'}"/>
+              <uilance:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
+                                     value="#{serviceController.serviceValue.valueB}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}">
                 <p:ajax event="change" listener="#{serviceController.updatePeakValue}" process="@this" update="peakPercent"/>
               </uilance:inputPercentage>
               <uilance:inputCurrency id="peakValue" label="Tarifa de ponta" required="true"
-                                     value="#{serviceController.serviceValue.valueB}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}"/>
-              <uilance:inputPercentage id="peakPercent" label="% Hora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueC}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}"/>
+                                     rendered="#{serviceController.item.type == 'E'}"/>
+              <uilance:inputPercentage id="peakPercent" label="% Hora de ponta" required="true"
+                                     value="#{serviceController.serviceValue.valueD}" editing="true"
+                                     rendered="#{serviceController.item.type == 'E'}"/>
               <uilance:inputCurrency id="value" label="Valor" required="true"
-                                     value="#{serviceController.serviceValue.value}" editing="true"
+                                     value="#{serviceController.serviceValue.valueA}" editing="true"
                                      rendered="#{serviceController.item.type == 'T'}"/>
-
               <uilance:inputPercentage id="vahPercent" label="Percentual VAH" required="true"
                                        value="#{serviceController.serviceValue.valueD}" editing="true"
                                        rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}"/>
               <uilance:inputPercentage id="thirdsPercent" label="Percentual Terceiros" required="true"
-                                       value="#{serviceController.serviceValue.valueE}" editing="true"
+                                       value="#{serviceController.serviceValue.valueA}" editing="true"
                                        rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}"/>
               <uilance:inputPercentage id="consultingRoomsPercent" label="Percentual Consultórios" required="true"
-                                       value="#{serviceController.serviceValue.valueF}" editing="true"
+                                       value="#{serviceController.serviceValue.valueB}" editing="true"
                                        rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}"/>
               <uilance:inputPercentage id="shoopingPercent" label="Percentual Shopping" required="true"
-                                       value="#{serviceController.serviceValue.valueG}" editing="true"
+                                       value="#{serviceController.serviceValue.valueC}" editing="true"
                                        rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}"/>
+
               <p:commandButton id="btnAddValue" value="Adicionar"
                                action="#{serviceController.addValue}" ajax="true" validateClient="true"
                                process=":#{p:component('newValueFieldset')}"

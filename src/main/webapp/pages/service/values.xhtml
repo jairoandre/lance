@@ -15,6 +15,8 @@
     <f:facet name="header">
       <h:outputText value="VALORES"/>
     </f:facet>
+
+    <!-- PERÍODO DE VIGÊNCIA -->
     <p:column sortBy="#{value.beginDate}" headerText="Data de início" styleClass="left-align"
               width="150">
       <h:outputText value="#{value.beginDate}">
@@ -28,61 +30,68 @@
         <f:convertDateTime pattern="dd/MM/yyyy"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.value}" headerText="Valor" styleClass="left-align"
+
+    <!-- TABELADO -->
+    <p:column sortBy="#{value.valueA}" headerText="Valor" styleClass="left-align"
               rendered="#{serviceController.item.type == 'T'}" width="200">
-      <h:outputText value="#{value.value}">
+      <h:outputText value="#{value.valueA}">
         <f:convertNumber currencySymbol="R$" locale="pt_BR"
                          minFractionDigits="2" pattern="R$ #,##0.00"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.value}" headerText="Tarifa fora de ponta" styleClass="left-align" width="100"
-              rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.value}">
-        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
-      </h:outputText>
-    </p:column>
-    <p:column sortBy="#{value.valueA}" headerText="% fora de ponta" styleClass="left-align" width="75"
-              rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}">
+
+    <!-- TAXAS DE ENERGIA INDIVIDUAL -->
+    <p:column sortBy="#{value.valueA}" headerText="Tarifa fora de ponta" styleClass="left-align" width="100"
+              rendered="#{serviceController.item.type == 'E'}">
       <h:outputText value="#{value.valueA}">
-        <f:convertNumber minFractionDigits="2" type="percent"/>
-      </h:outputText>
-    </p:column>
-    <p:column sortBy="#{value.valueB}" headerText="Tarifa de ponta" styleClass="left-align" width="100"
-              rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.valueB}">
         <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.valueC}" headerText="% de ponta" styleClass="left-align" width="75"
-              rendered="#{serviceController.item.type == 'E' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.valueC}">
+    <p:column sortBy="#{value.valueB}" headerText="% fora de ponta" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueB}">
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
+    <p:column sortBy="#{value.valueC}" headerText="Tarifa de ponta" styleClass="left-align" width="100"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueC}">
+        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueD}" headerText="% de ponta" styleClass="left-align" width="75"
+              rendered="#{serviceController.item.type == 'E'}">
+      <h:outputText value="#{value.valueD}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+
+    <!-- PERCENTUAIS DE RATEIO -->
     <p:column sortBy="#{value.valueD}" headerText="% VAH" styleClass="left-align" width="75"
               rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}">
       <h:outputText value="#{value.valueD}">
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.valueE}" headerText="% Terceiros" styleClass="left-align" width="75"
+    <p:column sortBy="#{value.valueA}" headerText="% Terceiros" styleClass="left-align" width="75"
               rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.valueE}">
+      <h:outputText value="#{value.valueA}">
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.valueF}" headerText="% Consultórios" styleClass="left-align" width="75"
+    <p:column sortBy="#{value.valueB}" headerText="% Consultórios" styleClass="left-align" width="75"
               rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.valueF}">
+      <h:outputText value="#{value.valueB}">
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
-    <p:column sortBy="#{value.valueG}" headerText="% Shopping" styleClass="left-align" width="75"
+    <p:column sortBy="#{value.valueC}" headerText="% Shopping" styleClass="left-align" width="75"
               rendered="#{serviceController.item.type == 'CR' or serviceController.item.type == 'CP' or serviceController.item.type == 'CRE'}">
-      <h:outputText value="#{value.valueG}">
+      <h:outputText value="#{value.valueC}">
         <f:convertNumber minFractionDigits="2" type="percent"/>
       </h:outputText>
     </p:column>
+
     <p:column width="50" headerText="Ações" styleClass="action-link" rendered="#{serviceController.editing and loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
       <p:commandLink id="deleteAction"
                      action="#{serviceController.removeValue(value)}"
@@ -94,6 +103,7 @@
       <p:tooltip id="toolDeleteAction" for="deleteAction"
                  value="Excluir"/>
     </p:column>
+
   </p:dataTable>
 
 </ui:composition>

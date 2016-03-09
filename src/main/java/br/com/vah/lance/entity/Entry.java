@@ -82,6 +82,18 @@ public class Entry extends BaseEntity {
   @Column(name = "DT_VIGENCIA")
   private Date effectiveOn;
 
+  @Column(name = "VL_MONTANTE")
+  private BigDecimal ammountToShare = BigDecimal.ZERO;
+
+  @Column(name = "VL_AREA_A")
+  private BigDecimal totalAreaA = BigDecimal.ZERO;
+
+  @Column(name = "VL_AREA_B")
+  private BigDecimal totalAreaB = BigDecimal.ZERO;
+
+  @Column(name = "VL_AREA_C")
+  private BigDecimal totalAreaC = BigDecimal.ZERO;
+
   /**
    * Estado do lançamento, valores possíveis:
    * <ul>
@@ -135,130 +147,106 @@ public class Entry extends BaseEntity {
     this.id = id;
   }
 
-  /**
-   * @return the userForEntry
-   */
   public User getUserForEntry() {
     return userForEntry;
   }
 
-  /**
-   * @param userForEntry the userForEntry to set
-   */
   public void setUserForEntry(User userForEntry) {
     this.userForEntry = userForEntry;
   }
 
-  /**
-   * @return the comments
-   */
   public Set<Comment> getComments() {
     return comments;
   }
 
-  /**
-   * @param comments the comments to set
-   */
   public void setComments(Set<Comment> comments) {
     this.comments = comments;
   }
 
-  /**
-   * @return
-   */
   public Service getService() {
     return service;
   }
 
-  /**
-   * @param service
-   */
   public void setService(Service service) {
     this.service = service;
   }
 
-  /**
-   *
-   * @return
-   */
   public ServiceValue getServiceValue() {
     return serviceValue;
   }
 
-  /**
-   *
-   * @param serviceValue
-   */
   public void setServiceValue(ServiceValue serviceValue) {
     this.serviceValue = serviceValue;
   }
 
-  /**
-   * @return the value
-   */
   public BigDecimal getTotalValue() {
     return totalValue;
   }
 
-  /**
-   * @param value the value to set
-   */
-  public void setTotalValue(BigDecimal value) {
-    this.totalValue = value;
+  public void setTotalValue(BigDecimal totalValue) {
+    this.totalValue = totalValue;
   }
 
-  /**
-   * @return the createdOn
-   */
   public Date getCreatedOn() {
     return createdOn;
   }
 
-  /**
-   * @param createdOn the createdOn to set
-   */
   public void setCreatedOn(Date createdOn) {
     this.createdOn = createdOn;
   }
 
-  /**
-   * @return the effectiveOn
-   */
   public Date getEffectiveOn() {
     return effectiveOn;
   }
 
-  /**
-   * @param effectiveOn the effectiveOn to set
-   */
   public void setEffectiveOn(Date effectiveOn) {
     this.effectiveOn = effectiveOn;
   }
 
-  /**
-   * @return the status
-   */
+  public BigDecimal getAmmountToShare() {
+    return ammountToShare;
+  }
+
+  public void setAmmountToShare(BigDecimal ammountToShare) {
+    this.ammountToShare = ammountToShare;
+  }
+
+  public BigDecimal getTotalAreaA() {
+    return totalAreaA;
+  }
+
+  public void setTotalAreaA(BigDecimal totalAreaA) {
+    this.totalAreaA = totalAreaA;
+  }
+
+  public BigDecimal getTotalAreaB() {
+    return totalAreaB;
+  }
+
+  public void setTotalAreaB(BigDecimal totalAreaB) {
+    this.totalAreaB = totalAreaB;
+  }
+
+  public BigDecimal getTotalAreaC() {
+    return totalAreaC;
+  }
+
+  public void setTotalAreaC(BigDecimal totalAreaC) {
+    this.totalAreaC = totalAreaC;
+  }
+
   public EntryStatusEnum getStatus() {
     return status;
   }
 
-  /**
-   * @param status the status to set
-   */
   public void setStatus(EntryStatusEnum status) {
     this.status = status;
   }
 
-  /**
-   * @return
-   */
   public Set<EntryValue> getValues() {
     return values;
   }
 
-  /**
-   * @param values
-   */
   public void setValues(Set<EntryValue> values) {
     this.values = values;
   }

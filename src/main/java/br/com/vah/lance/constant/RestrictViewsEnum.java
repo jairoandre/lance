@@ -10,7 +10,6 @@ import static br.com.vah.lance.constant.RolesEnum.*;
  * @author jairoportela
  */
 public enum RestrictViewsEnum {
-
   USER_LIST("/admin/user/edit.xhtml", ADMINISTRATOR),
   USER_EDIT("/admin/user/list.xhtml", ADMINISTRATOR, ACCOUNTANT),
   CLIENT_EDIT("/pages/client/edit.xhtml", ADMINISTRATOR, ACCOUNTANT, SUPERVISOR),

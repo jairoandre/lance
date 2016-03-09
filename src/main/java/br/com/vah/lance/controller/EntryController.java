@@ -1,10 +1,7 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
-import br.com.vah.lance.entity.Comment;
-import br.com.vah.lance.entity.Entry;
-import br.com.vah.lance.entity.EntryValue;
-import br.com.vah.lance.entity.Service;
+import br.com.vah.lance.entity.*;
 import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
@@ -143,7 +140,7 @@ public class EntryController extends AbstractController<Entry> {
   }
 
   public void loadGroupByClient() {
-    if(groupDateStr != null){
+    if (groupDateStr != null) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
       try {
         Date date = sdf.parse(groupDateStr);
@@ -155,7 +152,7 @@ public class EntryController extends AbstractController<Entry> {
         }
         groupValues = new ArrayList(mapOfList.entrySet());
 
-      }catch (Exception e){
+      } catch (Exception e) {
         // Exceção
       }
     }
@@ -227,5 +224,90 @@ public class EntryController extends AbstractController<Entry> {
 
   public void setGroupValues(List groupValues) {
     this.groupValues = groupValues;
+  }
+
+  public BigDecimal getTaxAreaA() {
+    if (getItem().getTotalAreaA() != null && !BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
+      return getItem().getTotalAreaA().divide(getItem().getTotalAreaA(), 2, BigDecimal.ROUND_HALF_UP);
+    }
+    return null;
+  }
+
+  private BigDecimal ammoutVah = BigDecimal.ZERO;
+  private BigDecimal ammountProviders = BigDecimal.ZERO;
+  private BigDecimal ammountClinics = BigDecimal.ZERO;
+  private BigDecimal ammountShopping = BigDecimal.ZERO;
+  private BigDecimal taxProviders = BigDecimal.ZERO;
+  private BigDecimal taxClinics = BigDecimal.ZERO;
+  private BigDecimal taxShopping = BigDecimal.ZERO;
+
+  public BigDecimal getAmmoutVah() {
+    return ammoutVah;
+  }
+
+  public BigDecimal getAmmountProviders() {
+    return ammountProviders;
+  }
+
+  public BigDecimal getAmmountClinics() {
+    return ammountClinics;
+  }
+
+  public BigDecimal getAmmountShopping() {
+    return ammountShopping;
+  }
+
+  public BigDecimal getTaxProviders() {
+    return taxProviders;
+  }
+
+  public BigDecimal getTaxClinics() {
+    return taxClinics;
+  }
+
+  public BigDecimal getTaxShopping() {
+    return taxShopping;
+  }
+
+  public void shareAmmount() {
+    ServiceValue serviceValue = getItem().getServiceValue();
+    ammoutVah = getItem().getAmmountToShare().multiply(serviceValue.getValueD());
+    ammountProviders = getItem().getAmmountToShare().multiply(serviceValue.getValueA());
+    ammountClinics = getItem().getAmmountToShare().multiply(serviceValue.getValueB());
+    ammountShopping = getItem().getAmmountToShare().multiply(serviceValue.getValueC());
+    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
+      taxProviders = ammountProviders.divide(getItem().getTotalAreaA(), 2, BigDecimal.ROUND_HALF_UP);
+    }
+    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaB())) {
+      taxClinics = ammountClinics.divide(getItem().getTotalAreaB(), 2, BigDecimal.ROUND_HALF_UP);
+    }
+    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaC())) {
+      taxShopping = ammountShopping.divide(getItem().getTotalAreaC(), 2, BigDecimal.ROUND_HALF_UP);
+    }
+  }
+
+  public void fillSharedFields() {
+    for (EntryValue entryValue : getItem().getValues()) {
+      SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
+      if (sectorDetail != null) {
+        BigDecimal area = sectorDetail.getArea();
+        if (area != null) {
+          switch (sectorDetail.getType()) {
+            case TERCEIROS:
+              entryValue.setValueA(area.multiply(taxProviders));
+              break;
+            case CONSULTORIOS:
+              entryValue.setValueA(area.multiply(taxClinics));
+              break;
+            case SHOPPING:
+              entryValue.setValueA(area.multiply(taxShopping));
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    }
+    computeValues();
   }
 }
