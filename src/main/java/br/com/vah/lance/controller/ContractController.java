@@ -65,6 +65,9 @@ public class ContractController extends AbstractController<Contract> {
   @Override
   public void onLoad() {
     super.onLoad();
+    if (getItem().getId() != null) {
+      onLoadSubject();
+    }
   }
 
   public void onLoadSubject() {

@@ -1,8 +1,10 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
+import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.*;
 import br.com.vah.lance.entity.mv.MvClient;
+import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
@@ -52,11 +54,16 @@ public class EntryController extends AbstractController<Entry> {
 
   private String groupDateStr;
 
+  private Boolean sharedPerArea = false;
+
+  public static final String[] RELATIONS = {"meterValues", "values"};
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     entries = service.retrieveEntriesForUser(loginController.getUser().getId(), LanceUtils.getDateRangeForThisMonth());
+    initLazyModel(service, RELATIONS);
   }
 
   public void filterByDate() {
@@ -134,9 +141,12 @@ public class EntryController extends AbstractController<Entry> {
       setItem(service.prepareNewEntry(loginController.getUser().getId(), serviceId));
       service.computeValues(getItem());
     }
-    //
+    ServiceTypesEnum serviceType = getItem().getService().getType();
+    getItem().getMeterValues();
+    sharedPerArea = ServiceTypesEnum.CP.equals(serviceType) || ServiceTypesEnum.CR.equals(serviceType) || ServiceTypesEnum.CRE.equals(serviceType);
     comment = createComment();
     entryValues = new ArrayList<>(getItem().getValues());
+    shareAmmount();
   }
 
   public void loadGroupByClient() {
@@ -226,13 +236,6 @@ public class EntryController extends AbstractController<Entry> {
     this.groupValues = groupValues;
   }
 
-  public BigDecimal getTaxAreaA() {
-    if (getItem().getTotalAreaA() != null && !BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
-      return getItem().getTotalAreaA().divide(getItem().getTotalAreaA(), 2, BigDecimal.ROUND_HALF_UP);
-    }
-    return null;
-  }
-
   private BigDecimal ammoutVah = BigDecimal.ZERO;
   private BigDecimal ammountProviders = BigDecimal.ZERO;
   private BigDecimal ammountClinics = BigDecimal.ZERO;
@@ -269,20 +272,26 @@ public class EntryController extends AbstractController<Entry> {
     return taxShopping;
   }
 
+  public Boolean getSharedPerArea() {
+    return sharedPerArea;
+  }
+
   public void shareAmmount() {
-    ServiceValue serviceValue = getItem().getServiceValue();
-    ammoutVah = getItem().getAmmountToShare().multiply(serviceValue.getValueD());
-    ammountProviders = getItem().getAmmountToShare().multiply(serviceValue.getValueA());
-    ammountClinics = getItem().getAmmountToShare().multiply(serviceValue.getValueB());
-    ammountShopping = getItem().getAmmountToShare().multiply(serviceValue.getValueC());
-    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
-      taxProviders = ammountProviders.divide(getItem().getTotalAreaA(), 2, BigDecimal.ROUND_HALF_UP);
-    }
-    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaB())) {
-      taxClinics = ammountClinics.divide(getItem().getTotalAreaB(), 2, BigDecimal.ROUND_HALF_UP);
-    }
-    if (!BigDecimal.ZERO.equals(getItem().getTotalAreaC())) {
-      taxShopping = ammountShopping.divide(getItem().getTotalAreaC(), 2, BigDecimal.ROUND_HALF_UP);
+    if (getItem().getAmmountToShare() != null && getItem().getServiceValue() != null) {
+      ServiceValue serviceValue = getItem().getServiceValue();
+      ammoutVah = getItem().getAmmountToShare().multiply(serviceValue.getValueD());
+      ammountProviders = getItem().getAmmountToShare().multiply(serviceValue.getValueA());
+      ammountClinics = getItem().getAmmountToShare().multiply(serviceValue.getValueB());
+      ammountShopping = getItem().getAmmountToShare().multiply(serviceValue.getValueC());
+      if (!BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
+        taxProviders = ammountProviders.divide(getItem().getTotalAreaA(), 2, BigDecimal.ROUND_HALF_UP);
+      }
+      if (!BigDecimal.ZERO.equals(getItem().getTotalAreaB())) {
+        taxClinics = ammountClinics.divide(getItem().getTotalAreaB(), 2, BigDecimal.ROUND_HALF_UP);
+      }
+      if (!BigDecimal.ZERO.equals(getItem().getTotalAreaC())) {
+        taxShopping = ammountShopping.divide(getItem().getTotalAreaC(), 2, BigDecimal.ROUND_HALF_UP);
+      }
     }
   }
 
@@ -305,6 +314,57 @@ public class EntryController extends AbstractController<Entry> {
             default:
               break;
           }
+        }
+      }
+    }
+    computeValues();
+  }
+
+
+  private Map<ConsumptionMeter, BigDecimal> outPeakValues = new HashMap<>();
+  private Map<ConsumptionMeter, BigDecimal> peakValues = new HashMap<>();
+
+  public Map<ConsumptionMeter, BigDecimal> getOutPeakValues() {
+    return outPeakValues;
+  }
+
+  public Map<ConsumptionMeter, BigDecimal> getPeakValues() {
+    return peakValues;
+  }
+
+  public void updateMeterTotalValues() {
+    outPeakValues = new HashMap<>();
+    peakValues = new HashMap<>();
+    ServiceValue serviceValue = getItem().getServiceValue();
+    BigDecimal outPeakValue = serviceValue.getValueA();
+    BigDecimal outPeakShare = serviceValue.getValueB();
+    BigDecimal peakValue = serviceValue.getValueC();
+    BigDecimal peakShare = serviceValue.getValueD();
+
+    for (EntryMeterValue meterValue : getItem().getMeterValues()) {
+      BigDecimal delta = meterValue.getCurrentValue().subtract(meterValue.getPreviousValue());
+      BigDecimal meterOutPeakValue = delta.multiply(outPeakShare).multiply(outPeakValue);
+      BigDecimal meterPeakValue = delta.multiply(peakShare).multiply(peakValue
+      );
+      outPeakValues.put(meterValue.getConsumptionMeter(), meterOutPeakValue);
+      peakValues.put(meterValue.getConsumptionMeter(), meterPeakValue);
+    }
+
+  }
+
+
+  public void fillSectorMeterFields() {
+    updateMeterTotalValues();
+    for (EntryValue entryValue : getItem().getValues()) {
+      entryValue.setValueA(BigDecimal.ZERO);
+      MvSector sectorDetail = entryValue.getContractSector().getSector();
+      Set<SectorConsumptionMeter> entryValueMeters = sectorDetail.getMeters();
+      for (SectorConsumptionMeter sectorConsumptionMeter : entryValueMeters) {
+        ConsumptionMeter itemMeter = sectorConsumptionMeter.getConsumptionMeter();
+        BigDecimal meterOutPeakValue = outPeakValues.get(itemMeter);
+        BigDecimal meterPeakValue = peakValues.get(itemMeter);
+        if (meterOutPeakValue != null && meterPeakValue != null) {
+          entryValue.setValueA(entryValue.getValueA().add(meterOutPeakValue).add(meterPeakValue));
         }
       }
     }

@@ -102,6 +102,8 @@ public class LoginController implements Serializable {
       /**
        * Realiza autenticação
        */
+      this.username = this.username.toLowerCase();
+
       request.login(username, password);
 
       /**

@@ -9,9 +9,6 @@
     <p:dataTable id="commentsTbl" var="comment"
                  value="#{entryController.item.comments}"
                  emptyMessage="Sem comentários" styleClass="table-left-header">
-      <f:facet name="header">
-        <h:outputText value="Comentários"/>
-      </f:facet>
       <p:column headerText="Autor" styleClass="left-align" width="200">
         <h:outputText value="#{comment.author.login}"/>
       </p:column>
