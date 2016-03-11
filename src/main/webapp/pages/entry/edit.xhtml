@@ -218,8 +218,11 @@
 
             <p:tab title="Medidores" rendered="#{entryController.item.service.type == 'E'}">
               <p:commandButton id="updateSectorValues" value="Atualizar setores"
-                               action="#{entryController.fillSectorMeterFields}" update="tabView" onclick="PF('tabView').select(0);"/>
-              <p:commandButton id="meterImportCSVBtn" value="Importar CSV" styleClass="margin-left"/>
+                               action="#{entryController.fillSectorMeterFields}" update="tabView"
+                               onclick="PF('tabView').select(0);"/>
+              <p:fileUpload mode="advanced" skinSimple="false"
+                            fileUploadListener="#{entryController.uploadMeterValues}" uploadLabel="Submeter" label="Importar CSV"
+                            cancelLabel="Cancelar" styleClass="margin-top" update="metersGrid"/>
               <p:dataTable id="metersGrid" value="#{entryController.item.meterValues}" var="meter"
                            rendered="#{entryController.item.service.type == 'E'}"
                            styleClass="table-left-header margin-top">

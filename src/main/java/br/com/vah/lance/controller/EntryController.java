@@ -9,11 +9,17 @@ import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
 import br.com.vah.lance.util.LanceUtils;
+import com.opencsv.CSVReader;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -274,6 +280,45 @@ public class EntryController extends AbstractController<Entry> {
 
   public Boolean getSharedPerArea() {
     return sharedPerArea;
+  }
+
+  public void uploadMeterValues(FileUploadEvent evt) {
+    UploadedFile file = evt.getFile();
+    byte[] data = file.getContents();
+    CSVReader reader = new CSVReader(new InputStreamReader(new ByteArrayInputStream(data)));
+    try {
+      Map<String, BigDecimal[]> map = new HashMap<>();
+      Integer line = 1;
+      try {
+        for (String[] str : reader.readAll()) {
+          String code = str[0];
+          BigDecimal prevRead = new BigDecimal(str[1]);
+          BigDecimal currRead = new BigDecimal(str[2]);
+          BigDecimal[] array = {prevRead, currRead};
+          map.put(code, array);
+          line++;
+        }
+        Integer importedValues = 0;
+        Integer ignoredValues = 0;
+        for (EntryMeterValue entryMeter : getItem().getMeterValues()) {
+          BigDecimal[] csvValues = map.get(entryMeter.getConsumptionMeter().getCode());
+          if (csvValues != null) {
+            entryMeter.setPreviousValue(csvValues[0]);
+            entryMeter.setCurrentValue(csvValues[1]);
+            importedValues++;
+          }
+        }
+        ignoredValues = map.size() - importedValues;
+        addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", String.format("Importação realizada com sucesso: %d importados, %d ignorados.", importedValues, ignoredValues)), false);
+      } catch (Exception e) {
+        addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", String.format("Erro na importação: linha %s.", line)), false);
+      }
+
+      for(EntryMeterValue meterValue : getItem().getMeterValues());
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", String.format("Erro na importação:\n%s", e.getMessage())), false);
+    }
+
   }
 
   public void shareAmmount() {
