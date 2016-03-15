@@ -71,7 +71,7 @@
           <h:panelGroup id="servicesContract"
                         styleClass="services-contract-panel" layout="block">
 
-            <p:dataList id="servicesContractDataList" var="service"
+            <p:dataList id="contractSectorsDataList" var="contractSector"
                         emptyMessage="Sem setores" type="none"
                         rowIndexVar="idx"
                         value="#{contractController.item.contractSectors.toArray()}">
@@ -91,18 +91,18 @@
                           update="@(.servicePnl#{idx})"/>
 
                   <lance:dataTable id="serviceDlgTable"
-                                   controller="#{contractController.serviceControllers[service.sector.id]}"
+                                   controller="#{contractController.serviceControllers[contractSector.sector.id]}"
                                    renderAddBtn="false"
                                    renderActionColumn="false">
                     <p:column id="selector" style="text-align: center;" width="50">
                       <p:commandLink ajax="true"
-                                     action="#{contractController.toggleService(service)}"
+                                     action="#{contractController.toggleService(contractSector)}"
                                      styleClass="action-link" process="@this"
                                      update="@(.action-link)">
                         <f:setPropertyActionListener value="#{item}"
                                                      target="#{contractController.serviceBean}"/>
                         <h:panelGroup
-                          styleClass="fa fa#{service.services.contains(item) ? '-check' : ''}-square-o"/>
+                          styleClass="fa fa#{contractSector.services.contains(item) ? '-check' : ''}-square-o"/>
                       </p:commandLink>
                     </p:column>
                     <p:column id="detail" sortBy="#{item.title}"
@@ -124,16 +124,16 @@
                   <p:ajax event="close" update="@(.tenant#{idx})"
                           process="@this"/>
                   <lance:dataTable id="tenantDlgTable"
-                                   controller="#{contractController.clientControllers[service.sector.id]}"
+                                   controller="#{contractController.clientControllers[contractSector.sector.id]}"
                                    renderAddBtn="false"
                                    renderActionColumn="false">
                     <p:column style="text-align: center;" width="50">
                       <p:commandLink ajax="true" styleClass="action-link"
                                      process="@this" update="@(.action-link)">
                         <f:setPropertyActionListener value="#{item}"
-                                                     target="#{service.tenant}"/>
+                                                     target="#{contractSector.tenant}"/>
                         <h:panelGroup
-                          styleClass="fa fa#{(service.tenant.id == item.id) ? '-dot' : ''}-circle-o"/>
+                          styleClass="fa fa#{(contractSector.tenant.id == item.id) ? '-dot' : ''}-circle-o"/>
                       </p:commandLink>
                     </p:column>
                     <p:column sortBy="#{item.title}" headerText="Descrição"
@@ -150,7 +150,7 @@
                 </p:dialog>
 
                 <p:panel toggleable="true"
-                         header="#{service.sector == null ? 'Sem setor' : service.sector.title}"
+                         header="#{contractSector.sector == null ? 'Sem setor' : contractSector.sector.title}"
                          styleClass="tenant#{idx}">
                   <h:panelGroup id="servicePnl"
                                 styleClass="servicePnl#{idx}">
@@ -158,7 +158,7 @@
                       <uilance:manyToOne id="tenant"
                                          dialog="tenantDlg#{idx}"
                                          editing="#{contractController.editing}" label="Inquilino"
-                                         required="false" title="title" value="#{service.tenant}"/>
+                                         required="false" title="title" value="#{contractSector.tenant}"/>
                     </h:panelGrid>
                     <p:commandButton id="serviceAddBtn"
                                      onclick="PF('serviceDlg#{idx}').show()"
@@ -166,7 +166,7 @@
                                      rendered="#{contractController.editing}"
                                      style="margin-top: 10px"/>
                     <p:dataTable id="serviceTable" var="item"
-                                 value="#{service.services}" lazy="true"
+                                 value="#{contractSector.services}" lazy="true"
                                  emptyMessage="Sem serviços relacionados"
                                  style="margin-top: 10px">
                       <p:column headerText="Serviços" style="text-align: left;">
@@ -176,7 +176,7 @@
                                 style="text-align: center;"
                                 rendered="#{contractController.editing}">
                         <p:commandLink id="serviceTableRemoveBtn"
-                                       action="#{contractController.toggleService(item)}"
+                                       action="#{contractController.toggleService(contractSector)}"
                                        ajax="true" styleClass="action-link" update="@form"
                                        process="@this">
                           <f:setPropertyActionListener value="#{item}"

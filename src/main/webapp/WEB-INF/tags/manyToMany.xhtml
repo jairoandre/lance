@@ -8,18 +8,18 @@
     <p:commandButton id="#{id}_addBtn" onclick="PF('#{dialog}').show()"
                      value="#{addBtnLabel == null ? 'Relacionar' : addBtnLabel}"
                      rendered="#{editing}"/>
-    <p:dataTable id="#{id}_table" var="item" value="#{items}" lazy="true"
+    <p:dataTable id="#{id}_table" var="item" value="#{items}"
                  emptyMessage="#{emptyMessage == null ? 'Sem items' : emptyMessage}"
                  style="margin-top: 10px">
-      <ui:insert>
-        <p:column headerText="Id" style="text-align: left;" width="100">
+        <ui:insert/>
+        <p:column headerText="Id" style="text-align: left;" width="100" rendered="#{showDefaultColumns == null ? true : showDefaultColumns}">
           <h:outputText value="#{item.id}"/>
         </p:column>
-        <p:column headerText="#{columnHeader}" style="text-align: left;">
+        <p:column headerText="#{columnHeader}" style="text-align: left;" rendered="#{showDefaultColumns == null ? true : showDefaultColumns}">
           <h:outputText value="#{item.title}"/>
         </p:column>
         <p:column width="100" headerText="Remover"
-                  style="text-align: center;" rendered="#{editing}">
+                  style="text-align: center;" rendered="#{editing and (showDefaultColumns == null ? true : showDefaultColumns)}">
           <p:commandLink id="#{id}_removeBtn"
                          action="#{controller[toggleAction]}" ajax="true"
                          styleClass="action-link" update="@form" process="@this">
@@ -27,7 +27,6 @@
             <span class="fa fa-trash"/>
           </p:commandLink>
         </p:column>
-      </ui:insert>
     </p:dataTable>
   </h:panelGroup>
 

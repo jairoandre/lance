@@ -54,7 +54,7 @@
                               controller="#{consumptionMeterController}" dialog="addSectorDlg"
                               editing="#{consumptionMeterController.editing}" emptyMessage="Sem setores"
                               items="#{consumptionMeterController.getItem().sectors.toArray()}"
-                              toggleAction="toggle">
+                              toggleAction="toggle" showDefaultColumns="false">
             <p:column headerText="Setor" style="text-align: left;">
               <h:outputText value="#{item.sector.title}"/>
             </p:column>

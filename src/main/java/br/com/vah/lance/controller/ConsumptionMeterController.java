@@ -27,7 +27,7 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 
 	private MvSector sector;
 
-	private ConsumptionMeterController itemToRemove;
+	private SectorConsumptionMeter itemToRemove;
 
 	private Set<MvSector> sectors = new LinkedHashSet<>();
 
@@ -85,11 +85,11 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 		this.sectors = sectors;
 	}
 
-	public ConsumptionMeterController getItemToRemove() {
+	public SectorConsumptionMeter getItemToRemove() {
 		return itemToRemove;
 	}
 
-	public void setItemToRemove(ConsumptionMeterController itemToRemove) {
+	public void setItemToRemove(SectorConsumptionMeter itemToRemove) {
 		this.itemToRemove = itemToRemove;
 	}
 

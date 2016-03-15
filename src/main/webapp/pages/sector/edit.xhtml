@@ -46,10 +46,12 @@
 				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
 													 editing="#{sectorController.editing}" label="Conta contábil"
 													 required="false" title="title"
+													 rendered="#{sectorController.item.sectorDetail != null}"
 													 value="#{sectorController.item.sectorDetail.ledgerAccount}"/>
 				<uilance:selectOneEnum id="type" label="Tipo de setor"
 															 value="#{sectorController.item.sectorDetail.type}"
 															 editing="#{sectorController.editing}" required="true"
+															 rendered="#{sectorController.item.sectorDetail != null}"
 															 options="#{sectorController.types}"/>
 			</lance:editForm>
 
