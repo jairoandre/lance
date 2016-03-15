@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vah.lance.constant.SectorTypeEnum;
+import br.com.vah.lance.entity.SectorDetail;
 import br.com.vah.lance.entity.mv.MvSector;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.SectorService;
@@ -30,6 +31,14 @@ public class SectorController extends AbstractController<MvSector> {
 		setItem(createNewItem());
 		initLazyModel(service);
 		types = SectorTypeEnum.values();
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if(getItem().getSectorDetail() == null) {
+			getItem().setSectorDetail(new SectorDetail(getItem()));
+		}
 	}
 
 	@Override

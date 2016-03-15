@@ -40,6 +40,13 @@ public class SectorDetail extends BaseEntity {
   @Column(name = "CD_TIPO")
   private SectorTypeEnum type;
 
+  public SectorDetail() {
+  }
+
+  public SectorDetail(MvSector sector) {
+    this.sector = sector;
+  }
+
   public static String getALL() {
     return ALL;
   }
