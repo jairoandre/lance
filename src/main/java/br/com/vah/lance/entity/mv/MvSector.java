@@ -36,7 +36,7 @@ public class MvSector extends BaseEntity {
   @OneToOne(mappedBy = "sector", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
   private SectorDetail sectorDetail = new SectorDetail();
 
-  @OneToMany(mappedBy = "sector", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "sector", fetch = FetchType.EAGER)
   private Set<SectorConsumptionMeter> meters;
 
   /**

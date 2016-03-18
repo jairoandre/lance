@@ -37,7 +37,7 @@ public class ConsumptionMeter extends BaseEntity {
   @Column(name = "CD_TIPO")
   private ServiceTypesEnum type;
 
-  @OneToMany(mappedBy = "consumptionMeter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "consumptionMeter", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<SectorConsumptionMeter> sectors;
 
   public ConsumptionMeter() {

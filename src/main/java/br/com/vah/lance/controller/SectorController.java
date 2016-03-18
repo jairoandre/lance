@@ -25,11 +25,13 @@ public class SectorController extends AbstractController<MvSector> {
 
 	private SectorTypeEnum[] types;
 
+	private static final String[] RELATIONS = {"meters"};
+
 	@PostConstruct
 	public void init() {
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
-		initLazyModel(service);
+		initLazyModel(service, RELATIONS);
 		types = SectorTypeEnum.values();
 	}
 

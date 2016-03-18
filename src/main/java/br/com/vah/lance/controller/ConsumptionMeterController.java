@@ -38,6 +38,7 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 		logger.info(this.getClass().getSimpleName() + " created.");
 		setItem(createNewItem());
 		initLazyModel(service, RELATIONS);
+		getLazyModel().getSearchParams().setOrderBy("code");
 	}
 
 	@Override
@@ -96,6 +97,7 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 	@Override
 	public String search() {
 		getLazyModel().getSearchParams().getParams().put("id", null);
+		getLazyModel().getSearchParams().getParams().put("code", getSearchTerm());
 		try {
 			Long convertedValue = Long.valueOf(getSearchTerm());
 			getLazyModel().getSearchParams().getParams().put("id", convertedValue);
@@ -105,6 +107,11 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 			 */
 		}
 		return super.search();
+	}
+
+	@Override
+	public String doSave() {
+		return super.doSave();
 	}
 
 	public void toggle() {

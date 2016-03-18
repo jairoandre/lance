@@ -13,16 +13,16 @@
                          renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
 
           <p:column sortBy="#{item.code}" headerText="Código"
-                    style="text-align: left;">
+                    style="text-align: left;" width="150">
             <h:outputText value="#{item.code}"/>
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Título"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
           </p:column>
-          <p:column sortBy="#{item.detail}" headerText="Detalhes"
-                    style="text-align: left;">
-            <h:outputText value="#{item.detail}"/>
+          <p:column sortBy="#{item.title}" headerText="Qtd. setores"
+                    style="text-align: left;" width="100">
+            <h:outputText value="#{item.sectors.size()}"/>
           </p:column>
 
         </lance:dataTable>
