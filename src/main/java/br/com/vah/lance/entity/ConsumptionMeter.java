@@ -3,6 +3,7 @@ package br.com.vah.lance.entity;
 import br.com.vah.lance.constant.ServiceTypesEnum;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class ConsumptionMeter extends BaseEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "CD_TIPO")
   private ServiceTypesEnum type;
+
+  @Column(name = "VL_FATOR")
+  private BigDecimal factor;
 
   @OneToMany(mappedBy = "consumptionMeter", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<SectorConsumptionMeter> sectors;
@@ -92,6 +96,14 @@ public class ConsumptionMeter extends BaseEntity {
 
   public void setType(ServiceTypesEnum type) {
     this.type = type;
+  }
+
+  public BigDecimal getFactor() {
+    return factor;
+  }
+
+  public void setFactor(BigDecimal factor) {
+    this.factor = factor;
   }
 
   @Override

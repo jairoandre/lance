@@ -34,6 +34,10 @@
                 styleClass="fa fa#{(contractController.item.subject.id == item.id) ? '-dot' : ''}-circle-o"/>
             </p:commandLink>
           </p:column>
+          <p:column sortBy="#{item.id}" headerText="Cód"
+                    styleClass="left-align" width="100">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
           <p:column sortBy="#{item.title}" headerText="Descrição"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
@@ -150,8 +154,8 @@
                 </p:dialog>
 
                 <p:panel toggleable="true"
-                         header="#{contractSector.sector == null ? 'Sem setor' : contractSector.sector.title}"
-                         styleClass="tenant#{idx}">
+                         header="#{contractSector.sector.id} - #{contractSector.sector.title}"
+                         styleClass="tenant#{idx}" rendered="#{contractSector.sector != null}">
                   <h:panelGroup id="servicePnl"
                                 styleClass="servicePnl#{idx}">
                     <h:panelGrid id="servicePnlGrid" columns="3">

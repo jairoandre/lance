@@ -15,30 +15,37 @@
                rendered="#{info != null}"/>
   </h:panelGroup>
   <h:panelGroup rendered="#{rendered == null ? true : rendered}">
-    <h:outputText value="#{value}"
-                  rendered="#{editing == null ? false : !editing}">
-      <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
-    </h:outputText>
-    <p:inputText id="#{id}" value="#{value}"
-                 required="#{required == null ? false : required}" label="#{label}"
-                 rendered="#{editing == null ? true : editing}"
-                 styleClass="#{id}"
-                 readonly="#{readonly == null ? false : readonly}">
-      <ui:insert/>
-      <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
-    </p:inputText>
-    <script>
-      $(function () {
-        $('.#{id}').maskMoney({
-          allowNegative: true,
-          allowZero: true,
-          thousands: '.',
-          decimal: ',',
-          affixesStay: true,
-          precision: #{precision == null ? 2 : precision}
-        });
-      })
-    </script>
+    <h:panelGroup rendered="#{editingBtns == null ? false : true}">
+      <h:outputText value="#{value}">
+        <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
+      </h:outputText>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{editingBtns == null ? true : false}">
+      <h:outputText value="#{value}"
+                    rendered="#{editing == null ? false : !editing}">
+        <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
+      </h:outputText>
+      <p:inputText id="#{id}" value="#{value}"
+                   required="#{required == null ? false : required}" label="#{label}"
+                   rendered="#{editing == null ? true : editing}"
+                   styleClass="#{id}"
+                   readonly="#{readonly == null ? false : readonly}">
+        <ui:insert/>
+        <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
+      </p:inputText>
+      <script>
+        $(function () {
+          $('.#{id}').maskMoney({
+            allowNegative: true,
+            allowZero: true,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true,
+            precision: #{precision == null ? 2 : precision}
+          });
+        })
+      </script>
+    </h:panelGroup>
   </h:panelGroup>
   <p:message for="#{id}"
              rendered="#{(renderMessage == null ? true : renderMessage) and (rendered == null ? true : rendered)}"/>

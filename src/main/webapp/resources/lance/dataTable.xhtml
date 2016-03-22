@@ -52,6 +52,8 @@
         <composite:renderFacet name="customAction"/>
         <p:commandLink id="detailAction"
                        action="#{cc.attrs.controller.detail(item)}"
+                       ajax="false"
+                       onclick="PF('changePage').show()"
                        rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}">
           <span class="fa fa-search"/>
         </p:commandLink>
@@ -60,6 +62,8 @@
         <span/>
         <p:commandLink id="editAction"
                        action="#{cc.attrs.controller.edit(item)}"
+                       ajax="false"
+                       onclick="PF('changePage').show()"
                        rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}">
           <span class="fa fa-pencil"/>
         </p:commandLink>
@@ -93,7 +97,7 @@
     <br/>
     <h:panelGroup layout="block">
       <p:inputText id="deleteConfirmAnswer" value="#{cc.attrs.controller.deleteConfirmAnswer}">
-        <p:ajax event="change" process="@this" update="deleteConfirmBtn"/>
+        <p:ajax event="keyup" process="@this" update="deleteConfirmBtn" global="false"/>
       </p:inputText>
     </h:panelGroup>
     <f:facet name="footer">

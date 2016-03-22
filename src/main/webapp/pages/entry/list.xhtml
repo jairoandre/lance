@@ -52,6 +52,8 @@
           </p:column>
           <p:column headerText="Ações" width="100" styleClass="action-link">
             <p:commandLink id="detailEntry"
+                           ajax="false"
+                           onclick="PF('changePage').show()"
                            action="#{entryController.detail(entry)}">
               <span class="fa fa-search"/>
             </p:commandLink>
@@ -60,6 +62,8 @@
             <span/>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,MANAGER')}">
               <p:commandLink id="editEntry"
+                             ajax="false"
+                             onclick="PF('changePage').show()"
                              action="#{entryController.edit(entry)}">
                 <span class="fa fa-pencil"/>
               </p:commandLink>
@@ -69,6 +73,8 @@
             </h:panelGroup>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
               <p:commandLink id="validateEntry"
+                             ajax="false"
+                             onclick="PF('changePage').show()"
                              action="#{entryController.validate(entry)}"
                              disabled="#{entry.status != 'L' and entry.status != 'F' and entry.status != 'M'}">
                 <span class="fa fa-gavel"/>
@@ -79,6 +85,8 @@
             </h:panelGroup>
             <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
               <p:commandLink id="sendEditEntry"
+                             ajax="false"
+                             onclick="PF('changePage').show()"
                              action="#{entryController.edit(entry)}"
                              disabled="#{entry.status != 'V'}">
                 <span class="fa fa-calculator"/>

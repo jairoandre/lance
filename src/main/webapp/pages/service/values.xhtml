@@ -44,7 +44,7 @@
     <p:column sortBy="#{value.valueA}" headerText="Tarifa fora de ponta" styleClass="left-align" width="100"
               rendered="#{serviceController.item.type == 'E'}">
       <h:outputText value="#{value.valueA}">
-        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+        <f:convertNumber minFractionDigits="6" pattern="R$ #,##0.000000"/>
       </h:outputText>
     </p:column>
     <p:column sortBy="#{value.valueB}" headerText="% fora de ponta" styleClass="left-align" width="75"
@@ -56,7 +56,7 @@
     <p:column sortBy="#{value.valueC}" headerText="Tarifa de ponta" styleClass="left-align" width="100"
               rendered="#{serviceController.item.type == 'E'}">
       <h:outputText value="#{value.valueC}">
-        <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+        <f:convertNumber minFractionDigits="6" pattern="R$ #,##0.000000"/>
       </h:outputText>
     </p:column>
     <p:column sortBy="#{value.valueD}" headerText="% de ponta" styleClass="left-align" width="75"

@@ -39,7 +39,9 @@
         <uilance:inputText id="detail" label="Detalhes"
                            value="#{consumptionMeterController.item.detail}"
                            editing="#{consumptionMeterController.editing}"/>
-
+        <uilance:inputNumber id="factor" label="Fator multiplicação"
+                           value="#{consumptionMeterController.item.factor}"
+                           editing="#{consumptionMeterController.editing}"/>
         <uilance:selectOne id="type" label="Tipo"
                            value="#{consumptionMeterController.item.type}" required="true"
                            displayValue="#{consumptionMeterController.item.type.label}"

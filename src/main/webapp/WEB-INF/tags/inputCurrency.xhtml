@@ -2,6 +2,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.org/ui">
   <h:panelGroup rendered="#{label != null and (rendered == null ? true : rendered)}">
     <h:outputLabel for="#{id}" value="#{label}" style="font-weight:bold"/>
@@ -14,32 +15,53 @@
     <p:tooltip id="#{id}InfoTooltip" for="#{id}Info" value="#{info}"
                rendered="#{info != null}"/>
   </h:panelGroup>
-  <h:panelGroup rendered="#{rendered == null ? true : rendered}">
-    <h:outputText value="#{value}"
-                  rendered="#{editing == null ? false : !editing}">
-      <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
-    </h:outputText>
-    <p:inputText id="#{id}" value="#{value}"
-                 required="#{required == null ? false : required}" label="#{label}"
-                 rendered="#{editing == null ? true : editing}"
-                 styleClass="#{id}"
-                 readonly="#{readonly == null ? false : readonly}">
-      <ui:insert/>
-      <f:convertNumber minFractionDigits="2"
-                       pattern="R$ #,##0.00"/>
-    </p:inputText>
-    <script>
-      $(function () {
-        $('.#{id}').maskMoney({
-          prefix: "R$ ",
-          allowNegative: true,
-          allowZero: true,
-          thousands: '.',
-          decimal: ',',
-          affixesStay: true
-        });
-      })
-    </script>
+  <h:panelGroup id="#{id}InputPnl" rendered="#{rendered == null ? true : rendered}" layout="block">
+    <h:panelGroup rendered="#{editingBtns == null ? false : (editingBtns and !flagsController.editingCurrency)}">
+      <h:outputText value="#{value}">
+        <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="#{precision == null ? 2 : precision}"
+                         pattern="#{pattern == null ? 'R$ #,##0.00' : pattern}"/>
+      </h:outputText>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{editingBtns == null ? true : (!editingBtns or flagsController.editingCurrency)}">
+      <h:outputText value="#{value}"
+                    rendered="#{editing == null ? false : !editing}">
+        <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="#{precision == null ? 2 : precision}"
+                         pattern="#{pattern == null ? 'R$ #,##0.00' : pattern}"/>
+      </h:outputText>
+      <p:inputText id="#{id}" value="#{value}"
+                   required="#{required == null ? false : required}" label="#{label}"
+                   rendered="#{editing == null ? true : editing}"
+                   styleClass="#{id}"
+                   readonly="#{readonly == null ? false : readonly}">
+        <ui:insert/>
+        <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"
+                         pattern="#{pattern == null ? 'R$ #,##0.00' : pattern}"/>
+      </p:inputText>
+      <script>
+        $(function () {
+          $('.#{id}').maskMoney({
+            prefix: "R$ ",
+            allowNegative: true,
+            precision: #{precision == null ? 2 : precision},
+            allowZero: true,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true
+          });
+        })
+      </script>
+    </h:panelGroup>
+    <h:panelGroup id="#{id}CurrencyBtns" rendered="#{editingBtns == null ? false : editingBtns}" style="float: right;">
+      #{thisEditing}
+      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{!flagsController.editingCurrency}">
+        <span class="fa fa-pencil"/>
+        <f:setPropertyActionListener value="#{true}" target="#{flagsController.editingCurrency}"/>
+      </p:commandLink>
+      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{flagsController.editingCurrency}">
+        <span class="fa fa-check"/>
+        <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingCurrency}" />
+      </p:commandLink>
+    </h:panelGroup>
   </h:panelGroup>
   <p:message for="#{id}"
              rendered="#{(renderMessage == null ? true : renderMessage) and (rendered == null ? true : rendered)}"/>

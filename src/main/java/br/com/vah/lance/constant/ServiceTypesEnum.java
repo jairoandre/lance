@@ -6,6 +6,7 @@ public enum ServiceTypesEnum {
   C("Cobrança"),
   E("Condomínio - Indiv. Energia"),
   G("Condomínio - Indiv. Gás"),
+  TR("Condomínio - Taxado"),
   CI("Condomínio - Individual"),
   CR("Condomínio - Rateio"),
   CP("Condomínio - Rateio Parcial"),
@@ -25,6 +26,8 @@ public enum ServiceTypesEnum {
     switch (this) {
       case T:
         return "Variável";
+      case TR:
+        return "Valor de taxa";
       case V:
         return "Valor de venda";
       case E:

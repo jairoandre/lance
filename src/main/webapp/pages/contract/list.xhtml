@@ -12,35 +12,18 @@
                          renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
                          renderDeleteAction="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
                          renderAddBtn="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
-
+          <p:column headerText="Cód. cliente"
+                    style="text-align: left;" width="120">
+            <h:outputText value="#{item.subject.id}"/>
+          </p:column>
           <p:column sortBy="#{item.title}" headerText="Título"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
           </p:column>
-          <p:column sortBy="#{item.beginDate}" headerText="Data de início"
-                    style="text-align: left;">
-            <h:outputText value="#{item.beginDate}">
-              <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </h:outputText>
+          <p:column headerText="Setores"
+                    style="text-align: left;" width="60" styleClass="left-align">
+            <h:outputText value="#{item.contractSectors.size()}"/>
           </p:column>
-          <p:column sortBy="#{item.endDate}" headerText="Data de término"
-                    style="text-align: left;">
-            <h:outputText value="#{item.endDate}">
-              <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </h:outputText>
-          </p:column>
-          <p:column sortBy="#{item.changeDate}" headerText="Data de reajuste"
-                    style="text-align: left;">
-            <h:outputText value="#{item.changeDate}">
-              <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </h:outputText>
-          </p:column>
-          <p:column sortBy="#{item.subject.title}" headerText="Contratante"
-                    style="text-align: left;">
-            <h:outputText
-              value="#{item.subject == null ? '-' : item.subject.title}"/>
-          </p:column>
-
         </lance:dataTable>
       </p:panel>
     </h:form>

@@ -33,7 +33,7 @@
                                  editing="true"/>
               <uilance:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueA}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E'}"/>
+                                     rendered="#{serviceController.item.type == 'E'}" precision="6" pattern="R$ #,##0.000000"/>
               <uilance:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueB}" editing="true"
                                      rendered="#{serviceController.item.type == 'E'}">
@@ -41,7 +41,7 @@
               </uilance:inputPercentage>
               <uilance:inputCurrency id="peakValue" label="Tarifa de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueC}" editing="true"
-                                     rendered="#{serviceController.item.type == 'E'}"/>
+                                     rendered="#{serviceController.item.type == 'E'}" precision="6" pattern="R$ #,##0.000000"/>
               <uilance:inputPercentage id="peakPercent" label="% Hora de ponta" required="true"
                                      value="#{serviceController.serviceValue.valueD}" editing="true"
                                      rendered="#{serviceController.item.type == 'E'}"/>

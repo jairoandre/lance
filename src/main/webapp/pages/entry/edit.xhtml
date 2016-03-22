@@ -158,8 +158,17 @@
             <p:tab id="sectorTab" title="Setores">
               <p:dataTable id="dataTable" var="entryValue"
                            value="#{entryController.entryValues}" styleClass="table-left-header margin-top">
-                <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align">
+                <p:column sortBy="#{entryValue.contractSector.sector.id}" headerText="Cód." styleClass="left-align"
+                          width="75">
+                  <h:outputText value="#{entryValue.contractSector.sector.id}"/>
+                </p:column>
+                <p:column sortBy="#{entryValue.contractSector.sector.title}" headerText="Setor" styleClass="left-align"
+                          width="250">
                   <h:outputText value="#{entryValue.contractSector.sector.title}"/>
+                </p:column>
+                <p:column sortBy="#{entryValue.contractSector.contract.subject.title}" headerText="Cliente"
+                          styleClass="left-align">
+                  <h:outputText value="#{entryValue.contractSector.contract.subject.title}"/>
                 </p:column>
                 <p:column headerText="Categoria" styleClass="left-align" width="100"
                           rendered="#{entryController.sharedPerArea}">
@@ -176,19 +185,13 @@
                   </h:outputText>
                 </p:column>
                 <p:column headerText="#{entryController.item.service.type.compALabel}" styleClass="left-align"
-                          width="150">
+                          width="200">
                   <uilance:inputCurrency id="compValueA" renderMessage="false"
                                          value="#{entryValue.valueA}" editing="#{entryController.editing}"
-                                         rendered="#{entryController.item.service.type != 'E'}">
-                    <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
+                                         editingBtns="true">
+                    <p:ajax event="change" listener="#{entryController.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uilance:inputCurrency>
-                  <uilance:inputNumber id="compValueANumber" renderMessage="false"
-                                       value="#{entryValue.valueA}" editing="#{entryController.editing}"
-                                       rendered="#{entryController.item.service.type == 'E'}">
-                    <p:ajax listener="#{entryController.computeValues}" event="change" process="@this"
-                            update=":#{p:component('totalValue')} itemValue"/>
-                  </uilance:inputNumber>
                 </p:column>
                 <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align"
                           width="150"
@@ -218,34 +221,54 @@
 
             <p:tab title="Medidores" rendered="#{entryController.item.service.type == 'E'}">
               <p:commandButton id="updateSectorValues" value="Atualizar setores"
-                               action="#{entryController.fillSectorMeterFields}" update="tabView"
-                               onclick="PF('tabView').select(0);"/>
+                               action="#{entryController.fillSectorMeterFields}" update="@form"
+                               oncomplete="PF('tabView').select(0);" ajax="true">
+                <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingCurrency}"/>
+              </p:commandButton>
               <p:fileUpload mode="advanced" skinSimple="false"
-                            fileUploadListener="#{entryController.uploadMeterValues}" uploadLabel="Submeter" label="Importar CSV"
-                            cancelLabel="Cancelar" styleClass="margin-top" update="metersGrid"/>
+                            fileUploadListener="#{entryController.uploadMeterValues}" uploadLabel="Submeter"
+                            label="Importar CSV"
+                            cancelLabel="Cancelar" styleClass="margin-top" update="metersGrid @this">
+                <p:dataTable var="code" value="#{entryController.ignoredMeters}" emptyMessage="Sem itens ignorados"
+                             rendered="#{not empty entryController.ignoredMeters}">
+                  <p:column headerText="Leituras ignoradas" styleClass="left-align">
+                    <h:outputText value="#{code}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:fileUpload>
+
+
               <p:dataTable id="metersGrid" value="#{entryController.item.meterValues}" var="meter"
                            rendered="#{entryController.item.service.type == 'E'}"
                            styleClass="table-left-header margin-top">
                 <p:column headerText="Medidor" styleClass="left-align">
                   <h:outputText value="#{meter.consumptionMeter.code}"/>
                 </p:column>
+                <p:column headerText="Fator multiplicação" styleClass="left-align" width="150">
+                  <h:outputText value="#{meter.consumptionMeter.factor}">
+                    <f:convertNumber minFractionDigits="0"/>
+                  </h:outputText>
+                </p:column>
                 <p:column headerText="Leitura Anterior" styleClass="left-align" width="150">
                   <uilance:inputNumber id="previousValue" renderMessage="false"
-                                       value="#{meter.previousValue}" editing="#{entryController.editing}">
+                                       value="#{meter.previousValue}" editing="#{entryController.editing}"
+                                       editingBtns="true" precision="0">
                     <p:ajax event="keyup" process="@this" update="deltaReads"/>
                     <p:ajax event="change" process="@this" update="deltaReads"/>
                   </uilance:inputNumber>
                 </p:column>
                 <p:column headerText="Leitura Atual" styleClass="left-align" width="150">
                   <uilance:inputNumber id="currentValue" renderMessage="false"
-                                       value="#{meter.currentValue}" editing="#{entryController.editing}">
+                                       value="#{meter.currentValue}" editing="#{entryController.editing}"
+                                       editingBtns="true" precision="0">
                     <p:ajax event="keyup" process="@this" update="deltaReads"/>
                     <p:ajax event="change" process="@this" update="deltaReads"/>
                   </uilance:inputNumber>
                 </p:column>
                 <p:column headerText="Consumo" styleClass="left-align" width="150">
-                  <h:outputText id="deltaReads" value="#{meter.currentValue - meter.previousValue}">
-                    <f:convertNumber minFractionDigits="2" pattern="#,##0.00"/>
+                  <h:outputText id="deltaReads"
+                                value="#{(meter.currentValue - meter.previousValue) * meter.consumptionMeter.factor}">
+                    <f:convertNumber minFractionDigits="0"/>
                   </h:outputText>
                 </p:column>
               </p:dataTable>

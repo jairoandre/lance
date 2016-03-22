@@ -8,7 +8,7 @@
 <h:head>
   <title>Sistema lance</title>
   <h:outputStylesheet library="css" name="default.css"/>
-  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.orange-amber.min.css" />
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.orange-amber.min.css"/>
   <h:outputScript library="js" name="locales.js"/>
   <h:outputScript library="js" name="jquery.maskMoney.min.js"/>
   <h:outputScript library="js" name="particles.min.js"/>
@@ -28,6 +28,11 @@
             closable="false" resizable="false" showHeader="false"
             hideEffect="fade" position="right bottom"
             style="margin: 0 20px 20px 0; font-size: 25px !important;">
+    <span class="fa fa-refresh fa-spin" style=""/>
+  </p:dialog>
+  <p:dialog widgetVar="changePage" modal="true" draggable="false"
+            closable="false" resizable="false" showHeader="false"
+            hideEffect="fade" position="center">
     <span class="fa fa-refresh fa-spin" style=""/>
   </p:dialog>
   <h:panelGroup layout="block" style="padding: 5px 5px">
