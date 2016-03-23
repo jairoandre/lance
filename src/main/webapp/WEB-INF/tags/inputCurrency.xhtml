@@ -2,7 +2,6 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.org/ui">
   <h:panelGroup rendered="#{label != null and (rendered == null ? true : rendered)}">
     <h:outputLabel for="#{id}" value="#{label}" style="font-weight:bold"/>
@@ -16,13 +15,13 @@
                rendered="#{info != null}"/>
   </h:panelGroup>
   <h:panelGroup id="#{id}InputPnl" rendered="#{rendered == null ? true : rendered}" layout="block">
-    <h:panelGroup rendered="#{editingBtns == null ? false : (editingBtns and !flagsController.editingCurrency)}">
+    <h:panelGroup rendered="#{editingBtns == null ? false : (editingBtns and !flagsController.editingField)}">
       <h:outputText value="#{value}">
         <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="#{precision == null ? 2 : precision}"
                          pattern="#{pattern == null ? 'R$ #,##0.00' : pattern}"/>
       </h:outputText>
     </h:panelGroup>
-    <h:panelGroup rendered="#{editingBtns == null ? true : (!editingBtns or flagsController.editingCurrency)}">
+    <h:panelGroup rendered="#{editingBtns == null ? true : (!editingBtns or flagsController.editingField)}">
       <h:outputText value="#{value}"
                     rendered="#{editing == null ? false : !editing}">
         <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="#{precision == null ? 2 : precision}"
@@ -52,14 +51,13 @@
       </script>
     </h:panelGroup>
     <h:panelGroup id="#{id}CurrencyBtns" rendered="#{editingBtns == null ? false : editingBtns}" style="float: right;">
-      #{thisEditing}
-      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{!flagsController.editingCurrency}">
+      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{!flagsController.editingField}">
         <span class="fa fa-pencil"/>
-        <f:setPropertyActionListener value="#{true}" target="#{flagsController.editingCurrency}"/>
+        <f:setPropertyActionListener value="#{true}" target="#{flagsController.editingField}"/>
       </p:commandLink>
-      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{flagsController.editingCurrency}">
+      <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{flagsController.editingField}">
         <span class="fa fa-check"/>
-        <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingCurrency}" />
+        <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingField}" />
       </p:commandLink>
     </h:panelGroup>
   </h:panelGroup>

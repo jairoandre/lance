@@ -12,13 +12,13 @@ import java.io.Serializable;
 @ViewScoped
 public class FlagsController implements Serializable {
 
-  private Boolean editingCurrency = false;
+  private Boolean editingField = false;
 
-  public Boolean getEditingCurrency() {
-    return editingCurrency;
+  public Boolean getEditingField() {
+    return editingField;
   }
 
-  public void setEditingCurrency(Boolean editingCurrency) {
-    this.editingCurrency = editingCurrency;
+  public void setEditingField(Boolean editingField) {
+    this.editingField = editingField;
   }
 }

@@ -27,7 +27,10 @@
           <p:column headerText="Serviço" styleClass="left-align">
             <h:outputText value="#{entry.service.title}"/>
           </p:column>
-          <p:column headerText="Valor lançado" styleClass="left-align" width="150">
+          <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">
+            <h:outputText value="#{entry.service.type.label}"/>
+          </p:column>
+          <p:column headerText="Valor lançado" styleClass="left-align" width="100">
             <h:outputText value="#{entry.totalValue}">
               <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
             </h:outputText>

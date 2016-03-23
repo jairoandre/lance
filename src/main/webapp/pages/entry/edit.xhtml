@@ -17,8 +17,11 @@
     <h:form id="form">
       <h:panelGroup id="container" layout="block" styleClass="lance-container">
         <p:panel header="Lançamento - #{entryController.item.service.title}">
+
+          <!-- TOTAL BLOCK -->
           <ui:include src="totalBlock.xhtml"/>
 
+          <!-- BLOCO DE INFORMAÇÕES DO LANÇAMENTO-->
           <h:panelGroup layout="block" style="float:left;">
             <h:panelGrid columns="2" cellpadding="10">
               <h:outputLabel value="Estado:" styleClass="label"/>
@@ -40,6 +43,7 @@
                              rendered="#{entryController.sharedPerArea}"/>
           </h:panelGroup>
 
+          <!-- INFORMAÇÕES SOBRE AS ÁREAS (PERCENTUAIS) -->
           <h:panelGroup id="areasValuesPnl" layout="block" style="float:left;"
                         rendered="#{entryController.sharedPerArea}">
             <h:panelGrid columns="4" cellpadding="10">
@@ -75,7 +79,6 @@
           </h:panelGroup>
 
           <!-- TAXAS E PERCENTUAIS -->
-
           <h:panelGroup id="taxesPnl" layout="block" style="float:left;">
             <h:panelGrid columns="4" cellpadding="10">
               <h:outputLabel value="Valor do serviço:" styleClass="label"
@@ -136,6 +139,8 @@
           </h:panelGroup>
 
           <h:panelGroup style="clear: both;" layout="block"/>
+
+          <!-- BOTÕES -->
           <h:panelGroup id="upperButtonPnl" layout="block"
                         styleClass="margin-top">
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
@@ -154,7 +159,10 @@
                              action="#{entryController.back}" styleClass="margin-left"/>
           </h:panelGroup>
 
+          <!-- TABS -->
           <p:tabView id="tabView" styleClass="margin-top" widgetVar="tabView">
+
+            <!-- SETORES -->
             <p:tab id="sectorTab" title="Setores">
               <p:dataTable id="dataTable" var="entryValue"
                            value="#{entryController.entryValues}" styleClass="table-left-header margin-top">
@@ -188,10 +196,16 @@
                           width="200">
                   <uilance:inputCurrency id="compValueA" renderMessage="false"
                                          value="#{entryValue.valueA}" editing="#{entryController.editing}"
-                                         editingBtns="true">
+                                         editingBtns="true" rendered="#{entryController.item.service.type != 'CTR'}">
                     <p:ajax event="change" listener="#{entryController.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uilance:inputCurrency>
+                  <uilance:inputNumber id="compValueANumber" renderMessage="false"
+                                         value="#{entryValue.valueA}" editing="#{entryController.editing}"
+                                         editingBtns="true" rendered="#{entryController.item.service.type == 'CTR'}">
+                    <p:ajax event="change" listener="#{entryController.computeValues}" process="@this"
+                            update=":#{p:component('totalValue')} itemValue"/>
+                  </uilance:inputNumber>
                 </p:column>
                 <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align"
                           width="150"
@@ -219,11 +233,12 @@
               </p:dataTable>
             </p:tab>
 
+            <!-- MEDIDORES -->
             <p:tab title="Medidores" rendered="#{entryController.item.service.type == 'E'}">
               <p:commandButton id="updateSectorValues" value="Atualizar setores"
                                action="#{entryController.fillSectorMeterFields}" update="@form"
                                oncomplete="PF('tabView').select(0);" ajax="true">
-                <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingCurrency}"/>
+                <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingField}"/>
               </p:commandButton>
               <p:fileUpload mode="advanced" skinSimple="false"
                             fileUploadListener="#{entryController.uploadMeterValues}" uploadLabel="Submeter"
@@ -274,6 +289,7 @@
               </p:dataTable>
             </p:tab>
 
+            <!-- COMENTÁRIOS -->
             <p:tab title="Comentários">
               <ui:include src="commentsBlock.xhtml"/>
             </p:tab>

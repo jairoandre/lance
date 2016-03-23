@@ -152,7 +152,9 @@ public class EntryController extends AbstractController<Entry> {
     sharedPerArea = ServiceTypesEnum.CP.equals(serviceType) || ServiceTypesEnum.CR.equals(serviceType) || ServiceTypesEnum.CRE.equals(serviceType);
     comment = createComment();
     entryValues = new ArrayList<>(getItem().getValues());
-    shareAmmount();
+    if (sharedPerArea) {
+      shareAmmount();
+    }
   }
 
   public void loadGroupByClient() {

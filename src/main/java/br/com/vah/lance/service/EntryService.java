@@ -300,7 +300,8 @@ public class EntryService extends DataAccessService<Entry> {
         case CRE:
           entryValue.setValue(entryValue.getValueA());
           break;
-
+        case CTR:
+          entryValue.setValue(entryValue.getValueA().multiply(currentServiceValue.getValueA()));
         default:
           break;
       }

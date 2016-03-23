@@ -6,7 +6,7 @@ public enum ServiceTypesEnum {
   C("Cobrança"),
   E("Condomínio - Indiv. Energia"),
   G("Condomínio - Indiv. Gás"),
-  TR("Condomínio - Taxado"),
+  CTR("Condomínio - Taxado"),
   CI("Condomínio - Individual"),
   CR("Condomínio - Rateio"),
   CP("Condomínio - Rateio Parcial"),
@@ -25,9 +25,9 @@ public enum ServiceTypesEnum {
   public String getCompALabel() {
     switch (this) {
       case T:
-        return "Variável";
-      case TR:
-        return "Valor de taxa";
+        return "Valor";
+      case CTR:
+        return "Quantidade";
       case V:
         return "Valor de venda";
       case E:
@@ -54,6 +54,7 @@ public enum ServiceTypesEnum {
       case CR:
       case CRE:
       case CP:
+      case CTR:
         return false;
       default:
         return true;

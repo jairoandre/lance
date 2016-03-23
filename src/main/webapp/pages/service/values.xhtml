@@ -31,9 +31,9 @@
       </h:outputText>
     </p:column>
 
-    <!-- TABELADO -->
+    <!-- TABELADO ou TARIFADO -->
     <p:column sortBy="#{value.valueA}" headerText="Valor" styleClass="left-align"
-              rendered="#{serviceController.item.type == 'T'}" width="200">
+              rendered="#{serviceController.item.type == 'T' or serviceController.item.type == 'CTR'}" width="200">
       <h:outputText value="#{value.valueA}">
         <f:convertNumber currencySymbol="R$" locale="pt_BR"
                          minFractionDigits="2" pattern="R$ #,##0.00"/>
