@@ -65,7 +65,6 @@ public class EntryService extends DataAccessService<Entry> {
     }
 
 
-
     List<Entry> currentEntries;
 
     /**
@@ -175,7 +174,7 @@ public class EntryService extends DataAccessService<Entry> {
     }
 
     for (ServiceValue serviceValue : entry.getService().getValues()) {
-      if (serviceValue.getEndDate() == null){
+      if (serviceValue.getEndDate() == null) {
         entry.setServiceValue(serviceValue);
         break;
       }
@@ -197,7 +196,7 @@ public class EntryService extends DataAccessService<Entry> {
           if (service.equals(iterator)) {
             SectorDetail sectorDetail = contractSector.getSector().getSectorDetail();
             if (sectorDetail != null && sectorDetail.getArea() != null) {
-              switch (sectorDetail.getType()){
+              switch (sectorDetail.getType()) {
                 case TERCEIROS:
                   entry.setTotalAreaA(entry.getTotalAreaA().add(sectorDetail.getArea()));
                   break;
@@ -252,6 +251,20 @@ public class EntryService extends DataAccessService<Entry> {
       default:
         break;
     }
+  }
+
+  public void computeInitialValues(Entry entry) {
+    ServiceTypesEnum type = entry.getService().getType();
+    for (EntryValue entryValue : entry.getValues()) {
+      switch (type) {
+        case CTR:
+          entryValue.setValueA(BigDecimal.ONE);
+          break;
+        default:
+          break;
+      }
+    }
+    computeValues(entry);
   }
 
   /**
@@ -316,7 +329,7 @@ public class EntryService extends DataAccessService<Entry> {
 
     for (Entry entry : entries) {
       Service service = entry.getService();
-      for(EntryValue entryValue : entry.getValues()){
+      for (EntryValue entryValue : entry.getValues()) {
         MvClient client = entryValue.getContractSector().getTenant();
         if (groups.get(client) == null) {
           groups.put(client, new HashMap<Service, BigDecimal>());

@@ -145,7 +145,7 @@ public class EntryController extends AbstractController<Entry> {
     super.onLoad();
     if (serviceId != null && getItem().getId() == null) {
       setItem(service.prepareNewEntry(loginController.getUser().getId(), serviceId));
-      service.computeValues(getItem());
+      service.computeInitialValues(getItem());
     }
     ServiceTypesEnum serviceType = getItem().getService().getType();
     getItem().getMeterValues();

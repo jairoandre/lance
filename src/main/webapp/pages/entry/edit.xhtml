@@ -28,6 +28,11 @@
               <lance:entryStatus status="#{entryController.item.status}"/>
               <h:outputLabel value="Tipo:" styleClass="label"/>
               <h:outputText value="#{entryController.item.service.type.label}"/>
+              <h:outputLabel value="Tarifa:" styleClass="label" rendered="#{entryController.item.service.type == 'CTR'}"/>
+              <h:outputText value="#{entryController.item.serviceValue.valueA}" rendered="#{entryController.item.service.type == 'CTR'}">
+                <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                 pattern="R$ #,##0.00"/>
+              </h:outputText>
             </h:panelGrid>
             <h:panelGrid columns="2" cellpadding="10"
                          rendered="#{entryController.sharedPerArea}">
