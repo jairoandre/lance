@@ -56,7 +56,7 @@ public class ContractController extends AbstractController<Contract> {
     initLazyModel(service, RELATIONS);
     List<Service> allServices = serviceService.findWithNamedQuery(Service.ALL);
     for (Service item : allServices) {
-      if(item.getCompulsory()) {
+      if (item.getCompulsory()) {
         compulsoryService.add(item);
       }
     }
@@ -70,22 +70,31 @@ public class ContractController extends AbstractController<Contract> {
     }
   }
 
+  public List<Long> recordedSectorsId() {
+    List<Long> ids = new ArrayList<>();
+    for (ContractSector contractSector : getItem().getContractSectors()) {
+      ids.add(contractSector.getSector().getId());
+    }
+    return ids;
+  }
+
   public void onLoadSubject() {
     MvClient subject = getItem().getSubject();
     clientControllers = new HashMap<>();
     serviceControllers = new HashMap<>();
+    List<Long> ids = recordedSectorsId();
     if (subject != null) {
-      Set<ContractSector> services = new LinkedHashSet<>();
       for (MvSector sector : subject.getSectors()) {
-        ContractSector service = new ContractSector();
-        service.setSector(sector);
-        service.setContract(getItem());
-        service.setServices(new LinkedHashSet<>(compulsoryService));
-        services.add(service);
+        if (!ids.contains(sector.getId())) {
+          ContractSector service = new ContractSector();
+          service.setSector(sector);
+          service.setContract(getItem());
+          service.setServices(new LinkedHashSet<>(compulsoryService));
+          getItem().getContractSectors().add(service);
+        }
         clientControllers.put(sector.getId(), new ClientController(clientService));
         serviceControllers.put(sector.getId(), new ServiceController(serviceService));
       }
-      getItem().setContractSectors(services);
     }
   }
 
