@@ -417,10 +417,11 @@ public class EntryController extends AbstractController<Entry> {
       Set<SectorConsumptionMeter> entryValueMeters = sectorDetail.getMeters();
       for (SectorConsumptionMeter sectorConsumptionMeter : entryValueMeters) {
         ConsumptionMeter itemMeter = sectorConsumptionMeter.getConsumptionMeter();
+        BigDecimal percent = sectorConsumptionMeter.getPercent();
         BigDecimal meterOutPeakValue = outPeakValues.get(itemMeter);
         BigDecimal meterPeakValue = peakValues.get(itemMeter);
         if (meterOutPeakValue != null && meterPeakValue != null) {
-          entryValue.setValueA(entryValue.getValueA().add(meterOutPeakValue).add(meterPeakValue));
+          entryValue.setValueA(entryValue.getValueA().add(meterOutPeakValue).add(meterPeakValue).multiply(percent));
         }
       }
     }
