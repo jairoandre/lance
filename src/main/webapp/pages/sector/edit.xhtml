@@ -43,6 +43,11 @@
 														 label="Área (m2)"
 														 editing="#{sectorController.editing}"/>
 				<h:panelGroup/>
+				<uilance:inputNumber id="rtQuantity" renderMessage="false"
+														 value="#{sectorController.item.sectorDetail.rtQuantity}"
+														 label="Quantidade TR"
+														 editing="#{sectorController.editing}"/>
+				<h:panelGroup/>
 				<uilance:manyToOne id="ledgerAccount" dialog="ledgerAccountDlg"
 													 editing="#{sectorController.editing}" label="Conta contábil"
 													 required="false" title="title"

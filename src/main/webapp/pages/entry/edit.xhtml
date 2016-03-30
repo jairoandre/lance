@@ -160,8 +160,9 @@
                              update="@form" validateClient="true"
                              action="#{entryController.doModifySave}"
                              rendered="#{entryController.editing and entryController.item.status == 'V'}"/>
-            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-                             action="#{entryController.back}" styleClass="margin-left"/>
+            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
+                             action="#{entryController.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
+
           </h:panelGroup>
 
           <!-- TABS -->
@@ -169,6 +170,12 @@
 
             <!-- SETORES -->
             <p:tab id="sectorTab" title="Setores">
+
+              <p:fileUpload mode="advanced" skinSimple="false"
+                            fileUploadListener="#{entryController.uploadValues}" uploadLabel="Submeter"
+                            label="Importar CSV"
+                            cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this"/>
+
               <p:dataTable id="dataTable" var="entryValue"
                            value="#{entryController.entryValues}" styleClass="table-left-header margin-top">
                 <p:column sortBy="#{entryValue.contractSector.sector.id}" headerText="Cód." styleClass="left-align"
@@ -205,12 +212,7 @@
                     <p:ajax event="change" listener="#{entryController.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uilance:inputCurrency>
-                  <uilance:inputNumber id="compValueANumber" renderMessage="false"
-                                         value="#{entryValue.valueA}" editing="#{entryController.editing}"
-                                         editingBtns="true" rendered="#{entryController.item.service.type == 'CTR'}">
-                    <p:ajax event="change" listener="#{entryController.computeValues}" process="@this"
-                            update=":#{p:component('totalValue')} itemValue"/>
-                  </uilance:inputNumber>
+                  <h:outputText value="#{entryValue.valueA}" rendered="#{entryController.item.service.type == 'CTR'}"/>
                 </p:column>
                 <p:column headerText="#{entryController.item.service.type.compBLabel}" styleClass="left-align"
                           width="150"
@@ -316,8 +318,8 @@
                              update="@form" validateClient="true"
                              action="#{entryController.doModifySave}"
                              rendered="#{entryController.editing and entryController.item.status == 'V'}"/>
-            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo"
-                             action="#{entryController.back}" styleClass="margin-left"/>
+            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
+                             action="#{entryController.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
           </h:panelGroup>
 
         </p:panel>

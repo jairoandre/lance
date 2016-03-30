@@ -32,6 +32,9 @@ public class SectorDetail extends BaseEntity {
   @Column(name = "VL_AREA_M2")
   private BigDecimal area;
 
+  @Column(name = "VL_QTD_TR")
+  private Integer rtQuantity;
+
   @ManyToOne
   @JoinColumn(name = "CD_REDUZIDO", nullable = true)
   private MvAccountChart ledgerAccount;
@@ -75,6 +78,14 @@ public class SectorDetail extends BaseEntity {
 
   public void setArea(BigDecimal area) {
     this.area = area;
+  }
+
+  public Integer getRtQuantity() {
+    return rtQuantity;
+  }
+
+  public void setRtQuantity(Integer rtQuantity) {
+    this.rtQuantity = rtQuantity;
   }
 
   public MvAccountChart getLedgerAccount() {

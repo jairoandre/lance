@@ -26,8 +26,8 @@
                        process="@this grid" update="grid" validateClient="true"
                        style="margin-right:10px" action="#{cc.attrs.controller.doSave}"
                        rendered="#{cc.attrs.controller.editing}"/>
-      <p:commandButton id="backBtn" value="Voltar" immediate="true" icon="fa fa-undo"
-                       action="#{cc.attrs.controller.back}"/>
+      <p:commandButton id="backBtn" value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
+                       action="#{cc.attrs.controller.back}" onclick="PF('changePage').show()"/>
     </h:panelGroup>
   </p:panel>
 </composite:implementation>

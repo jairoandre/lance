@@ -258,7 +258,12 @@ public class EntryService extends DataAccessService<Entry> {
     for (EntryValue entryValue : entry.getValues()) {
       switch (type) {
         case CTR:
-          entryValue.setValueA(BigDecimal.ONE);
+          Integer valueToSet = 0;
+          SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
+          if(sectorDetail != null){
+            valueToSet = sectorDetail.getRtQuantity() == null ? valueToSet : sectorDetail.getRtQuantity();
+          }
+          entryValue.setValueA(new BigDecimal(valueToSet));
           break;
         default:
           break;

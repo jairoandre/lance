@@ -421,7 +421,7 @@ public class EntryController extends AbstractController<Entry> {
         BigDecimal meterOutPeakValue = outPeakValues.get(itemMeter);
         BigDecimal meterPeakValue = peakValues.get(itemMeter);
         if (meterOutPeakValue != null && meterPeakValue != null) {
-          entryValue.setValueA(entryValue.getValueA().add(meterOutPeakValue).add(meterPeakValue).multiply(percent));
+          entryValue.setValueA(entryValue.getValueA().add(meterOutPeakValue.multiply(percent)).add(meterPeakValue.multiply(percent)));
         }
       }
     }

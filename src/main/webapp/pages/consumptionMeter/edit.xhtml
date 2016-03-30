@@ -57,10 +57,13 @@
                               editing="#{consumptionMeterController.editing}" emptyMessage="Sem setores"
                               items="#{consumptionMeterController.getItem().sectors.toArray()}"
                               toggleAction="toggle" showDefaultColumns="false">
-            <p:column headerText="Setor" style="text-align: left;">
+            <p:column headerText="Cód." styleClass="left-align" width="120">
+              <h:outputText value="#{item.sector.id}"/>
+            </p:column>
+            <p:column headerText="Setor" styleClass="left-align">
               <h:outputText value="#{item.sector.title}"/>
             </p:column>
-            <p:column headerText="Valor" style="text-align: left;" width="200">
+            <p:column headerText="Valor" styleClass="left-align" width="200">
               <uilance:inputPercentage id="sector"
                                        value="#{item.percent}"
                                        required="true"
@@ -69,7 +72,8 @@
               </uilance:inputPercentage>
             </p:column>
             <p:column width="100" headerText="Remover"
-                      style="text-align: center;" rendered="#{consumptionMeterController.editing}">
+                      styleClass="left-align"
+                      rendered="#{consumptionMeterController.editing}">
               <p:commandLink id="removeBtn"
                              action="#{consumptionMeterController.removeSector}" ajax="true"
                              styleClass="action-link" update="@form" process="@this">
