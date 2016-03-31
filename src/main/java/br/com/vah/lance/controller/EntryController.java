@@ -64,6 +64,26 @@ public class EntryController extends AbstractController<Entry> {
 
   public static final String[] RELATIONS = {"meterValues", "values"};
 
+  private Map<ConsumptionMeter, BigDecimal> outPeakValues = new HashMap<>();
+
+  private Map<ConsumptionMeter, BigDecimal> peakValues = new HashMap<>();
+
+  private BigDecimal ammoutVah = BigDecimal.ZERO;
+
+  private BigDecimal ammountProviders = BigDecimal.ZERO;
+
+  private BigDecimal ammountClinics = BigDecimal.ZERO;
+
+  private BigDecimal ammountShopping = BigDecimal.ZERO;
+
+  private BigDecimal taxProviders = BigDecimal.ZERO;
+
+  private BigDecimal taxClinics = BigDecimal.ZERO;
+
+  private BigDecimal taxShopping = BigDecimal.ZERO;
+
+  private List<String> ignoredMeters = new ArrayList<>();
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
@@ -136,6 +156,54 @@ public class EntryController extends AbstractController<Entry> {
     this.comment = comment;
   }
 
+  public String getGroupDateStr() {
+    return groupDateStr;
+  }
+
+  public void setGroupDateStr(String groupDateStr) {
+    this.groupDateStr = groupDateStr;
+  }
+
+  public List getGroupValues() {
+    return groupValues;
+  }
+
+  public void setGroupValues(List groupValues) {
+    this.groupValues = groupValues;
+  }
+
+  public BigDecimal getAmmoutVah() {
+    return ammoutVah;
+  }
+
+  public BigDecimal getAmmountProviders() {
+    return ammountProviders;
+  }
+
+  public BigDecimal getAmmountClinics() {
+    return ammountClinics;
+  }
+
+  public BigDecimal getAmmountShopping() {
+    return ammountShopping;
+  }
+
+  public BigDecimal getTaxProviders() {
+    return taxProviders;
+  }
+
+  public BigDecimal getTaxClinics() {
+    return taxClinics;
+  }
+
+  public BigDecimal getTaxShopping() {
+    return taxShopping;
+  }
+
+  public Boolean getSharedPerArea() {
+    return sharedPerArea;
+  }
+
   public String validate(Entry item) {
     return "/pages/entry/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
   }
@@ -198,13 +266,6 @@ public class EntryController extends AbstractController<Entry> {
     return comment;
   }
 
-  public String getGroupDateStr() {
-    return groupDateStr;
-  }
-
-  public void setGroupDateStr(String groupDateStr) {
-    this.groupDateStr = groupDateStr;
-  }
 
   public String addComment() {
     getItem().getComments().add(comment);
@@ -236,60 +297,61 @@ public class EntryController extends AbstractController<Entry> {
     return doSave();
   }
 
-  public List getGroupValues() {
-    return groupValues;
-  }
-
-  public void setGroupValues(List groupValues) {
-    this.groupValues = groupValues;
-  }
-
-  private BigDecimal ammoutVah = BigDecimal.ZERO;
-  private BigDecimal ammountProviders = BigDecimal.ZERO;
-  private BigDecimal ammountClinics = BigDecimal.ZERO;
-  private BigDecimal ammountShopping = BigDecimal.ZERO;
-  private BigDecimal taxProviders = BigDecimal.ZERO;
-  private BigDecimal taxClinics = BigDecimal.ZERO;
-  private BigDecimal taxShopping = BigDecimal.ZERO;
-
-  public BigDecimal getAmmoutVah() {
-    return ammoutVah;
-  }
-
-  public BigDecimal getAmmountProviders() {
-    return ammountProviders;
-  }
-
-  public BigDecimal getAmmountClinics() {
-    return ammountClinics;
-  }
-
-  public BigDecimal getAmmountShopping() {
-    return ammountShopping;
-  }
-
-  public BigDecimal getTaxProviders() {
-    return taxProviders;
-  }
-
-  public BigDecimal getTaxClinics() {
-    return taxClinics;
-  }
-
-  public BigDecimal getTaxShopping() {
-    return taxShopping;
-  }
-
-  public Boolean getSharedPerArea() {
-    return sharedPerArea;
-  }
-
-  private List<String> ignoredMeters = new ArrayList<>();
-
   public List<String> getIgnoredMeters() {
     return ignoredMeters;
   }
 
+  /**
+   * Realiza o carregamento do arquivo CSV para os medidores
+   * @param evt
+   */
+  public void uploadValues(FileUploadEvent evt) {
+    UploadedFile file = evt.getFile();
+    byte[] data = file.getContents();
+    CSVReader reader = new CSVReader(new InputStreamReader(new ByteArrayInputStream(data)), ';');
+    try {
+      Map<Long, BigDecimal[]> map = new HashMap<>();
+      Integer line = 1;
+      try {
+        for (String[] str : reader.readAll()) {
+          Long sector = Long.valueOf(str[0]);
+          BigDecimal valueA = new BigDecimal(str[1].replace(',', '.'));
+
+          BigDecimal valueB = BigDecimal.ZERO;
+          if(str.length >= 3) {
+            valueB = new BigDecimal(str[2].replace(',', '.'));
+          }
+          line++;
+          BigDecimal[] arr = {valueA, valueB};
+          map.put(sector, arr);
+        }
+        Integer importedValues = 0;
+        Integer ignoredValues;
+        for (EntryValue entryValue : getItem().getValues()) {
+          Long sector = entryValue.getContractSector().getSector().getId();
+          BigDecimal[] csvValues = map.get(sector);
+          if (csvValues != null) {
+            entryValue.setValueA(csvValues[0]);
+            entryValue.setValueB(csvValues[1]);
+            importedValues++;
+            map.remove(sector);
+          }
+        }
+        ignoredValues = map.size();
+        addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", String.format("Importação realizada com sucesso: %d importados, %d ignorados.", importedValues, ignoredValues)), false);
+      } catch (Exception e) {
+        addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", String.format("Erro na importação: linha %s.", line)), false);
+      }
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", String.format("Erro na importação:\n%s", e.getMessage())), false);
+    }
+
+  }
+
+  /**
+   * Realiza o carregamento do arquivo CSV para os medidores
+   * @param evt
+   */
   public void uploadMeterValues(FileUploadEvent evt) {
     UploadedFile file = evt.getFile();
     byte[] data = file.getContents();
@@ -332,6 +394,9 @@ public class EntryController extends AbstractController<Entry> {
 
   }
 
+  /**
+   * Realiza o rateio entre os grupos condominiais
+   */
   public void shareAmmount() {
     if (getItem().getAmmountToShare() != null && getItem().getServiceValue() != null) {
       ServiceValue serviceValue = getItem().getServiceValue();
@@ -351,6 +416,9 @@ public class EntryController extends AbstractController<Entry> {
     }
   }
 
+  /**
+   * Realiza o rateio por tipo de unidade condominial
+   */
   public void fillSharedFields() {
     for (EntryValue entryValue : getItem().getValues()) {
       SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
@@ -376,18 +444,9 @@ public class EntryController extends AbstractController<Entry> {
     computeValues();
   }
 
-
-  private Map<ConsumptionMeter, BigDecimal> outPeakValues = new HashMap<>();
-  private Map<ConsumptionMeter, BigDecimal> peakValues = new HashMap<>();
-
-  public Map<ConsumptionMeter, BigDecimal> getOutPeakValues() {
-    return outPeakValues;
-  }
-
-  public Map<ConsumptionMeter, BigDecimal> getPeakValues() {
-    return peakValues;
-  }
-
+  /**
+   * Atualiza as diferenças de leituras dos medidores
+   */
   public void updateMeterTotalValues() {
     outPeakValues = new HashMap<>();
     peakValues = new HashMap<>();
@@ -409,6 +468,10 @@ public class EntryController extends AbstractController<Entry> {
   }
 
 
+  /**
+   * Preenche os valores monetários dos setores de acordo com as leituras dos medidores.
+   *
+   */
   public void fillSectorMeterFields() {
     updateMeterTotalValues();
     for (EntryValue entryValue : getItem().getValues()) {
