@@ -337,6 +337,7 @@ public class EntryController extends AbstractController<Entry> {
             map.remove(sector);
           }
         }
+        computeValues();
         ignoredValues = map.size();
         addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", String.format("Importação realizada com sucesso: %d importados, %d ignorados.", importedValues, ignoredValues)), false);
       } catch (Exception e) {

@@ -174,7 +174,7 @@
               <p:fileUpload mode="advanced" skinSimple="false"
                             fileUploadListener="#{entryController.uploadValues}" uploadLabel="Submeter"
                             label="Importar CSV"
-                            cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this"/>
+                            cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this :#{p:component('totalValue')}"/>
 
               <p:dataTable id="dataTable" var="entryValue"
                            value="#{entryController.entryValues}" styleClass="table-left-header margin-top">
