@@ -33,7 +33,7 @@ public class SectorDetail extends BaseEntity {
   private BigDecimal area;
 
   @Column(name = "VL_QTD_TR")
-  private Integer rtQuantity;
+  private BigDecimal rtQuantity;
 
   @ManyToOne
   @JoinColumn(name = "CD_REDUZIDO", nullable = true)
@@ -80,11 +80,11 @@ public class SectorDetail extends BaseEntity {
     this.area = area;
   }
 
-  public Integer getRtQuantity() {
+  public BigDecimal getRtQuantity() {
     return rtQuantity;
   }
 
-  public void setRtQuantity(Integer rtQuantity) {
+  public void setRtQuantity(BigDecimal rtQuantity) {
     this.rtQuantity = rtQuantity;
   }
 
