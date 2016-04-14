@@ -258,12 +258,12 @@ public class EntryService extends DataAccessService<Entry> {
     for (EntryValue entryValue : entry.getValues()) {
       switch (type) {
         case CTR:
-          Integer valueToSet = 0;
+          BigDecimal valueToSet = BigDecimal.ZERO;
           SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
           if(sectorDetail != null){
             valueToSet = sectorDetail.getRtQuantity() == null ? valueToSet : sectorDetail.getRtQuantity();
           }
-          entryValue.setValueA(new BigDecimal(valueToSet));
+          entryValue.setValueA(valueToSet);
           break;
         default:
           break;
@@ -309,13 +309,10 @@ public class EntryService extends DataAccessService<Entry> {
           break;
         // Cobrança (ex: taxas de residência)
         case C:
-          entryValue.setValue(entryValue.getValueA());
-          break;
         case E:
-          entryValue.setValue(entryValue.getValueA());
-          break;
         case CR:
         case CRE:
+        case CI:
           entryValue.setValue(entryValue.getValueA());
           break;
         case CTR:

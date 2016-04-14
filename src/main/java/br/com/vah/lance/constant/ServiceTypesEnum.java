@@ -32,7 +32,8 @@ public enum ServiceTypesEnum {
         return "Valor de venda";
       case E:
       case C:
-        return "Valor de cobrança";
+      case CI:
+        return "Valor";
       case CP:
       case CR:
       case CRE:
@@ -55,6 +56,7 @@ public enum ServiceTypesEnum {
       case CRE:
       case CP:
       case CTR:
+      case CI:
         return false;
       default:
         return true;
