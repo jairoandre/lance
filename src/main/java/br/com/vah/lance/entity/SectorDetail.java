@@ -1,7 +1,7 @@
 package br.com.vah.lance.entity;
 
 import br.com.vah.lance.constant.SectorTypeEnum;
-import br.com.vah.lance.entity.mv.MvAccountChart;
+import br.com.vah.lance.entity.mv.MvPlanoConta;
 import br.com.vah.lance.entity.mv.MvSector;
 
 import javax.persistence.*;
@@ -37,7 +37,7 @@ public class SectorDetail extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "CD_REDUZIDO", nullable = true)
-  private MvAccountChart ledgerAccount;
+  private MvPlanoConta ledgerAccount;
 
   @Enumerated(EnumType.ORDINAL)
   @Column(name = "CD_TIPO")
@@ -88,11 +88,11 @@ public class SectorDetail extends BaseEntity {
     this.rtQuantity = rtQuantity;
   }
 
-  public MvAccountChart getLedgerAccount() {
+  public MvPlanoConta getLedgerAccount() {
     return ledgerAccount;
   }
 
-  public void setLedgerAccount(MvAccountChart ledgerAccount) {
+  public void setLedgerAccount(MvPlanoConta ledgerAccount) {
     this.ledgerAccount = ledgerAccount;
   }
 

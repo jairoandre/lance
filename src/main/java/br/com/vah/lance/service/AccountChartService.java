@@ -2,7 +2,7 @@ package br.com.vah.lance.service;
 
 import javax.ejb.Stateless;
 
-import br.com.vah.lance.entity.mv.MvAccountChart;
+import br.com.vah.lance.entity.mv.MvPlanoConta;
 
 /**
  * 
@@ -10,10 +10,10 @@ import br.com.vah.lance.entity.mv.MvAccountChart;
  *
  */
 @Stateless
-public class AccountChartService extends DataAccessService<MvAccountChart> {
+public class AccountChartService extends DataAccessService<MvPlanoConta> {
 
 	public AccountChartService() {
-		super(MvAccountChart.class);
+		super(MvPlanoConta.class);
 	}
 
 }

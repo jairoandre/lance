@@ -1,0 +1,65 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:lance="http://java.sun.com/jsf/composite/lance">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Contas a receber">
+        <lance:dataTable id="dataTable" controller="#{contaReceberController}"
+                         renderDeleteAction="false" renderAddBtn="false"
+                         renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+          <p:column sortBy="#{item.id}" headerText="Código" width="100"
+                    styleClass="left-align">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.cdProcesso}" headerText="Processo"
+                    styleClass="left-align" width="120">
+            <h:outputText value="#{item.cdProcesso}"/>
+          </p:column>
+          <p:column sortBy="#{item.dataEmissao}" headerText="Data Emissão"
+                    styleClass="left-align" width="100">
+            <h:outputText value="#{item.dataEmissao}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+          </p:column>
+          <p:column headerText="Descrição" styleClass="left-align">
+            <h:outputText value="#{item.descricao}"/>
+          </p:column>
+          <p:column headerText="Parcelas" styleClass="action-link" width="75">
+            <h:outputText id="parcela" styleClass="fa fa-hospital-o action-link"/>
+            <p:overlayPanel for="parcela" hideEffect="fade" >
+              <p:dataTable var="parcela" value="#{item.itensConta}" sortBy="#{parcela.numeroParcela}">
+                <p:column headerText="Parcela" width="25" styleClass="left-align">
+                  <h:outputText value="#{parcela.numeroParcela}"/>
+                </p:column>
+                <p:column headerText="Valor Moeda" width="100" styleClass="left-align">
+                  <h:outputText value="#{parcela.valorMoeda}">
+                    <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:overlayPanel>
+          </p:column>
+          <p:column headerText="Rateios" styleClass="action-link" width="75">
+            <h:outputText id="rateio" styleClass="fa fa-hospital-o action-link"/>
+            <p:overlayPanel for="rateio" hideEffect="fade" >
+              <p:dataTable var="rateio" value="#{item.itensRateio}" sortBy="#{rateio.pk.numeroLinha}">
+                <p:column headerText="Linha" width="25" styleClass="left-align">
+                  <h:outputText value="#{rateio.pk.numeroLinha}"/>
+                </p:column>
+                <p:column headerText="Valor" width="100" styleClass="left-align">
+                  <h:outputText value="#{rateio.valorRateio}">
+                    <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:overlayPanel>
+          </p:column>
+        </lance:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

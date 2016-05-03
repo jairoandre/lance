@@ -22,7 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import br.com.vah.lance.constant.ServiceTypesEnum;
-import br.com.vah.lance.entity.mv.MvAccountChart;
+import br.com.vah.lance.entity.mv.MvPlanoConta;
 import br.com.vah.lance.entity.mv.MvDefaultHistory;
 import br.com.vah.lance.entity.mv.MvDocumentType;
 import br.com.vah.lance.entity.mv.MvResultItem;
@@ -59,11 +59,11 @@ public class Service extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "CD_CONTA_CONTABIL", nullable = true)
-  private MvAccountChart ledgerAccount = new MvAccountChart();
+  private MvPlanoConta ledgerAccount = new MvPlanoConta();
 
   @ManyToOne
   @JoinColumn(name = "CD_CONTA_RESULTADO", nullable = false)
-  private MvAccountChart resultAccount = new MvAccountChart();
+  private MvPlanoConta resultAccount = new MvPlanoConta();
 
   @ManyToOne
   @JoinColumn(name = "CD_CONTA_CUSTO", nullable = false)
@@ -143,28 +143,28 @@ public class Service extends BaseEntity {
   /**
    * @return the ledgerAccount
    */
-  public MvAccountChart getLedgerAccount() {
+  public MvPlanoConta getLedgerAccount() {
     return ledgerAccount;
   }
 
   /**
    * @param ledgerAccount the ledgerAccount to set
    */
-  public void setLedgerAccount(MvAccountChart ledgerAccount) {
+  public void setLedgerAccount(MvPlanoConta ledgerAccount) {
     this.ledgerAccount = ledgerAccount;
   }
 
   /**
    * @return the resultAccount
    */
-  public MvAccountChart getResultAccount() {
+  public MvPlanoConta getResultAccount() {
     return resultAccount;
   }
 
   /**
    * @param resultAccount the resultAccount to set
    */
-  public void setResultAccount(MvAccountChart resultAccount) {
+  public void setResultAccount(MvPlanoConta resultAccount) {
     this.resultAccount = resultAccount;
   }
 

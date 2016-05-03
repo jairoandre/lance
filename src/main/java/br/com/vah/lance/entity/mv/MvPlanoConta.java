@@ -11,17 +11,17 @@ import br.com.vah.lance.entity.BaseEntity;
 
 @Entity
 @Table(name = "PLANO_CONTAS", schema = "DBAMV")
-@NamedQueries({ @NamedQuery(name = MvAccountChart.ALL, query = "SELECT s FROM MvAccountChart s"),
-		@NamedQuery(name = MvAccountChart.COUNT, query = "SELECT COUNT(s) FROM MvAccountChart s") })
-public class MvAccountChart extends BaseEntity {
+@NamedQueries({ @NamedQuery(name = MvPlanoConta.ALL, query = "SELECT s FROM MvPlanoConta s"),
+		@NamedQuery(name = MvPlanoConta.COUNT, query = "SELECT COUNT(s) FROM MvPlanoConta s") })
+public class MvPlanoConta extends BaseEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public final static String ALL = "MvAccountChart.populatedItems";
-	public final static String COUNT = "MvAccountChart.countTotal";
+	public final static String ALL = "MvPlanoConta.populatedItems";
+	public final static String COUNT = "MvPlanoConta.countTotal";
 
 	@Id
 	@Column(name = "CD_REDUZIDO")

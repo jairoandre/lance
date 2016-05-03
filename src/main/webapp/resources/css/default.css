@@ -138,16 +138,17 @@ body {
   border-color: #374213 !important;
 }
 
-td.action-link {
+.action-link, td.action-link {
   text-align: center;
 }
 
-span.action-link span, a.action-link span, td.action-link a span, td.action-link span span {
+span.action-link, span.action-link span, a.action-link span, td.action-link a span, td.action-link span span {
   font-size: 18px;
   padding: 2px;
+  cursor: pointer;
 }
 
-a.action-link:HOVER, td.action-link a:HOVER {
+span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   color: red;
 }
 

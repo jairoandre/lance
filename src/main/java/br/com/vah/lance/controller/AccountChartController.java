@@ -7,7 +7,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.vah.lance.entity.mv.MvAccountChart;
+import br.com.vah.lance.entity.mv.MvPlanoConta;
 import br.com.vah.lance.service.AccountChartService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
@@ -15,7 +15,7 @@ import br.com.vah.lance.util.GenericLazyDataModel;
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class AccountChartController extends AbstractController<MvAccountChart> {
+public class AccountChartController extends AbstractController<MvPlanoConta> {
 
   private
   @Inject
@@ -29,11 +29,11 @@ public class AccountChartController extends AbstractController<MvAccountChart> {
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     setItem(createNewItem());
-    setLazyModel(new GenericLazyDataModel<MvAccountChart>(service));
+    setLazyModel(new GenericLazyDataModel<MvPlanoConta>(service));
   }
 
   @Override
-  public DataAccessService<MvAccountChart> getService() {
+  public DataAccessService<MvPlanoConta> getService() {
     return service;
   }
 
@@ -43,8 +43,8 @@ public class AccountChartController extends AbstractController<MvAccountChart> {
   }
 
   @Override
-  public MvAccountChart createNewItem() {
-    return new MvAccountChart();
+  public MvPlanoConta createNewItem() {
+    return new MvPlanoConta();
   }
 
   @Override
