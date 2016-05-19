@@ -37,6 +37,7 @@
             <h:panelGrid columns="2" cellpadding="10"
                          rendered="#{entryController.sharedPerArea}">
               <uilance:inputCurrency id="totalAreas" label="Valor total a ratear"
+                                     readonly="#{!entryController.editing}"
                                      value="#{entryController.item.ammountToShare}" renderMessage="false">
                 <p:ajax event="keyup" process="@this" update="areasValuesPnl"
                         listener="#{entryController.shareAmmount}"/>
@@ -45,6 +46,7 @@
             <p:commandButton id="shareAmmountButton" value="Realizar rateio"
                              action="#{entryController.fillSharedFields}"
                              update="tabView :#{p:component('totalValue')}"
+                             disabled="#{!entryController.editing}"
                              rendered="#{entryController.sharedPerArea}"/>
           </h:panelGroup>
 
@@ -150,7 +152,7 @@
                         styleClass="margin-top">
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
-                             action="#{entryController.doSave}"
+                             action="#{entryController.doEntrySave}"
                              rendered="#{entryController.editing and entryController.item.status != 'P' and entryController.item.status != 'V'}"/>
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
@@ -174,6 +176,7 @@
               <p:fileUpload mode="advanced" skinSimple="false"
                             fileUploadListener="#{entryController.uploadValues}" uploadLabel="Submeter"
                             label="Importar CSV"
+                            rendered="#{entryController.editing}"
                             cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this :#{p:component('totalValue')}"/>
 
               <p:dataTable id="dataTable" var="entryValue"
@@ -244,12 +247,14 @@
             <p:tab title="Medidores" rendered="#{entryController.item.service.type == 'E'}">
               <p:commandButton id="updateSectorValues" value="Atualizar setores"
                                action="#{entryController.fillSectorMeterFields}" update="@form"
+                               rendered="#{entryController.editing}"
                                oncomplete="PF('tabView').select(0);" ajax="true">
                 <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingField}"/>
               </p:commandButton>
               <p:fileUpload mode="advanced" skinSimple="false"
                             fileUploadListener="#{entryController.uploadMeterValues}" uploadLabel="Submeter"
                             label="Importar CSV"
+                            rendered="#{entryController.editing}"
                             cancelLabel="Cancelar" styleClass="margin-top" update="metersGrid @this">
                 <p:dataTable var="code" value="#{entryController.ignoredMeters}" emptyMessage="Sem itens ignorados"
                              rendered="#{not empty entryController.ignoredMeters}">
@@ -308,7 +313,7 @@
                         styleClass="margin-top">
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
-                             action="#{entryController.doSave}"
+                             action="#{entryController.doEntrySave}"
                              rendered="#{entryController.editing and entryController.item.status != 'P' and entryController.item.status != 'V'}"/>
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"

@@ -29,9 +29,10 @@ public class ContaReceberController extends AbstractController<MvContaReceber> {
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     setItem(createNewItem());
+    setSearchField("id");
     setLazyModel(new GenericLazyDataModel<MvContaReceber>(service));
     getLazyModel().getSearchParams().addRelations("itensRateio");
-    setSearchField("login");
+
   }
 
   @Override

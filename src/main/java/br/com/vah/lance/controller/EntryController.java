@@ -1,10 +1,11 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
+import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.*;
-import br.com.vah.lance.entity.mv.MvClient;
-import br.com.vah.lance.entity.mv.MvSector;
+import br.com.vah.lance.entity.mv.*;
+import br.com.vah.lance.service.ContaReceberService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.EntryService;
 import br.com.vah.lance.service.ServiceService;
@@ -62,7 +63,7 @@ public class EntryController extends AbstractController<Entry> {
 
   private Boolean sharedPerArea = false;
 
-  public static final String[] RELATIONS = {"meterValues", "values"};
+  public static final String[] RELATIONS = {"meterValues", "values", "contasReceber"};
 
   private Map<ConsumptionMeter, BigDecimal> outPeakValues = new HashMap<>();
 
@@ -83,6 +84,8 @@ public class EntryController extends AbstractController<Entry> {
   private BigDecimal taxShopping = BigDecimal.ZERO;
 
   private List<String> ignoredMeters = new ArrayList<>();
+
+  private List<MvContaReceber> contasReceberToAdd = new ArrayList<>();
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
@@ -225,6 +228,127 @@ public class EntryController extends AbstractController<Entry> {
     }
   }
 
+  private List<Entry> oldEntries;
+
+  public List<Entry> getOldEntries() {
+    return oldEntries;
+  }
+
+  private String descricaoConRec;
+
+  private Date dtLancamentoConRec;
+
+  private Date dtVencConRec;
+
+  public String getDescricaoConRec() {
+    return descricaoConRec;
+  }
+
+  public void setDescricaoConRec(String descricaoConRec) {
+    this.descricaoConRec = descricaoConRec;
+  }
+
+  public Date getDtLancamentoConRec() {
+    return dtLancamentoConRec;
+  }
+
+  public void setDtLancamentoConRec(Date dtLancamentoConRec) {
+    this.dtLancamentoConRec = dtLancamentoConRec;
+  }
+
+  public Date getDtVencConRec() {
+    return dtVencConRec;
+  }
+
+  public void setDtVencConRec(Date dtVencConRec) {
+    this.dtVencConRec = dtVencConRec;
+  }
+
+  public void onLoadValidation() {
+
+    onLoad();
+
+    oldEntries = service.listOldEntries(getItem().getService());
+
+    MvDefaultHistory defaultHistory = getItem().getService().getDefaultHistory();
+
+    descricaoConRec = defaultHistory.getTitle();
+
+    Calendar cl = Calendar.getInstance();
+    cl.setTime(new Date());
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+    String numDocPrefix = sdf.format(cl.getTime());
+
+    numDocPrefix = numDocPrefix + getItem().getService().getId() + "-";
+
+    dtLancamentoConRec = cl.getTime();
+
+    cl.add(Calendar.MONTH, 1);
+    cl.set(Calendar.DAY_OF_MONTH, 15);
+
+    dtVencConRec = cl.getTime();
+
+    int count = 0;
+
+    // CRIA UMA CONTA A RECEBER PARA CADA ITEM/SETOR DE LANÇAMENTO
+    for (EntryValue entryValue : getItem().getValues()) {
+
+      MvContaReceber conRecToAdd = new MvContaReceber();
+
+      conRecToAdd.setCdProcesso(132l);
+      conRecToAdd.setCdMultiEmpresa(1);
+      conRecToAdd.setTipoDocumento("C");
+      conRecToAdd.setDataEmissao(new Date());
+      conRecToAdd.setMoeda("1");
+      conRecToAdd.setTipoVencimento("V");
+      conRecToAdd.setValorBruto(entryValue.getValue());
+      String numeroDocumento = numDocPrefix + LanceUtils.paddingZeros(String.valueOf(count++), 3);
+      conRecToAdd.setNumeroDocumento(numeroDocumento);
+
+      MvClient client = entryValue.getContractSector().getContract().getSubject();
+
+      conRecToAdd.setCliente(client);
+      conRecToAdd.setNomeCliente(client.getTitle());
+      conRecToAdd.setHistoricoPadrao(defaultHistory);
+      conRecToAdd.setDescricao(defaultHistory.getTitle());
+      conRecToAdd.setObservacao(numeroDocumento + " - " + client.getTitle());
+      conRecToAdd.setGlosaAceita("N");
+
+      // ITEM DA CONTA A RECEBER
+      MvContaReceberItem conRecItem = new MvContaReceberItem();
+      conRecItem.setCodigoMoeda("1");
+      conRecItem.setNumeroParcela(1);
+      conRecItem.setValorDuplicata(entryValue.getValue());
+      conRecItem.setTipoQuitacao("C");
+      conRecItem.setValorMoeda(entryValue.getValue());
+      conRecItem.setContaReceber(conRecToAdd);
+      conRecItem.setDataVencimento(cl.getTime());
+      conRecItem.setDataPrevistaRecebimento(cl.getTime());
+
+      MvContaReceberRateio conRecRateio = new MvContaReceberRateio();
+      MvPlanoConta contaContabil = getItem().getService().getLedgerAccount();
+      SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
+      if(sectorDetail != null && sectorDetail.getLedgerAccount() != null) {
+        contaContabil = sectorDetail.getLedgerAccount();
+      }
+      conRecToAdd.setContaContabil(contaContabil);
+      conRecRateio.setContaContabil(contaContabil);
+      conRecRateio.getPk().setNumeroLinha(1);
+      conRecRateio.getPk().setContaReceber(conRecToAdd);
+      conRecRateio.setContaResultado(getItem().getService().getCostAccount());
+      conRecRateio.setValorRateio(entryValue.getValue());
+      conRecRateio.setCdSetor(entryValue.getContractSector().getSector().getId());
+
+      conRecToAdd.getItensRateio().add(conRecRateio);
+      conRecToAdd.getItensConta().add(conRecItem);
+
+      contasReceberToAdd.add(conRecToAdd);
+    }
+
+  }
+
   public void loadGroupByClient() {
     if (groupDateStr != null) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -277,8 +401,34 @@ public class EntryController extends AbstractController<Entry> {
     return entryValues;
   }
 
-  public String doValideSave() {
-    getItem().setStatus(EntryStatusEnum.V);
+  private
+  @Inject
+  ContaReceberService contaReceberService;
+
+  public String doValidateSave() {
+    try {
+      for(MvContaReceber conta : contasReceberToAdd) {
+        conta.setDataLancamento(dtLancamentoConRec);
+      }
+      List<MvContaReceber> persistedContas = contaReceberService.createList(contasReceberToAdd);
+      getItem().setContasReceber(persistedContas);
+      getItem().setStatus(EntryStatusEnum.V);
+      service.update(getItem());
+      addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
+      return back();
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Ops! Erro inesperado: " + e.getMessage()),
+          true);
+    }
+    return null;
+  }
+
+  public String doEntrySave() {
+    if(loginController.isUserInRoles(RolesEnum.REGISTER.toString())){
+      getItem().setStatus(EntryStatusEnum.PL);
+    } else {
+      getItem().setStatus(EntryStatusEnum.L);
+    }
     return doSave();
   }
 
@@ -301,8 +451,17 @@ public class EntryController extends AbstractController<Entry> {
     return ignoredMeters;
   }
 
+  public List<MvContaReceber> getContasReceberToAdd() {
+    return contasReceberToAdd;
+  }
+
+  public void setContasReceberToAdd(List<MvContaReceber> contasReceberToAdd) {
+    this.contasReceberToAdd = contasReceberToAdd;
+  }
+
   /**
    * Realiza o carregamento do arquivo CSV para os medidores
+   *
    * @param evt
    */
   public void uploadValues(FileUploadEvent evt) {
@@ -318,7 +477,7 @@ public class EntryController extends AbstractController<Entry> {
           BigDecimal valueA = new BigDecimal(str[1].replace(',', '.'));
 
           BigDecimal valueB = BigDecimal.ZERO;
-          if(str.length >= 3) {
+          if (str.length >= 3) {
             valueB = new BigDecimal(str[2].replace(',', '.'));
           }
           line++;
@@ -351,6 +510,7 @@ public class EntryController extends AbstractController<Entry> {
 
   /**
    * Realiza o carregamento do arquivo CSV para os medidores
+   *
    * @param evt
    */
   public void uploadMeterValues(FileUploadEvent evt) {
@@ -471,7 +631,6 @@ public class EntryController extends AbstractController<Entry> {
 
   /**
    * Preenche os valores monetários dos setores de acordo com as leituras dos medidores.
-   *
    */
   public void fillSectorMeterFields() {
     updateMeterTotalValues();

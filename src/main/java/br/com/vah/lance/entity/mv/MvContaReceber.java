@@ -1,9 +1,11 @@
 package br.com.vah.lance.entity.mv;
 
 import br.com.vah.lance.entity.BaseEntity;
+import br.com.vah.lance.entity.Entry;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
 public class MvContaReceber extends BaseEntity {
 
   public final static String ALL = "MvContaReceber.populatedItems";
-  public final static String COUNT = "MvContaReceber.countTotal";
+  public final static String COUNT = "MvContaReceber.countTotal]";
 
   @Id
   @SequenceGenerator(name = "seqConReqGen", sequenceName = "SEQ_CONREC", schema = "DBAMV", allocationSize = 1)
@@ -51,13 +53,19 @@ public class MvContaReceber extends BaseEntity {
   private MvPlanoConta contaContabil;
 
   @Column(name = "TP_VENCIMENTO")
-  private String tipoVencimento = "V";
+  private String tipoVencimento;
 
-  @Column(name = "CD_SEQ_INTEGRA")
-  private Long numeroDocumento;
+  @Column(name = "NR_DOCUMENTO")
+  private String numeroDocumento;
+
+  @Column(name = "NM_CLIENTE")
+  private String nomeCliente;
 
   @Column(name = "CD_MOEDA")
-  private String moeda = "V";
+  private String moeda;
+
+  @Column(name = "CD_TIP_DOC")
+  private Integer cdTipDoc = 1;
 
   @Column(name = "VL_PREVISTO")
   private BigDecimal valorBruto;
@@ -73,10 +81,13 @@ public class MvContaReceber extends BaseEntity {
   private String observacao;
 
   @OneToMany(mappedBy = "pk.contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<MvContaReceberRateio> itensRateio;
+  private List<MvContaReceberRateio> itensRateio = new ArrayList<>();
 
   @OneToMany(mappedBy = "contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<MvContaReceberItem> itensConta;
+  private List<MvContaReceberItem> itensConta = new ArrayList<>();
+
+  @Column(name = "SN_GLOSA_ACEITA")
+  private String glosaAceita;
 
   public Long getId() {
     return id;
@@ -139,6 +150,22 @@ public class MvContaReceber extends BaseEntity {
     this.cliente = cliente;
   }
 
+  public String getNomeCliente() {
+    return nomeCliente;
+  }
+
+  public void setNomeCliente(String nomeCliente) {
+    this.nomeCliente = nomeCliente;
+  }
+
+  public Integer getCdTipDoc() {
+    return cdTipDoc;
+  }
+
+  public void setCdTipDoc(Integer cdTipDoc) {
+    this.cdTipDoc = cdTipDoc;
+  }
+
   public MvPlanoConta getContaContabil() {
     return contaContabil;
   }
@@ -155,11 +182,11 @@ public class MvContaReceber extends BaseEntity {
     this.tipoVencimento = tipoVencimento;
   }
 
-  public Long getNumeroDocumento() {
+  public String getNumeroDocumento() {
     return numeroDocumento;
   }
 
-  public void setNumeroDocumento(Long numeroDocumento) {
+  public void setNumeroDocumento(String numeroDocumento) {
     this.numeroDocumento = numeroDocumento;
   }
 
@@ -217,5 +244,13 @@ public class MvContaReceber extends BaseEntity {
 
   public void setItensConta(List<MvContaReceberItem> itensConta) {
     this.itensConta = itensConta;
+  }
+
+  public String getGlosaAceita() {
+    return glosaAceita;
+  }
+
+  public void setGlosaAceita(String glosaAceita) {
+    this.glosaAceita = glosaAceita;
   }
 }

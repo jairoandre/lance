@@ -1,12 +1,11 @@
 package br.com.vah.lance.entity;
 
 import br.com.vah.lance.constant.EntryStatusEnum;
+import br.com.vah.lance.entity.mv.MvContaReceber;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Entidade que representa um conjunto de lançamentos.
@@ -18,7 +17,9 @@ import java.util.Set;
 @NamedQueries({@NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
     @NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
     @NamedQuery(name = Entry.BY_PERIOD_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services"),
-    @NamedQuery(name = Entry.BY_PERIOD, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end")})
+    @NamedQuery(name = Entry.BY_SERVICE_DATE_STATUS, query = "SELECT e FROM Entry e where e.effectiveOn >= :date and e.service = :service and e.status = :status"),
+    @NamedQuery(name = Entry.BY_PERIOD, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end"),
+    @NamedQuery(name = Entry.BY_ID, query = "SELECT e FROM Entry e where e.id = :id")})
 public class Entry extends BaseEntity {
 
   /**
@@ -29,7 +30,9 @@ public class Entry extends BaseEntity {
   public static final String COUNT = "Entry.countTotal";
 
   public static final String BY_PERIOD_AND_SERVICE = "Entry.byPeriodAndService";
+  public static final String BY_SERVICE_DATE_STATUS = "Entry.byServiceDateStatus";
   public static final String BY_PERIOD = "Entry.byPeriod";
+  public static final String BY_ID = "Entry.byID";
 
   @Id
   @SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_LANCA_LANCAMENTO", schema = "USRDBVAH", allocationSize = 1)
@@ -61,7 +64,7 @@ public class Entry extends BaseEntity {
    * Valor do serviço na vigência do lançamento
    */
   @ManyToOne
-  @JoinColumn(name = "ID_SERVICO_VALORES", nullable = false)
+  @JoinColumn(name = "ID_SERVICO_VALORES")
   private ServiceValue serviceValue;
 
   /**
@@ -93,6 +96,11 @@ public class Entry extends BaseEntity {
 
   @Column(name = "VL_AREA_C")
   private BigDecimal totalAreaC = BigDecimal.ZERO;
+
+  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+  @JoinTable(name = "TB_LANCA_LAN_CON_REC", joinColumns = {
+      @JoinColumn(name = "ID")}, inverseJoinColumns = {@JoinColumn(name = "CD_CON_REC")}, schema = "USRDBVAH")
+  private List<MvContaReceber> contasReceber = new ArrayList<>();
 
   /**
    * Estado do lançamento, valores possíveis:
@@ -259,9 +267,21 @@ public class Entry extends BaseEntity {
     this.meterValues = meterValues;
   }
 
+  public List<MvContaReceber> getContasReceber() {
+    return contasReceber;
+  }
+
+  public void setContasReceber(List<MvContaReceber> contasReceber) {
+    this.contasReceber = contasReceber;
+  }
+
   @Override
   public String getLabelForSelectItem() {
     return null;
+  }
+
+  public List<MvContaReceber> getListContasReceber() {
+    return new ArrayList<>(contasReceber);
   }
 
 }

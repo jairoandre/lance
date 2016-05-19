@@ -121,6 +121,8 @@
                                value="#{serviceController.item.compulsory}"
                                editing="#{serviceController.editing}" required="true"
                                info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
+        <uilance:inputNumber id="diaLimite" label="Dia limite" value="#{serviceController.item.diaLimite}" precision="0"/>
+        <uilance:inputNumber id="diaVencimento" label="Dia vencimento" value="#{serviceController.item.diaVencimento}" precision="0"/>
 
         <f:facet name="other">
 

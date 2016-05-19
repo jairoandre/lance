@@ -25,7 +25,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   private String searchTerm;
 
-  private String searchField = "title";
+  private String searchField = "id";
 
   private T selectedItem;
 
@@ -116,10 +116,25 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   /**
    *
    */
-  public String search() {
-    lazyModel.getSearchParams().getParams().put(getSearchField(), getSearchTerm());
-    lazyModel.getSearchParams().setResetPage(true);
-    return null;
+  public void resetSearchParams() {
+    getLazyModel().getSearchParams().getParams().clear();
+    getLazyModel().getSearchParams().setResetPage(true);
+  }
+
+  public void setSearchParam(String property, Object value) {
+    getLazyModel().getSearchParams().getParams().put(property, value);
+  }
+
+  public void search() {
+    resetSearchParams();
+    searchById();
+  }
+
+  public void searchById() {
+    String regex = "[0-9]+";
+    if (getSearchTerm() != null && getSearchTerm().matches(regex)) {
+      setSearchParam("id", Long.valueOf(getSearchTerm()));
+    }
   }
 
   public void onLoad() {
@@ -238,7 +253,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     if (relations != null && relations.length > 0) {
       getLazyModel().getSearchParams().addRelations(relations);
     }
-    getLazyModel().getSearchParams().setOrderBy("title");
+    getLazyModel().getSearchParams().setOrderBy(getSearchField());
     getLazyModel().getSearchParams().setAsc(true);
   }
 

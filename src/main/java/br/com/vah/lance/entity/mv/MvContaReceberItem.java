@@ -52,6 +52,9 @@ public class MvContaReceberItem extends BaseEntity {
   @Column(name = "NR_PARCELA", nullable = false)
   private Integer numeroParcela = 1;
 
+  @Column(name = "SN_GLOSA_ACEITA")
+  private String glosaAceita;
+
 
   @Override
   public Long getId() {
@@ -129,6 +132,14 @@ public class MvContaReceberItem extends BaseEntity {
 
   public Integer getNumeroParcela() {
     return numeroParcela;
+  }
+
+  public String getGlosaAceita() {
+    return glosaAceita;
+  }
+
+  public void setGlosaAceita(String glosaAceita) {
+    this.glosaAceita = glosaAceita;
   }
 
   public void setNumeroParcela(Integer numeroParcela) {

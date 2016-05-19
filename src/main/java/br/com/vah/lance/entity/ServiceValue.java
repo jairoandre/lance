@@ -19,6 +19,13 @@ import javax.persistence.TemporalType;
 @Table(name = "TB_LANCA_SERVICO_VALORES", schema = "USRDBVAH")
 public class ServiceValue extends BaseEntity {
 
+	public ServiceValue() {
+		valueA = BigDecimal.ZERO;
+		valueB = BigDecimal.ZERO;
+		valueC = BigDecimal.ZERO;
+		valueD = BigDecimal.ZERO;
+	}
+
 	/**
 	 * 
 	 */

@@ -179,4 +179,10 @@ public class ServiceController extends AbstractController<Service> {
     serviceValue.setValueD(BigDecimal.ONE.subtract(serviceValue.getValueB()));
   }
 
+  @Override
+  public void search() {
+    super.search();
+    setSearchParam("title", getSearchTerm());
+  }
+
 }

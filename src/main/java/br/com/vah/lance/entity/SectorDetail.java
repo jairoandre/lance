@@ -43,6 +43,9 @@ public class SectorDetail extends BaseEntity {
   @Column(name = "CD_TIPO")
   private SectorTypeEnum type;
 
+  @Column(name = "CD_INSC_IMOBI")
+  private String inscricaoImobiliaria;
+
   public SectorDetail() {
   }
 
@@ -102,6 +105,14 @@ public class SectorDetail extends BaseEntity {
 
   public void setType(SectorTypeEnum type) {
     this.type = type;
+  }
+
+  public String getInscricaoImobiliaria() {
+    return inscricaoImobiliaria;
+  }
+
+  public void setInscricaoImobiliaria(String inscricaoImobiliaria) {
+    this.inscricaoImobiliaria = inscricaoImobiliaria;
   }
 
   @Override

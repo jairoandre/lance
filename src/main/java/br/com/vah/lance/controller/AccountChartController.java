@@ -58,18 +58,10 @@ public class AccountChartController extends AbstractController<MvPlanoConta> {
   }
 
   @Override
-  public String search() {
+  public void search() {
+    super.search();
     getLazyModel().getSearchParams().getParams().put("accountingCode", getSearchTerm());
     getLazyModel().getSearchParams().getParams().put("id", null);
-    try {
-      Long convertedValue = Long.valueOf(getSearchTerm());
-      getLazyModel().getSearchParams().getParams().put("id", convertedValue);
-    } catch (Exception e) {
-      /**
-       * Cannot convert to integer
-       */
-    }
-    return super.search();
   }
 
 }

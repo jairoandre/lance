@@ -8,6 +8,7 @@ import javax.faces.model.SelectItem;
 public enum RolesEnum {
   ADMINISTRATOR("Administrador"),
   USER("Usuário"),
+  REGISTER("Pré-lançador"),
   MANAGER("Gestor"),
   SUPERVISOR("Controlador"),
   ACCOUNTANT("Contabilidade");

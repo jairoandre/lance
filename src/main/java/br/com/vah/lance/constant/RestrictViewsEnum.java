@@ -16,7 +16,7 @@ public enum RestrictViewsEnum {
   SERVICE_EDIT("/pages/service/edit.xhtml", ADMINISTRATOR, ACCOUNTANT, SUPERVISOR),
   SERVICE_CURRENCY("/pages/service/currency.xhtml", ADMINISTRATOR, MANAGER),
   CONTRACT_EDIT("/pages/contract/edit.xhtml", ADMINISTRATOR, ACCOUNTANT),
-  ENTRY_EDIT("/pages/entry/edit.xhtml", ADMINISTRATOR, MANAGER),
+  ENTRY_EDIT("/pages/entry/edit.xhtml", ADMINISTRATOR, MANAGER, REGISTER),
   ENTRY_VALIDATE("/pages/entry/validate.xhtml", ADMINISTRATOR, SUPERVISOR);
 
   private String view;

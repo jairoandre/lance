@@ -95,18 +95,10 @@ public class ConsumptionMeterController extends AbstractController<ConsumptionMe
 	}
 
 	@Override
-	public String search() {
+	public void search() {
+		super.search();
 		getLazyModel().getSearchParams().getParams().put("id", null);
 		getLazyModel().getSearchParams().getParams().put("code", getSearchTerm());
-		try {
-			Long convertedValue = Long.valueOf(getSearchTerm());
-			getLazyModel().getSearchParams().getParams().put("id", convertedValue);
-		} catch (Exception e) {
-			/**
-			 * Cannot convert to integer
-			 */
-		}
-		return super.search();
 	}
 
 	@Override

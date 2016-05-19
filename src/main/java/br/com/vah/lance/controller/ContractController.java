@@ -155,4 +155,9 @@ public class ContractController extends AbstractController<Contract> {
 
   }
 
+  @Override
+  public void search() {
+    super.search();
+
+  }
 }

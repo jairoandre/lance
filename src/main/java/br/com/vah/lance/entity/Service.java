@@ -88,6 +88,12 @@ public class Service extends BaseEntity {
   @Column(name = "CD_TIPO")
   private ServiceTypesEnum type;
 
+  @Column(name = "VL_DIA_LIMITE")
+  private Integer diaLimite;
+
+  @Column(name = "VL_DIA_VENCIMENTO")
+  private Integer diaVencimento;
+
   @Override
   public Long getId() {
     return id;
@@ -253,6 +259,22 @@ public class Service extends BaseEntity {
 
   public void setAccountBySector(Boolean accountBySector) {
     this.accountBySector = accountBySector;
+  }
+
+  public Integer getDiaLimite() {
+    return diaLimite;
+  }
+
+  public void setDiaLimite(Integer diaLimite) {
+    this.diaLimite = diaLimite;
+  }
+
+  public Integer getDiaVencimento() {
+    return diaVencimento;
+  }
+
+  public void setDiaVencimento(Integer diaVencimento) {
+    this.diaVencimento = diaVencimento;
   }
 
   @Override

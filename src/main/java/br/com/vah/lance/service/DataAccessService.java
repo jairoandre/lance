@@ -277,4 +277,7 @@ public abstract class DataAccessService<T> implements Serializable {
     return ((Number) criteria.uniqueResult()).intValue();
   }
 
+  public EntityManager getEm() {
+    return em;
+  }
 }

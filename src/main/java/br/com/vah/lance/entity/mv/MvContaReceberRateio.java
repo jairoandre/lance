@@ -10,8 +10,8 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "RAT_CONREC", schema = "DBAMV")
-@NamedQueries({ @NamedQuery(name = MvContaReceberRateio.ALL, query = "SELECT c FROM MvContaReceberRateio c"),
-    @NamedQuery(name = MvContaReceberRateio.COUNT, query = "SELECT COUNT(c) FROM MvContaReceberRateio c") })
+@NamedQueries({@NamedQuery(name = MvContaReceberRateio.ALL, query = "SELECT c FROM MvContaReceberRateio c"),
+    @NamedQuery(name = MvContaReceberRateio.COUNT, query = "SELECT COUNT(c) FROM MvContaReceberRateio c")})
 public class MvContaReceberRateio extends BaseEntity {
 
   public final static String ALL = "MvContaReceberRateio.populatedItems";
@@ -19,7 +19,7 @@ public class MvContaReceberRateio extends BaseEntity {
 
 
   @EmbeddedId
-  private ContaReceberRateioPK pk;
+  private ContaReceberRateioPK pk = new ContaReceberRateioPK();
 
   @ManyToOne
   @JoinColumn(name = "CD_REDUZIDO")
@@ -29,13 +29,11 @@ public class MvContaReceberRateio extends BaseEntity {
   @JoinColumn(name = "CD_ITEM_RES")
   private MvResultItem contaResultado;
 
-  @ManyToOne
-  @JoinColumn(name = "CD_SETOR")
-  private MvSector setor;
-
-
   @Column(name = "VL_RATEIO", nullable = false)
   private BigDecimal valorRateio;
+
+  @Column(name = "CD_SETOR")
+  private Long cdSetor;
 
   @Override
   public Long getId() {
@@ -76,19 +74,19 @@ public class MvContaReceberRateio extends BaseEntity {
     this.contaResultado = contaResultado;
   }
 
-  public MvSector getSetor() {
-    return setor;
-  }
-
-  public void setSetor(MvSector setor) {
-    this.setor = setor;
-  }
-
   public BigDecimal getValorRateio() {
     return valorRateio;
   }
 
   public void setValorRateio(BigDecimal valorRateio) {
     this.valorRateio = valorRateio;
+  }
+
+  public Long getCdSetor() {
+    return cdSetor;
+  }
+
+  public void setCdSetor(Long cdSetor) {
+    this.cdSetor = cdSetor;
   }
 }

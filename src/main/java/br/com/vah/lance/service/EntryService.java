@@ -5,6 +5,10 @@ import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.*;
 import br.com.vah.lance.entity.mv.MvClient;
 import br.com.vah.lance.util.LanceUtils;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -150,12 +154,6 @@ public class EntryService extends DataAccessService<Entry> {
     return contracts;
   }
 
-  @Override
-  public Entry create(Entry entry) {
-    changeStatus(entry);
-    return super.create(entry);
-  }
-
   public Entry prepareNewEntry(Long userId, Long serviceId) {
 
     User user = userService.find(userId);
@@ -255,8 +253,19 @@ public class EntryService extends DataAccessService<Entry> {
 
   public void computeInitialValues(Entry entry) {
     ServiceTypesEnum type = entry.getService().getType();
+
+    ServiceValue currentServiceValue = entry.getServiceValue();
+
+    // Para quando o serviço não possuir valor definido
+    if (currentServiceValue == null) {
+      currentServiceValue = new ServiceValue();
+    }
+
     for (EntryValue entryValue : entry.getValues()) {
       switch (type) {
+        case T:
+          entryValue.setValueA(currentServiceValue.getValueA());
+          break;
         case CTR:
           BigDecimal valueToSet = BigDecimal.ZERO;
           SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
@@ -282,10 +291,6 @@ public class EntryService extends DataAccessService<Entry> {
     // Para quando o serviço não possuir valor definido
     if (currentServiceValue == null) {
       currentServiceValue = new ServiceValue();
-      currentServiceValue.setValueA(BigDecimal.ZERO);
-      currentServiceValue.setValueB(BigDecimal.ZERO);
-      currentServiceValue.setValueC(BigDecimal.ZERO);
-      currentServiceValue.setValueD(BigDecimal.ZERO);
     }
 
     entry.setTotalValue(BigDecimal.ZERO);
@@ -298,7 +303,7 @@ public class EntryService extends DataAccessService<Entry> {
         // Tabelado
         case T:
           // Soma o valor vigente do serviço com o valor variável informado pelo usuário.
-          entryValue.setValue(currentServiceValue.getValueA().add(entryValue.getValueA()));
+          entryValue.setValue(entryValue.getValueA());
           break;
         // Energia Individual
         // Venda (venda comissionada)
@@ -349,4 +354,34 @@ public class EntryService extends DataAccessService<Entry> {
 
   }
 
+  @Override
+  public Entry find(Object id) {
+    Session session = getEm().unwrap(Session.class);
+    Criteria criteria = session.createCriteria(Entry.class);
+
+    criteria.add(Restrictions.idEq(id));
+    criteria.setFetchMode("values", FetchMode.SELECT);
+    criteria.setFetchMode("meterValues", FetchMode.SELECT);
+    criteria.setFetchMode("contasReceber", FetchMode.SELECT);
+
+    return (Entry) criteria.uniqueResult();
+  }
+
+  public List<Entry> listOldEntries(Service service) {
+
+    Map<String, Object> entriesParams = new LinkedHashMap<>();
+    Calendar cl = Calendar.getInstance();
+    cl.setTime(new Date());
+    cl.add(Calendar.MONTH, -6);
+    cl.set(Calendar.DAY_OF_MONTH, 1);
+    cl.set(Calendar.HOUR, 0);
+    cl.set(Calendar.MINUTE, 0);
+    cl.set(Calendar.SECOND, 0);
+    entriesParams.put("date", cl.getTime());
+    entriesParams.put("service", service);
+    entriesParams.put("status", EntryStatusEnum.V);
+
+
+    return findWithNamedQuery(Entry.BY_SERVICE_DATE_STATUS, entriesParams);
+  }
 }

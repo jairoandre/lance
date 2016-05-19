@@ -16,7 +16,7 @@
 		<h:panelGroup styleClass="fa fa-check" rendered="#{cc.attrs.status == 'V'}" />
 		<h:panelGroup styleClass="fa fa-question-circle"
 									rendered="#{cc.attrs.status == 'N'}" />
-		<h:panelGroup styleClass="fa fa-tag" rendered="#{cc.attrs.status == 'L'}" />
+		<h:panelGroup styleClass="fa fa-tag" rendered="#{cc.attrs.status == 'L' or cc.attrs.status == 'PL'}" />
 		<h:panelGroup styleClass="fa fa-question-circle" rendered="#{cc.attrs.status == 'M'}" />
 		<h:outputText value="    #{cc.attrs.status.label}" />
 	</h:panelGroup>

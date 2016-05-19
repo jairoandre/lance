@@ -12,6 +12,10 @@ public enum EntryStatusEnum {
    */
   N("Não lançado"),
   /**
+   * Pré lançado
+   */
+  PL("Pré-lançado"),
+  /**
    * Lançado
    */
   L("Lançado"),
@@ -54,6 +58,8 @@ public enum EntryStatusEnum {
     switch (this) {
       case N:
         return "#FF7700";
+      case PL:
+        return "#5A3700";
       case L:
         return "#002C57";
       case V:

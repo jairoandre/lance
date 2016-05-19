@@ -75,6 +75,15 @@ public class LanceUtils {
     return array;
   }
 
+  public static String paddingZeros(String str, int amount) {
+    StringBuffer buff = new StringBuffer();
+    for (int i = 0; i < (amount - str.length()); i++) {
+      buff.append("0");
+    }
+    buff.append(str);
+    return buff.toString();
+  }
+
   public static Date[] getDateRangeForThisMonth() {
     return getDateRange(new Date());
   }

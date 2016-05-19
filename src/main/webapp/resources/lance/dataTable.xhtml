@@ -35,6 +35,7 @@
       <p:commandButton value="Novo #{cc.attrs.controller.entityName}"
                        action="#{cc.attrs.controller.add}" icon="fa fa-plus"
                        title="Criar novo #{cc.attrs.controller.entityName}"
+                       onclick="PF('changePage').show()"
                        rendered="#{cc.attrs.renderAddBtn == null ? true : cc.attrs.renderAddBtn}"
                        style="position: absolute; right: 0;"/>
     </h:panelGroup>

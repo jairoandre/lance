@@ -73,17 +73,8 @@ public class SectorController extends AbstractController<MvSector> {
 	}
 
 	@Override
-	public String search() {
-		getLazyModel().getSearchParams().getParams().put("id", null);
-		try {
-			Long convertedValue = Long.valueOf(getSearchTerm());
-			getLazyModel().getSearchParams().getParams().put("id", convertedValue);
-		} catch (Exception e) {
-			/**
-			 * Cannot convert to integer
-			 */
-		}
-		return super.search();
+	public void search() {
+		super.search();
+		setSearchParam("title", getSearchTerm());
 	}
-
 }

@@ -50,7 +50,7 @@
         })
       </script>
     </h:panelGroup>
-    <h:panelGroup id="#{id}CurrencyBtns" rendered="#{editingBtns == null ? false : editingBtns}" style="float: right;">
+    <h:panelGroup id="#{id}CurrencyBtns" rendered="#{editingBtns == null ? false : (editingBtns and editing)}" style="float: right;">
       <p:commandLink process="@this" update="#{id}InputPnl" ajax="true" rendered="#{!flagsController.editingField}">
         <span class="fa fa-pencil"/>
         <f:setPropertyActionListener value="#{true}" target="#{flagsController.editingField}"/>

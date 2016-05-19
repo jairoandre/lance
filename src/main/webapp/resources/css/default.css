@@ -138,7 +138,7 @@ body {
   border-color: #374213 !important;
 }
 
-.action-link, td.action-link {
+.action-link, td.action-link, .center-align {
   text-align: center;
 }
 

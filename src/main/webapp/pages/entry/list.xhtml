@@ -53,52 +53,99 @@
           <p:column headerText="Estado" styleClass="left-align" width="100">
             <lance:entryStatus status="#{entry.status}"/>
           </p:column>
-          <p:column headerText="Ações" width="100" styleClass="action-link">
-            <p:commandLink id="detailEntry"
-                           ajax="false"
-                           onclick="PF('changePage').show()"
-                           action="#{entryController.detail(entry)}">
-              <span class="fa fa-search"/>
-            </p:commandLink>
-            <lance:toolTip id="tooltipDetailEntry" for="#{p:component('detailEntry')}"
-                           value="Detalhar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-            <span/>
-            <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,MANAGER')}">
-              <p:commandLink id="editEntry"
-                             ajax="false"
-                             onclick="PF('changePage').show()"
-                             action="#{entryController.edit(entry)}">
-                <span class="fa fa-pencil"/>
-              </p:commandLink>
-              <lance:toolTip id="tooltipEditEntry" for="#{p:component('editEntry')}"
-                             value="Editar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-              <span/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
-              <p:commandLink id="validateEntry"
-                             ajax="false"
-                             onclick="PF('changePage').show()"
-                             action="#{entryController.validate(entry)}"
-                             disabled="#{entry.status != 'L' and entry.status != 'F' and entry.status != 'M'}">
-                <span class="fa fa-gavel"/>
-              </p:commandLink>
-              <lance:toolTip id="tooltipValidateEntry" for="#{p:component('validateEntry')}"
-                             value="Validar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-              <span/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
-              <p:commandLink id="sendEditEntry"
-                             ajax="false"
-                             onclick="PF('changePage').show()"
-                             action="#{entryController.edit(entry)}"
-                             disabled="#{entry.status != 'V'}">
-                <span class="fa fa-calculator"/>
-              </p:commandLink>
-              <lance:toolTip id="tooltipSendEditEntry" for="#{p:component('sendEditEntry')}"
-                             value="Emitir #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-            </h:panelGroup>
+          <p:column headerText="Ações" width="100" styleClass="center-align">
+            <p:menuButton id="menuButton" value="Ações">
+              <p:menuitem value="Detalhar" action="#{entryController.detail(entry)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{empty entry.id}"
+                          icon="fa fa-search"/>
+              <p:menuitem value="Editar" action="#{entryController.edit(entry)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!loginController.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or entry.status == 'V'}"
+                          icon="fa fa-pencil"/>
+              <p:menuitem value="Validar" action="#{entryController.validate(entry)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR') or (entry.status != 'L' and entry.status != 'F' and entry.status != 'M')}"
+                          icon="fa fa-gavel"/>
+              <p:separator/>
+              <p:menuitem value="Contas a receber" action="#{entryController.setItem(entry)}"
+                          oncomplete="PF('contasReceberDlg').show()"
+                          ajax="true"
+                          process="@this"
+                          update="#{p:component('contasReceberDlg')}"
+                          disabled="#{empty entry.contasReceber}"
+                          icon="fa fa-file"/>
+              <p:menuitem value="Emitir boletos" action="#{entryController.validate(entry)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!loginController.isUserInRoles('ADMINISTRATOR,ACCOUNTANT') or (entry.status != 'V') or true}"
+                          icon="fa fa-barcode"/>
+
+
+            </p:menuButton>
           </p:column>
         </p:dataTable>
+        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="800" height="600" header="Contas a receber">
+          <p:dataTable id="contasReceberTable" rendered="#{not empty entryController.item.contasReceber}"
+                       value="#{entryController.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}">
+            <p:column headerText="Cód." width="75">
+              <h:outputText value="#{item.id}"/>
+            </p:column>
+            <p:column headerText="Documento"
+                      styleClass="left-align" width="100">
+              <h:outputText value="#{item.numeroDocumento}"/>
+            </p:column>
+            <p:column headerText="Cliente"
+                      styleClass="left-align" width="200">
+              <h:outputText value="#{item.nomeCliente}"/>
+            </p:column>
+            <p:column headerText="Valor" width="100">
+              <h:outputText value="#{item.valorBruto}">
+                <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Data Emissão"
+                      styleClass="left-align" width="100">
+              <h:outputText value="#{item.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Parcelas" styleClass="action-link" width="75">
+              <h:outputText id="parcela" styleClass="fa fa-hospital-o action-link"/>
+              <p:overlayPanel for="parcela" hideEffect="fade">
+                <p:dataTable var="parcela" value="#{item.itensConta}" sortBy="#{parcela.numeroParcela}">
+                  <p:column headerText="Parcela" width="25" styleClass="left-align">
+                    <h:outputText value="#{parcela.numeroParcela}"/>
+                  </p:column>
+                  <p:column headerText="Valor Moeda" width="100" styleClass="left-align">
+                    <h:outputText value="#{parcela.valorMoeda}">
+                      <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00"/>
+                    </h:outputText>
+                  </p:column>
+                </p:dataTable>
+              </p:overlayPanel>
+            </p:column>
+            <p:column headerText="Rateios" styleClass="action-link" width="75">
+              <h:outputText id="rateio" styleClass="fa fa-hospital-o action-link"/>
+              <p:overlayPanel for="rateio" hideEffect="fade">
+                <p:dataTable var="rateio" value="#{item.itensRateio}" sortBy="#{rateio.pk.numeroLinha}">
+                  <p:column headerText="Linha" width="25" styleClass="left-align">
+                    <h:outputText value="#{rateio.pk.numeroLinha}"/>
+                  </p:column>
+                  <p:column headerText="Valor" width="100" styleClass="left-align">
+                    <h:outputText value="#{rateio.valorRateio}">
+                      <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00"/>
+                    </h:outputText>
+                  </p:column>
+                </p:dataTable>
+              </p:overlayPanel>
+            </p:column>
+          </p:dataTable>
+
+        </p:dialog>
       </p:panel>
     </h:form>
   </ui:define>
