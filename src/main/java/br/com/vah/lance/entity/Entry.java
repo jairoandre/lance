@@ -16,6 +16,7 @@ import java.util.*;
 @Table(name = "TB_LANCA_LANCAMENTO", schema = "USRDBVAH")
 @NamedQueries({@NamedQuery(name = Entry.ALL, query = "SELECT e FROM Entry e"),
     @NamedQuery(name = Entry.COUNT, query = "SELECT COUNT(e) FROM Entry e"),
+    @NamedQuery(name = Entry.CONDOMINIAL, query = "SELECT e FROM Entry e where e.service.clusterable = true and e.status = 'L' order by e.effectiveOn"),
     @NamedQuery(name = Entry.BY_PERIOD_AND_SERVICE, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end and e.service in :services"),
     @NamedQuery(name = Entry.BY_SERVICE_DATE_STATUS, query = "SELECT e FROM Entry e where e.effectiveOn >= :date and e.service = :service and e.status = :status"),
     @NamedQuery(name = Entry.BY_PERIOD, query = "SELECT e FROM Entry e where e.effectiveOn between :begin and :end"),
@@ -29,6 +30,7 @@ public class Entry extends BaseEntity {
   public static final String ALL = "Entry.populatedItems";
   public static final String COUNT = "Entry.countTotal";
 
+  public static final String CONDOMINIAL = "Entry.condominial";
   public static final String BY_PERIOD_AND_SERVICE = "Entry.byPeriodAndService";
   public static final String BY_SERVICE_DATE_STATUS = "Entry.byServiceDateStatus";
   public static final String BY_PERIOD = "Entry.byPeriod";
@@ -136,7 +138,7 @@ public class Entry extends BaseEntity {
     this.effectiveOn = new Date();
     this.totalValue = BigDecimal.ZERO;
     this.comments = new LinkedHashSet<>();
-    this.values = new LinkedHashSet<>();
+    this.values = new HashSet<>();
     this.meterValues = new LinkedHashSet<>();
   }
 
@@ -282,6 +284,14 @@ public class Entry extends BaseEntity {
 
   public List<MvContaReceber> getListContasReceber() {
     return new ArrayList<>(contasReceber);
+  }
+
+  @Transient
+  private List<EntryValue> valuesAsList;
+
+  public List<EntryValue> getValuesAsList() {
+    valuesAsList = valuesAsList == null ? new ArrayList<>(this.values) : valuesAsList;
+    return valuesAsList;
   }
 
 }

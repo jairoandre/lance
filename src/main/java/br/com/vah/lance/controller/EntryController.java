@@ -234,19 +234,9 @@ public class EntryController extends AbstractController<Entry> {
     return oldEntries;
   }
 
-  private String descricaoConRec;
-
   private Date dtLancamentoConRec;
 
   private Date dtVencConRec;
-
-  public String getDescricaoConRec() {
-    return descricaoConRec;
-  }
-
-  public void setDescricaoConRec(String descricaoConRec) {
-    this.descricaoConRec = descricaoConRec;
-  }
 
   public Date getDtLancamentoConRec() {
     return dtLancamentoConRec;
@@ -270,82 +260,9 @@ public class EntryController extends AbstractController<Entry> {
 
     oldEntries = service.listOldEntries(getItem().getService());
 
-    MvDefaultHistory defaultHistory = getItem().getService().getDefaultHistory();
+    dtLancamentoConRec = new Date();
 
-    descricaoConRec = defaultHistory.getTitle();
-
-    Calendar cl = Calendar.getInstance();
-    cl.setTime(new Date());
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-    String numDocPrefix = sdf.format(cl.getTime());
-
-    numDocPrefix = numDocPrefix + getItem().getService().getId() + "-";
-
-    dtLancamentoConRec = cl.getTime();
-
-    cl.add(Calendar.MONTH, 1);
-    cl.set(Calendar.DAY_OF_MONTH, 15);
-
-    dtVencConRec = cl.getTime();
-
-    int count = 0;
-
-    // CRIA UMA CONTA A RECEBER PARA CADA ITEM/SETOR DE LANÇAMENTO
-    for (EntryValue entryValue : getItem().getValues()) {
-
-      MvContaReceber conRecToAdd = new MvContaReceber();
-
-      conRecToAdd.setCdProcesso(132l);
-      conRecToAdd.setCdMultiEmpresa(1);
-      conRecToAdd.setTipoDocumento("C");
-      conRecToAdd.setDataEmissao(new Date());
-      conRecToAdd.setMoeda("1");
-      conRecToAdd.setTipoVencimento("V");
-      conRecToAdd.setValorBruto(entryValue.getValue());
-      String numeroDocumento = numDocPrefix + LanceUtils.paddingZeros(String.valueOf(count++), 3);
-      conRecToAdd.setNumeroDocumento(numeroDocumento);
-
-      MvClient client = entryValue.getContractSector().getContract().getSubject();
-
-      conRecToAdd.setCliente(client);
-      conRecToAdd.setNomeCliente(client.getTitle());
-      conRecToAdd.setHistoricoPadrao(defaultHistory);
-      conRecToAdd.setDescricao(defaultHistory.getTitle());
-      conRecToAdd.setObservacao(numeroDocumento + " - " + client.getTitle());
-      conRecToAdd.setGlosaAceita("N");
-
-      // ITEM DA CONTA A RECEBER
-      MvContaReceberItem conRecItem = new MvContaReceberItem();
-      conRecItem.setCodigoMoeda("1");
-      conRecItem.setNumeroParcela(1);
-      conRecItem.setValorDuplicata(entryValue.getValue());
-      conRecItem.setTipoQuitacao("C");
-      conRecItem.setValorMoeda(entryValue.getValue());
-      conRecItem.setContaReceber(conRecToAdd);
-      conRecItem.setDataVencimento(cl.getTime());
-      conRecItem.setDataPrevistaRecebimento(cl.getTime());
-
-      MvContaReceberRateio conRecRateio = new MvContaReceberRateio();
-      MvPlanoConta contaContabil = getItem().getService().getLedgerAccount();
-      SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
-      if(sectorDetail != null && sectorDetail.getLedgerAccount() != null) {
-        contaContabil = sectorDetail.getLedgerAccount();
-      }
-      conRecToAdd.setContaContabil(contaContabil);
-      conRecRateio.setContaContabil(contaContabil);
-      conRecRateio.getPk().setNumeroLinha(1);
-      conRecRateio.getPk().setContaReceber(conRecToAdd);
-      conRecRateio.setContaResultado(getItem().getService().getCostAccount());
-      conRecRateio.setValorRateio(entryValue.getValue());
-      conRecRateio.setCdSetor(entryValue.getContractSector().getSector().getId());
-
-      conRecToAdd.getItensRateio().add(conRecRateio);
-      conRecToAdd.getItensConta().add(conRecItem);
-
-      contasReceberToAdd.add(conRecToAdd);
-    }
+    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
 
   }
 
@@ -407,9 +324,23 @@ public class EntryController extends AbstractController<Entry> {
 
   public String doValidateSave() {
     try {
-      for(MvContaReceber conta : contasReceberToAdd) {
-        conta.setDataLancamento(dtLancamentoConRec);
+
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+      String numDocPrefix = sdf.format(dtLancamentoConRec);
+
+      numDocPrefix = numDocPrefix + getItem().getService().getId() + "-";
+
+      int count = 0;
+
+      // CRIA UMA CONTA A RECEBER PARA CADA ITEM/SETOR DE LANÇAMENTO
+      for (EntryValue entryValue : getItem().getValues()) {
+
+        MvContaReceber conRecToAdd = service.createContaReceber(entryValue, numDocPrefix, count++, dtLancamentoConRec);
+
+        contasReceberToAdd.add(conRecToAdd);
       }
+
       List<MvContaReceber> persistedContas = contaReceberService.createList(contasReceberToAdd);
       getItem().setContasReceber(persistedContas);
       getItem().setStatus(EntryStatusEnum.V);
@@ -424,7 +355,7 @@ public class EntryController extends AbstractController<Entry> {
   }
 
   public String doEntrySave() {
-    if(loginController.isUserInRoles(RolesEnum.REGISTER.toString())){
+    if (loginController.isUserInRoles(RolesEnum.REGISTER.toString())) {
       getItem().setStatus(EntryStatusEnum.PL);
     } else {
       getItem().setStatus(EntryStatusEnum.L);
@@ -603,6 +534,10 @@ public class EntryController extends AbstractController<Entry> {
       }
     }
     computeValues();
+  }
+
+  public void updateDtVencimento() {
+    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
   }
 
   /**

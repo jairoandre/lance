@@ -154,9 +154,17 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   public void addMsg(FacesMessage msg, boolean flash) {
     FacesContext ctx = FacesContext.getCurrentInstance();
     ctx.addMessage(null, msg);
-    if (flash) {
-      ctx.getExternalContext().getFlash().setKeepMessages(true);
-    }
+    ctx.getExternalContext().getFlash().setKeepMessages(flash);
+  }
+
+  public void addInfoMsg(String summary, String detail, boolean flash) {
+    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
+    addMsg(msg, flash);
+  }
+
+  public void addErrorMsg(String summary, String detail, boolean flash) {
+    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail);
+    addMsg(msg, flash);
   }
 
   /**
@@ -268,10 +276,10 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   public String doDelete() {
     getService().delete(id);
-    try{
+    try {
       getLazyModel().remove(index);
       addMsg(new FacesMessage("Sucesso", "Registro removido [id=" + id + "]"), false);
-    }catch(Exception e){
+    } catch (Exception e) {
       addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Não foi possível excluir o registro"), false);
     }
     this.deleteConfirmAnswer = "";

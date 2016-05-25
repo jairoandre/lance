@@ -42,12 +42,13 @@
           </div>
 
           <h:panelGrid columns="3">
-            <uilance:inputText id="descricao" label="Descrição" required="true"
-                               editing="#{entryController.editing}" value="#{entryController.descricaoConRec}"/>
             <uilance:inputDate id="dtLancamento" label="Data lançamento"
                                editing="#{entryController.editing}"
                                required="true"
-                               value="#{entryController.dtLancamentoConRec}"/>
+                               value="#{entryController.dtLancamentoConRec}">
+              <p:ajax event="change" listener="#{entryController.updateDtVencimento}" process="@this"
+                      update="dtVencimento"/>
+            </uilance:inputDate>
             <uilance:inputDate id="dtVencimento" label="Data vencimento"
                                editing="false"
                                value="#{entryController.dtVencConRec}"/>

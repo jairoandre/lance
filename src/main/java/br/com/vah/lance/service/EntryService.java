@@ -3,7 +3,8 @@ package br.com.vah.lance.service;
 import br.com.vah.lance.constant.EntryStatusEnum;
 import br.com.vah.lance.constant.ServiceTypesEnum;
 import br.com.vah.lance.entity.*;
-import br.com.vah.lance.entity.mv.MvClient;
+import br.com.vah.lance.entity.mv.*;
+import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.util.LanceUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -13,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Stateless
@@ -25,6 +27,10 @@ public class EntryService extends DataAccessService<Entry> {
   private
   @Inject
   ServiceService serviceService;
+
+  private
+  @Inject
+  ContaReceberService contaReceberService;
 
   private
   @Inject
@@ -221,6 +227,10 @@ public class EntryService extends DataAccessService<Entry> {
     return entry;
   }
 
+  public List<Entry> recuperarLancamentosCondominial() {
+    return findWithNamedQuery(Entry.CONDOMINIAL);
+  }
+
 
   @Override
   public Entry update(Entry item) {
@@ -269,7 +279,7 @@ public class EntryService extends DataAccessService<Entry> {
         case CTR:
           BigDecimal valueToSet = BigDecimal.ZERO;
           SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
-          if(sectorDetail != null){
+          if (sectorDetail != null) {
             valueToSet = sectorDetail.getRtQuantity() == null ? valueToSet : sectorDetail.getRtQuantity();
           }
           entryValue.setValueA(valueToSet);
@@ -383,5 +393,158 @@ public class EntryService extends DataAccessService<Entry> {
 
 
     return findWithNamedQuery(Entry.BY_SERVICE_DATE_STATUS, entriesParams);
+  }
+
+  public Date getDataVencimento (Entry entry, Date dataLancamento) {
+    Calendar cl = Calendar.getInstance();
+    cl.setTime(dataLancamento);
+    cl.add(Calendar.MONTH, 1);
+    Integer vencimento  = 5;
+    if(entry.getService() != null && entry.getService().getDiaVencimento() != null) {
+      vencimento = entry.getService().getDiaVencimento();
+    }
+    cl.set(Calendar.DAY_OF_MONTH, vencimento);
+    return cl.getTime();
+  }
+
+
+  public MvContaReceber createContaReceber(EntryValue entryValue, String numDocPrefix, Integer count, Date dataLancamento) {
+
+    MvContaReceber conRecToAdd = new MvContaReceber();
+
+    conRecToAdd.setCdProcesso(132l);
+    conRecToAdd.setCdMultiEmpresa(1);
+    conRecToAdd.setTipoDocumento("C");
+    conRecToAdd.setDataEmissao(new Date());
+    conRecToAdd.setMoeda("1");
+    conRecToAdd.setTipoVencimento("V");
+    conRecToAdd.setValorBruto(entryValue.getValue());
+    String numeroDocumento = numDocPrefix + LanceUtils.paddingZeros(String.valueOf(count), 3);
+    conRecToAdd.setNumeroDocumento(numeroDocumento);
+    conRecToAdd.setDataLancamento(dataLancamento);
+
+    MvClient client = entryValue.getContractSector().getContract().getSubject();
+
+    MvDefaultHistory historicoPadrao = entryValue.getEntry().getService().getDefaultHistory();
+
+    conRecToAdd.setCliente(client);
+    conRecToAdd.setNomeCliente(client.getTitle());
+    conRecToAdd.setHistoricoPadrao(historicoPadrao);
+    conRecToAdd.setDescricao(historicoPadrao.getTitle());
+    conRecToAdd.setObservacao(numeroDocumento + " - " + client.getTitle());
+    conRecToAdd.setGlosaAceita("N");
+
+    // ITEM DA CONTA A RECEBER
+    MvContaReceberItem conRecItem = new MvContaReceberItem();
+    conRecItem.setCodigoMoeda("1");
+    conRecItem.setNumeroParcela(1);
+    conRecItem.setValorDuplicata(entryValue.getValue());
+    conRecItem.setTipoQuitacao("C");
+    conRecItem.setValorMoeda(entryValue.getValue());
+    conRecItem.setContaReceber(conRecToAdd);
+
+    Date dataVencimento = getDataVencimento(entryValue.getEntry(), dataLancamento);
+
+    conRecItem.setDataVencimento(dataVencimento);
+    conRecItem.setDataPrevistaRecebimento(dataVencimento);
+
+    MvContaReceberRateio conRecRateio = new MvContaReceberRateio();
+    MvPlanoConta contaContabil = entryValue.getEntry().getService().getLedgerAccount();
+    SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
+    if (sectorDetail != null && sectorDetail.getLedgerAccount() != null) {
+      contaContabil = sectorDetail.getLedgerAccount();
+    }
+    conRecToAdd.setContaContabil(contaContabil);
+    conRecRateio.setContaContabil(contaContabil);
+    conRecRateio.getPk().setNumeroLinha(1);
+    conRecRateio.getPk().setContaReceber(conRecToAdd);
+    conRecRateio.setContaResultado(entryValue.getEntry().getService().getCostAccount());
+    conRecRateio.setValorRateio(entryValue.getValue());
+    conRecRateio.setCdSetor(entryValue.getContractSector().getSector().getId());
+
+    conRecToAdd.getItensRateio().add(conRecRateio);
+    conRecToAdd.getItensConta().add(conRecItem);
+
+    return conRecToAdd;
+
+  }
+
+  public List<Entry> updateList(List<Entry> entries) {
+    List<Entry> persistedList = new ArrayList<>();
+    for (Entry entry : entries) {
+      persistedList.add(update(entry));
+    }
+    return persistedList;
+  }
+
+  public List<Entry> validarLancamentosAgrupados(List<Entry> lancamentos, Date dataLancamento) throws LanceBusinessException {
+    Map<MvSector, MvContaReceber> contasReceberMap = new HashMap<>();
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    String numDocPrefix = sdf.format(dataLancamento);
+    numDocPrefix = numDocPrefix + "999-";
+
+    if (lancamentos != null) {
+      for (Entry entry : lancamentos) {
+
+        Integer count = 0;
+        for (EntryValue entryValue : entry.getValues()) {
+          // Recupera a conta de consolidação do setor
+          MvContaReceber mvContaReceber = contasReceberMap.get(entryValue.getContractSector().getSector());
+
+          if (mvContaReceber == null) {
+            contasReceberMap.put(entryValue.getContractSector().getSector(), createContaReceber(entryValue, numDocPrefix, count++, dataLancamento));
+            continue;
+          } else {
+            MvContaReceberRateio itemRateio = mvContaReceber.getItensRateio().get(0);
+            MvContaReceberItem itemConta = mvContaReceber.getItensConta().get(0);
+
+            // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
+            // condizentes com o serviço iterado
+            Service servico = entry.getService();
+
+            MvPlanoConta contaContabil = servico.getLedgerAccount();
+            SectorDetail sectorDetail = entryValue.getContractSector().getSector().getSectorDetail();
+            if (sectorDetail != null && sectorDetail.getLedgerAccount() != null) {
+              contaContabil = sectorDetail.getLedgerAccount();
+            }
+
+            if (!mvContaReceber.getHistoricoPadrao().equals(servico.getDefaultHistory()) ||
+                !mvContaReceber.getContaContabil().equals(contaContabil) ||
+                !itemRateio.getContaResultado().equals(servico.getCostAccount())) {
+              throw new LanceBusinessException("Não é possível realizar lançamento agrupado. Parâmetros contábeis divergentes entre os serviços selecionados. Serviço [%s]", entry.getService().getClass().getSimpleName());
+            }
+
+            // Conta a receber para o setor já existe. Neste caso, atualize somente os valores da conta.
+            BigDecimal entryValueNumber = entryValue.getValue();
+
+            // Valor total da conta
+            mvContaReceber.setValorBruto(mvContaReceber.getValorBruto().add(entryValueNumber));
+
+
+            // Valor do item de rateio
+            itemRateio.setValorRateio(itemRateio.getValorRateio().add(entryValueNumber));
+
+            // Valor do item da conta
+            itemConta.setValorDuplicata(itemConta.getValorDuplicata().add(entryValueNumber));
+            itemConta.setValorMoeda(itemConta.getValorMoeda().add(entryValueNumber));
+
+          }
+
+        }
+      } // for
+    } // if
+
+    // Persiste as contas a receber
+    List<MvContaReceber> persistedContas = contaReceberService.createList(new ArrayList<>(contasReceberMap.values()));
+
+    // Itera a lista de lançamentos selecionados para atualiza-los
+    for (Entry entry : lancamentos) {
+      // Modifica o status para validado
+      entry.setStatus(EntryStatusEnum.V);
+      entry.setContasReceber(persistedContas);
+    }
+
+    return updateList(lancamentos);
   }
 }
