@@ -18,7 +18,7 @@ import org.hibernate.criterion.*;
 import br.com.vah.lance.util.PaginatedSearchParam;
 
 /**
- * Implementation of the generic Data Access Service All CRUD (create, read,
+ * Implementation of the generic Data Access Servico All CRUD (create, read,
  * update, delete) basic data access operations for any persistent object are
  * performed in this class.
  *

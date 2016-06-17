@@ -1,13 +1,10 @@
 package br.com.vah.lance.service;
 
-import br.com.vah.lance.entity.mv.MvContaReceber;
+import br.com.vah.lance.entity.dbamv.ContaReceber;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 
@@ -15,15 +12,15 @@ import java.util.Set;
  *
  */
 @Stateless
-public class ContaReceberService extends DataAccessService<MvContaReceber> {
+public class ContaReceberService extends DataAccessService<ContaReceber> {
 
 	public ContaReceberService() {
-		super(MvContaReceber.class);
+		super(ContaReceber.class);
 	}
 
-	public List<MvContaReceber> createList(List<MvContaReceber> list) {
-		List<MvContaReceber> persistedList = new ArrayList<>();
-		for(MvContaReceber conRec : list) {
+	public List<ContaReceber> createList(List<ContaReceber> list) {
+		List<ContaReceber> persistedList = new ArrayList<>();
+		for(ContaReceber conRec : list) {
 			persistedList.add(create(conRec));
 		}
 		return persistedList;

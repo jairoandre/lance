@@ -168,6 +168,10 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   text-align: left !important;
 }
 
+.lance-label {
+  font-weight: bold;
+}
+
 .lance-input {
   min-width: 300px;
 }
@@ -195,7 +199,7 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   position: relative;
 }
 
-.entry-total-block {
+.lancamento-total-block {
   position: absolute;
   top: 5px;
   right: 10px;

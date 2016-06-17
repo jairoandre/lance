@@ -1,0 +1,30 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Contratos">
+        <vah:dataTable id="dataTable" controller="#{contratoCtrl}"
+                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                         renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                         renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
+          <p:column headerText="Cód. cliente"
+                    style="text-align: left;" width="120">
+            <h:outputText value="#{item.contratante.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.title}" headerText="Título"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column headerText="Setores"
+                    style="text-align: left;" width="60" styleClass="left-align">
+            <h:outputText value="#{item.setores.size()}"/>
+          </p:column>
+        </vah:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

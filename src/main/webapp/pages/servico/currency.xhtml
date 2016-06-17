@@ -1,0 +1,86 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah"
+                xmlns:uivah="http://vah.com.br/vah">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{servicoCtrl.id}"/>
+      <f:viewAction action="#{servicoCtrl.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
+
+      <vah:editForm id="serviceForm" controller="#{servicoCtrl}"
+                      columns="3">
+
+        <uivah:inputText id="serviceTitle" label="Serviço"
+                           value="#{servicoCtrl.item.title}" editing="false"
+                           rendered="false"/>
+
+        <f:facet name="other">
+
+          <p:fieldset id="newValueFieldset" legend="Novo Valor"
+                      rendered="#{servicoCtrl.editing}">
+            <h:panelGrid id="addServiceGrid" columns="3">
+              <uivah:inputDate id="beginDate" label="Data de início"
+                                 value="#{servicoCtrl.servicoValor.beginDate}"
+                                 required="true"
+                                 editing="true"/>
+              <uivah:inputCurrency id="taxValue" label="Valor unitário" required="true"
+                                     value="#{servicoCtrl.servicoValor.valueA}" editing="true"
+                                     rendered="#{servicoCtrl.item.type == 'CTR'}" precision="2" pattern="R$ #,##0.00"/>
+
+              <uivah:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
+                                     value="#{servicoCtrl.servicoValor.valueA}" editing="true"
+                                     rendered="#{servicoCtrl.item.type == 'E'}" precision="6" pattern="R$ #,##0.000000"/>
+              <uivah:inputPercentage id="outPeakPercent" label="% Hora fora de ponta" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueB}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'E'}">
+                <p:ajax event="change" listener="#{servicoCtrl.updatePeakValue}" process="@this" update="peakPercent"/>
+              </uivah:inputPercentage>
+              <uivah:inputCurrency id="peakValue" label="Tarifa de ponta" required="true"
+                                     value="#{servicoCtrl.servicoValor.valueC}" editing="true"
+                                     rendered="#{servicoCtrl.item.type == 'E'}" precision="6" pattern="R$ #,##0.000000"/>
+              <uivah:inputPercentage id="peakPercent" label="% Hora de ponta" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueD}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'E'}"/>
+              <uivah:inputCurrency id="value" label="Valor" required="true"
+                                     value="#{servicoCtrl.servicoValor.valueA}" editing="true"
+                                     rendered="#{servicoCtrl.item.type == 'T'}"/>
+              <uivah:inputPercentage id="vahPercent" label="Percentual VAH" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueD}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}"/>
+              <uivah:inputPercentage id="thirdsPercent" label="Percentual Terceiros" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueA}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}"/>
+              <uivah:inputPercentage id="consultingRoomsPercent" label="Percentual Consultórios" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueB}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}"/>
+              <uivah:inputPercentage id="shoopingPercent" label="Percentual Shopping" required="true"
+                                       value="#{servicoCtrl.servicoValor.valueC}" editing="true"
+                                       rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}"/>
+
+              <p:commandButton id="btnAddValue" value="Adicionar"
+                               action="#{servicoCtrl.addValue}" ajax="true" validateClient="true"
+                               process=":#{p:component('newValueFieldset')}"
+                               update=":#{p:component('valuesDataTable')} addServiceGrid"/>
+            </h:panelGrid>
+          </p:fieldset>
+
+          <br/>
+
+          <ui:include src="values.xhtml"/>
+
+        </f:facet>
+
+      </vah:editForm>
+
+
+    </h:form>
+  </ui:define>
+</ui:composition>

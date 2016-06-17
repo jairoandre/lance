@@ -1,14 +1,15 @@
 package br.com.vah.lance.controller;
 
-import br.com.vah.lance.constant.EntryStatusEnum;
-import br.com.vah.lance.entity.Comment;
-import br.com.vah.lance.entity.Entry;
+import br.com.vah.lance.constant.EstadoLancamentoEnum;
+import br.com.vah.lance.entity.usrdbvah.Comentario;
+import br.com.vah.lance.entity.usrdbvah.Lancamento;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.ContaReceberService;
 import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.EntryService;
+import br.com.vah.lance.service.LancamentoService;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("serial")
 @Named
 @ViewScoped
-public class ValidarCondominialCtrl extends AbstractController<Entry> {
+public class ValidarCondominialCtrl extends AbstractController<Lancamento> {
 
   private
   @Inject
@@ -28,7 +29,7 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
 
   private
   @Inject
-  EntryService service;
+  LancamentoService service;
 
   private
   @Inject
@@ -36,13 +37,13 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
 
   private
   @Inject
-  LoginController loginController;
+  SessionCtrl sessionCtrl;
 
-  private List<Entry> lancamentos;
+  private List<Lancamento> lancamentos;
 
-  private List<Entry> lancamentosSelecionados;
+  private List<Lancamento> lancamentosSelecionados;
 
-  private List<Entry> oldEntries;
+  private List<Lancamento> oldEntries;
 
   private BigDecimal totalLancamentos = BigDecimal.ZERO;
 
@@ -61,16 +62,16 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
     dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
   }
 
-  public List<Entry> getLancamentos() {
+  public List<Lancamento> getLancamentos() {
     return lancamentos;
   }
 
-  public void setLancamentos(List<Entry> lancamentos) {
+  public void setLancamentos(List<Lancamento> lancamentos) {
     this.lancamentos = lancamentos;
   }
 
   @Override
-  public DataAccessService<Entry> getService() {
+  public DataAccessService<Lancamento> getService() {
     return service;
   }
 
@@ -80,8 +81,8 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
   }
 
   @Override
-  public Entry createNewItem() {
-    return new Entry();
+  public Lancamento createNewItem() {
+    return new Lancamento();
   }
 
   @Override
@@ -97,8 +98,8 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
   public void onSelect() {
     totalLancamentos = BigDecimal.ZERO;
     if (lancamentosSelecionados != null) {
-      for (Entry entry : lancamentosSelecionados) {
-        totalLancamentos = totalLancamentos.add(entry.getTotalValue());
+      for (Lancamento lancamento : lancamentosSelecionados) {
+        totalLancamentos = totalLancamentos.add(lancamento.getTotalValue());
       }
     }
   }
@@ -113,35 +114,35 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
       lancamentos = service.recuperarLancamentosCondominial();
       lancamentosSelecionados = null;
     } catch (LanceBusinessException lbe) {
-      addErrorMsg("Erro de negócio", lbe.getMsg(), false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de negócio", lbe.getMsg()), false);
     } catch (Exception e) {
-      addErrorMsg("Erro inesperado", e.getMessage(), false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro inesperado", e.getMessage()), false);
     }
   }
 
-  public void indeferir(Entry lancamento) {
+  public void indeferir(Lancamento lancamento) {
     try {
-      lancamento.setStatus(EntryStatusEnum.P);
+      lancamento.setStatus(EstadoLancamentoEnum.P);
       service.update(lancamento);
       lancamentos = service.recuperarLancamentosCondominial();
       lancamentosSelecionados = null;
-      addInfoMsg("Aviso", "Lançamento indeferido", false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Lançamento indeferido"), false);
     } catch (Exception e) {
-      addErrorMsg("Erro", e.getMessage(), false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", e.getMessage()), false);
     }
   }
 
 
-  public void carregarLancamentosAnteriores(Entry entry) {
-    setItem(entry);
-    oldEntries = service.listOldEntries(entry.getService());
+  public void carregarLancamentosAnteriores(Lancamento lancamento) {
+    setItem(lancamento);
+    oldEntries = service.listOldEntries(lancamento.getServico());
   }
 
-  public List<Entry> getLancamentosSelecionados() {
+  public List<Lancamento> getLancamentosSelecionados() {
     return lancamentosSelecionados;
   }
 
-  public void setLancamentosSelecionados(List<Entry> lancamentosSelecionados) {
+  public void setLancamentosSelecionados(List<Lancamento> lancamentosSelecionados) {
     this.lancamentosSelecionados = lancamentosSelecionados;
   }
 
@@ -165,7 +166,7 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
     this.dtLancamentoConRec = dtLancamentoConRec;
   }
 
-  public List<Entry> getOldEntries() {
+  public List<Lancamento> getOldEntries() {
     return oldEntries;
   }
 
@@ -178,18 +179,18 @@ public class ValidarCondominialCtrl extends AbstractController<Entry> {
   }
 
   public void salvarNovoComentario() {
-    Comment comment = new Comment();
-    comment.setAuthor(loginController.getUser());
-    comment.setCreatedOn(new Date());
-    comment.setEntry(getItem());
-    comment.setDetails(comentario);
-    getItem().getComments().add(comment);
-    comentario = null;
+    Comentario comentario = new Comentario();
+    comentario.setAuthor(sessionCtrl.getUser());
+    comentario.setCreatedOn(new Date());
+    comentario.setLancamento(getItem());
+    comentario.setDetails(this.comentario);
+    getItem().getComentarios().add(comentario);
+    this.comentario = null;
     try {
       service.update(getItem());
-      addInfoMsg("Sucesso", "Comentário adicionado", false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Comentário adicionado"), false);
     } catch (Exception e) {
-      addErrorMsg("Erro", "Problema na persistência do comentário", false);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Problema na persistência do comentário"), false);
     }
   }
 }

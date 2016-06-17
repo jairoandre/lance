@@ -1,9 +1,8 @@
 package br.com.vah.lance.filter;
 
-import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.constant.RestrictViewsEnum;
-import br.com.vah.lance.controller.LoginController;
-import br.com.vah.lance.entity.User;
+import br.com.vah.lance.controller.SessionCtrl;
+import br.com.vah.lance.entity.usrdbvah.User;
 
 import javax.inject.Inject;
 import javax.servlet.*;
@@ -20,7 +19,7 @@ public class AuthorizationPageFilter implements Filter {
 
   private
   @Inject
-  LoginController loginController;
+  SessionCtrl sessionCtrl;
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -30,7 +29,7 @@ public class AuthorizationPageFilter implements Filter {
 
     if (request.getUserPrincipal() != null) {
 
-      User user = loginController.getUser();
+      User user = sessionCtrl.getUser();
 
       String[] splitPath = request.getRequestURI().split(request.getContextPath());
 

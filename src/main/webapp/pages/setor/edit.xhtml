@@ -1,0 +1,63 @@
+<ui:composition template="/templates/layout.xhtml"
+								xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:f="http://java.sun.com/jsf/core"
+								xmlns:h="http://java.sun.com/jsf/html"
+								xmlns:ui="http://java.sun.com/jsf/facelets"
+								xmlns:vah="http://java.sun.com/jsf/composite/vah"
+								xmlns:p="http://primefaces.org/ui"
+								xmlns:uivah="http://vah.com.br/vah">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewParam name="id" value="#{setorCtrl.id}" />
+			<f:viewAction action="#{setorCtrl.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="form">
+
+			<vah:manyToOneDialog id="contaContabilDlg"
+														 controller="#{planoContaCtrl}"
+														 header="SELECIONAR CONTA CONTÁBIL" width="800"
+														 update="contaContabil"
+														 placeholder="Digite o termo (descrição, código)..."
+														 bean="#{setorCtrl.item.setorDetalhe.contaContabil}">
+				<p:column sortBy="#{item.id}" width="125"
+									headerText="Código reduzido" styleClass="left-align">
+					<h:outputText value="#{item.id}"/>
+				</p:column>
+				<p:column sortBy="#{item.codigoContabil}"
+									headerText="Código contábil" width="125" styleClass="left-align">
+					<h:outputText value="#{item.codigoContabil}"/>
+				</p:column>
+			</vah:manyToOneDialog>
+
+			<vah:editForm id="setorForm" controller="#{setorCtrl}" columns="3">
+				<h:outputLabel value="Cód:" style="font-weight: bold;" />
+				<h:outputText value="#{setorCtrl.item.id}" />
+				<h:panelGroup/>
+				<h:outputLabel value="Setor:" style="font-weight: bold;" />
+				<h:outputText value="#{setorCtrl.item.title}" />
+				<h:panelGroup/>
+				<uivah:inputNumber id="setorArea" renderMessage="false"
+														 value="#{setorCtrl.item.setorDetalhe.area}"
+														 label="Área (m2)"
+														 editing="#{setorCtrl.editing}"/>
+				<h:panelGroup/>
+				<uivah:inputNumber id="rtQuantity" renderMessage="false"
+														 value="#{setorCtrl.item.setorDetalhe.rtQuantity}"
+														 label="Quantidade TR"
+														 editing="#{setorCtrl.editing}"/>
+				<h:panelGroup/>
+				<uivah:manyToOne id="contaContabil" dialog="contaContabilDlg"
+													 editing="#{setorCtrl.editing}" label="Conta contábil"
+													 required="false" title="title"
+													 value="#{setorCtrl.item.setorDetalhe.contaContabil}"/>
+				<uivah:selectOneEnum id="type" label="Tipo de setor"
+															 value="#{setorCtrl.item.setorDetalhe.type}"
+															 editing="#{setorCtrl.editing}" required="true"
+															 options="#{setorCtrl.types}"/>
+			</vah:editForm>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,30 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Setores">
+        <vah:dataTable id="dataTable" controller="#{setorCtrl}"
+                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                         renderDeleteAction="#{false}"
+                         renderAddBtn="#{false}">
+          <p:column sortBy="#{item.id}" headerText="Código"
+                    style="text-align: left;" width="100">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.title}" headerText="Nome"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column headerText="Conta contábil" width="200"
+                    style="text-align: left;">
+            <h:outputText value="#{item.setorDetalhe == null or item.setorDetalhe.contaContabil == null ? '-' : item.setorDetalhe.contaContabil.title}"/>
+          </p:column>
+        </vah:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

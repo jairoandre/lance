@@ -1,0 +1,121 @@
+<ui:composition
+  template="/templates/layout.xhtml"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Lançamentos">
+        <p:outputLabel value="Vigência:" styleClass="label"/>
+        <h:panelGroup id="searchMonthPnl" styleClass="margin-left">
+          <p:inputText id="searchMonth" styleClass="searchMonth" value="#{lancamentoCtrl.searchMonth}">
+            <f:convertDateTime pattern="MM/yyyy" dateStyle="short"/>
+          </p:inputText>
+          <script>
+            $(".searchMonth").mask('99/9999');
+          </script>
+        </h:panelGroup>
+        <p:commandButton id="searchMonthBtn" action="#{lancamentoCtrl.filterByDate}" value="Filtrar" ajax="true"
+                         process="@this searchMonth" update="dataTable"
+                         icon="fa fa-search" styleClass="margin-left"/>
+
+        <p:dataTable id="dataTable" value="#{lancamentoCtrl.entries}" styleClass="margin-top"
+                     var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index">
+          <p:column headerText="Serviço" styleClass="left-align" filterBy="#{lancamento.servico.title}" filterMatchMode="contains" filterStyle="display: inline-block; margin-left: 5px;">
+            <h:outputText value="#{lancamento.servico.title}"/>
+          </p:column>
+          <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">
+            <h:outputText value="#{lancamento.servico.type.label}"/>
+          </p:column>
+          <p:column headerText="Valor lançado" styleClass="left-align" width="100">
+            <h:outputText value="#{lancamento.totalValue}">
+              <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+            </h:outputText>
+          </p:column>
+          <p:column headerText="Criação" styleClass="left-align" width="100">
+            <h:outputText value="#{lancamento.createdOn}"
+                          rendered="#{lancamento.status != 'N'}">
+              <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputText>
+            <h:outputText value="-" rendered="#{lancamento.status == 'N'}"/>
+          </p:column>
+          <p:column headerText="Vigência" styleClass="left-align" width="100">
+            <h:outputText value="#{lancamento.effectiveOn}"
+                          rendered="#{lancamento.effectiveOn != null}">
+              <f:convertDateTime pattern="MM/yyyy"/>
+            </h:outputText>
+            <h:outputText value="-"
+                          rendered="#{lancamento.effectiveOn == null}"/>
+          </p:column>
+          <p:column headerText="Estado" styleClass="left-align" width="100">
+            <vah:statusLancamento status="#{lancamento.status}"/>
+          </p:column>
+          <p:column headerText="Ações" width="100" styleClass="center-align">
+            <p:menuButton id="menuButton" value="Ações">
+              <p:menuitem value="Detalhar" action="#{lancamentoCtrl.detail(lancamento)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{empty lancamento.id}"
+                          icon="fa fa-search"/>
+              <p:menuitem value="Editar" action="#{lancamentoCtrl.edit(lancamento)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or lancamento.status == 'V'}"
+                          icon="fa fa-pencil"/>
+              <p:menuitem value="Validar" action="#{lancamentoCtrl.validate(lancamento)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          rendered="#{!lancamento.servico.agrupavel}"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR') or (lancamento.status != 'L' and lancamento.status != 'F' and lancamento.status != 'M')}"
+                          icon="fa fa-gavel"/>
+              <p:separator/>
+              <p:menuitem value="Contas a receber" action="#{lancamentoCtrl.setItem(lancamento)}"
+                          oncomplete="PF('contasReceberDlg').show()"
+                          ajax="true"
+                          process="@this"
+                          update="#{p:component('contasReceberDlg')}"
+                          disabled="#{empty lancamento.contasReceber}"
+                          icon="fa fa-file"/>
+              <p:menuitem value="Emitir boletos" action="#{lancamentoCtrl.validate(lancamento)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT') or (lancamento.status != 'V') or true}"
+                          icon="fa fa-barcode"/>
+            </p:menuButton>
+          </p:column>
+        </p:dataTable>
+        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="800" height="400" header="Contas a receber">
+          <p:dataTable id="contasReceberTable" rendered="#{not empty lancamentoCtrl.item.contasReceber}"
+                       value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}">
+            <p:column headerText="Cód." width="75">
+              <h:outputText value="#{item.id}"/>
+            </p:column>
+            <p:column headerText="Documento"
+                      styleClass="left-align" width="100">
+              <h:outputText value="#{item.numeroDocumento}"/>
+            </p:column>
+            <p:column headerText="Cliente"
+                      styleClass="left-align" width="200">
+              <h:outputText value="#{item.nomeCliente}"/>
+            </p:column>
+            <p:column headerText="Valor" width="85" styleClass="left-align">
+              <h:outputText value="#{item.valorBruto}">
+                <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Data Emissão"
+                      styleClass="left-align" width="100">
+              <h:outputText value="#{item.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+          </p:dataTable>
+
+        </p:dialog>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

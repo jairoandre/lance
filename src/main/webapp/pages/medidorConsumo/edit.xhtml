@@ -1,0 +1,89 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah"
+                xmlns:uivah="http://vah.com.br/vah">
+
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{medidorConsumoCtrl.id}"/>
+      <f:viewAction action="#{medidorConsumoCtrl.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="content">
+
+    <h:form id="form">
+
+      <vah:manyToManyDialog id="addSetorDlg"
+                              bean="#{medidorConsumoCtrl.setor}" controller="#{setorCtrl}"
+                              header="RELACIONAR SETORES" targetController="#{medidorConsumoCtrl}"
+                              targetItems="#{medidorConsumoCtrl.setores}" toggleAction="toggle"
+                              update="setores" width="800">
+        <p:column sortBy="#{item.id}" headerText="Código" width="100">
+          #{item.id}
+        </p:column>
+      </vah:manyToManyDialog>
+
+      <vah:editForm id="consumptionMeterPnl" controller="#{medidorConsumoCtrl}"
+                      columns="3">
+        <uivah:inputText id="code" label="Código"
+                           value="#{medidorConsumoCtrl.item.code}"
+                           editing="#{medidorConsumoCtrl.editing}" required="true"/>
+        <uivah:inputText id="title" label="Título"
+                           value="#{medidorConsumoCtrl.item.title}"
+                           editing="#{medidorConsumoCtrl.editing}" required="true"/>
+        <uivah:inputText id="detail" label="Detalhes"
+                           value="#{medidorConsumoCtrl.item.detail}"
+                           editing="#{medidorConsumoCtrl.editing}"/>
+        <uivah:inputNumber id="factor" label="Fator multiplicação"
+                           value="#{medidorConsumoCtrl.item.factor}"
+                           editing="#{medidorConsumoCtrl.editing}"/>
+        <uivah:selectOne id="type" label="Tipo"
+                           value="#{medidorConsumoCtrl.item.type}" required="true"
+                           displayValue="#{medidorConsumoCtrl.item.type.label}"
+                           editing="#{medidorConsumoCtrl.editing}">
+          <f:selectItem itemLabel="Selecionar" itemValue=""/>
+          <f:selectItem itemLabel="Energia" itemValue="E"/>
+          <f:selectItem itemLabel="Gás" itemValue="G"/>
+        </uivah:selectOne>
+        <f:facet name="other">
+          <uivah:manyToMany id="setores" addBtnLabel="Relacionar setores"
+                              bean="#{medidorConsumoCtrl.setor}" columnHeader="Setor"
+                              controller="#{medidorConsumoCtrl}" dialog="addSetorDlg"
+                              editing="#{medidorConsumoCtrl.editing}" emptyMessage="Sem setores"
+                              items="#{medidorConsumoCtrl.getItem().setores.toArray()}"
+                              toggleAction="toggle" showDefaultColumns="false">
+            <p:column headerText="Cód." styleClass="left-align" width="120">
+              <h:outputText value="#{item.setor.id}"/>
+            </p:column>
+            <p:column headerText="Setor" styleClass="left-align">
+              <h:outputText value="#{item.setor.title}"/>
+            </p:column>
+            <p:column headerText="Valor" styleClass="left-align" width="200">
+              <uivah:inputPercentage id="setor"
+                                       value="#{item.percent}"
+                                       required="true"
+                                       editing="#{medidorConsumoCtrl.editing}">
+                <p:ajax event="change" process="@this" update="@this"/>
+              </uivah:inputPercentage>
+            </p:column>
+            <p:column width="100" headerText="Remover"
+                      styleClass="left-align"
+                      rendered="#{medidorConsumoCtrl.editing}">
+              <p:commandLink id="removeBtn"
+                             action="#{medidorConsumoCtrl.removeSetor}" ajax="true"
+                             styleClass="action-link" update="@form" process="@this">
+                <f:setPropertyActionListener value="#{item}" target="#{medidorConsumoCtrl.itemToRemove}"/>
+                <span class="fa fa-trash"/>
+              </p:commandLink>
+            </p:column>
+          </uivah:manyToMany>
+        </f:facet>
+      </vah:editForm>
+    </h:form>
+  </ui:define>
+</ui:composition>

@@ -29,7 +29,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	private int rowIndex;
 	// Total row number
 	private int rowCount;
-	// Data Access Service for create read update delete operations
+	// Data Access Servico for create read update delete operations
 	private DataAccessService crudService;
 	/**
 	 * Search parms
@@ -73,6 +73,12 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 		return super.load(first, pageSize, multiSortMeta, filters);
 	}
 
+	public List<T> load(int limit) {
+		searchParams.setFirst(0);
+		searchParams.setPageSize(limit);
+		return crudService.paginatedSearch(searchParams);
+	}
+
 	public void remove(Integer index) {
 		datasource.remove(index);
 		setRowCount(getRowCount() - 1);
@@ -92,18 +98,18 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	}
 
 	/**
-	 * Gets the sector object's primary key
+	 * Gets the setor object's primary key
 	 * 
-	 * @param sector
+	 * @param setor
 	 * @return Object
 	 */
 	@Override
-	public Object getRowKey(T sector) {
-		return sector.getId().toString();
+	public Object getRowKey(T setor) {
+		return setor.getId().toString();
 	}
 
 	/**
-	 * Returns the sector object at the specified position in datasource.
+	 * Returns the setor object at the specified position in datasource.
 	 * 
 	 * @return
 	 */
@@ -119,7 +125,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	}
 
 	/**
-	 * Returns the sector object that has the row key.
+	 * Returns the setor object that has the row key.
 	 * 
 	 * @param rowKey
 	 * @return
@@ -136,7 +142,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 	}
 
 	/*
-	 * ===== Getters and Setters of LazySectorDataModel fields
+	 * ===== Getters and Setters of LazySetorDataModel fields
 	 */
 
 	/**

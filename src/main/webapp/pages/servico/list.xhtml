@@ -1,0 +1,44 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Serviços">
+        <vah:dataTable id="dataTable" controller="#{servicoCtrl}"
+                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                         renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                         renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+          <p:column sortBy="#{item.title}" headerText="Nome"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.type}" headerText="Tipo de cobrança"
+                    width="250" style="text-align: left;">
+            <h:outputText value="#{item.type.label}"/>
+          </p:column>
+          <p:column sortBy="#{item.contaContabil.id}" headerText="Conta Contábil"
+                    width="150" style="text-align: left;">
+            <h:outputText value="#{item.contaContabil == null ? '-' : item.contaContabil.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.agrupavel}" headerText="Agrupável"
+                    width="95" style="text-align: left;">
+            <h:outputText value="#{item.agrupavel ? 'Sim' : 'Não'}"/>
+          </p:column>
+          <p:column headerText="Valores" style="text-align: center;"
+                    width="50">
+            <p:commandLink id="currencyAction"
+                           action="#{servicoCtrl.currency(item)}"
+                           styleClass="action-link" disabled="#{item.type == 'V' || item.type == 'C' || item.type == 'CI'}">
+              <span class="fa fa-usd"/>
+            </p:commandLink>
+            <p:tooltip id="toolCurrencyAction" for="currencyAction"
+                       value="Valores monetários"/>
+          </p:column>
+        </vah:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

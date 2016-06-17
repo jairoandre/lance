@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
-import br.com.vah.lance.entity.User;
+import br.com.vah.lance.entity.usrdbvah.User;
 
 /**
  * 

@@ -3,11 +3,11 @@
 								xmlns:h="http://java.sun.com/jsf/html"
 								xmlns:ui="http://java.sun.com/jsf/facelets"
 								xmlns:p="http://primefaces.org/ui"
-								xmlns:lance="http://java.sun.com/jsf/composite/lance">
+								xmlns:vah="http://java.sun.com/jsf/composite/vah">
 	<ui:define name="content">
 		<h:form id="form">
 			<p:panel header="Usuários">
-				<lance:dataTable id="dataTable" controller="#{userController}">
+				<vah:dataTable id="dataTable" controller="#{userCtrl}">
 					<p:column sortBy="#{item.id}" headerText="Id" width="50" styleClass="left-align">
 						<h:outputText value="#{item.id}" />
 					</p:column>
@@ -17,7 +17,7 @@
 					<p:column sortBy="#{item.title}" headerText="Descrição" styleClass="left-align">
 						<h:outputText value="#{item.title}" />
 					</p:column>
-				</lance:dataTable>
+				</vah:dataTable>
 			</p:panel>
 		</h:form>
 	</ui:define>

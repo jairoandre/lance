@@ -4,52 +4,52 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:lance="http://java.sun.com/jsf/composite/lance"
-                xmlns:uilance="http://vah.com.br/lance">
+                xmlns:vah="http://java.sun.com/jsf/composite/vah"
+                xmlns:uivah="http://vah.com.br/vah">
   <ui:define name="metadata">
     <f:metadata>
-      <f:viewParam name="id" value="#{userController.id}"/>
-      <f:viewAction action="#{userController.onLoad}"/>
+      <f:viewParam name="id" value="#{userCtrl.id}"/>
+      <f:viewAction action="#{userCtrl.onLoad}"/>
     </f:metadata>
   </ui:define>
   <ui:define name="content">
     <h:form id="form">
 
-      <lance:manyToManyDialog id="addServiceDlg"
-                              bean="#{userController.beanService}"
-                              controller="#{serviceController}" header="RELACIONAR SERVIÇOS"
-                              targetController="#{userController}"
-                              targetItems="#{userController.item.services}"
-                              toggleAction="toggleService" update="services" width="800"/>
-      <lance:editForm id="contractPnl" controller="#{userController}"
+      <vah:manyToManyDialog id="addServiceDlg"
+                              bean="#{userCtrl.beanServico}"
+                              controller="#{servicoCtrl}" header="RELACIONAR SERVIÇOS"
+                              targetController="#{userCtrl}"
+                              targetItems="#{userCtrl.item.servicos}"
+                              toggleAction="toggleService" update="servicos" width="800"/>
+      <vah:editForm id="contractPnl" controller="#{userCtrl}"
                       columns="3">
-        <uilance:inputText id="name" label="Login"
-                           value="#{userController.item.login}"
-                           editing="#{userController.editing}"/>
-        <uilance:inputText id="title" label="Descrição"
-                           value="#{userController.item.title}"
-                           editing="#{userController.editing}"/>
+        <uivah:inputText id="name" label="Login"
+                           value="#{userCtrl.item.login}"
+                           editing="#{userCtrl.editing}"/>
+        <uivah:inputText id="title" label="Descrição"
+                           value="#{userCtrl.item.title}"
+                           editing="#{userCtrl.editing}"/>
 
         <f:facet name="other">
           <h:panelGroup id="servicesPnl" layout="block" styleClass="margin-top">
-            <uilance:manyToMany id="services" addBtnLabel="Relacionar serviços"
-                                bean="#{userController.beanService}" columnHeader="Serviço"
-                                controller="#{userController}" dialog="addServiceDlg"
-                                editing="#{userController.editing}"
+            <uivah:manyToMany id="servicos" addBtnLabel="Relacionar serviços"
+                                bean="#{userCtrl.beanServico}" columnHeader="Serviço"
+                                controller="#{userCtrl}" dialog="addServiceDlg"
+                                editing="#{userCtrl.editing}"
                                 emptyMessage="Sem serviços relacionados"
-                                items="#{userController.item.services}"
+                                items="#{userCtrl.item.servicos}"
                                 toggleAction="toggleService"/>
           </h:panelGroup>
 
           <h:panelGroup id="rolesContainer" layout="block" styleClass="margin-top">
-            <p:dataTable id="roles" value="#{userController.roles}" var="role">
+            <p:dataTable id="roles" value="#{userCtrl.roles}" var="role">
               <p:column style="text-align: center;" width="50">
                 <p:commandLink ajax="true"
-                               action="#{userController.toggleRole(role)}"
+                               action="#{userCtrl.toggleRole(role)}"
                                styleClass="action-link" process="@this"
                                update=":#{p:component('rolesContainer')}">
                   <h:panelGroup
-                    styleClass="fa fa#{userController.item.roles.contains(role) ? '-check' : ''}-square-o"/>
+                    styleClass="fa fa#{userCtrl.item.roles.contains(role) ? '-check' : ''}-square-o"/>
                 </p:commandLink>
               </p:column>
               <p:column headerText="Perfil" styleClass="left-align">
@@ -59,7 +59,7 @@
           </h:panelGroup>
 
         </f:facet>
-      </lance:editForm>
+      </vah:editForm>
     </h:form>
   </ui:define>
 </ui:composition>

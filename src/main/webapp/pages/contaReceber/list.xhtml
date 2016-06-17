@@ -4,13 +4,13 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:lance="http://java.sun.com/jsf/composite/lance">
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
   <ui:define name="content">
     <h:form id="form">
       <p:panel header="Contas a receber">
-        <lance:dataTable id="dataTable" controller="#{contaReceberController}"
+        <vah:dataTable id="dataTable" controller="#{contaReceberCtrl}"
                          renderDeleteAction="false" renderAddBtn="false"
-                         renderEditAction="#{loginController.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
           <p:column sortBy="#{item.id}" headerText="Código" width="100"
                     styleClass="left-align">
             <h:outputText value="#{item.id}"/>
@@ -58,7 +58,7 @@
               </p:dataTable>
             </p:overlayPanel>
           </p:column>
-        </lance:dataTable>
+        </vah:dataTable>
       </p:panel>
     </h:form>
   </ui:define>

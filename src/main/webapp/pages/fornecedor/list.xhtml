@@ -1,0 +1,32 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Clientes">
+        <vah:dataTable id="dataTable" controller="#{fornecedorCtrl}"
+                         renderDeleteAction="false" renderAddBtn="false" renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+          <p:column sortBy="#{item.id}" headerText="Código" width="100"
+                    style="text-align: left;">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.title}" headerText="Nome"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.nomeFantasia}" headerText="Nome Fantasia"
+                    style="text-align: left;" width="250">
+            <h:outputText value="#{item.nomeFantasia}"/>
+          </p:column>
+          <p:column headerText="Setores" style="text-align: left;"
+                    width="100">
+            <h:outputText value="#{item.setores.size()}"/>
+          </p:column>
+        </vah:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

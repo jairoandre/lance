@@ -1,0 +1,209 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah"
+                xmlns:uivah="http://vah.com.br/vah">
+
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{contratoCtrl.id}"/>
+      <f:viewAction action="#{contratoCtrl.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+
+  <ui:define name="content">
+    <h:form id="form">
+
+      <!-- Modal de seleção de cliente -->
+      <p:dialog id="contratanteDlg" widgetVar="contratanteDlg" modal="true"
+                header="SELECIONAR CONTRATANTE" width="800">
+        <p:ajax event="close" listener="#{contratoCtrl.onLoadSubject}"
+                update=":#{p:component('contratante')} :#{p:component('servicesContract')}"
+                process="@this"/>
+        <vah:dataTable id="contratanteDlgTbl" controller="#{fornecedorCtrl}"
+                         renderAddBtn="false" renderActionColumn="false">
+          <p:column style="text-align: center;" width="50">
+            <p:commandLink ajax="true" styleClass="action-link"
+                           process="@this" update="@(.action-link)">
+              <f:setPropertyActionListener value="#{item}"
+                                           target="#{contratoCtrl.item.contratante}"/>
+              <h:panelGroup
+                styleClass="fa fa#{(contratoCtrl.item.contratante.id == item.id) ? '-dot' : ''}-circle-o"/>
+            </p:commandLink>
+          </p:column>
+          <p:column sortBy="#{item.id}" headerText="Cód"
+                    styleClass="left-align" width="100">
+            <h:outputText value="#{item.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.title}" headerText="Nome"
+                    style="text-align: left;">
+            <h:outputText value="#{item.title}"/>
+          </p:column>
+          <p:column sortBy="#{item.nomeFantasia}" headerText="Nome fantasia"
+                    style="text-align: left;" width="200">
+            <h:outputText value="#{item.nomeFantasia}"/>
+          </p:column>
+        </vah:dataTable>
+
+        <f:facet name="footer">
+          <p:commandButton id="contratanteDlgCloseBtn" ajax="true"
+                           onclick="PF('contratanteDlg').hide()" value="Fechar diálogo"/>
+        </f:facet>
+
+      </p:dialog>
+
+      <vah:editForm id="contractPnl" controller="#{contratoCtrl}"
+                      columns="3">
+        <uivah:inputText id="name" label="Nome"
+                           value="#{contratoCtrl.item.title}"
+                           editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="beginDate" label="Data de início"
+                           value="#{contratoCtrl.item.beginDate}"
+                           editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="endDate" label="Data de término"
+                           value="#{contratoCtrl.item.endDate}"
+                           editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="changeDate" label="Data de reajuste"
+                           value="#{contratoCtrl.item.changeDate}"
+                           editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:manyToOne id="contratante" dialog="contratanteDlg"
+                           editing="#{contratoCtrl.editing}" label="Contratante"
+                           required="true" title="title"
+                           value="#{contratoCtrl.item.contratante}"/>
+
+        <f:facet name="other">
+
+          <h:panelGroup id="servicesContract"
+                        styleClass="servicos-contrato-panel" layout="block">
+
+            <p:dataList id="setoresDataList" var="contratoSetor"
+                        emptyMessage="Sem setores" type="none"
+                        rowIndexVar="idx"
+                        value="#{contratoCtrl.item.setores.toArray()}">
+
+              <f:facet name="header">
+                <h:outputText value="SETORES DO CONTRATANTE"/>
+              </f:facet>
+
+              <h:panelGroup id="servicesContractPnl" style="padding: 5px"
+                            layout="block">
+
+                <p:dialog id="serviceDlg"
+                          widgetVar="serviceDlg#{idx}" modal="true"
+                          header="SELECIONE OS SERVIÇOS" width="800">
+
+                  <p:ajax event="close"
+                          update="@(.servicePnl#{idx})"/>
+
+                  <vah:dataTable id="serviceDlgTable"
+                                   controller="#{contratoCtrl.serviceControllers[contratoSetor.setor.id]}"
+                                   renderAddBtn="false"
+                                   renderActionColumn="false">
+                    <p:column id="selector" style="text-align: center;" width="50">
+                      <p:commandLink ajax="true"
+                                     action="#{contratoCtrl.toggleService(contratoSetor)}"
+                                     styleClass="action-link" process="@this"
+                                     update="@(.action-link)">
+                        <f:setPropertyActionListener value="#{item}"
+                                                     target="#{contratoCtrl.servicoBean}"/>
+                        <h:panelGroup
+                          styleClass="fa fa#{contratoSetor.servicos.contains(item) ? '-check' : ''}-square-o"/>
+                      </p:commandLink>
+                    </p:column>
+                    <p:column id="detail" sortBy="#{item.title}"
+                              headerText="Descrição" style="text-align: left;">
+                      <h:outputText value="#{item.title}"/>
+                    </p:column>
+                  </vah:dataTable>
+
+                  <f:facet name="footer">
+                    <p:commandButton id="serviceDlgCloseBtn" ajax="true"
+                                     onclick="PF('serviceDlg#{idx}').hide()"
+                                     value="Fechar diálogo"/>
+                  </f:facet>
+                </p:dialog>
+
+                <p:dialog id="inquilinoDlg"
+                          widgetVar="inquilinoDlg#{idx}" modal="true"
+                          header="SELECIONAR INQUILINO #{idx}" width="800" dynamic="true">
+                  <p:ajax event="close" update="@(.inquilino#{idx})"
+                          process="@this"/>
+                  <vah:dataTable id="inquilinoDlgTable"
+                                   controller="#{contratoCtrl.clientControllers[contratoSetor.setor.id]}"
+                                   renderAddBtn="false"
+                                   renderActionColumn="false">
+                    <p:column style="text-align: center;" width="50">
+                      <p:commandLink ajax="true" styleClass="action-link"
+                                     process="@this" update="@(.action-link)">
+                        <f:setPropertyActionListener value="#{item}"
+                                                     target="#{contratoSetor.inquilino}"/>
+                        <h:panelGroup
+                          styleClass="fa fa#{(contratoSetor.inquilino.id == item.id) ? '-dot' : ''}-circle-o"/>
+                      </p:commandLink>
+                    </p:column>
+                    <p:column sortBy="#{item.title}" headerText="Descrição"
+                              style="text-align: left;">
+                      <h:outputText value="#{item.title}"/>
+                    </p:column>
+                  </vah:dataTable>
+
+                  <f:facet name="footer">
+                    <p:commandButton id="inquilinoDlgCloseBtn" ajax="true"
+                                     onclick="PF('inquilinoDlg#{idx}').hide()"
+                                     value="Fechar diálogo"/>
+                  </f:facet>
+                </p:dialog>
+
+                <p:panel toggleable="true"
+                         header="#{contratoSetor.setor.id} - #{contratoSetor.setor.title}"
+                         styleClass="inquilino#{idx}" rendered="#{contratoSetor.setor != null}">
+                  <h:panelGroup id="servicePnl"
+                                styleClass="servicePnl#{idx}">
+                    <h:panelGrid id="servicePnlGrid" columns="3">
+                      <uivah:manyToOne id="inquilino"
+                                         dialog="inquilinoDlg#{idx}"
+                                         editing="#{contratoCtrl.editing}" label="Inquilino"
+                                         required="false" title="title" value="#{contratoSetor.inquilino}"/>
+                    </h:panelGrid>
+                    <p:commandButton id="serviceAddBtn"
+                                     onclick="PF('serviceDlg#{idx}').show()"
+                                     value="Relacionar serviços"
+                                     rendered="#{contratoCtrl.editing}"
+                                     style="margin-top: 10px"/>
+                    <p:dataTable id="serviceTable" var="item"
+                                 value="#{contratoSetor.servicos}" lazy="true"
+                                 emptyMessage="Sem serviços relacionados"
+                                 style="margin-top: 10px">
+                      <p:column headerText="Serviços" style="text-align: left;">
+                        <h:outputText value="#{item.title}"/>
+                      </p:column>
+                      <p:column width="100" headerText="Remover"
+                                style="text-align: center;"
+                                rendered="#{contratoCtrl.editing}">
+                        <p:commandLink id="serviceTableRemoveBtn"
+                                       action="#{contratoCtrl.toggleService(contratoSetor)}"
+                                       ajax="true" styleClass="action-link" update="@form"
+                                       process="@this">
+                          <f:setPropertyActionListener value="#{item}"
+                                                       target="#{contratoCtrl.servicoBean}"/>
+                          <span class="fa fa-trash"/>
+                        </p:commandLink>
+                      </p:column>
+                    </p:dataTable>
+                  </h:panelGroup>
+                </p:panel>
+              </h:panelGroup>
+
+            </p:dataList>
+
+
+          </h:panelGroup>
+        </f:facet>
+
+      </vah:editForm>
+    </h:form>
+  </ui:define>
+</ui:composition>

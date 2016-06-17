@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+  <p:dataTable id="valuesDataTable"
+               value="#{servicoCtrl.values}" var="value"
+               paginator="true"
+               rows="10"
+               paginatorPosition="bottom"
+               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+               emptyMessage="Sem valores registrados" rowKey="index"
+               rendered="#{servicoCtrl.item.id != null}" styleClass="margin-top table-left-header">
+    <f:facet name="header">
+      <h:outputText value="VALORES"/>
+    </f:facet>
+
+    <!-- PERÍODO DE VIGÊNCIA -->
+    <p:column sortBy="#{value.beginDate}" headerText="Data de início" styleClass="left-align"
+              width="150">
+      <h:outputText value="#{value.beginDate}">
+        <f:convertDateTime pattern="dd/MM/yyyy"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.endDate}" headerText="Data de término" styleClass="left-align"
+              width="150">
+      <h:outputText value="Corrente" rendered="#{value.endDate == null}"/>
+      <h:outputText value="#{value.endDate}" rendered="#{value.endDate != null}">
+        <f:convertDateTime pattern="dd/MM/yyyy"/>
+      </h:outputText>
+    </p:column>
+
+    <!-- TABELADO ou TARIFADO -->
+    <p:column sortBy="#{value.valueA}" headerText="Valor" styleClass="left-align"
+              rendered="#{servicoCtrl.item.type == 'T' or servicoCtrl.item.type == 'CTR'}" width="200">
+      <h:outputText value="#{value.valueA}">
+        <f:convertNumber currencySymbol="R$" locale="pt_BR"
+                         minFractionDigits="2" pattern="R$ #,##0.00"/>
+      </h:outputText>
+    </p:column>
+
+    <!-- TAXAS DE ENERGIA INDIVIDUAL -->
+    <p:column sortBy="#{value.valueA}" headerText="Tarifa fora de ponta" styleClass="left-align" width="100"
+              rendered="#{servicoCtrl.item.type == 'E'}">
+      <h:outputText value="#{value.valueA}">
+        <f:convertNumber minFractionDigits="6" pattern="R$ #,##0.000000"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueB}" headerText="% fora de ponta" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'E'}">
+      <h:outputText value="#{value.valueB}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueC}" headerText="Tarifa de ponta" styleClass="left-align" width="100"
+              rendered="#{servicoCtrl.item.type == 'E'}">
+      <h:outputText value="#{value.valueC}">
+        <f:convertNumber minFractionDigits="6" pattern="R$ #,##0.000000"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueD}" headerText="% de ponta" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'E'}">
+      <h:outputText value="#{value.valueD}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+
+    <!-- PERCENTUAIS DE RATEIO -->
+    <p:column sortBy="#{value.valueD}" headerText="% VAH" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}">
+      <h:outputText value="#{value.valueD}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueA}" headerText="% Terceiros" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}">
+      <h:outputText value="#{value.valueA}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueB}" headerText="% Consultórios" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}">
+      <h:outputText value="#{value.valueB}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+    <p:column sortBy="#{value.valueC}" headerText="% Shopping" styleClass="left-align" width="75"
+              rendered="#{servicoCtrl.item.type == 'CR' or servicoCtrl.item.type == 'CP' or servicoCtrl.item.type == 'CRE'}">
+      <h:outputText value="#{value.valueC}">
+        <f:convertNumber minFractionDigits="2" type="percent"/>
+      </h:outputText>
+    </p:column>
+
+    <p:column width="50" headerText="Ações" styleClass="action-link" rendered="#{servicoCtrl.editing and sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+      <p:commandLink id="deleteAction"
+                     action="#{servicoCtrl.removeValue(value)}"
+                     ajax="true"
+                     process="@this"
+                     update="valuesDataTable">
+        <span class="fa fa-trash"/>
+      </p:commandLink>
+      <p:tooltip id="toolDeleteAction" for="deleteAction"
+                 value="Excluir"/>
+    </p:column>
+
+  </p:dataTable>
+
+</ui:composition>

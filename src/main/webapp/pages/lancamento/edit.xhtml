@@ -1,0 +1,334 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah"
+                xmlns:uivah="http://vah.com.br/vah">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{lancamentoCtrl.id}"/>
+      <f:viewParam name="serviceId" value="#{lancamentoCtrl.serviceId}"/>
+      <f:viewAction action="#{lancamentoCtrl.onLoad}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
+      <h:panelGroup id="container" layout="block" styleClass="lance-container">
+        <p:panel header="Lançamento - #{lancamentoCtrl.item.servico.title}">
+
+          <!-- TOTAL BLOCK -->
+          <ui:include src="totalBlock.xhtml"/>
+
+          <!-- BLOCO DE INFORMAÇÕES DO LANÇAMENTO-->
+          <h:panelGroup layout="block" style="float:left;">
+            <h:panelGrid columns="2" cellpadding="10">
+              <h:outputLabel value="Estado:" styleClass="label"/>
+              <vah:statusLancamento status="#{lancamentoCtrl.item.status}"/>
+              <h:outputLabel value="Tipo:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.item.servico.type.label}"/>
+              <h:outputLabel value="Tarifa:" styleClass="label" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}">
+                <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                 pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </h:panelGrid>
+            <h:panelGrid columns="2" cellpadding="10"
+                         rendered="#{lancamentoCtrl.sharedPerArea}">
+              <uivah:inputCurrency id="totalAreas" label="Valor total a ratear"
+                                     readonly="#{!lancamentoCtrl.editing}"
+                                     value="#{lancamentoCtrl.item.ammountToShare}" renderMessage="false">
+                <p:ajax event="keyup" process="@this" update="areasValuesPnl"
+                        listener="#{lancamentoCtrl.shareAmmount}"/>
+              </uivah:inputCurrency>
+            </h:panelGrid>
+            <p:commandButton id="shareAmmountButton" value="Realizar rateio"
+                             action="#{lancamentoCtrl.fillSharedFields}"
+                             update="tabView :#{p:component('totalValue')}"
+                             disabled="#{!lancamentoCtrl.editing}"
+                             rendered="#{lancamentoCtrl.sharedPerArea}"/>
+          </h:panelGroup>
+
+          <!-- INFORMAÇÕES SOBRE AS ÁREAS (PERCENTUAIS) -->
+          <h:panelGroup id="areasValuesPnl" layout="block" style="float:left;"
+                        rendered="#{lancamentoCtrl.sharedPerArea}">
+            <h:panelGrid columns="4" cellpadding="10">
+              <h:outputLabel value="Rateio VAH:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.ammoutVah}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Terceiros:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.ammountProviders}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Consultórios:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.ammountClinics}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Rateio Shopping:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.ammountShopping}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Terceiros:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.taxProviders}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Consultórios:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.taxClinics}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Taxa Shopping:" styleClass="label"/>
+              <h:outputText value="#{lancamentoCtrl.taxShopping}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
+
+          <!-- TAXAS E PERCENTUAIS -->
+          <h:panelGroup id="taxesPnl" layout="block" style="float:left;">
+            <h:panelGrid columns="4" cellpadding="10">
+              <h:outputLabel value="Valor do serviço:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'T'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'T'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Tarifa fora de ponta:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'E'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual fora de ponta:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'E'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueB}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Tarifa de ponta:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'E'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueC}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                <f:convertNumber type="currency" minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual de ponta:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'E'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueD}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual VAH:" styleClass="label"
+                             rendered="#{lancamentoCtrl.sharedPerArea}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueD}"
+                            rendered="#{lancamentoCtrl.sharedPerArea}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Terceiros:" styleClass="label"
+                             rendered="#{lancamentoCtrl.sharedPerArea}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}"
+                            rendered="#{lancamentoCtrl.sharedPerArea}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Consultórios:" styleClass="label"
+                             rendered="#{lancamentoCtrl.sharedPerArea}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueB}"
+                            rendered="#{lancamentoCtrl.sharedPerArea}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+              <h:outputLabel value="Percentual Shopping:" styleClass="label"
+                             rendered="#{lancamentoCtrl.sharedPerArea}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueC}"
+                            rendered="#{lancamentoCtrl.sharedPerArea}">
+                <f:convertNumber type="percent" minFractionDigits="2"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
+
+          <h:panelGroup style="clear: both;" layout="block"/>
+
+          <!-- BOTÕES -->
+          <h:panelGroup id="upperButtonPnl" layout="block"
+                        styleClass="margin-top">
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doEntrySave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status != 'P' and lancamentoCtrl.item.status != 'V'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doFixSave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'P'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doModifySave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'V'}"/>
+            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
+                             action="#{lancamentoCtrl.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
+
+          </h:panelGroup>
+
+          <!-- TABS -->
+          <p:tabView id="tabView" styleClass="margin-top" widgetVar="tabView">
+
+            <!-- SETORES -->
+            <p:tab id="setorTab" title="Setores">
+
+              <p:fileUpload mode="advanced" skinSimple="false"
+                            fileUploadListener="#{lancamentoCtrl.uploadValues}" uploadLabel="Submeter"
+                            label="Importar CSV"
+                            rendered="#{lancamentoCtrl.editing}"
+                            cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this :#{p:component('totalValue')}"/>
+
+              <p:dataTable id="dataTable" var="lancamentoValor"
+                           value="#{lancamentoCtrl.lancamentoValors}" styleClass="table-left-header margin-top">
+                <p:column sortBy="#{lancamentoValor.contratoSetor.setor.id}" headerText="Cód." styleClass="left-align"
+                          width="75">
+                  <h:outputText value="#{lancamentoValor.contratoSetor.setor.id}"/>
+                </p:column>
+                <p:column sortBy="#{lancamentoValor.contratoSetor.setor.title}" headerText="Setor" styleClass="left-align"
+                          width="250">
+                  <h:outputText value="#{lancamentoValor.contratoSetor.setor.title}"/>
+                </p:column>
+                <p:column sortBy="#{lancamentoValor.contratoSetor.contrato.contratante.title}" headerText="Cliente"
+                          styleClass="left-align">
+                  <h:outputText value="#{lancamentoValor.contratoSetor.contrato.contratante.title}"/>
+                </p:column>
+                <p:column headerText="Categoria" styleClass="left-align" width="100"
+                          rendered="#{lancamentoCtrl.sharedPerArea}">
+                  <h:outputText value="-" rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe == null}"/>
+                  <h:outputText value="#{lancamentoValor.contratoSetor.setor.setorDetalhe.type.label}"
+                                rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe != null}"/>
+                </p:column>
+                <p:column headerText="Área (m²)" styleClass="left-align" width="100"
+                          rendered="#{lancamentoCtrl.sharedPerArea}">
+                  <h:outputText value="-" rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe == null}"/>
+                  <h:outputText value="#{lancamentoValor.contratoSetor.setor.setorDetalhe.area}"
+                                rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe != null}">
+                    <f:convertNumber minFractionDigits="2" pattern="#,##0.00"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="#{lancamentoCtrl.item.servico.type.compALabel}" styleClass="left-align"
+                          width="200">
+                  <uivah:inputCurrency id="compValueA" renderMessage="false"
+                                         value="#{lancamentoValor.valueA}" editing="#{lancamentoCtrl.editing}"
+                                         editingBtns="true" rendered="#{lancamentoCtrl.item.servico.type != 'CTR'}">
+                    <p:ajax event="change" listener="#{lancamentoCtrl.computeValues}" process="@this"
+                            update=":#{p:component('totalValue')} itemValue"/>
+                  </uivah:inputCurrency>
+                  <h:outputText value="#{lancamentoValor.valueA}" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
+                </p:column>
+                <p:column headerText="#{lancamentoCtrl.item.servico.type.compBLabel}" styleClass="left-align"
+                          width="150"
+                          rendered="#{lancamentoCtrl.item.servico.type.renderCompB}">
+                  <uivah:inputCurrency id="compValueB" renderMessage="false"
+                                         value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
+                                         rendered="#{lancamentoCtrl.item.servico.type != 'E'}">
+                    <p:ajax listener="#{lancamentoCtrl.computeValues}" event="change" process="@this"
+                            update=":#{p:component('totalValue')} itemValue"/>
+                  </uivah:inputCurrency>
+                  <uivah:inputNumber id="compValueBNumber" renderMessage="false"
+                                       value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
+                                       rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                    <p:ajax listener="#{lancamentoCtrl.computeValues}" event="change" process="@this"
+                            update=":#{p:component('totalValue')} itemValue"/>
+                  </uivah:inputNumber>
+                </p:column>
+                <p:column headerText="Valor computado" styleClass="left-align" width="150">
+                  <h:panelGroup id="itemValue">
+                    <h:outputText value="#{lancamentoValor.value}">
+                      <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
+                    </h:outputText>
+                  </h:panelGroup>
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+
+            <!-- MEDIDORES -->
+            <p:tab title="Medidores" rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+              <p:commandButton id="updateSetorValues" value="Atualizar setores"
+                               action="#{lancamentoCtrl.fillSetorMeterFields}" update="@form"
+                               rendered="#{lancamentoCtrl.editing}"
+                               oncomplete="PF('tabView').select(0);" ajax="true">
+                <f:setPropertyActionListener value="#{false}" target="#{flagsController.editingField}"/>
+              </p:commandButton>
+              <p:fileUpload mode="advanced" skinSimple="false"
+                            fileUploadListener="#{lancamentoCtrl.uploadMeterValues}" uploadLabel="Submeter"
+                            label="Importar CSV"
+                            rendered="#{lancamentoCtrl.editing}"
+                            cancelLabel="Cancelar" styleClass="margin-top" update="metersGrid @this">
+                <p:dataTable var="code" value="#{lancamentoCtrl.ignoredMeters}" emptyMessage="Sem itens ignorados"
+                             rendered="#{not empty lancamentoCtrl.ignoredMeters}">
+                  <p:column headerText="Leituras ignoradas" styleClass="left-align">
+                    <h:outputText value="#{code}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:fileUpload>
+
+
+              <p:dataTable id="metersGrid" value="#{lancamentoCtrl.item.meterValues}" var="meter"
+                           rendered="#{lancamentoCtrl.item.servico.type == 'E'}"
+                           styleClass="table-left-header margin-top">
+                <p:column headerText="Medidor" styleClass="left-align">
+                  <h:outputText value="#{meter.medidorConsumo.code}"/>
+                </p:column>
+                <p:column headerText="Fator multiplicação" styleClass="left-align" width="150">
+                  <h:outputText value="#{meter.medidorConsumo.factor}">
+                    <f:convertNumber minFractionDigits="0"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Leitura Anterior" styleClass="left-align" width="150">
+                  <uivah:inputNumber id="previousValue" renderMessage="false"
+                                       value="#{meter.previousValue}" editing="#{lancamentoCtrl.editing}"
+                                       editingBtns="true" precision="0">
+                    <p:ajax event="keyup" process="@this" update="deltaReads"/>
+                    <p:ajax event="change" process="@this" update="deltaReads"/>
+                  </uivah:inputNumber>
+                </p:column>
+                <p:column headerText="Leitura Atual" styleClass="left-align" width="150">
+                  <uivah:inputNumber id="currentValue" renderMessage="false"
+                                       value="#{meter.currentValue}" editing="#{lancamentoCtrl.editing}"
+                                       editingBtns="true" precision="0">
+                    <p:ajax event="keyup" process="@this" update="deltaReads"/>
+                    <p:ajax event="change" process="@this" update="deltaReads"/>
+                  </uivah:inputNumber>
+                </p:column>
+                <p:column headerText="Consumo" styleClass="left-align" width="150">
+                  <h:outputText id="deltaReads"
+                                value="#{(meter.currentValue - meter.previousValue) * meter.medidorConsumo.factor}">
+                    <f:convertNumber minFractionDigits="0"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+
+            <!-- COMENTÁRIOS -->
+            <p:tab title="Comentários">
+              <ui:include src="commentsBlock.xhtml"/>
+            </p:tab>
+
+          </p:tabView>
+
+
+          <h:panelGroup id="entrySaveBtnPnl" layout="block"
+                        styleClass="margin-top">
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doEntrySave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status != 'P' and lancamentoCtrl.item.status != 'V'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doFixSave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'P'}"/>
+            <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
+                             update="@form" validateClient="true"
+                             action="#{lancamentoCtrl.doModifySave}"
+                             rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'V'}"/>
+            <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
+                             action="#{lancamentoCtrl.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
+          </h:panelGroup>
+
+        </p:panel>
+      </h:panelGroup>
+    </h:form>
+  </ui:define>
+</ui:composition>

@@ -1,14 +1,14 @@
 package br.com.vah.lance.controller;
 
-import java.io.Serializable;
-import java.util.logging.Logger;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
 import br.com.vah.lance.entity.BaseEntity;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.io.Serializable;
+import java.util.List;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 public abstract class AbstractController<T extends BaseEntity> implements Serializable {
@@ -116,16 +116,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   /**
    *
    */
-  public void resetSearchParams() {
-    getLazyModel().getSearchParams().getParams().clear();
-    getLazyModel().getSearchParams().setResetPage(true);
-  }
-
-  public void setSearchParam(String property, Object value) {
-    getLazyModel().getSearchParams().getParams().put(property, value);
-  }
-
-  public void search() {
+  public void prepareSearch() {
     resetSearchParams();
     searchById();
   }
@@ -154,17 +145,9 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   public void addMsg(FacesMessage msg, boolean flash) {
     FacesContext ctx = FacesContext.getCurrentInstance();
     ctx.addMessage(null, msg);
-    ctx.getExternalContext().getFlash().setKeepMessages(flash);
-  }
-
-  public void addInfoMsg(String summary, String detail, boolean flash) {
-    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
-    addMsg(msg, flash);
-  }
-
-  public void addErrorMsg(String summary, String detail, boolean flash) {
-    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail);
-    addMsg(msg, flash);
+    if (flash) {
+      ctx.getExternalContext().getFlash().setKeepMessages(true);
+    }
   }
 
   /**
@@ -173,9 +156,9 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   public String doSave() {
     try {
       if (item.getId() == null) {
-        getService().create(item);
+        item = getService().create(item);
       } else {
-        getService().update(item);
+        item = getService().update(item);
       }
       addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
       return back();
@@ -212,6 +195,15 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
    */
   public void setLazyModel(GenericLazyDataModel<T> lazyModel) {
     this.lazyModel = lazyModel;
+  }
+
+  public void resetSearchParams() {
+    getLazyModel().getSearchParams().getParams().clear();
+    getLazyModel().getSearchParams().setResetPage(true);
+  }
+
+  public void setSearchParam(String property, Object value) {
+    getLazyModel().getSearchParams().getParams().put(property, value);
   }
 
   /**
@@ -304,7 +296,7 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   public String getEditLabel() {
     StringBuffer buffer = new StringBuffer();
-    buffer.append(id == null ? "Novo " : editing ? "Editar " : "Visualizar ");
+    buffer.append(id == null ? "Nova " : editing ? "Editar " : "Visualizar ");
     buffer.append(getEntityName());
     return buffer.toString();
   }
@@ -362,4 +354,11 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   public void setDeleteConfirmAnswer(String deleteConfirmAnswer) {
     this.deleteConfirmAnswer = deleteConfirmAnswer;
   }
+
+  public List<T> autoComplete(String query) {
+    setSearchTerm(query);
+    prepareSearch();
+    return getLazyModel().load(10);
+  }
+
 }
