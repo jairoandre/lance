@@ -160,6 +160,7 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   text-align: left !important;
 }
 
+
 .right-align {
   text-align: right !important;
 }
@@ -173,7 +174,7 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
 }
 
 .lance-input {
-  min-width: 300px;
+  min-width: 350px;
 }
 
 .lance-info-icon {

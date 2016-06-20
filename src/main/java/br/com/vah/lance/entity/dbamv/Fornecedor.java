@@ -98,7 +98,11 @@ public class Fornecedor extends BaseEntity {
 
   @Override
   public String getLabelForSelectItem() {
-    return getTitle();
+    if (id == null) {
+      return null;
+    } else {
+      return String.format("%d - %s", getId(), getTitle());
+    }
   }
 
 }

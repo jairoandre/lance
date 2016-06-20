@@ -4,11 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<h:panelGroup rendered="#{rendered == null ? true : rendered}">
-		<h:outputLabel for="#{id}" value="#{label}" style="font-weight:bold"
-			rendered="#{label != null}" />
-		<h:outputText value="*" style="font-weight: bold; color: red;"
-			rendered="#{required == null ? false : required}" />
-		<h:outputText value=":" style="font-weight: bold;" />
+		<p:outputLabel value="#{label}" for="#{id}" styleClass="lance-label"
+									 rendered="#{rendered == null ? true : rendered}"/>
 		<h:panelGroup id="#{id}Info"
 			styleClass="fa fa-info-circle lance-info-icon"
 			rendered="#{info != null}" />
@@ -18,10 +15,10 @@
 	<h:outputText value="#{value == null ? '-' : value.label}"
 		rendered="#{!editing and (rendered == null ? true : rendered)}" />
 	<p:selectOneMenu id="#{id}" value="#{value}" required="#{required}"
-		label="#{label}" rendered="#{editing and (rendered == null ? true : rendered)}">
+		label="#{label}" styleClass="label-input" rendered="#{editing and (rendered == null ? true : rendered)}">
 		<f:selectItem itemLabel="Selecione..." />
 		<f:selectItems value="#{options}" var="option"
-			itemLabel="#{option.label}" itemValue="#{option}" />
+			itemLabel="#{option.label}" itemValue="#{option}"/>
 	</p:selectOneMenu>
 	<p:message for="#{id}"
 		rendered="#{(renderMessage == null ? true : renderMessage) and (rendered == null ? true : rendered)}" />

@@ -98,6 +98,7 @@ public class MedidorConsumoCtrl extends AbstractController<MedidorConsumo> {
 		super.prepareSearch();
 		getLazyModel().getSearchParams().getParams().put("id", null);
 		getLazyModel().getSearchParams().getParams().put("code", getSearchTerm());
+		getLazyModel().getSearchParams().getParams().put("title", getSearchTerm());
 	}
 
 	@Override

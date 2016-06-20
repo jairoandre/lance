@@ -24,7 +24,9 @@
 
         <p:dataTable id="dataTable" value="#{lancamentoCtrl.entries}" styleClass="margin-top"
                      var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index">
-          <p:column headerText="Serviço" styleClass="left-align" filterBy="#{lancamento.servico.title}" filterMatchMode="contains" filterStyle="display: inline-block; margin-left: 5px;">
+          <p:column headerText="Serviço" styleClass="left-align" filterBy="#{lancamento.servico.title}"
+                    filterMatchMode="contains"
+                    filterStyle="display: inline-block;margin-left: 5px; min-width: 200px;">
             <h:outputText value="#{lancamento.servico.title}"/>
           </p:column>
           <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">
@@ -60,11 +62,11 @@
                           ajax="false"
                           disabled="#{empty lancamento.id}"
                           icon="fa fa-search"/>
-              <p:menuitem value="Editar" action="#{lancamentoCtrl.edit(lancamento)}"
+              <p:menuitem value="#{empty lancamento.id ? 'Lançar' : 'Editar lançamento'}" action="#{lancamentoCtrl.edit(lancamento)}"
                           onclick="PF('changePage').show()"
                           ajax="false"
                           disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or lancamento.status == 'V'}"
-                          icon="fa fa-pencil"/>
+                          icon="fa fa-send"/>
               <p:menuitem value="Validar" action="#{lancamentoCtrl.validate(lancamento)}"
                           onclick="PF('changePage').show()"
                           ajax="false"

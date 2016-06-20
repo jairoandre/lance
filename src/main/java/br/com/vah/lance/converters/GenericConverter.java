@@ -31,7 +31,7 @@ public abstract class GenericConverter<T extends BaseEntity> implements Converte
 
   @Override
   public String getAsString(FacesContext context, UIComponent component, Object value) {
-    if (value != null) {
+    if (value != null && ((T) value).getId() != null) {
       return String.valueOf(((T) value).getId());
     } else {
       return null;

@@ -64,7 +64,11 @@ public class TipoDocumento extends BaseEntity {
 
 	@Override
 	public String getLabelForSelectItem() {
-		return title;
+		if (id == null) {
+			return null;
+		} else {
+			return String.format("%d - %s", getId(), getTitle());
+		}
 	}
 
 }

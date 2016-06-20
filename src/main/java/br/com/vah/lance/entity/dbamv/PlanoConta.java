@@ -78,7 +78,11 @@ public class PlanoConta extends BaseEntity {
 
 	@Override
 	public String getLabelForSelectItem() {
-		return String.format("%d - %s", id, title);
+		if (id == null) {
+			return null;
+		} else {
+			return String.format("%d - %s", getId(), getTitle());
+		}
 	}
 
 	/**

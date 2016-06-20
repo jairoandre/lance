@@ -17,44 +17,6 @@
   <ui:define name="content">
     <h:form id="form">
 
-      <!-- Modal de seleção de cliente -->
-      <p:dialog id="contratanteDlg" widgetVar="contratanteDlg" modal="true"
-                header="SELECIONAR CONTRATANTE" width="800">
-        <p:ajax event="close" listener="#{contratoCtrl.onLoadSubject}"
-                update=":#{p:component('contratante')} :#{p:component('servicesContract')}"
-                process="@this"/>
-        <vah:dataTable id="contratanteDlgTbl" controller="#{fornecedorCtrl}"
-                         renderAddBtn="false" renderActionColumn="false">
-          <p:column style="text-align: center;" width="50">
-            <p:commandLink ajax="true" styleClass="action-link"
-                           process="@this" update="@(.action-link)">
-              <f:setPropertyActionListener value="#{item}"
-                                           target="#{contratoCtrl.item.contratante}"/>
-              <h:panelGroup
-                styleClass="fa fa#{(contratoCtrl.item.contratante.id == item.id) ? '-dot' : ''}-circle-o"/>
-            </p:commandLink>
-          </p:column>
-          <p:column sortBy="#{item.id}" headerText="Cód"
-                    styleClass="left-align" width="100">
-            <h:outputText value="#{item.id}"/>
-          </p:column>
-          <p:column sortBy="#{item.title}" headerText="Nome"
-                    style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
-          </p:column>
-          <p:column sortBy="#{item.nomeFantasia}" headerText="Nome fantasia"
-                    style="text-align: left;" width="200">
-            <h:outputText value="#{item.nomeFantasia}"/>
-          </p:column>
-        </vah:dataTable>
-
-        <f:facet name="footer">
-          <p:commandButton id="contratanteDlgCloseBtn" ajax="true"
-                           onclick="PF('contratanteDlg').hide()" value="Fechar diálogo"/>
-        </f:facet>
-
-      </p:dialog>
-
       <vah:editForm id="contractPnl" controller="#{contratoCtrl}"
                       columns="3">
         <uivah:inputText id="name" label="Nome"
@@ -69,10 +31,21 @@
         <uivah:inputDate id="changeDate" label="Data de reajuste"
                            value="#{contratoCtrl.item.changeDate}"
                            editing="#{contratoCtrl.editing}" required="true"/>
-        <uivah:manyToOne id="contratante" dialog="contratanteDlg"
-                           editing="#{contratoCtrl.editing}" label="Contratante"
-                           required="true" title="title"
-                           value="#{contratoCtrl.item.contratante}"/>
+        <uivah:autoComplete id="contratante" value="#{contratoCtrl.item.contratante}"
+                            label="Contratante"
+                            controller="#{fornecedorCtrl}" completeMethod="autoComplete"
+                            required="true"
+                            editing="#{contratoCtrl.editing}"
+                            converter="#{fornecedorConverter}" itemLabel="labelForSelectItem"
+                            placeholder="Cód./Nome cliente">
+          <p:ajax event="itemSelect" listener="#{contratoCtrl.onLoadSubject}" update="servicesContract"/>
+          <p:column>
+            #{item.id}
+          </p:column>
+          <p:column>
+            #{item.title}
+          </p:column>
+        </uivah:autoComplete>
 
         <f:facet name="other">
 

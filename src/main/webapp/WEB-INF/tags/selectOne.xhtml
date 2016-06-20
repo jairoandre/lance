@@ -3,11 +3,8 @@
 								xmlns:ui="http://java.sun.com/jsf/facelets"
 								xmlns:p="http://primefaces.org/ui">
 	<h:panelGroup>
-		<h:outputLabel for="#{id}" value="#{label}" style="font-weight:bold"
-			rendered="#{label != null}" />
-		<h:outputText value="*" style="font-weight: bold; color: red;"
-			rendered="#{required == null ? false : required}" />
-		<h:outputText value=":" style="font-weight: bold;" />
+		<p:outputLabel value="#{label}" for="#{id}" styleClass="lance-label"
+									 rendered="#{rendered == null ? true : rendered}"/>
 		<h:panelGroup id="#{id}Info"
 			styleClass="fa fa-info-circle lance-info-icon"
 			rendered="#{info != null}" />

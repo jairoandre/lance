@@ -27,7 +27,7 @@
                    placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
                    style="width: 50%;"/>
       <p:commandButton id="searchBtn" value="Buscar"
-                       action="#{cc.attrs.controller.search}" icon="fa fa-search"
+                       action="#{cc.attrs.controller.prepareSearch}" icon="fa fa-search"
                        ajax="true" process="panel"
                        update="table"
                        title="Procurar #{cc.attrs.controller.entityName}"

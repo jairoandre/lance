@@ -15,69 +15,47 @@
   <ui:define name="content">
     <h:form id="form">
 
-      <vah:manyToOneDialog id="defaultHistoryDlg"
-                             controller="#{historicoPadraoCtrl}"
-                             header="SELECIONAR HISTÓRICO PADRÃO" width="800" rendered="#{servicoCtrl.editing}"
-                             update="defaultHistory"
-                             bean="#{servicoCtrl.item.historicoPadrao}">
-        <p:column sortBy="#{item.id}" width="125"
-                  headerText="Código" styleClass="left-align">
-          <h:outputText value="#{item.id}"/>
-        </p:column>
-      </vah:manyToOneDialog>
-
-      <vah:manyToOneDialog id="documentTypeDlg"
-                             controller="#{tipoDocumentoCtrl}"
-                             header="SELECIONAR TIPO DE DOCUMENTO" width="800" rendered="#{servicoCtrl.editing}"
-                             update="documentType" bean="#{servicoCtrl.item.tipoDocumento}"/>
-
-
-
-      <vah:manyToOneDialog id="resultAccountDlg"
-                             controller="#{planoContaCtrl}"
-                             header="SELECIONAR CONTA CONTÁBIL COMPARTILHADA" width="800" rendered="true"
-                             update="resultAccount"
-                             placeholder="Digite o termo (descrição, código)..."
-                             bean="#{servicoCtrl.item.contaResultado}">
-        <p:column sortBy="#{item.id}" width="125"
-                  headerText="Código reduzido" styleClass="left-align">
-          <h:outputText value="#{item.id}"/>
-        </p:column>
-        <p:column sortBy="#{item.codigoContabil}"
-                  headerText="Código contábil" width="125" styleClass="left-align">
-          <h:outputText value="#{item.codigoContabil}"/>
-        </p:column>
-      </vah:manyToOneDialog>
-
-      <vah:manyToOneDialog id="costAccountDlg"
-                             controller="#{itemResultadoCtrl}"
-                             header="SELECIONAR CONTA DE CUSTO" width="800" rendered="true"
-                             update="costAccount" bean="#{servicoCtrl.item.contaCusto}">
-        <p:column sortBy="#{item.id}" width="125"
-                  headerText="Código" styleClass="left-align">
-          <h:outputText value="#{item.id}"/>
-        </p:column>
-      </vah:manyToOneDialog>
-
-
-
       <vah:editForm id="setorPnl" controller="#{servicoCtrl}"
-                      columns="3">
+                    columns="3">
         <uivah:inputText id="name" label="Nome"
-                           value="#{servicoCtrl.item.title}"
-                           editing="#{servicoCtrl.editing}" required="true"/>
-        <uivah:manyToOne id="defaultHistory" dialog="defaultHistoryDlg"
-                           editing="#{servicoCtrl.editing}" label="Histórico padrão"
-                           required="true" title="title"
-                           value="#{servicoCtrl.item.historicoPadrao}"/>
-        <uivah:manyToOne id="documentType" dialog="documentTypeDlg"
-                           editing="#{servicoCtrl.editing}" label="Tipo de documento"
-                           required="true" title="title"
-                           value="#{servicoCtrl.item.tipoDocumento}"/>
+                         value="#{servicoCtrl.item.title}"
+                         editing="#{servicoCtrl.editing}" required="true"/>
+
+
+        <uivah:autoComplete id="defaultHistory" value="#{servicoCtrl.item.historicoPadrao}" label="Histórico Padrão"
+                            controller="#{historicoPadraoCtrl}" completeMethod="autoComplete"
+                            required="true"
+                            editing="#{servicoCtrl.editing}"
+                            converter="#{historicoPadraoConverter}" itemLabel="labelForSelectItem"
+                            placeholder="Número/Descrição">
+          <p:column>
+            #{item.id}
+          </p:column>
+          <p:column>
+            #{item.title}
+          </p:column>
+        </uivah:autoComplete>
+
+        <uivah:autoComplete id="documentType" value="#{servicoCtrl.item.tipoDocumento}" label="Tipo Documento"
+                            controller="#{tipoDocumentoCtrl}" completeMethod="autoComplete"
+                            required="true"
+                            editing="#{servicoCtrl.editing}"
+                            converter="#{tipoDocumentoConverter}" itemLabel="labelForSelectItem"
+                            placeholder="Número/Descrição">
+          <p:column>
+            #{item.id}
+          </p:column>
+          <p:column>
+            #{item.title}
+          </p:column>
+        </uivah:autoComplete>
+
+
         <uivah:selectBoolean id="contaPorSetor" label="Conta contábil por setor?"
-                               value="#{servicoCtrl.item.contaPorSetor}"
-                               editing="#{servicoCtrl.editing}" required="true"
-                               info="Indique se o serviço possui conta contábil atrelado ao setor."/>
+                             value="#{servicoCtrl.item.contaPorSetor}"
+                             editing="#{servicoCtrl.editing}" required="true"
+                             info="Indique se o serviço possui conta contábil atrelado ao setor."/>
+
         <uivah:autoComplete id="contaContabil" value="#{servicoCtrl.item.contaContabil}" label="Conta Contábil"
                             controller="#{planoContaCtrl}" completeMethod="autoComplete"
                             required="true"
@@ -91,31 +69,56 @@
             #{item.title}
           </p:column>
         </uivah:autoComplete>
-        <uivah:manyToOne id="resultAccount" dialog="resultAccountDlg"
-                           editing="#{servicoCtrl.editing}" label="Conta Contáb. Compart."
-                           required="true" title="title"
-                           value="#{servicoCtrl.item.contaResultado}"/>
-        <uivah:manyToOne id="costAccount" dialog="costAccountDlg"
-                           editing="#{servicoCtrl.editing}" label="Conta de custo"
-                           required="true" title="title"
-                           value="#{servicoCtrl.item.contaCusto}"/>
+
+        <uivah:autoComplete id="contaCompartilhada" value="#{servicoCtrl.item.contaResultado}"
+                            label="Conta Compartilhada"
+                            controller="#{planoContaCtrl}" completeMethod="autoComplete"
+                            required="true"
+                            editing="#{servicoCtrl.editing}"
+                            converter="#{planoContaConverter}" itemLabel="labelForSelectItem"
+                            placeholder="Número/Descrição">
+          <p:column>
+            #{item.id}
+          </p:column>
+          <p:column>
+            #{item.title}
+          </p:column>
+        </uivah:autoComplete>
+
+        <uivah:autoComplete id="contaCusto" value="#{servicoCtrl.item.contaCusto}"
+                            label="Conta de Custo"
+                            controller="#{itemResultadoCtrl}" completeMethod="autoComplete"
+                            required="true"
+                            editing="#{servicoCtrl.editing}"
+                            converter="#{itemResultadoConverter}" itemLabel="labelForSelectItem"
+                            placeholder="Número/Descrição">
+          <p:column>
+            #{item.id}
+          </p:column>
+          <p:column>
+            #{item.title}
+          </p:column>
+        </uivah:autoComplete>
+
+
         <uivah:selectOneEnum id="type" label="Tipo de serviço"
-                               value="#{servicoCtrl.item.type}"
-                               editing="#{servicoCtrl.editing}" required="true"
-                               options="#{servicoCtrl.types}"/>
+                             value="#{servicoCtrl.item.type}"
+                             editing="#{servicoCtrl.editing}" required="true"
+                             options="#{servicoCtrl.types}"/>
         <uivah:selectBoolean id="billable" label="Gera nota?"
-                               value="#{servicoCtrl.item.faturavel}"
-                               editing="#{servicoCtrl.editing}" required="true"/>
+                             value="#{servicoCtrl.item.faturavel}"
+                             editing="#{servicoCtrl.editing}" required="true"/>
         <uivah:selectBoolean id="agrupavel" label="Condominial?"
-                               value="#{servicoCtrl.item.agrupavel}"
-                               editing="#{servicoCtrl.editing}" required="true"
-                               info="Indique se o serviço entrará no descritivo da cobrança de condomínio."/>
+                             value="#{servicoCtrl.item.agrupavel}"
+                             editing="#{servicoCtrl.editing}" required="true"
+                             info="Indique se o serviço entrará no descritivo da cobrança de condomínio."/>
         <uivah:selectBoolean id="compulsory" label="Compulsório?"
-                               value="#{servicoCtrl.item.compulsorio}"
-                               editing="#{servicoCtrl.editing}" required="true"
-                               info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
+                             value="#{servicoCtrl.item.compulsorio}"
+                             editing="#{servicoCtrl.editing}" required="true"
+                             info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
         <uivah:inputNumber id="diaLimite" label="Dia limite" value="#{servicoCtrl.item.diaLimite}" precision="0"/>
-        <uivah:inputNumber id="diaVencimento" label="Dia vencimento" value="#{servicoCtrl.item.diaVencimento}" precision="0"/>
+        <uivah:inputNumber id="diaVencimento" label="Dia vencimento" value="#{servicoCtrl.item.diaVencimento}"
+                           precision="0"/>
 
         <f:facet name="other">
 

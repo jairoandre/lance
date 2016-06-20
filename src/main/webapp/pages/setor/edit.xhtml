@@ -15,22 +15,6 @@
 	<ui:define name="content">
 		<h:form id="form">
 
-			<vah:manyToOneDialog id="contaContabilDlg"
-														 controller="#{planoContaCtrl}"
-														 header="SELECIONAR CONTA CONTÁBIL" width="800"
-														 update="contaContabil"
-														 placeholder="Digite o termo (descrição, código)..."
-														 bean="#{setorCtrl.item.setorDetalhe.contaContabil}">
-				<p:column sortBy="#{item.id}" width="125"
-									headerText="Código reduzido" styleClass="left-align">
-					<h:outputText value="#{item.id}"/>
-				</p:column>
-				<p:column sortBy="#{item.codigoContabil}"
-									headerText="Código contábil" width="125" styleClass="left-align">
-					<h:outputText value="#{item.codigoContabil}"/>
-				</p:column>
-			</vah:manyToOneDialog>
-
 			<vah:editForm id="setorForm" controller="#{setorCtrl}" columns="3">
 				<h:outputLabel value="Cód:" style="font-weight: bold;" />
 				<h:outputText value="#{setorCtrl.item.id}" />
@@ -48,10 +32,22 @@
 														 label="Quantidade TR"
 														 editing="#{setorCtrl.editing}"/>
 				<h:panelGroup/>
-				<uivah:manyToOne id="contaContabil" dialog="contaContabilDlg"
-													 editing="#{setorCtrl.editing}" label="Conta contábil"
-													 required="false" title="title"
-													 value="#{setorCtrl.item.setorDetalhe.contaContabil}"/>
+
+				<uivah:autoComplete id="contaContabil" value="#{setorCtrl.item.setorDetalhe.contaContabil}"
+														label="Conta Contábil"
+														controller="#{planoContaCtrl}" completeMethod="autoComplete"
+														required="true"
+														editing="#{setorCtrl.editing}"
+														converter="#{planoContaConverter}" itemLabel="labelForSelectItem"
+														placeholder="Cód./Descrição">
+					<p:column>
+						#{item.id}
+					</p:column>
+					<p:column>
+						#{item.title}
+					</p:column>
+				</uivah:autoComplete>
+
 				<uivah:selectOneEnum id="type" label="Tipo de setor"
 															 value="#{setorCtrl.item.setorDetalhe.type}"
 															 editing="#{setorCtrl.editing}" required="true"
