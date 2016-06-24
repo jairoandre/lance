@@ -1,6 +1,7 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.entity.usrdbvah.ContratoSetor;
 import br.com.vah.lance.entity.usrdbvah.Servico;
 import br.com.vah.lance.entity.usrdbvah.ServicoValor;
 import br.com.vah.lance.service.DataAccessService;
@@ -183,6 +184,10 @@ public class ServicoCtrl extends AbstractController<Servico> {
   public void prepareSearch() {
     super.prepareSearch();
     setSearchParam("title", getSearchTerm());
+  }
+
+  public void limparServicos(ContratoSetor contratoSetor) {
+    contratoSetor.getServicos().clear();
   }
 
 }

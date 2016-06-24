@@ -19,7 +19,7 @@ import java.util.*;
     @NamedQuery(name = Lancamento.COUNT, query = "SELECT COUNT(e) FROM Lancamento e"),
     @NamedQuery(name = Lancamento.CONDOMINIAL, query = "SELECT e FROM Lancamento e where e.servico.agrupavel = true and e.status = 'L' order by e.effectiveOn"),
     @NamedQuery(name = Lancamento.BY_PERIOD_AND_SERVICE, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.servico in :services"),
-    @NamedQuery(name = Lancamento.BY_SERVICE_DATE_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn >= :date and e.servico = :service and e.status = :status"),
+    @NamedQuery(name = Lancamento.BY_SERVICE_DATE_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn >= :date and e.servico = :servico and e.status = :status"),
     @NamedQuery(name = Lancamento.BY_PERIOD, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end"),
     @NamedQuery(name = Lancamento.BY_ID, query = "SELECT e FROM Lancamento e where e.id = :id")})
 public class Lancamento extends BaseEntity {

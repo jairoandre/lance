@@ -145,7 +145,14 @@
                                      onclick="PF('serviceDlg#{idx}').show()"
                                      value="Relacionar serviços"
                                      rendered="#{contratoCtrl.editing}"
-                                     style="margin-top: 10px"/>
+                                     styleClass="margin-top"/>
+                    <p:commandButton id="clearAll"
+                                     action="#{servicoCtrl.limparServicos(contratoSetor)}"
+                                     process="@this"
+                                     update="serviceTable serviceDlg"
+                                     value="Limpar todos"
+                                     rendered="#{contratoCtrl.editing}"
+                                     styleClass="margin-top margin-left"/>
                     <p:dataTable id="serviceTable" var="item"
                                  value="#{contratoSetor.servicos}" lazy="true"
                                  emptyMessage="Sem serviços relacionados"

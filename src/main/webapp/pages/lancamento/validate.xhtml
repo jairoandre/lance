@@ -85,8 +85,14 @@
             </f:facet>
             <p:dataTable id="dataTable" var="lancamentoValor"
                          value="#{lancamentoCtrl.item.values}" styleClass="table-left-header">
+              <p:column headerText="Cód. Setor" styleClass="left-align" width="150">
+                <h:outputText value="#{lancamentoValor.contratoSetor.setor.id}"/>
+              </p:column>
               <p:column sortBy="#{lancamentoValor.contratoSetor.setor.title}" headerText="Setor" styleClass="left-align">
                 <h:outputText value="#{lancamentoValor.contratoSetor.setor.title}"/>
+              </p:column>
+              <p:column headerText="Contratante" styleClass="left-align">
+                <h:outputText value="#{lancamentoValor.contratoSetor.contrato.contratante.title}"/>
               </p:column>
               <p:column headerText="Valor" styleClass="left-align" width="150">
                 <h:panelGroup id="itemValue">

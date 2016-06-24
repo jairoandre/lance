@@ -28,7 +28,7 @@ public class FornecedorService extends DataAccessService<Fornecedor> {
 	}
 
 	public List<String> verifySetores(Fornecedor item) {
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		for (Setor setor : item.getSetores()) {
 			Setor attachedSetor = setorService.find(setor.getId());
 			Set<Fornecedor> relatedClients = attachedSetor.getClients();
@@ -40,7 +40,7 @@ public class FornecedorService extends DataAccessService<Fornecedor> {
 				for (Fornecedor iter : relatedClients){
 					if(!iter.getId().equals(item.getId())){
 						Fornecedor client = (Fornecedor) relatedClients.toArray()[0];
-						errors.add(String.format("Setor [%s] já relacionado com o cliente [%s].", setor.getTitle(), client.getTitle()));
+						errors.add(String.format("Setor [%s] já relacionado com o cliente [%s]. Para o setor ser selecionado por múltiplos clientes configure o mesmo com o tipo VAH.", setor.getTitle(), client.getTitle()));
 					}
 				}
 			}
