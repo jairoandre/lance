@@ -5,6 +5,7 @@ import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.constant.TipoServicoEnum;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
+import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.ContaReceberService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.LancamentoService;
@@ -217,6 +218,8 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     if (serviceId != null && getItem().getId() == null) {
       setItem(service.prepareNewEntry(sessionCtrl.getUser().getId(), serviceId));
       service.computeInitialValues(getItem());
+    } else if (getItem().getId() != null) {
+      setItem(service.addNovosLancamentos(getItem()));
     }
     TipoServicoEnum serviceType = getItem().getServico().getType();
     getItem().getMeterValues();
@@ -325,11 +328,11 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   public String doValidateSave() {
     try {
 
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyMM");
 
       String numDocPrefix = sdf.format(dtLancamentoConRec);
 
-      numDocPrefix = numDocPrefix + getItem().getServico().getId() + "-";
+      numDocPrefix = numDocPrefix + ViewUtils.leftPadZeros(getItem().getServico().getId(), 2);
 
       int count = 0;
 
@@ -585,4 +588,15 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     }
     computeValues();
   }
+
+  public void carregarValoresAnteriores() {
+    try {
+      setItem(service.carregarValoresAnteriores(getItem()));
+    } catch (LanceBusinessException lbe) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg()), true);
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", e.getMessage()), true);
+    }
+  }
+
 }

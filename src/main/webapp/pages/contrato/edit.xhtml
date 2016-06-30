@@ -18,19 +18,7 @@
     <h:form id="form">
 
       <vah:editForm id="contractPnl" controller="#{contratoCtrl}"
-                      columns="3">
-        <uivah:inputText id="name" label="Nome"
-                           value="#{contratoCtrl.item.title}"
-                           editing="#{contratoCtrl.editing}" required="true"/>
-        <uivah:inputDate id="beginDate" label="Data de início"
-                           value="#{contratoCtrl.item.beginDate}"
-                           editing="#{contratoCtrl.editing}" required="true"/>
-        <uivah:inputDate id="endDate" label="Data de término"
-                           value="#{contratoCtrl.item.endDate}"
-                           editing="#{contratoCtrl.editing}" required="true"/>
-        <uivah:inputDate id="changeDate" label="Data de reajuste"
-                           value="#{contratoCtrl.item.changeDate}"
-                           editing="#{contratoCtrl.editing}" required="true"/>
+                    columns="3">
         <uivah:autoComplete id="contratante" value="#{contratoCtrl.item.contratante}"
                             label="Contratante"
                             controller="#{fornecedorCtrl}" completeMethod="autoComplete"
@@ -38,7 +26,7 @@
                             editing="#{contratoCtrl.editing}"
                             converter="#{fornecedorConverter}" itemLabel="labelForSelectItem"
                             placeholder="Cód./Nome cliente">
-          <p:ajax event="itemSelect" listener="#{contratoCtrl.onLoadSubject}" update="servicesContract"/>
+          <p:ajax event="itemSelect" listener="#{contratoCtrl.onLoadSubject}" update="servicesContract name"/>
           <p:column>
             #{item.id}
           </p:column>
@@ -46,6 +34,19 @@
             #{item.title}
           </p:column>
         </uivah:autoComplete>
+
+        <uivah:inputText id="name" label="Nome"
+                         value="#{contratoCtrl.item.title}"
+                         editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="beginDate" label="Data de início"
+                         value="#{contratoCtrl.item.beginDate}"
+                         editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="endDate" label="Data de término"
+                         value="#{contratoCtrl.item.endDate}"
+                         editing="#{contratoCtrl.editing}" required="true"/>
+        <uivah:inputDate id="changeDate" label="Data de reajuste"
+                         value="#{contratoCtrl.item.changeDate}"
+                         editing="#{contratoCtrl.editing}" required="true"/>
 
         <f:facet name="other">
 
@@ -72,9 +73,9 @@
                           update="@(.servicePnl#{idx})"/>
 
                   <vah:dataTable id="serviceDlgTable"
-                                   controller="#{contratoCtrl.serviceControllers[contratoSetor.setor.id]}"
-                                   renderAddBtn="false"
-                                   renderActionColumn="false">
+                                 controller="#{contratoCtrl.serviceControllers[contratoSetor.setor.id]}"
+                                 renderAddBtn="false"
+                                 renderActionColumn="false">
                     <p:column id="selector" style="text-align: center;" width="50">
                       <p:commandLink ajax="true"
                                      action="#{contratoCtrl.toggleService(contratoSetor)}"
@@ -98,48 +99,25 @@
                                      value="Fechar diálogo"/>
                   </f:facet>
                 </p:dialog>
-
-                <p:dialog id="inquilinoDlg"
-                          widgetVar="inquilinoDlg#{idx}" modal="true"
-                          header="SELECIONAR INQUILINO #{idx}" width="800" dynamic="true">
-                  <p:ajax event="close" update="@(.inquilino#{idx})"
-                          process="@this"/>
-                  <vah:dataTable id="inquilinoDlgTable"
-                                   controller="#{contratoCtrl.clientControllers[contratoSetor.setor.id]}"
-                                   renderAddBtn="false"
-                                   renderActionColumn="false">
-                    <p:column style="text-align: center;" width="50">
-                      <p:commandLink ajax="true" styleClass="action-link"
-                                     process="@this" update="@(.action-link)">
-                        <f:setPropertyActionListener value="#{item}"
-                                                     target="#{contratoSetor.inquilino}"/>
-                        <h:panelGroup
-                          styleClass="fa fa#{(contratoSetor.inquilino.id == item.id) ? '-dot' : ''}-circle-o"/>
-                      </p:commandLink>
-                    </p:column>
-                    <p:column sortBy="#{item.title}" headerText="Descrição"
-                              style="text-align: left;">
-                      <h:outputText value="#{item.title}"/>
-                    </p:column>
-                  </vah:dataTable>
-
-                  <f:facet name="footer">
-                    <p:commandButton id="inquilinoDlgCloseBtn" ajax="true"
-                                     onclick="PF('inquilinoDlg#{idx}').hide()"
-                                     value="Fechar diálogo"/>
-                  </f:facet>
-                </p:dialog>
-
                 <p:panel toggleable="true"
                          header="#{contratoSetor.setor.id} - #{contratoSetor.setor.title}"
                          styleClass="inquilino#{idx}" rendered="#{contratoSetor.setor != null}">
                   <h:panelGroup id="servicePnl"
                                 styleClass="servicePnl#{idx}">
                     <h:panelGrid id="servicePnlGrid" columns="3">
-                      <uivah:manyToOne id="inquilino"
-                                         dialog="inquilinoDlg#{idx}"
-                                         editing="#{contratoCtrl.editing}" label="Inquilino"
-                                         required="false" title="title" value="#{contratoSetor.inquilino}"/>
+                      <uivah:autoComplete id="inquilino" value="#{contratoSetor.inquilino}"
+                                          label="Inquilino"
+                                          controller="#{fornecedorCtrl}" completeMethod="autoComplete"
+                                          editing="#{contratoCtrl.editing}"
+                                          converter="#{fornecedorConverter}" itemLabel="labelForSelectItem"
+                                          placeholder="Cód./Nome cliente">
+                        <p:column>
+                          #{item.id}
+                        </p:column>
+                        <p:column>
+                          #{item.title}
+                        </p:column>
+                      </uivah:autoComplete>
                     </h:panelGrid>
                     <p:commandButton id="serviceAddBtn"
                                      onclick="PF('serviceDlg#{idx}').show()"

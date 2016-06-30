@@ -1,6 +1,9 @@
 package br.com.vah.lance.service;
 
 import br.com.vah.lance.entity.dbamv.ContaReceber;
+import br.com.vah.lance.entity.dbamv.ContaReceberItem;
+import br.com.vah.lance.entity.dbamv.ContaReceberRateio;
+import org.hibernate.Hibernate;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -25,6 +28,4 @@ public class ContaReceberService extends DataAccessService<ContaReceber> {
 		}
 		return persistedList;
 	}
-
-
 }

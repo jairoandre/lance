@@ -71,7 +71,11 @@ public class Setor extends BaseEntity {
 
   @Override
   public String getLabelForSelectItem() {
-    return getTitle();
+    if (id == null) {
+      return "-";
+    } else {
+      return String.format("%d - %s", id, title);
+    }
   }
 
   /**

@@ -13,7 +13,6 @@
 
 <composite:implementation>
   <p:panel id="#{cc.attrs.id}" header="#{cc.attrs.controller.editLabel}">
-    <p:focus context="grid"/>
     <h:panelGroup id="panelUpBtns" layout="block"
                   style="margin: 10px 0;">
       <p:commandButton id="saveUpBtn" value="Salvar" icon="fa fa-floppy-o" ajax="true"
@@ -27,6 +26,7 @@
                  columns="#{cc.attrs.columns == null ? 6 : cc.attrs.columns}"
                  cellpadding="5">
       <composite:insertChildren/>
+      <p:focus for="grid"/>
     </h:panelGrid>
     <composite:renderFacet name="other"/>
     <h:panelGroup id="panelDownBtns" layout="block"

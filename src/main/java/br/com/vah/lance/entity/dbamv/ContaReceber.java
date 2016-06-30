@@ -4,9 +4,7 @@ import br.com.vah.lance.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jairoportela on 02/05/2016.
@@ -69,6 +67,12 @@ public class ContaReceber extends BaseEntity {
   @Column(name = "VL_PREVISTO")
   private BigDecimal valorBruto;
 
+  @Column(name = "VL_ACRESCIMO")
+  private BigDecimal valorAcrescimo;
+
+  @Column(name = "VL_DESCONTO")
+  private BigDecimal valorDesconto;
+
   @ManyToOne
   @JoinColumn(name = "CD_HISTORICO_PADRAO")
   private HistoricoPadrao historicoPadrao;
@@ -80,10 +84,10 @@ public class ContaReceber extends BaseEntity {
   private String observacao;
 
   @OneToMany(mappedBy = "pk.contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<ContaReceberRateio> itensRateio = new ArrayList<>();
+  private Set<ContaReceberRateio> itensRateio = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<ContaReceberItem> itensConta = new ArrayList<>();
+  private Set<ContaReceberItem> itensConta = new LinkedHashSet<>();
 
   @Column(name = "SN_GLOSA_ACEITA")
   private String glosaAceita;
@@ -98,7 +102,7 @@ public class ContaReceber extends BaseEntity {
 
   @Override
   public String getLabelForSelectItem() {
-    return null;
+    return String.format("Cód.: %d", id);
   }
 
   public Long getCdProcesso() {
@@ -205,6 +209,22 @@ public class ContaReceber extends BaseEntity {
     this.valorBruto = valorBruto;
   }
 
+  public BigDecimal getValorAcrescimo() {
+    return valorAcrescimo;
+  }
+
+  public void setValorAcrescimo(BigDecimal valorAcrescimo) {
+    this.valorAcrescimo = valorAcrescimo;
+  }
+
+  public BigDecimal getValorDesconto() {
+    return valorDesconto;
+  }
+
+  public void setValorDesconto(BigDecimal valorDesconto) {
+    this.valorDesconto = valorDesconto;
+  }
+
   public HistoricoPadrao getHistoricoPadrao() {
     return historicoPadrao;
   }
@@ -229,19 +249,19 @@ public class ContaReceber extends BaseEntity {
     this.observacao = observacao;
   }
 
-  public List<ContaReceberRateio> getItensRateio() {
+  public Set<ContaReceberRateio> getItensRateio() {
     return itensRateio;
   }
 
-  public void setItensRateio(List<ContaReceberRateio> itensRateio) {
+  public void setItensRateio(Set<ContaReceberRateio> itensRateio) {
     this.itensRateio = itensRateio;
   }
 
-  public List<ContaReceberItem> getItensConta() {
+  public Set<ContaReceberItem> getItensConta() {
     return itensConta;
   }
 
-  public void setItensConta(List<ContaReceberItem> itensConta) {
+  public void setItensConta(Set<ContaReceberItem> itensConta) {
     this.itensConta = itensConta;
   }
 

@@ -5,10 +5,18 @@ import br.com.vah.lance.entity.BaseEntity;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ViewUtils {
+
+  public static String leftPadZeros(Object obj, Integer size) {
+    String objStr = String.valueOf(obj);
+    Integer delta = size - objStr.length();
+    for (int i = 0 ; i < delta ; i++) {
+      objStr = "0" + objStr;
+    }
+    return objStr;
+  }
 
   public static List<SelectItem> createSelectItem(List<BaseEntity> list, Boolean nullOption) {
     List<SelectItem> selectItems = new ArrayList<>();

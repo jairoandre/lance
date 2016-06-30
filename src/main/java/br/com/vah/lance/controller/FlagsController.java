@@ -18,6 +18,14 @@ public class FlagsController implements Serializable {
     return editingField;
   }
 
+  public void settingTrue() {
+    this.editingField = true;
+  }
+
+  public void settingFalse() {
+    this.editingField = false;
+  }
+
   public void setEditingField(Boolean editingField) {
     this.editingField = editingField;
   }

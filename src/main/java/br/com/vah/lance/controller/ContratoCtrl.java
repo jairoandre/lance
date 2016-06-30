@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,6 +14,7 @@ import br.com.vah.lance.entity.usrdbvah.ContratoSetor;
 import br.com.vah.lance.entity.usrdbvah.Servico;
 import br.com.vah.lance.entity.dbamv.Fornecedor;
 import br.com.vah.lance.entity.dbamv.Setor;
+import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.FornecedorService;
 import br.com.vah.lance.service.ContratoService;
 import br.com.vah.lance.service.DataAccessService;
@@ -84,6 +86,7 @@ public class ContratoCtrl extends AbstractController<Contrato> {
     serviceControllers = new HashMap<>();
     List<Long> ids = recordedSetoresId();
     if (contratante != null) {
+      getItem().setTitle(String.format("%d - %s", contratante.getId(), contratante.getTitle()));
       for (Setor setor : contratante.getSetores()) {
         if (!ids.contains(setor.getId())) {
           ContratoSetor service = new ContratoSetor();
@@ -159,6 +162,24 @@ public class ContratoCtrl extends AbstractController<Contrato> {
   public void prepareSearch() {
     super.prepareSearch();
     setSearchParam("title", getSearchTerm());
+  }
 
+  @Override
+  public String doSave() {
+    try {
+      if (getItem().getId() == null) {
+        setItem(service.validateAndCreate(getItem()));
+      } else {
+        setItem(service.update(getItem()));
+      }
+      addMsg(new FacesMessage("Sucesso!", "Registro salvo"), true);
+      return back();
+    } catch (LanceBusinessException lbe) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg()), true);
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Ops! Erro inesperado: " + e.getMessage()),
+          true);
+    }
+    return null;
   }
 }

@@ -2,6 +2,7 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
 import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.constant.TipoSetorEnum;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
@@ -13,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -161,13 +163,18 @@ public class LancamentoService extends DataAccessService<Lancamento> {
   }
 
   public Lancamento prepareNewEntry(Long userId, Long serviceId) {
-
     User user = userService.find(userId);
+    Lancamento lancamento = prepareNewEntry(serviceId);
+    lancamento.setAutor(user);
+    return lancamento;
+  }
+
+  public Lancamento prepareNewEntry(Long serviceId) {
+
     Servico servico = servicoService.find(serviceId);
 
     Lancamento lancamento = new Lancamento(servico);
     lancamento.setTotalValue(BigDecimal.ZERO);
-    lancamento.setAutor(user);
 
     // Verifica necessidade de se carregar lista de medidores (Energia Individual, Gás, etc...)
     if (TipoServicoEnum.E.equals(servico.getType())) {
@@ -223,7 +230,6 @@ public class LancamentoService extends DataAccessService<Lancamento> {
       }
 
     }
-
     return lancamento;
   }
 
@@ -308,6 +314,12 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     for (LancamentoValor lancamentoValor : lancamento.getValues()) {
 
       lancamentoValor.setValue(BigDecimal.ZERO);
+      if (lancamentoValor.getValueA() == null) {
+        lancamentoValor.setValueA(BigDecimal.ZERO);
+      }
+      if (lancamentoValor.getValueB() == null) {
+        lancamentoValor.setValueB(BigDecimal.ZERO);
+      }
 
       switch (lancamento.getServico().getType()) {
         // Tabelado
@@ -377,6 +389,21 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     return (Lancamento) criteria.uniqueResult();
   }
 
+  public Lancamento addNovosLancamentos(Lancamento lancamento) {
+    Map<Fornecedor, LancamentoValor> map = new HashMap<>();
+    Lancamento novasEntradas = prepareNewEntry(lancamento.getServico().getId());
+    for (LancamentoValor servicoValor : lancamento.getValues()) {
+      map.put(servicoValor.getContratoSetor().getContrato().getContratante(), servicoValor);
+    }
+    for (LancamentoValor novaEntrada : novasEntradas.getValues()) {
+      if (map.get(novaEntrada.getContratoSetor().getContrato().getContratante()) == null) {
+        novaEntrada.setLancamento(lancamento);
+        lancamento.getValues().add(novaEntrada);
+      }
+    }
+    return lancamento;
+  }
+
   public List<Lancamento> listOldEntries(Servico servico) {
 
     Map<String, Object> entriesParams = new LinkedHashMap<>();
@@ -395,12 +422,12 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     return findWithNamedQuery(Lancamento.BY_SERVICE_DATE_STATUS, entriesParams);
   }
 
-  public Date getDataVencimento (Lancamento lancamento, Date dataLancamento) {
+  public Date getDataVencimento(Lancamento lancamento, Date dataLancamento) {
     Calendar cl = Calendar.getInstance();
     cl.setTime(dataLancamento);
     cl.add(Calendar.MONTH, 1);
-    Integer vencimento  = 5;
-    if(lancamento.getServico() != null && lancamento.getServico().getDiaVencimento() != null) {
+    Integer vencimento = 5;
+    if (lancamento.getServico() != null && lancamento.getServico().getDiaVencimento() != null) {
       vencimento = lancamento.getServico().getDiaVencimento();
     }
     cl.set(Calendar.DAY_OF_MONTH, vencimento);
@@ -419,7 +446,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecToAdd.setMoeda("1");
     conRecToAdd.setTipoVencimento("V");
     conRecToAdd.setValorBruto(lancamentoValor.getValue());
-    String numeroDocumento = numDocPrefix + ViewUtils.paddingZeros(String.valueOf(count), 3);
+    String numeroDocumento = numDocPrefix + ViewUtils.leftPadZeros(count, 3);
     conRecToAdd.setNumeroDocumento(numeroDocumento);
     conRecToAdd.setDataLancamento(dataLancamento);
 
@@ -434,7 +461,15 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecToAdd.setObservacao(numeroDocumento + " - " + client.getTitle());
     conRecToAdd.setGlosaAceita("N");
 
-    // ITEM DA CONTA A RECEBER
+    PlanoConta contaContabil = lancamentoValor.getLancamento().getServico().getContaContabil();
+
+    SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
+    if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
+      contaContabil = setorDetalhe.getContaContabil();
+    }
+    conRecToAdd.setContaContabil(contaContabil);
+
+    // ITEM DA CONTA A RECEBER - ABA PARCELAMENTO
     ContaReceberItem conRecItem = new ContaReceberItem();
     conRecItem.setCodigoMoeda("1");
     conRecItem.setNumeroParcela(1);
@@ -448,14 +483,11 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecItem.setDataVencimento(dataVencimento);
     conRecItem.setDataPrevistaRecebimento(dataVencimento);
 
+
+    // ITEM RATEIO - ABA COMPARTILHAMENTO
     ContaReceberRateio conRecRateio = new ContaReceberRateio();
-    PlanoConta contaContabil = lancamentoValor.getLancamento().getServico().getContaContabil();
-    SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
-    if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
-      contaContabil = setorDetalhe.getContaContabil();
-    }
-    conRecToAdd.setContaContabil(contaContabil);
-    conRecRateio.setContaContabil(contaContabil);
+    PlanoConta contaContabilCompart = lancamentoValor.getLancamento().getServico().getContaResultado();
+    conRecRateio.setContaContabil(contaContabilCompart);
     conRecRateio.getPk().setNumeroLinha(1);
     conRecRateio.getPk().setContaReceber(conRecToAdd);
     conRecRateio.setContaResultado(lancamentoValor.getLancamento().getServico().getContaCusto());
@@ -480,9 +512,9 @@ public class LancamentoService extends DataAccessService<Lancamento> {
   public List<Lancamento> validarLancamentosAgrupados(List<Lancamento> lancamentos, Date dataLancamento) throws LanceBusinessException {
     Map<Setor, ContaReceber> contasReceberMap = new HashMap<>();
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyMM");
     String numDocPrefix = sdf.format(dataLancamento);
-    numDocPrefix = numDocPrefix + "999-";
+    numDocPrefix = numDocPrefix + "99";
 
     if (lancamentos != null) {
       for (Lancamento lancamento : lancamentos) {
@@ -496,8 +528,8 @@ public class LancamentoService extends DataAccessService<Lancamento> {
             contasReceberMap.put(lancamentoValor.getContratoSetor().getSetor(), createContaReceber(lancamentoValor, numDocPrefix, count++, dataLancamento));
             continue;
           } else {
-            ContaReceberRateio itemRateio = contaReceber.getItensRateio().get(0);
-            ContaReceberItem itemConta = contaReceber.getItensConta().get(0);
+            ContaReceberRateio itemRateio = contaReceber.getItensRateio().iterator().next();
+            ContaReceberItem itemConta = contaReceber.getItensConta().iterator().next();
 
             // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
             // condizentes com o serviço iterado
@@ -546,5 +578,54 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     }
 
     return updateList(lancamentos);
+  }
+
+  public Lancamento carregarValoresAnteriores(Lancamento lancamento) throws LanceBusinessException {
+    Date effectiveOn = lancamento.getEffectiveOn();
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(effectiveOn);
+    cld.set(Calendar.DAY_OF_MONTH, 1);
+    Query query = getEm().createNamedQuery(Lancamento.LAST_LANCAMENTO);
+    query.setParameter("date", cld.getTime());
+    List<Lancamento> lista = query.getResultList();
+    if (lista.isEmpty()) {
+      throw new LanceBusinessException("Sem lançamentos anteriores");
+    } else {
+      Lancamento lastLancamento = lista.iterator().next();
+      Map<Object, BigDecimal> mapValorA = new HashMap<>();
+      Map<Object, BigDecimal> mapValorB = new HashMap<>();
+
+      lancamento.setAmmountToShare(lastLancamento.getAmmountToShare());
+
+      for (LancamentoValor valorAnterior : lastLancamento.getValues()) {
+        SetorDetalhe detalhe = valorAnterior.getContratoSetor().getSetor().getSetorDetalhe();
+        Object key = valorAnterior.getContratoSetor().getContrato().getContratante();
+        if (detalhe != null) {
+          if (TipoSetorEnum.VAH.equals(detalhe.getType())) {
+            key = valorAnterior.getContratoSetor().getSetor();
+          }
+        }
+        mapValorA.put(key, valorAnterior.getValueA());
+        mapValorB.put(key, valorAnterior.getValueB());
+      }
+
+
+      for (LancamentoValor valorLancamento : lancamento.getValues()) {
+        SetorDetalhe detalhe = valorLancamento.getContratoSetor().getSetor().getSetorDetalhe();
+        Object key = valorLancamento.getContratoSetor().getContrato().getContratante();
+        if (detalhe != null) {
+          if (TipoSetorEnum.VAH.equals(detalhe.getType())) {
+            key = valorLancamento.getContratoSetor().getSetor();
+          }
+        }
+        valorLancamento.setValueA(mapValorA.get(key));
+        valorLancamento.setValueB(mapValorB.get(key));
+      }
+    }
+
+
+    computeValues(lancamento);
+
+    return lancamento;
   }
 }

@@ -21,11 +21,11 @@
   <h:panelGroup id="#{cc.attrs.id}" layout="block">
     <h:panelGroup id="panel" layout="block"
                   style="margin-bottom: 10px; position: relative;">
-      <p:focus context="panel"/>
       <p:inputText id="searchInput"
                    value="#{cc.attrs.controller.searchTerm}"
                    placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
                    style="width: 50%;"/>
+      <p:focus for="panel"/>
       <p:commandButton id="searchBtn" value="Buscar"
                        action="#{cc.attrs.controller.prepareSearch}" icon="fa fa-search"
                        ajax="true" process="panel"
@@ -48,37 +48,30 @@
         <h:outputText value="Listagem"/>
       </f:facet>
       <composite:insertChildren/>
-      <p:column width="100" headerText="Ações" styleClass="action-link"
+      <p:column width="100" headerText="Ações" styleClass="center-align"
                 rendered="#{cc.attrs.renderActionColumn == null ? true : cc.attrs.renderActionColumn}">
         <composite:renderFacet name="customAction"/>
-        <p:commandLink id="detailAction"
-                       action="#{cc.attrs.controller.detail(item)}"
-                       ajax="false"
-                       onclick="PF('changePage').show()"
-                       rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}">
-          <span class="fa fa-search"/>
-        </p:commandLink>
-        <vah:toolTip id="detailToolTip" for="#{p:component('detailAction')}"
-                       value="Detalhar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-        <span/>
-        <p:commandLink id="editAction"
-                       action="#{cc.attrs.controller.edit(item)}"
-                       ajax="false"
-                       onclick="PF('changePage').show()"
-                       rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}">
-          <span class="fa fa-pencil"/>
-        </p:commandLink>
-        <vah:toolTip id="editToolTip" for="#{p:component('editAction')}"
-                       value="Editar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
-        <span/>
-        <p:commandLink id="deleteAction"
-                       action="#{cc.attrs.controller.preDelete(item.id, index)}"
-                       ajax="true" oncomplete="PF('deleteDlg_#{cc.attrs.id}').show();"
-                       rendered="#{cc.attrs.renderDeleteAction == null ? true : cc.attrs.renderDeleteAction}">
-          <span class="fa fa-trash"/>
-        </p:commandLink>
-        <vah:toolTip id="deleteToolTip" for="#{p:component('deleteAction')}"
-                       value="Deletar #{cc.attrs.controller.entityName}" index="#{indexVar}"/>
+
+        <p:menuButton id="menuButton" value="Ações">
+          <p:menuitem value="Detalhar" action="#{cc.attrs.controller.detail(item)}"
+                      onclick="PF('changePage').show()"
+                      ajax="false"
+                      rendered="#{cc.attrs.renderDetailAction == null ? true : cc.attrs.renderDetailAction}"
+                      icon="fa fa-search"/>
+          <p:menuitem value="Editar" action="#{cc.attrs.controller.edit(item)}"
+                      onclick="PF('changePage').show()"
+                      ajax="false"
+                      rendered="#{cc.attrs.renderEditAction == null ? true : cc.attrs.renderEditAction}"
+                      icon="fa fa-pencil"/>
+          <p:menuitem value="Deletar"
+                      action="#{cc.attrs.controller.setItem(item)}"
+                      process="@this"
+                      update="#{p:component('deleteDlg')}"
+                      oncomplete="PF('deleteDlg').show()"
+                      ajax="true"
+                      rendered="#{cc.attrs.renderDeleteAction == null ? true : cc.attrs.renderDeleteAction}"
+                      icon="fa fa-trash"/>
+        </p:menuButton>
 
       </p:column>
       <f:facet name="footer">
@@ -91,7 +84,7 @@
   <p:defaultCommand target="searchBtn"
                     scope="panel"/>
   <p:dialog id="deleteDlg" header="Atenção"
-            widgetVar="deleteDlg_#{cc.attrs.id}" modal="true">
+            widgetVar="deleteDlg" modal="true">
     <h:outputText
       value="#{cc.attrs.controller.deleteConfirmMessage}"
       escape="false"/>
@@ -104,10 +97,10 @@
     <f:facet name="footer">
       <p:commandButton id="deleteConfirmBtn" value="Excluir" ajax="true" update="@form"
                        action="#{cc.attrs.controller.doDelete}"
-                       oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
+                       oncomplete="PF('deleteDlg').hide();"
                        icon="fa fa-warning" disabled="#{cc.attrs.controller.deleteConfirmAnswer.toUpperCase() != 'DELETAR'}"/>
       <p:commandButton value="Cancelar"
-                       oncomplete="PF('deleteDlg_#{cc.attrs.id}').hide();"
+                       oncomplete="PF('deleteDlg').hide();"
                        style="margin-left: 5px"
                        icon="fa fa-arrow-left"/>
     </f:facet>

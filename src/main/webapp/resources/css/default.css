@@ -200,12 +200,19 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   position: relative;
 }
 
+.ellipsis-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .lancamento-total-block {
   position: absolute;
-  top: 5px;
+  top: 6px;
   right: 10px;
   font-size: 20px;
-  color: #fff
+  background: black;
+  color: yellow;
+  border-radius: 5px;
 }
 
 #particles-js {

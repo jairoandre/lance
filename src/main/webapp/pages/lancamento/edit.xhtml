@@ -14,7 +14,7 @@
     </f:metadata>
   </ui:define>
   <ui:define name="content">
-    <h:form id="form">
+    <h:form id="form" onkeypress="return event.keyCode != 13">
       <h:panelGroup id="container" layout="block" styleClass="lance-container">
         <p:panel header="Lançamento - #{lancamentoCtrl.item.servico.title}">
 
@@ -22,31 +22,36 @@
           <ui:include src="totalBlock.xhtml"/>
 
           <!-- BLOCO DE INFORMAÇÕES DO LANÇAMENTO-->
-          <h:panelGroup layout="block" style="float:left;">
+          <h:panelGroup id="editLancamento" layout="block" style="float:left;">
             <h:panelGrid columns="2" cellpadding="10">
               <h:outputLabel value="Estado:" styleClass="label"/>
               <vah:statusLancamento status="#{lancamentoCtrl.item.status}"/>
               <h:outputLabel value="Tipo:" styleClass="label"/>
               <h:outputText value="#{lancamentoCtrl.item.servico.type.label}"/>
-              <h:outputLabel value="Tarifa:" styleClass="label" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
-              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}">
+              <h:outputLabel value="Tarifa:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
+              <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}"
+                            rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}">
                 <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
                                  pattern="R$ #,##0.00"/>
               </h:outputText>
             </h:panelGrid>
-            <h:panelGrid columns="2" cellpadding="10"
+            <h:panelGrid id="rateioGrid" columns="2" cellpadding="10"
                          rendered="#{lancamentoCtrl.sharedPerArea}">
               <uivah:inputCurrency id="totalAreas" label="Valor total a ratear"
-                                     readonly="#{!lancamentoCtrl.editing}"
-                                     value="#{lancamentoCtrl.item.ammountToShare}" renderMessage="false">
+                                   editing="#{lancamentoCtrl.editing}"
+                                   readonly="#{!lancamentoCtrl.editing}"
+                                   value="#{lancamentoCtrl.item.ammountToShare}" renderMessage="false">
                 <p:ajax event="keyup" process="@this" update="areasValuesPnl"
                         listener="#{lancamentoCtrl.shareAmmount}"/>
               </uivah:inputCurrency>
+              <p:focus for="rateioGrid"/>
             </h:panelGrid>
             <p:commandButton id="shareAmmountButton" value="Realizar rateio"
                              action="#{lancamentoCtrl.fillSharedFields}"
                              update="tabView :#{p:component('totalValue')}"
                              disabled="#{!lancamentoCtrl.editing}"
+                             styleClass="margin-left"
                              rendered="#{lancamentoCtrl.sharedPerArea}"/>
           </h:panelGroup>
 
@@ -149,7 +154,7 @@
 
           <!-- BOTÕES -->
           <h:panelGroup id="upperButtonPnl" layout="block"
-                        styleClass="margin-top">
+                        styleClass="margin-top margin-left">
             <p:commandButton value="Salvar" icon="ui-icon-check" ajax="true"
                              update="@form" validateClient="true"
                              action="#{lancamentoCtrl.doEntrySave}"
@@ -163,7 +168,8 @@
                              action="#{lancamentoCtrl.doModifySave}"
                              rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'V'}"/>
             <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
-                             action="#{lancamentoCtrl.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
+                             action="#{lancamentoCtrl.back}" styleClass="margin-left"
+                             onclick="PF('changePage').show()"/>
 
           </h:panelGroup>
 
@@ -177,29 +183,40 @@
                             fileUploadListener="#{lancamentoCtrl.uploadValues}" uploadLabel="Submeter"
                             label="Importar CSV"
                             rendered="#{lancamentoCtrl.editing}"
-                            cancelLabel="Cancelar" styleClass="margin-top" update="dataTable @this :#{p:component('totalValue')}"/>
+                            cancelLabel="Cancelar" styleClass="margin-top"
+                            update="dataTable @this :#{p:component('totalValue')}"/>
+
+              <p:commandButton id="loadPreviousValuesBtn" action="#{lancamentoCtrl.carregarValoresAnteriores}"
+                               ajax="true" value="Carregar Valores Anteriores"
+                               onstart="PF('changePage').show()" oncomplete="PF('changePage').hide()"
+                               styleClass="margin-top" process="@this" update="dataTable #{p:component('rateioGrid')} #{p:component('totalValue')}"/>
 
               <p:dataTable id="dataTable" var="lancamentoValor"
                            value="#{lancamentoCtrl.lancamentoValors}" styleClass="table-left-header margin-top">
                 <p:column sortBy="#{lancamentoValor.contratoSetor.setor.id}" headerText="Cód." styleClass="left-align"
-                          width="75">
+                          width="50">
                   <h:outputText value="#{lancamentoValor.contratoSetor.setor.id}"/>
                 </p:column>
-                <p:column sortBy="#{lancamentoValor.contratoSetor.setor.title}" headerText="Setor" styleClass="left-align"
-                          width="250">
+                <p:column sortBy="#{lancamentoValor.contratoSetor.setor.title}" headerText="Setor"
+                          styleClass="left-align ellipsis-text"
+                          width="200">
                   <h:outputText value="#{lancamentoValor.contratoSetor.setor.title}"/>
                 </p:column>
+                <p:column sortBy="#{lancamentoValor.contratoSetor.contrato.contratante.id}" headerText="Cód."
+                          styleClass="left-align" width="50">
+                  <h:outputText value="#{lancamentoValor.contratoSetor.contrato.contratante.id}"/>
+                </p:column>
                 <p:column sortBy="#{lancamentoValor.contratoSetor.contrato.contratante.title}" headerText="Cliente"
-                          styleClass="left-align">
+                          styleClass="left-align ellipsis-text">
                   <h:outputText value="#{lancamentoValor.contratoSetor.contrato.contratante.title}"/>
                 </p:column>
-                <p:column headerText="Categoria" styleClass="left-align" width="100"
+                <p:column headerText="Categoria" styleClass="left-align" width="75"
                           rendered="#{lancamentoCtrl.sharedPerArea}">
                   <h:outputText value="-" rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe == null}"/>
                   <h:outputText value="#{lancamentoValor.contratoSetor.setor.setorDetalhe.type.label}"
                                 rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe != null}"/>
                 </p:column>
-                <p:column headerText="Área (m²)" styleClass="left-align" width="100"
+                <p:column headerText="Área (m²)" styleClass="left-align" width="75"
                           rendered="#{lancamentoCtrl.sharedPerArea}">
                   <h:outputText value="-" rendered="#{lancamentoValor.contratoSetor.setor.setorDetalhe == null}"/>
                   <h:outputText value="#{lancamentoValor.contratoSetor.setor.setorDetalhe.area}"
@@ -208,32 +225,33 @@
                   </h:outputText>
                 </p:column>
                 <p:column headerText="#{lancamentoCtrl.item.servico.type.compALabel}" styleClass="left-align"
-                          width="200">
+                          width="150">
                   <uivah:inputCurrency id="compValueA" renderMessage="false"
-                                         value="#{lancamentoValor.valueA}" editing="#{lancamentoCtrl.editing}"
-                                         editingBtns="true" rendered="#{lancamentoCtrl.item.servico.type != 'CTR'}">
-                    <p:ajax event="change" listener="#{lancamentoCtrl.computeValues}" process="@this"
+                                       value="#{lancamentoValor.valueA}" editing="#{lancamentoCtrl.editing}"
+                                       editingBtns="true" rendered="#{lancamentoCtrl.item.servico.type != 'CTR'}">
+                    <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uivah:inputCurrency>
-                  <h:outputText value="#{lancamentoValor.valueA}" rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
+                  <h:outputText value="#{lancamentoValor.valueA}"
+                                rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
                 </p:column>
                 <p:column headerText="#{lancamentoCtrl.item.servico.type.compBLabel}" styleClass="left-align"
                           width="150"
                           rendered="#{lancamentoCtrl.item.servico.type.renderCompB}">
                   <uivah:inputCurrency id="compValueB" renderMessage="false"
-                                         value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
-                                         rendered="#{lancamentoCtrl.item.servico.type != 'E'}">
-                    <p:ajax listener="#{lancamentoCtrl.computeValues}" event="change" process="@this"
+                                       value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
+                                       rendered="#{lancamentoCtrl.item.servico.type != 'E'}">
+                    <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uivah:inputCurrency>
                   <uivah:inputNumber id="compValueBNumber" renderMessage="false"
-                                       value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
-                                       rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
-                    <p:ajax listener="#{lancamentoCtrl.computeValues}" event="change" process="@this"
+                                     value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
+                                     rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                    <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uivah:inputNumber>
                 </p:column>
-                <p:column headerText="Valor computado" styleClass="left-align" width="150">
+                <p:column headerText="Total" styleClass="left-align" width="100">
                   <h:panelGroup id="itemValue">
                     <h:outputText value="#{lancamentoValor.value}">
                       <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2" pattern="R$ #,##0.00"/>
@@ -278,16 +296,16 @@
                 </p:column>
                 <p:column headerText="Leitura Anterior" styleClass="left-align" width="150">
                   <uivah:inputNumber id="previousValue" renderMessage="false"
-                                       value="#{meter.previousValue}" editing="#{lancamentoCtrl.editing}"
-                                       editingBtns="true" precision="0">
+                                     value="#{meter.previousValue}" editing="#{lancamentoCtrl.editing}"
+                                     editingBtns="true" precision="0">
                     <p:ajax event="keyup" process="@this" update="deltaReads"/>
                     <p:ajax event="change" process="@this" update="deltaReads"/>
                   </uivah:inputNumber>
                 </p:column>
                 <p:column headerText="Leitura Atual" styleClass="left-align" width="150">
                   <uivah:inputNumber id="currentValue" renderMessage="false"
-                                       value="#{meter.currentValue}" editing="#{lancamentoCtrl.editing}"
-                                       editingBtns="true" precision="0">
+                                     value="#{meter.currentValue}" editing="#{lancamentoCtrl.editing}"
+                                     editingBtns="true" precision="0">
                     <p:ajax event="keyup" process="@this" update="deltaReads"/>
                     <p:ajax event="change" process="@this" update="deltaReads"/>
                   </uivah:inputNumber>
@@ -324,7 +342,8 @@
                              action="#{lancamentoCtrl.doModifySave}"
                              rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.status == 'V'}"/>
             <p:commandButton value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"
-                             action="#{lancamentoCtrl.back}" styleClass="margin-left" onclick="PF('changePage').show()"/>
+                             action="#{lancamentoCtrl.back}" styleClass="margin-left"
+                             onclick="PF('changePage').show()"/>
           </h:panelGroup>
 
         </p:panel>

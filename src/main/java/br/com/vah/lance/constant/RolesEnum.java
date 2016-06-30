@@ -10,8 +10,8 @@ public enum RolesEnum {
   USER("Usuário"),
   REGISTER("Pré-lançador"),
   MANAGER("Gestor"),
-  SUPERVISOR("Controlador"),
-  ACCOUNTANT("Contabilidade");
+  SUPERVISOR("Controladoria"),
+  ACCOUNTANT("Financeiro");
 
   private String label;
 

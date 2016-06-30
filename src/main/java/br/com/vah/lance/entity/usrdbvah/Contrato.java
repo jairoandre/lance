@@ -16,7 +16,8 @@ import br.com.vah.lance.entity.dbamv.Fornecedor;
 @Table(name = "TB_LANCA_CONTRATO", schema = "USRDBVAH")
 @NamedQueries({@NamedQuery(name = Contrato.ALL, query = Contrato.ALL_QUERY),
     @NamedQuery(name = Contrato.COUNT, query = "SELECT COUNT(c) FROM Contrato c"),
-    @NamedQuery(name = Contrato.VALIDS_IN_DATE, query = "SELECT c from Contrato c where c.beginDate <= :date and c.endDate >= :date")})
+    @NamedQuery(name = Contrato.VALIDS_IN_DATE, query = "SELECT c FROM Contrato c WHERE c.beginDate <= :date AND c.endDate >= :date"),
+    @NamedQuery(name = Contrato.BY_CONTRATANTE_PERIOD, query = "SELECT c FROM Contrato c WHERE c.contratante = :contratante AND ((c.beginDate BETWEEN :begin AND :end) OR (c.endDate BETWEEN :begin AND :end))")})
 public class Contrato extends BaseEntity {
   private static final long serialVersionUID = 1L;
 
@@ -24,6 +25,7 @@ public class Contrato extends BaseEntity {
   public static final String ALL_QUERY = "SELECT c FROM Contrato c";
   public static final String COUNT = "Contrato.countTotal";
   public static final String VALIDS_IN_DATE = "Contrato.validsInDate";
+  public static final String BY_CONTRATANTE_PERIOD = "Contrato.byContratantePeriod";
 
   @Id
   @SequenceGenerator(name = "seqContractGenerator", sequenceName = "SEQ_LANCA_CONTRATO", schema = "USRDBVAH", allocationSize = 1)

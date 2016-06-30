@@ -26,7 +26,7 @@
                      var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index">
           <p:column headerText="Serviço" styleClass="left-align" filterBy="#{lancamento.servico.title}"
                     filterMatchMode="contains"
-                    filterStyle="display: inline-block;margin-left: 5px; min-width: 200px;">
+                    filterStyle="display: inline-block; margin-left: 5px; min-width: 120px;">
             <h:outputText value="#{lancamento.servico.title}"/>
           </p:column>
           <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">
@@ -62,7 +62,8 @@
                           ajax="false"
                           disabled="#{empty lancamento.id}"
                           icon="fa fa-search"/>
-              <p:menuitem value="#{empty lancamento.id ? 'Lançar' : 'Editar lançamento'}" action="#{lancamentoCtrl.edit(lancamento)}"
+              <p:menuitem value="#{empty lancamento.id ? 'Lançar' : 'Editar lançamento'}"
+                          action="#{lancamentoCtrl.edit(lancamento)}"
                           onclick="PF('changePage').show()"
                           ajax="false"
                           disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or lancamento.status == 'V'}"
@@ -89,19 +90,22 @@
             </p:menuButton>
           </p:column>
         </p:dataTable>
-        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="800" height="400" header="Contas a receber">
+        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="900" height="400" header="Contas a receber">
           <p:dataTable id="contasReceberTable" rendered="#{not empty lancamentoCtrl.item.contasReceber}"
-                       value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}">
-            <p:column headerText="Cód." width="75">
+                       value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}"
+                       rowIndexVar="idx">
+            <p:column headerText="Cód." width="50" styleClass="left-align" sortBy="#{item.id}">
               <h:outputText value="#{item.id}"/>
             </p:column>
             <p:column headerText="Documento"
-                      styleClass="left-align" width="100">
+                      styleClass="left-align" width="75" sortBy="#{item.numeroDocumento}">
               <h:outputText value="#{item.numeroDocumento}"/>
             </p:column>
             <p:column headerText="Cliente"
-                      styleClass="left-align" width="200">
-              <h:outputText value="#{item.nomeCliente}"/>
+                      styleClass="left-align ellipsis-text" width="200">
+              <h:outputText id="nomeCliente" value="#{item.nomeCliente}"/>
+              <vah:toolTip id="clienteTool" index="#{idx}" for="#{p:component('nomeCliente')}"
+                           value="#{item.nomeCliente}"/>
             </p:column>
             <p:column headerText="Valor" width="85" styleClass="left-align">
               <h:outputText value="#{item.valorBruto}">
@@ -113,6 +117,18 @@
               <h:outputText value="#{item.dataEmissao}">
                 <f:convertDateTime pattern="dd/MM/yyyy"/>
               </h:outputText>
+            </p:column>
+            <p:column width="75" styleClass="center-align" rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+              <p:menuButton value="Ações">
+                <p:menuitem value="Detalhar" action="#{contaReceberCtrl.detail(item)}"
+                            onclick="PF('changePage').show()"
+                            ajax="false"
+                            icon="fa fa-search"/>
+                <p:menuitem value="Editar" action="#{contaReceberCtrl.edit(item)}"
+                            onclick="PF('changePage').show()"
+                            ajax="false"
+                            icon="fa fa-pencil"/>
+              </p:menuButton>
             </p:column>
           </p:dataTable>
 

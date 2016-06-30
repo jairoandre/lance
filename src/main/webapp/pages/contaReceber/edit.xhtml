@@ -8,37 +8,101 @@
                 xmlns:uivah="http://vah.com.br/vah">
   <ui:define name="metadata">
     <f:metadata>
-      <f:viewParam name="id" value="#{fornecedorCtrl.id}"/>
-      <f:viewAction action="#{fornecedorCtrl.onLoad}"/>
+      <f:viewParam name="id" value="#{contaReceberCtrl.id}"/>
+      <f:viewAction action="#{contaReceberCtrl.onLoad}"/>
     </f:metadata>
   </ui:define>
   <ui:define name="content">
     <h:form id="form">
 
-      <vah:manyToManyDialog id="addSetorDlg"
-                            bean="#{fornecedorCtrl.setor}" controller="#{setorCtrl}"
-                            header="RELACIONAR SETORES" targetController="#{fornecedorCtrl}"
-                            targetItems="#{fornecedorCtrl.item.setores}" toggleAction="toggle"
-                            update="setores" width="800">
-        <p:column sortBy="#{item.id}" headerText="Cód." width="100">
-          #{item.id}
-        </p:column>
-      </vah:manyToManyDialog>
-
-      <vah:editForm id="clientForm" controller="#{fornecedorCtrl}" columns="2">
+      <vah:editForm id="contaReceberForm" controller="#{contaReceberCtrl}" columns="6">
         <h:outputLabel value="Id:" style="font-weight: bold;"/>
-        <h:outputText value="#{fornecedorCtrl.item.id}"/>
-        <h:outputLabel value="Cliente:" style="font-weight: bold;"/>
-        <h:outputText value="#{fornecedorCtrl.item.title}"/>
+        <h:outputText value="#{contaReceberCtrl.item.id}"/>
+        <h:outputLabel value="Nº documento:" style="font-weight: bold;"/>
+        <p:inputText id="numeroDoc" value="#{contaReceberCtrl.item.numeroDocumento}"
+                     readonly="#{!contaReceberCtrl.editing}"/>
+        <h:outputLabel value="Conta Contábil:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.contaContabil.labelForSelectItem}"/>
+        <h:outputLabel value="Data Emissão:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.dataEmissao}">
+          <f:convertDateTime pattern="dd/MM/yyyy"/>
+        </h:outputText>
+        <h:outputLabel value="Data Lançamento:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.dataLancamento}">
+          <f:convertDateTime pattern="dd/MM/yyyy"/>
+        </h:outputText>
+        <h:outputLabel value="Histórico Padrão:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.historicoPadrao.labelForSelectItem}"/>
+        <h:outputLabel value="Valor Bruto:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.valorBruto}">
+          <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                           pattern="R$ #,##0.00"/>
+        </h:outputText>
         <f:facet name="other">
-
-          <uivah:manyToMany id="setores" addBtnLabel="Relacionar setores"
-                            bean="#{fornecedorCtrl.setor}" columnHeader="Setor"
-                            controller="#{fornecedorCtrl}" dialog="addSetorDlg"
-                            editing="#{fornecedorCtrl.editing}" emptyMessage="Sem setores"
-                            items="#{fornecedorCtrl.item.setores.toArray()}"
-                            toggleAction="toggle"/>
-
+          <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Descrição:" style="font-weight: bold;"/>
+            <p:inputText id="descricao" value="#{contaReceberCtrl.item.descricao}" style="width: 400px"
+                         readonly="#{!contaReceberCtrl.editing}"/>
+            <h:outputLabel value="Observações:" style="font-weight: bold;"/>
+            <p:inputText id="observacao" value="#{contaReceberCtrl.item.observacao}" style="width: 400px"
+                         readonly="#{!contaReceberCtrl.editing}"/>
+          </h:panelGrid>
+          <p:tabView>
+            <p:tab title="Parcelamento">
+              <p:dataTable id="parcelamentoTb" value="#{contaReceberCtrl.item.itensConta}" var="itemConta">
+                <p:column headerText="Parc." width="50" styleClass="left-align">
+                  <h:outputText value="#{itemConta.numeroParcela}"/>
+                </p:column>
+                <p:column headerText="Dt. Vencto." width="100" styleClass="left-align">
+                  <h:outputText value="#{itemConta.dataVencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Dt. Prevista." width="100" styleClass="left-align">
+                  <h:outputText value="#{itemConta.dataPrevistaRecebimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Vl. Duplicata" styleClass="left-align">
+                  <h:outputText value="#{itemConta.valorDuplicata}">
+                    <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                     pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Vl. Recebido" styleClass="left-align">
+                  <h:outputText value="#{itemConta.valorSomaRecebido}">
+                    <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                     pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Vl. a Receber" styleClass="left-align">
+                  <h:outputText value="#{itemConta.valorMoeda}">
+                    <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                     pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+            <p:tab title="Compartilhamento">
+              <p:dataTable id="compartilhamentoTb" value="#{contaReceberCtrl.item.itensRateio}" var="itemRateio">
+                <p:column headerText="Setor" width="75" styleClass="left-align">
+                  <h:outputText value="#{itemRateio.cdSetor}"/>
+                </p:column>
+                <p:column headerText="Conta Contábil" width="300" styleClass="left-align">
+                  <h:outputText value="#{itemRateio.contaContabil.labelForSelectItem}"/>
+                </p:column>
+                <p:column headerText="Conta Custo" width="300" styleClass="left-align">
+                  <h:outputText value="#{itemRateio.contaResultado.labelForSelectItem}"/>
+                </p:column>
+                <p:column headerText="Valor Rateio" width="100" styleClass="left-align">
+                  <h:outputText value="#{itemRateio.valorRateio}">
+                    <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
+                                     pattern="R$ #,##0.00"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+          </p:tabView>
         </f:facet>
       </vah:editForm>
 

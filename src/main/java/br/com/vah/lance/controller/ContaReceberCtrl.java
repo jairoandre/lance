@@ -4,6 +4,7 @@ import br.com.vah.lance.entity.dbamv.ContaReceber;
 import br.com.vah.lance.service.ContaReceberService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.util.GenericLazyDataModel;
+import br.com.vah.lance.util.PaginatedSearchParam;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -24,15 +25,16 @@ public class ContaReceberCtrl extends AbstractController<ContaReceber> {
   @Inject
   ContaReceberService service;
 
+  public static final String[] RELATIONS = {"itensRateio", "itensConta", "cliente", "contaContabil", "historicoPadrao"};
+
   @SuppressWarnings("unchecked")
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
-    setItem(createNewItem());
-    setSearchField("id");
-    setLazyModel(new GenericLazyDataModel<ContaReceber>(service));
-    getLazyModel().getSearchParams().addRelations("itensRateio");
-
+    initLazyModel(service, RELATIONS);
+    PaginatedSearchParam searchParam = getLazyModel().getSearchParams();
+    searchParam.setOrderBy("id");
+    searchParam.setAsc(false);
   }
 
   @Override
@@ -53,23 +55,6 @@ public class ContaReceberCtrl extends AbstractController<ContaReceber> {
   @Override
   public String path() {
     return "contaReceber";
-  }
-
-  @Override
-  public String detailPage() {
-    setEditing(true);
-    return "/pages/contaReceber/detail.xhtml";
-  }
-
-  @Override
-  public String editPage() {
-    setEditing(true);
-    return "/pages/contaReceber/edit.xhtml";
-  }
-
-  @Override
-  public String listPage() {
-    return "/pages/contaReceber/list.xhtml";
   }
 
   @Override

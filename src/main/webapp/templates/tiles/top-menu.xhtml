@@ -5,8 +5,8 @@
       xmlns:p="http://primefaces.org/ui">
 <h:body>
   <h:form id="menuForm">
-    <p:growl id="messages" showDetail="true" showSummary="true"
-             autoUpdate="true" globalOnly="true"/>
+    <!--<p:growl id="messages" showDetail="true" showSummary="true"
+             autoUpdate="true" globalOnly="true"/>-->
     <p:menubar rendered="#{request.getUserPrincipal() != null}" toggleEvent="click">
       <p:menuitem ajax="false" action="/pages/index.xhtml?faces-redirect=true" onclick="PF('changePage').show()">
         <h:graphicImage library="img" name="favicon.png" height="15"/>
