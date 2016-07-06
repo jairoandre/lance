@@ -587,6 +587,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     cld.set(Calendar.DAY_OF_MONTH, 1);
     Query query = getEm().createNamedQuery(Lancamento.LAST_LANCAMENTO);
     query.setParameter("date", cld.getTime());
+    query.setParameter("servico", lancamento.getServico());
     List<Lancamento> lista = query.getResultList();
     if (lista.isEmpty()) {
       throw new LanceBusinessException("Sem lançamentos anteriores");
@@ -599,10 +600,10 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
       for (LancamentoValor valorAnterior : lastLancamento.getValues()) {
         SetorDetalhe detalhe = valorAnterior.getContratoSetor().getSetor().getSetorDetalhe();
-        Object key = valorAnterior.getContratoSetor().getContrato().getContratante();
+        Object key = valorAnterior.getContratoSetor().getSetor();
         if (detalhe != null) {
           if (TipoSetorEnum.VAH.equals(detalhe.getType())) {
-            key = valorAnterior.getContratoSetor().getSetor();
+            key = valorAnterior.getContratoSetor().getContrato().getContratante();
           }
         }
         mapValorA.put(key, valorAnterior.getValueA());
@@ -612,10 +613,10 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
       for (LancamentoValor valorLancamento : lancamento.getValues()) {
         SetorDetalhe detalhe = valorLancamento.getContratoSetor().getSetor().getSetorDetalhe();
-        Object key = valorLancamento.getContratoSetor().getContrato().getContratante();
+        Object key = valorLancamento.getContratoSetor().getSetor();
         if (detalhe != null) {
           if (TipoSetorEnum.VAH.equals(detalhe.getType())) {
-            key = valorLancamento.getContratoSetor().getSetor();
+            key = valorLancamento.getContratoSetor().getContrato().getContratante();
           }
         }
         valorLancamento.setValueA(mapValorA.get(key));

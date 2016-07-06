@@ -11,7 +11,7 @@
                paginatorPosition="bottom"
                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                emptyMessage="Sem valores registrados" rowKey="index"
-               rendered="#{servicoCtrl.item.id != null}" styleClass="margin-top table-left-header">
+               rendered="#{servicoCtrl.item.id != null and not empty servicoCtrl.item.values}" styleClass="margin-top table-left-header">
     <f:facet name="header">
       <h:outputText value="VALORES"/>
     </f:facet>

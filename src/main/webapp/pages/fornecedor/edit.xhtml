@@ -15,30 +15,18 @@
   <ui:define name="content">
     <h:form id="form">
 
-      <vah:manyToManyDialog id="addSetorDlg"
-                            bean="#{fornecedorCtrl.setor}" controller="#{setorCtrl}"
-                            header="RELACIONAR SETORES" targetController="#{fornecedorCtrl}"
-                            targetItems="#{fornecedorCtrl.item.setores}" toggleAction="toggle"
-                            update="setores" width="800">
-        <p:column sortBy="#{item.id}" headerText="Cód." width="100">
-          #{item.id}
-        </p:column>
-      </vah:manyToManyDialog>
-
       <vah:editForm id="clientForm" controller="#{fornecedorCtrl}" columns="2">
         <h:outputLabel value="Id:" style="font-weight: bold;"/>
         <h:outputText value="#{fornecedorCtrl.item.id}"/>
         <h:outputLabel value="Cliente:" style="font-weight: bold;"/>
         <h:outputText value="#{fornecedorCtrl.item.title}"/>
         <f:facet name="other">
-
-          <uivah:manyToMany id="setores" addBtnLabel="Relacionar setores"
-                            bean="#{fornecedorCtrl.setor}" columnHeader="Setor"
-                            controller="#{fornecedorCtrl}" dialog="addSetorDlg"
-                            editing="#{fornecedorCtrl.editing}" emptyMessage="Sem setores"
-                            items="#{fornecedorCtrl.item.setores.toArray()}"
-                            toggleAction="toggle"/>
-
+          <h:panelGroup layout="block" styleClass="margin-left">
+            <uivah:multiples id="setores" controller="#{setorCtrl}"
+                             converter="#{setorConverter}" label="Setores: " placeholder="Cód./Nome..."
+                             editing="#{fornecedorCtrl.editing}"
+                             values="#{fornecedorCtrl.item.setores}"/>
+          </h:panelGroup>
         </f:facet>
       </vah:editForm>
 

@@ -116,8 +116,8 @@
                              value="#{servicoCtrl.item.compulsorio}"
                              editing="#{servicoCtrl.editing}" required="true"
                              info="Indique se o serviço deverá ser incluído automaticamente na geração de um novo contrato."/>
-        <uivah:inputNumber id="diaLimite" label="Dia limite" value="#{servicoCtrl.item.diaLimite}" precision="0"/>
-        <uivah:inputNumber id="diaVencimento" label="Dia vencimento" value="#{servicoCtrl.item.diaVencimento}"
+        <uivah:inputNumber id="diaLimite" label="Dia limite" editing="#{servicoCtrl.editing}" value="#{servicoCtrl.item.diaLimite}" precision="0"/>
+        <uivah:inputNumber id="diaVencimento" label="Dia vencimento" editing="#{servicoCtrl.editing}" value="#{servicoCtrl.item.diaVencimento}"
                            precision="0"/>
 
         <f:facet name="other">

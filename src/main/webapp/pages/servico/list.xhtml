@@ -15,17 +15,17 @@
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
           </p:column>
-          <p:column sortBy="#{item.type}" headerText="Tipo de cobrança"
-                    width="250" style="text-align: left;">
+          <p:column sortBy="#{item.type}" headerText="Tipo"
+                    width="100" style="text-align: left;">
             <h:outputText value="#{item.type.label}"/>
           </p:column>
           <p:column sortBy="#{item.contaContabil.id}" headerText="Conta Contábil"
-                    width="150" style="text-align: left;">
+                    width="125" style="text-align: left;">
             <h:outputText value="#{item.contaContabil == null ? '-' : item.contaContabil.id}"/>
           </p:column>
-          <p:column sortBy="#{item.agrupavel}" headerText="Agrupável"
-                    width="95" style="text-align: left;">
-            <h:outputText value="#{item.agrupavel ? 'Sim' : 'Não'}"/>
+          <p:column sortBy="#{item.diaVencimento}" headerText="Venc."
+                    width="75" style="text-align: left;">
+            <h:outputText value="#{item.diaVencimento}"/>
           </p:column>
           <p:column headerText="Valores" style="text-align: center;"
                     width="50">

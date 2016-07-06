@@ -239,3 +239,21 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
 .ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
   background: #c0f3ff;
 }
+
+.list-block a {
+  color: white !important;
+  margin-right: 5px;
+  text-decoration: none;
+}
+
+.list-block {
+  border-radius: 5px;
+  padding: 0 8px;
+  width: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: #683411;
+  color: white;
+  margin-top: 5px;
+  overflow: hidden;
+}

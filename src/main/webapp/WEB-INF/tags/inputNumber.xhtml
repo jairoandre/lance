@@ -19,8 +19,7 @@
             disabled="#{empty editingBtns ? true : (!editing or flagsController.editingField)}"/>
     <h:outputText value="#{value}"
                   rendered="#{empty editing ? true : (empty editingBtns ? !editing : !flagsController.editingField)}">
-      <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="#{precision == null ? 2 : precision}"
-                       pattern="#{pattern == null ? 'R$ #,##0.00' : pattern}"/>
+      <f:convertNumber minFractionDigits="#{precision == null ? 2 : precision}"/>
     </h:outputText>
     <p:focus for="#{id}InputPnl" rendered="#{empty editingBtns ? false : editingBtns}"/>
     <p:inputText id="#{id}" value="#{value}"

@@ -8,6 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
@@ -356,9 +357,43 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   }
 
   public List<T> autoComplete(String query) {
+    return completeMethod(query);
+  }
+
+  public List<T> completeMethod(String query) {
     setSearchTerm(query);
     prepareSearch();
     return getLazyModel().load(10);
+  }
+
+  private T itemToAdd;
+
+  public T getItemToAdd() {
+    return itemToAdd;
+  }
+
+  public void setItemToAdd(T itemToAdd) {
+    this.itemToAdd = itemToAdd;
+  }
+
+  public void addItem(List<T> itens) {
+    if (!itens.contains(itemToAdd)) {
+      itens.add(itemToAdd);
+    }
+  }
+
+  public void addItem(Set<T> itens) {
+    if (!itens.contains(itemToAdd)) {
+      itens.add(itemToAdd);
+    }
+  }
+
+  public void removeItem(List<T> itens, T itemToRemove) {
+    itens.remove(itemToRemove);
+  }
+
+  public void removeItem(Set<T> itens, T itemToRemove) {
+    itens.remove(itemToRemove);
   }
 
 }

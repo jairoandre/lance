@@ -65,40 +65,6 @@
               <h:panelGroup id="servicesContractPnl" style="padding: 5px"
                             layout="block">
 
-                <p:dialog id="serviceDlg"
-                          widgetVar="serviceDlg#{idx}" modal="true"
-                          header="SELECIONE OS SERVIÇOS" width="800">
-
-                  <p:ajax event="close"
-                          update="@(.servicePnl#{idx})"/>
-
-                  <vah:dataTable id="serviceDlgTable"
-                                 controller="#{contratoCtrl.serviceControllers[contratoSetor.setor.id]}"
-                                 renderAddBtn="false"
-                                 renderActionColumn="false">
-                    <p:column id="selector" style="text-align: center;" width="50">
-                      <p:commandLink ajax="true"
-                                     action="#{contratoCtrl.toggleService(contratoSetor)}"
-                                     styleClass="action-link" process="@this"
-                                     update="@(.action-link)">
-                        <f:setPropertyActionListener value="#{item}"
-                                                     target="#{contratoCtrl.servicoBean}"/>
-                        <h:panelGroup
-                          styleClass="fa fa#{contratoSetor.servicos.contains(item) ? '-check' : ''}-square-o"/>
-                      </p:commandLink>
-                    </p:column>
-                    <p:column id="detail" sortBy="#{item.title}"
-                              headerText="Descrição" style="text-align: left;">
-                      <h:outputText value="#{item.title}"/>
-                    </p:column>
-                  </vah:dataTable>
-
-                  <f:facet name="footer">
-                    <p:commandButton id="serviceDlgCloseBtn" ajax="true"
-                                     onclick="PF('serviceDlg#{idx}').hide()"
-                                     value="Fechar diálogo"/>
-                  </f:facet>
-                </p:dialog>
                 <p:panel toggleable="true"
                          header="#{contratoSetor.setor.id} - #{contratoSetor.setor.title}"
                          styleClass="inquilino#{idx}" rendered="#{contratoSetor.setor != null}">
@@ -119,38 +85,49 @@
                         </p:column>
                       </uivah:autoComplete>
                     </h:panelGrid>
-                    <p:commandButton id="serviceAddBtn"
-                                     onclick="PF('serviceDlg#{idx}').show()"
-                                     value="Relacionar serviços"
-                                     rendered="#{contratoCtrl.editing}"
-                                     styleClass="margin-top"/>
                     <p:commandButton id="clearAll"
                                      action="#{servicoCtrl.limparServicos(contratoSetor)}"
                                      process="@this"
-                                     update="serviceTable serviceDlg"
-                                     value="Limpar todos"
+                                     update="serviceList"
+                                     value="Limpar serviços"
                                      rendered="#{contratoCtrl.editing}"
-                                     styleClass="margin-top margin-left"/>
-                    <p:dataTable id="serviceTable" var="item"
-                                 value="#{contratoSetor.servicos}" lazy="true"
-                                 emptyMessage="Sem serviços relacionados"
-                                 style="margin-top: 10px">
-                      <p:column headerText="Serviços" style="text-align: left;">
-                        <h:outputText value="#{item.title}"/>
-                      </p:column>
-                      <p:column width="100" headerText="Remover"
-                                style="text-align: center;"
-                                rendered="#{contratoCtrl.editing}">
-                        <p:commandLink id="serviceTableRemoveBtn"
-                                       action="#{contratoCtrl.toggleService(contratoSetor)}"
-                                       ajax="true" styleClass="action-link" update="@form"
-                                       process="@this">
-                          <f:setPropertyActionListener value="#{item}"
-                                                       target="#{contratoCtrl.servicoBean}"/>
-                          <span class="fa fa-trash"/>
-                        </p:commandLink>
-                      </p:column>
-                    </p:dataTable>
+                                     styleClass="margin-top"/>
+                    <h:panelGroup id="serviceList" layout="block" styleClass="margin-top">
+                      <p:outputLabel value="Serviços: " styleClass="lance-label"/>
+                      <h:panelGroup>
+                        <p:autoComplete id="servicos" value="#{servicoCtrl.itemToAdd}"
+                                        widgetVar="servicos#{idx}"
+                                        queryDelay="200"
+                                        var="item"
+                                        readonly="#{!contratoCtrl.editing}"
+                                        itemLabel="#{item.labelForSelectItem}"
+                                        itemValue="#{item}"
+                                        onclick="this.setSelectionRange(0, this.value.length)"
+                                        converter="#{servicoConverter}"
+                                        inputStyleClass="lance-input"
+                                        completeMethod="#{servicoCtrl.completeMethod}"
+                                        placeholder="Nº./Nome...">
+                          <p:ajax event="itemSelect" listener="#{servicoCtrl.addItem(contratoSetor.servicos)}" process="@this"
+                                  update="list" oncomplete="$(PF('servicos#{idx}').jqId + '_input').val('')"/>
+                          <p:column width="75">
+                            #{item.id}
+                          </p:column>
+                          <p:column>
+                            #{item.title}
+                          </p:column>
+                        </p:autoComplete>
+                        <h:panelGroup id="list" styleClass="list#{idx}" layout="block">
+                          <ui:repeat value="#{contratoSetor.servicos.toArray()}" var="it">
+                            <h:panelGroup layout="block" styleClass="list-block">
+                              <p:commandLink styleClass="fa fa-close" action="#{servicoCtrl.removeItem(contratoSetor.servicos, it)}"
+                                             process="@this" update="@(.list#{idx})">
+                              </p:commandLink>
+                              <h:outputText value="#{it.labelForSelectItem}"/>
+                            </h:panelGroup>
+                          </ui:repeat>
+                        </h:panelGroup>
+                      </h:panelGroup>
+                    </h:panelGroup>
                   </h:panelGroup>
                 </p:panel>
               </h:panelGroup>

@@ -122,6 +122,16 @@ public class FornecedorCtrl extends AbstractController<Fornecedor> {
     }
   }
 
+  public void addSetor() {
+    if (!getItem().getSetores().contains(setor)) {
+      getItem().getSetores().add(setor);
+    }
+  }
+
+  public void removeSetor(Setor setorToRemove) {
+    getItem().getSetores().remove(setorToRemove);
+  }
+
   public Boolean selected(Setor setor) {
     return getItem().getSetores().contains(setor);
   }

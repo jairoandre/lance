@@ -15,12 +15,6 @@
   <ui:define name="content">
     <h:form id="form">
 
-      <vah:manyToManyDialog id="addServiceDlg"
-                              bean="#{userCtrl.beanServico}"
-                              controller="#{servicoCtrl}" header="RELACIONAR SERVIÇOS"
-                              targetController="#{userCtrl}"
-                              targetItems="#{userCtrl.item.servicos}"
-                              toggleAction="toggleService" update="servicos" width="800"/>
       <vah:editForm id="contractPnl" controller="#{userCtrl}"
                       columns="3">
         <uivah:inputText id="name" label="Login"
@@ -31,14 +25,12 @@
                            editing="#{userCtrl.editing}"/>
 
         <f:facet name="other">
-          <h:panelGroup id="servicesPnl" layout="block" styleClass="margin-top">
-            <uivah:manyToMany id="servicos" addBtnLabel="Relacionar serviços"
-                                bean="#{userCtrl.beanServico}" columnHeader="Serviço"
-                                controller="#{userCtrl}" dialog="addServiceDlg"
-                                editing="#{userCtrl.editing}"
-                                emptyMessage="Sem serviços relacionados"
-                                items="#{userCtrl.item.servicos}"
-                                toggleAction="toggleService"/>
+
+          <h:panelGroup layout="block" styleClass="margin-left">
+            <uivah:multiples id="servicos" controller="#{servicoCtrl}"
+                             converter="#{servicoConverter}" label="Serviços: " placeholder="Cód./Nome..."
+                             editing="#{userCtrl.editing}"
+                             values="#{userCtrl.item.servicos}"/>
           </h:panelGroup>
 
           <h:panelGroup id="rolesContainer" layout="block" styleClass="margin-top">

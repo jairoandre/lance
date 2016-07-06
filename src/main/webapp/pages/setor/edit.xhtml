@@ -36,7 +36,7 @@
 				<uivah:autoComplete id="contaContabil" value="#{setorCtrl.item.setorDetalhe.contaContabil}"
 														label="Conta Contábil"
 														controller="#{planoContaCtrl}" completeMethod="autoComplete"
-														required="true"
+														required="false"
 														editing="#{setorCtrl.editing}"
 														converter="#{planoContaConverter}" itemLabel="labelForSelectItem"
 														placeholder="Cód./Descrição">
@@ -50,8 +50,9 @@
 
 				<uivah:selectOneEnum id="type" label="Tipo de setor"
 															 value="#{setorCtrl.item.setorDetalhe.type}"
-															 editing="#{setorCtrl.editing}" required="true"
+															 editing="#{setorCtrl.editing}" required="false"
 															 options="#{setorCtrl.types}"/>
+
 			</vah:editForm>
 
 		</h:form>
