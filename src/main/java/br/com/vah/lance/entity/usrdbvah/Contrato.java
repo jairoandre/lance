@@ -52,7 +52,7 @@ public class Contrato extends BaseEntity {
   @JoinColumn(name = "ID_FORNECEDOR_CONTRATANTE", nullable = false)
   private Fornecedor contratante;
 
-  @OneToMany(mappedBy = "contrato", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "contrato", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ContratoSetor> setores;
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)

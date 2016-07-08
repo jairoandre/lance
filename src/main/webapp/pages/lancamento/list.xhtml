@@ -19,6 +19,7 @@
           </script>
         </h:panelGroup>
         <p:commandButton id="searchMonthBtn" action="#{lancamentoCtrl.filterByDate}" value="Filtrar" ajax="true"
+                         onstart="PF('changePage').show()" oncomplete="PF('changePage').hide()"
                          process="@this searchMonth" update="dataTable"
                          icon="fa fa-search" styleClass="margin-left"/>
 
@@ -26,11 +27,8 @@
                      var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index">
           <p:column headerText="Serviço" styleClass="left-align" filterBy="#{lancamento.servico.title}"
                     filterMatchMode="contains"
-                    filterStyle="display: inline-block; margin-left: 5px; min-width: 120px;">
+                    filterStyle="display: inline-block; margin-left: 5px; min-width: 200px;">
             <h:outputText value="#{lancamento.servico.title}"/>
-          </p:column>
-          <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">
-            <h:outputText value="#{lancamento.servico.type.label}"/>
           </p:column>
           <p:column headerText="Valor lançado" styleClass="left-align" width="100">
             <h:outputText value="#{lancamento.totalValue}">

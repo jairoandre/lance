@@ -241,19 +241,33 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
 }
 
 .list-block a {
-  color: white !important;
+  color: #000000 !important;
   margin-right: 5px;
   text-decoration: none;
+  font-size: 20px !important;
+}
+
+.list-block-wrapper {
+  padding: 5px;
+
+}
+
+.ui-menuitem-icon {
+  margin-top: 2px; !important;
 }
 
 .list-block {
   border-radius: 5px;
-  padding: 0 8px;
+  padding: 5px 10px;
   width: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background: #683411;
-  color: white;
-  margin-top: 5px;
+  background: #FED54C;
+  color: #000000;
+  font-weight: bold;
   overflow: hidden;
+}
+
+.list-block--novo {
+  background: #9afee3;
 }

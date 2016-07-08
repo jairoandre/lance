@@ -18,9 +18,7 @@
       <vah:editForm id="serviceForm" controller="#{servicoCtrl}"
                       columns="3">
 
-        <uivah:inputText id="serviceTitle" label="Serviço"
-                           value="#{servicoCtrl.item.title}" editing="false"
-                           rendered="false"/>
+        <p:outputLabel value="#{servicoCtrl.item.title}" styleClass="lance-label"/>
 
         <f:facet name="other">
 
@@ -68,11 +66,9 @@
               <p:commandButton id="btnAddValue" value="Adicionar"
                                action="#{servicoCtrl.addValue}" ajax="true" validateClient="true"
                                process=":#{p:component('newValueFieldset')}"
-                               update=":#{p:component('valuesDataTable')} addServiceGrid"/>
+                               update=":#{p:component('valuesDataTableWrapper')} addServiceGrid"/>
             </h:panelGrid>
           </p:fieldset>
-
-          <br/>
 
           <ui:include src="values.xhtml"/>
 

@@ -4,22 +4,7 @@ package br.com.vah.lance.entity.usrdbvah;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import br.com.vah.lance.constant.TipoServicoEnum;
 import br.com.vah.lance.entity.BaseEntity;
@@ -95,14 +80,17 @@ public class Servico extends BaseEntity {
   @Column(name = "VL_DIA_VENCIMENTO")
   private Integer diaVencimento;
 
-  @Override
-  public Long getId() {
-    return id;
-  }
+  @Transient
+  private Boolean systemAdded = false;
 
   @Override
   public void setId(Long id) {
     this.id = id;
+  }
+
+  @Override
+  public Long getId() {
+    return id;
   }
 
   /**
@@ -276,6 +264,14 @@ public class Servico extends BaseEntity {
 
   public void setDiaVencimento(Integer diaVencimento) {
     this.diaVencimento = diaVencimento;
+  }
+
+  public Boolean getSystemAdded() {
+    return systemAdded;
+  }
+
+  public void setSystemAdded(Boolean systemAdded) {
+    this.systemAdded = systemAdded;
   }
 
   @Override

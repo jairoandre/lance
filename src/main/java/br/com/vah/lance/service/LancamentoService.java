@@ -10,6 +10,8 @@ import br.com.vah.lance.util.ViewUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
@@ -374,6 +376,29 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
     return groups;
 
+  }
+
+  public List<Lancamento> getLancamentosPorPeriodoStatus(EstadoLancamentoEnum status, Date[] range) {
+
+    Session session = getEm().unwrap(Session.class);
+    Criteria criteria = session.createCriteria(Lancamento.class);
+
+    criteria.add(Restrictions.between("effectiveOn", range[0], range[1]));
+
+    if (status != null) {
+      criteria.add(Restrictions.eq("status", status));
+    }
+
+    criteria.setFetchMode("values", FetchMode.SELECT);
+    criteria.setFetchMode("meterValues", FetchMode.SELECT);
+    criteria.setFetchMode("contasReceber", FetchMode.SELECT);
+    criteria.setFetchMode("servico", FetchMode.SELECT);
+    criteria.setFetchMode("comentarios", FetchMode.SELECT);
+    criteria.setFetchMode("servicoValor", FetchMode.SELECT);
+
+    criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+    return criteria.list();
   }
 
   @Override

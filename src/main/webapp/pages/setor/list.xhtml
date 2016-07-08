@@ -20,8 +20,8 @@
             <h:outputText value="#{item.title}"/>
           </p:column>
           <p:column headerText="Conta contábil" width="200"
-                    style="text-align: left;">
-            <h:outputText value="#{item.setorDetalhe == null or item.setorDetalhe.contaContabil == null ? '-' : item.setorDetalhe.contaContabil.title}"/>
+                    styleClass="ellipsis-text">
+            <h:outputText value="#{item.setorDetalhe == null or item.setorDetalhe.contaContabil == null ? '-' : item.setorDetalhe.contaContabil.labelForSelectItem}"/>
           </p:column>
         </vah:dataTable>
       </p:panel>

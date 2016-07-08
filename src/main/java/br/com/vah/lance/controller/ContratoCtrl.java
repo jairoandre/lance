@@ -9,11 +9,13 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.vah.lance.constant.TipoSetorEnum;
 import br.com.vah.lance.entity.usrdbvah.Contrato;
 import br.com.vah.lance.entity.usrdbvah.ContratoSetor;
 import br.com.vah.lance.entity.usrdbvah.Servico;
 import br.com.vah.lance.entity.dbamv.Fornecedor;
 import br.com.vah.lance.entity.dbamv.Setor;
+import br.com.vah.lance.entity.usrdbvah.SetorDetalhe;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.FornecedorService;
 import br.com.vah.lance.service.ContratoService;
@@ -56,17 +58,21 @@ public class ContratoCtrl extends AbstractController<Contrato> {
     logger.info(this.getClass().getSimpleName() + " created.");
     setItem(createNewItem());
     initLazyModel(service, RELATIONS);
-    List<Servico> allServicos = servicoService.findWithNamedQuery(Servico.ALL);
-    for (Servico item : allServicos) {
-      if (item.getCompulsorio()) {
-        compulsoryServico.add(item);
-      }
-    }
   }
 
   @Override
   public void onLoad() {
     super.onLoad();
+    if (getEditing()) {
+      List<Servico> allServicos = servicoService.findWithNamedQuery(Servico.ALL);
+      for (Servico item : allServicos) {
+        if (item.getCompulsorio()) {
+          item.setSystemAdded(true);
+          compulsoryServico.add(item);
+        }
+      }
+
+    }
     if (getItem().getId() != null) {
       onLoadSubject();
     }
@@ -85,20 +91,40 @@ public class ContratoCtrl extends AbstractController<Contrato> {
     clientControllers = new HashMap<>();
     serviceControllers = new HashMap<>();
     List<Long> ids = recordedSetoresId();
+
+    for (ContratoSetor contratoSetor : getItem().getSetores()) {
+      SetorDetalhe detalhe = contratoSetor.getSetor().getSetorDetalhe();
+      if (detalhe != null && TipoSetorEnum.VAH.equals(detalhe.getType())) {
+        continue;
+      }
+      for (Servico servicoCompulsorio : compulsoryServico) {
+         if (!contratoSetor.getServicos().contains(servicoCompulsorio)) {
+           contratoSetor.getServicos().add(servicoCompulsorio);
+         }
+      }
+    }
+
     if (contratante != null) {
       getItem().setTitle(String.format("%d - %s", contratante.getId(), contratante.getTitle()));
       for (Setor setor : contratante.getSetores()) {
         if (!ids.contains(setor.getId())) {
+          SetorDetalhe detalhe = setor.getSetorDetalhe();
           ContratoSetor service = new ContratoSetor();
           service.setSetor(setor);
           service.setContrato(getItem());
-          service.setServicos(new LinkedHashSet<>(compulsoryServico));
+          if (detalhe == null || !TipoSetorEnum.VAH.equals(detalhe.getType())) {
+            service.setServicos(new LinkedHashSet<>(compulsoryServico));
+          }
           getItem().getSetores().add(service);
         }
         clientControllers.put(setor.getId(), new FornecedorCtrl(fornecedorService));
         serviceControllers.put(setor.getId(), new ServicoCtrl(servicoService));
       }
     }
+  }
+
+  public void removeSetor(ContratoSetor contratoSetor) {
+    getItem().getSetores().remove(contratoSetor);
   }
 
   @Override

@@ -139,8 +139,8 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
   }
 
   public void onLoadForDetail() {
-    onLoad();
     this.editing = false;
+    onLoad();
   }
 
   public void addMsg(FacesMessage msg, boolean flash) {

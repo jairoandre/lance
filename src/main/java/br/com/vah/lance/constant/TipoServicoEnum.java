@@ -4,13 +4,13 @@ public enum TipoServicoEnum {
   T("Tabelado"),
   V("Venda"),
   C("Cobrança"),
-  E("Cond. - Indiv. Energia"),
-  G("Cond. - Indiv. Gás"),
-  CTR("Cond. - Taxado"),
-  CI("Cond. - Individual"),
-  CR("Cond. - Rateio"),
-  CP("Cond. - Rateio Parcial"),
-  CRE("Cond. - Energia Comum");
+  E("Cond. Energia Privativa"),
+  G("Cond. Gás Privativo"),
+  CTR("Cond. Taxado"),
+  CI("Cond. Individual"),
+  CR("Cond. Rateio"),
+  CP("Cond. Rateio Parcial"),
+  CRE("Cond. Energia Comum");
 
   private String label;
 

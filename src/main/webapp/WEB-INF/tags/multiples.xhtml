@@ -28,7 +28,7 @@
         #{item.title}
       </p:column>
     </p:autoComplete>
-    <h:panelGroup id="#{id}List" styleClass="#{id}" layout="block">
+    <h:panelGroup id="#{id}List" styleClass="#{id} list-block-wrapper" layout="block">
       <ui:repeat value="#{values.toArray()}" var="it">
         <h:panelGroup layout="block" styleClass="list-block margin-top">
           <p:commandLink styleClass="fa fa-close" action="#{controller.removeItem(values, it)}"

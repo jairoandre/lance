@@ -16,7 +16,7 @@
             <h:outputText value="#{item.title}"/>
           </p:column>
           <p:column sortBy="#{item.type}" headerText="Tipo"
-                    width="100" style="text-align: left;">
+                    width="100" styleClass="ellipsis-text">
             <h:outputText value="#{item.type.label}"/>
           </p:column>
           <p:column sortBy="#{item.contaContabil.id}" headerText="Conta Contábil"

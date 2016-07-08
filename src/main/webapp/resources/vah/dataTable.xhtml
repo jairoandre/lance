@@ -23,6 +23,7 @@
                   style="margin-bottom: 10px; position: relative;">
       <p:inputText id="searchInput"
                    value="#{cc.attrs.controller.searchTerm}"
+                   onclick="this.setSelectionRange(0, this.value.length)"
                    placeholder="#{cc.attrs.placeholder == null ? 'Digite o termo...' : cc.attrs.placeholder}"
                    style="width: 50%;"/>
       <p:focus for="panel"/>
@@ -30,8 +31,10 @@
                        action="#{cc.attrs.controller.prepareSearch}" icon="fa fa-search"
                        ajax="true" process="panel"
                        update="table"
+                       onstart="PF('changePage').show()"
+                       oncomplete="PF('changePage').hide()"
                        title="Procurar #{cc.attrs.controller.entityName}"
-                       style="margin-left: 10px;"/>
+                       styleClass="margin-left"/>
       <p:commandButton value="Novo #{cc.attrs.controller.entityName}"
                        action="#{cc.attrs.controller.add}" icon="fa fa-plus"
                        title="Criar novo #{cc.attrs.controller.entityName}"
@@ -98,7 +101,8 @@
       <p:commandButton id="deleteConfirmBtn" value="Excluir" ajax="true" update="@form"
                        action="#{cc.attrs.controller.doDelete}"
                        oncomplete="PF('deleteDlg').hide();"
-                       icon="fa fa-warning" disabled="#{cc.attrs.controller.deleteConfirmAnswer.toUpperCase() != 'DELETAR'}"/>
+                       icon="fa fa-warning"
+                       disabled="#{cc.attrs.controller.deleteConfirmAnswer.toUpperCase() != 'DELETAR'}"/>
       <p:commandButton value="Cancelar"
                        oncomplete="PF('deleteDlg').hide();"
                        style="margin-left: 5px"

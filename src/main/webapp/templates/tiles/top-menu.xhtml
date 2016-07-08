@@ -16,18 +16,23 @@
                   icon="fa fa-user" rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR')}" onclick="PF('changePage').show()"/>
       <p:submenu label="Cadastro" icon="fa fa-file">
         <p:menuitem value="Serviços"
+                    icon="fa fa-tag"
                     ajax="false"
                     action="/pages/servico/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
         <p:menuitem value="Setores"
+                    icon="fa fa-sitemap"
                     ajax="false"
                     action="/pages/setor/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
         <p:menuitem value="Medidores"
                     ajax="false"
+                    icon="fa fa-dashboard"
                     action="/pages/medidorConsumo/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
         <p:menuitem value="Clientes"
                     ajax="false"
+                    icon="fa fa-group"
                     action="/pages/fornecedor/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
         <p:menuitem value="Contratos"
+                    icon="fa fa-file-text"
                     ajax="false"
                     action="/pages/contrato/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
       </p:submenu>
@@ -41,7 +46,16 @@
                     ajax="false"
                     action="/pages/lancamento/validarCondominial.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
       </p:submenu>
-
+      <p:submenu label="Relatórios" icon="fa fa-bar-chart">
+        <p:menuitem value="Descritivo Condomínio"
+                    icon="fa fa-building"
+                    ajax="false"
+                    action="/pages/relatorios/descritivoCondominio.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
+        <p:menuitem value="Setores Vinculados"
+                    icon="fa fa-th-list"
+                    ajax="false"
+                    action="/pages/relatorios/setorRelatorio.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
+      </p:submenu>
       <p:menuitem value="Contas a receber"
                   icon="fa fa-briefcase"
                   ajax="false"

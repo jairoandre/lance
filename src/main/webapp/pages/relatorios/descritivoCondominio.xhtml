@@ -1,0 +1,67 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:uivah="http://vah.com.br/vah">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Descritivo Condomínio">
+        <h:panelGrid columns="9">
+          <p:outputLabel value="Vigência" indicateRequired="true" for="vigencia" styleClass="label"/>
+          <h:panelGroup id="vigenciaPnl" styleClass="margin-left">
+            <p:inputText id="vigencia" styleClass="searchMonth" value="#{descritivoCondominioCtrl.vigencia}"
+                         required="true">
+              <f:convertDateTime pattern="MM/yyyy" dateStyle="short" timeZone="GMT-0300"/>
+            </p:inputText>
+            <script>
+              $(".searchMonth").mask('99/9999');
+            </script>
+          </h:panelGroup>
+          <h:panelGroup/>
+          <uivah:autoComplete id="contratante" value="#{descritivoCondominioCtrl.fornecedor}"
+                              label="Contratante"
+                              controller="#{fornecedorCtrl}" completeMethod="autoComplete"
+                              converter="#{fornecedorConverter}" itemLabel="labelForSelectItem"
+                              placeholder="Cód./Nome cliente">
+            <p:column>
+              #{item.id}
+            </p:column>
+            <p:column>
+              #{item.title}
+            </p:column>
+          </uivah:autoComplete>
+          <p:outputLabel value="Estado" styleClass="label"/>
+          <p:selectOneMenu value="#{descritivoCondominioCtrl.estado}">
+            <f:selectItems value="#{descritivoCondominioCtrl.estados}" var="estado" itemLabel="#{estado.label}"
+                           itemValue="#{estado}"/>
+          </p:selectOneMenu>
+          <h:panelGroup/>
+          <p:selectBooleanCheckbox id="condominio" value="#{descritivoCondominioCtrl.condominio}"
+                                   itemLabel="Condomínio" styleClass="margin-left"/>
+        </h:panelGrid>
+
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:commandButton rendered="true" id="gerarRelatorio" value="Gerar Relatório" ajax="false"
+                           process="@form"
+                           style="font-size: 25px;"
+                           onclick="PrimeFaces.monitorDownload(start, stop);">
+            <p:fileDownload value="#{descritivoCondominioCtrl.relatorio}"/>
+          </p:commandButton>
+        </h:panelGroup>
+      </p:panel>
+
+      <script type="text/javascript">
+        function start() {
+          PF('changePage').show();
+        }
+
+        function stop() {
+          PF('changePage').hide();
+        }
+      </script>
+
+    </h:form>
+  </ui:define>
+</ui:composition>
