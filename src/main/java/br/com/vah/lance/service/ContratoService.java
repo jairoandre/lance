@@ -1,12 +1,10 @@
 package br.com.vah.lance.service;
 
-import javax.ejb.Stateless;
-import javax.persistence.Query;
-
 import br.com.vah.lance.entity.usrdbvah.Contrato;
 import br.com.vah.lance.exception.LanceBusinessException;
-import org.hibernate.Session;
 
+import javax.ejb.Stateless;
+import javax.persistence.Query;
 import java.util.List;
 
 @Stateless
