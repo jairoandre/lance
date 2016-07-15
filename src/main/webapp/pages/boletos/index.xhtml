@@ -1,0 +1,31 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Boleto">
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:commandButton rendered="true" id="createBoleto" value="Boleto" ajax="false"
+                           process="@form"
+                           style="font-size: 25px;"
+                           onclick="PrimeFaces.monitorDownload(start, stop);">
+            <p:fileDownload value="#{boletoCtrl.boleto}"/>
+          </p:commandButton>
+        </h:panelGroup>
+      </p:panel>
+
+      <script type="text/javascript">
+        function start() {
+          PF('changePage').show();
+        }
+
+        function stop() {
+          PF('changePage').hide();
+        }
+      </script>
+
+    </h:form>
+  </ui:define>
+</ui:composition>

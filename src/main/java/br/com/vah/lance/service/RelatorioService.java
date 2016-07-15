@@ -3,8 +3,10 @@ package br.com.vah.lance.service;
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
 import br.com.vah.lance.entity.dbamv.ContaReceber;
 import br.com.vah.lance.entity.dbamv.Fornecedor;
+import br.com.vah.lance.entity.dbamv.PlanoConta;
 import br.com.vah.lance.entity.dbamv.Setor;
 import br.com.vah.lance.entity.usrdbvah.*;
+import br.com.vah.lance.reports.BalancoContabilDTO;
 import br.com.vah.lance.reports.DescritivoCondominioDTO;
 import br.com.vah.lance.reports.RelatorioSetorDTO;
 import br.com.vah.lance.reports.ReportLoader;
@@ -153,5 +155,78 @@ public class RelatorioService implements Serializable {
       }
     });
     return reportLoader.imprimeRelatorio("setorRelatorio", parameters, datasource);
+  }
+
+  public StreamedContent getRelatorioBalanco(Set<Servico> servicos, Date[] range) {
+    Map<String, Object> parameters = new HashMap<>();
+
+    parameters.put("begin", range[0]);
+    parameters.put("end", range[1]);
+
+    List<BalancoContabilDTO> datasource = new ArrayList<>();
+
+    List<Lancamento> list;
+
+    if (servicos == null || servicos.isEmpty()) {
+      list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD, parameters);
+    } else {
+      parameters.put("services", servicos);
+      list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD_AND_SERVICE, parameters);
+    }
+
+    Set<Lancamento> lancs = new HashSet<>(list);
+
+    for (Lancamento lanc : lancs) {
+      for (LancamentoValor val : lanc.getValues()) {
+        Servico serv = lanc.getServico();
+        PlanoConta conta = serv.getContaContabil();
+        ContratoSetor contratoSetor = val.getContratoSetor();
+        Setor setor = contratoSetor.getSetor();
+        if (serv.getContaPorSetor()) {
+          SetorDetalhe setorDetalhe = setor.getSetorDetalhe();
+          if (setorDetalhe == null && setorDetalhe.getContaContabil() == null) {
+            conta = setorDetalhe.getContaContabil();
+          }
+        }
+        BalancoContabilDTO dto = new BalancoContabilDTO();
+        dto.setSetor(setor.getId().toString());
+        dto.setCliente(contratoSetor.getInquilino() == null ? contratoSetor.getContrato().getContratante().getTitle() : contratoSetor.getInquilino().getTitle());
+        dto.setServico(serv.getTitle());
+        dto.setContaContabil(conta.getCodigoContabil());
+        dto.setContaReduzido(conta.getId().toString());
+        dto.setVigencia(lanc.getEffectiveOn());
+        dto.setValor(val.getValue());
+        datasource.add(dto);
+      }
+    }
+
+    Collections.sort(datasource, new Comparator<BalancoContabilDTO>() {
+      @Override
+      public int compare(BalancoContabilDTO o1, BalancoContabilDTO o2) {
+        if (o1.getServico().equals(o2.getServico())) {
+          if (o1.getContaReduzido().equals(o2.getContaReduzido())) {
+            if (o1.getVigencia().equals(o2.getVigencia())) {
+              if (o1.getCliente().equals(o2.getCliente())) {
+                return o1.getSetor().compareTo(o2.getSetor());
+              } else {
+                return o1.getCliente().compareTo(o2.getCliente());
+              }
+            } else {
+              return o1.getVigencia().compareTo(o2.getVigencia());
+            }
+          } else {
+            return o1.getContaReduzido().compareTo(o2.getContaReduzido());
+          }
+
+        } else {
+          return o1.getServico().compareTo(o2.getServico());
+        }
+      }
+    });
+
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    parameters.put("REFERENCIA", String.format("%s à %s", sdf.format(range[0]), sdf.format(range[1])));
+
+    return reportLoader.imprimeRelatorio("balancoContabil", parameters, datasource);
   }
 }

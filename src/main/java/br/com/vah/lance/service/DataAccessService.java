@@ -277,6 +277,14 @@ public abstract class DataAccessService<T> implements Serializable {
     return ((Number) criteria.uniqueResult()).intValue();
   }
 
+  public List<T> getListByNamedQuery(String namedQuery, Map<String, Object> params) {
+    Query query = getEm().createNamedQuery(namedQuery);
+    for (String key : params.keySet()) {
+      query.setParameter(key, params.get(key));
+    }
+    return query.getResultList();
+  }
+
   public EntityManager getEm() {
     return em;
   }
