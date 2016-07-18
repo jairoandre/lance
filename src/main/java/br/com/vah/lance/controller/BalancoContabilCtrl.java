@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Set;
 @ViewScoped
 public class BalancoContabilCtrl implements Serializable {
 
-  private Set<Servico> servicos;
+  private Set<Servico> servicos = new LinkedHashSet<>();
 
   private Date[] range = new Date[2];
 

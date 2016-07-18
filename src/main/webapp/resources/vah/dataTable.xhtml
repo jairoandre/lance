@@ -54,7 +54,6 @@
       <p:column width="100" headerText="Ações" styleClass="center-align"
                 rendered="#{cc.attrs.renderActionColumn == null ? true : cc.attrs.renderActionColumn}">
         <composite:renderFacet name="customAction"/>
-
         <p:menuButton id="menuButton" value="Ações">
           <p:menuitem value="Detalhar" action="#{cc.attrs.controller.detail(item)}"
                       onclick="PF('changePage').show()"

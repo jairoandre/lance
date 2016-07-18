@@ -16,22 +16,53 @@
     <h:form id="form">
 
       <vah:editForm id="contractPnl" controller="#{userCtrl}"
-                      columns="3">
+                    columns="3">
         <uivah:inputText id="name" label="Login"
-                           value="#{userCtrl.item.login}"
-                           editing="#{userCtrl.editing}"/>
+                         value="#{userCtrl.item.login}"
+                         editing="#{userCtrl.editing}"/>
         <uivah:inputText id="title" label="Descrição"
-                           value="#{userCtrl.item.title}"
-                           editing="#{userCtrl.editing}"/>
-
+                         value="#{userCtrl.item.title}"
+                         editing="#{userCtrl.editing}"/>
+        <p:outputLabel value="Serviços" for="servicos" styleClass="lance-label"/>
+        <p:autoComplete id="servicos" value="#{servicoCtrl.itemToAdd}"
+                        widgetVar="servicos"
+                        queryDelay="200"
+                        var="serv"
+                        itemLabel="#{serv.labelForSelectItem}"
+                        itemValue="#{serv}"
+                        onclick="this.setSelectionRange(0, this.value.length)"
+                        converter="#{servicoConverter}"
+                        inputStyleClass="lance-input"
+                        completeMethod="#{servicoCtrl.completeMethod}"
+                        placeholder="Nº./Nome...">
+          <p:ajax event="itemSelect" listener="#{servicoCtrl.addItem(userCtrl.item.servicos)}"
+                  process="@this"
+                  update="list" oncomplete="$(PF('servicos').jqId + '_input').val('')"/>
+          <p:column width="75">
+            #{serv.id}
+          </p:column>
+          <p:column>
+            #{serv.title}
+          </p:column>
+        </p:autoComplete>
+        <p:commandButton id="addAllBtn" value="Adicionar Todos" action="#{userCtrl.incluirTodosServicos}" ajax="true"
+                         process="@this" update="list" styleClass="margin-left"/>
         <f:facet name="other">
 
-          <h:panelGroup layout="block" styleClass="margin-left">
-            <uivah:multiples id="servicos" controller="#{servicoCtrl}"
-                             converter="#{servicoConverter}" label="Serviços: " placeholder="Cód./Nome..."
-                             editing="#{userCtrl.editing}"
-                             values="#{userCtrl.item.servicos}"/>
+          <h:panelGroup id="list" styleClass="list list-block-wrapper" layout="block">
+            <ui:repeat value="#{userCtrl.item.servicos.toArray()}" var="it">
+              <h:panelGroup layout="block"
+                            styleClass="list-block margin-top #{it.systemAdded ? 'list-block--novo' : ''}">
+                <p:commandLink styleClass="fa fa-close"
+                               action="#{servicoCtrl.removeItem(balancoContabilCtrl.servicos, it)}"
+                               process="@this" update="@(.list)">
+                </p:commandLink>
+                <h:outputText value="#{it.labelForSelectItem} #{it.systemAdded ? '(NOVO)' : ''}"/>
+              </h:panelGroup>
+            </ui:repeat>
           </h:panelGroup>
+
+
 
           <h:panelGroup id="rolesContainer" layout="block" styleClass="margin-top">
             <p:dataTable id="roles" value="#{userCtrl.roles}" var="role">

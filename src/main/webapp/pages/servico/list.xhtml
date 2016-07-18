@@ -8,34 +8,59 @@
     <h:form id="form">
       <p:panel header="Serviços">
         <vah:dataTable id="dataTable" controller="#{servicoCtrl}"
-                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
-                         renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
-                         renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+                       renderEditAction="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
+                       renderDeleteAction="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
+                       renderAddBtn="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
+                       renderActionColumn="false">
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
             <h:outputText value="#{item.title}"/>
           </p:column>
-          <p:column sortBy="#{item.type}" headerText="Tipo"
-                    width="100" styleClass="ellipsis-text">
-            <h:outputText value="#{item.type.label}"/>
+          <p:column sortBy="#{item.historicoPadrao.id}" headerText="Hist. Padrão"
+                    width="125" style="text-align: left;">
+            <h:outputText value="#{item.historicoPadrao == null ? '-' : item.historicoPadrao.id}"/>
           </p:column>
           <p:column sortBy="#{item.contaContabil.id}" headerText="Conta Contábil"
                     width="125" style="text-align: left;">
             <h:outputText value="#{item.contaContabil == null ? '-' : item.contaContabil.id}"/>
           </p:column>
+          <p:column sortBy="#{item.contaResultado.id}" headerText="Conta Compart."
+                    width="125" style="text-align: left;">
+            <h:outputText value="#{item.contaResultado == null ? '-' : item.contaResultado.id}"/>
+          </p:column>
+          <p:column sortBy="#{item.agrupavel}" headerText="Agrupável"
+                    width="100" style="text-align: left;">
+            <h:outputText value="#{item.agrupavel ? 'Sim' : 'Não'}"/>
+          </p:column>
           <p:column sortBy="#{item.diaVencimento}" headerText="Venc."
                     width="75" style="text-align: left;">
             <h:outputText value="#{item.diaVencimento}"/>
           </p:column>
-          <p:column headerText="Valores" style="text-align: center;"
-                    width="50">
-            <p:commandLink id="currencyAction"
-                           action="#{servicoCtrl.currency(item)}"
-                           styleClass="action-link" disabled="#{item.type == 'V' || item.type == 'C' || item.type == 'CI'}">
-              <span class="fa fa-usd"/>
-            </p:commandLink>
-            <p:tooltip id="toolCurrencyAction" for="currencyAction"
-                       value="Valores monetários"/>
+          <p:column width="100" headerText="Ações" styleClass="center-align">
+            <p:menuButton id="acoesBtn" value="Ações">
+              <p:menuitem value="Detalhar" action="#{servicoCtrl.detail(item)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          icon="fa fa-search"/>
+              <p:menuitem value="Editar" action="#{servicoCtrl.edit(item)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                          icon="fa fa-pencil"/>
+              <p:menuitem value="Valores" action="#{servicoCtrl.currency(item)}"
+                          onclick="PF('changePage').show()"
+                          ajax="false"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER') or (item.type == 'V' || item.type == 'C' || item.type == 'CI')}"
+                          icon="fa fa-usd"/>
+              <p:menuitem value="Deletar"
+                          action="#{servicoCtrl.preDelete(item.id, idx)}"
+                          process="@this"
+                          update="#{p:component('deleteDlg')}"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR')}"
+                          oncomplete="PF('deleteDlg').show()"
+                          ajax="true"
+                          icon="fa fa-trash"/>
+            </p:menuButton>
           </p:column>
         </vah:dataTable>
       </p:panel>

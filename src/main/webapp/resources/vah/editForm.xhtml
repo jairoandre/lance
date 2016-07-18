@@ -33,6 +33,8 @@
                   style="margin: 10px 0;">
       <p:commandButton id="saveDownBtn" value="Salvar" icon="fa fa-floppy-o" ajax="true"
                        process="@this grid" update="grid" validateClient="true"
+                       onstart="PF('changePage').show()"
+                       oncomplete="PF('changePage').hide()"
                        style="margin-right:10px" action="#{cc.attrs.controller.doSave}"
                        rendered="#{cc.attrs.controller.editing}"/>
       <p:commandButton id="backDownBtn" value="Voltar" immediate="true" icon="fa fa-undo" ajax="false"

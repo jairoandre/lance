@@ -15,7 +15,11 @@ public class BalancoContabilDTO implements Serializable {
 
   private String setor;
 
+  private String criado;
+
   private Date vigencia;
+
+  private Date vencimento;
 
   private String contaReduzido;
 
@@ -47,12 +51,28 @@ public class BalancoContabilDTO implements Serializable {
     this.setor = setor;
   }
 
+  public String getCriado() {
+    return criado;
+  }
+
+  public void setCriado(String criado) {
+    this.criado = criado;
+  }
+
   public Date getVigencia() {
     return vigencia;
   }
 
   public void setVigencia(Date vigencia) {
     this.vigencia = vigencia;
+  }
+
+  public Date getVencimento() {
+    return vencimento;
+  }
+
+  public void setVencimento(Date vencimento) {
+    this.vencimento = vencimento;
   }
 
   public String getContaReduzido() {

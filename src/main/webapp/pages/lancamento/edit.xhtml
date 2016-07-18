@@ -238,18 +238,12 @@
                 <p:column headerText="#{lancamentoCtrl.item.servico.type.compBLabel}" styleClass="left-align"
                           width="150"
                           rendered="#{lancamentoCtrl.item.servico.type.renderCompB}">
-                  <uivah:inputCurrency id="compValueB" renderMessage="false"
-                                       value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
-                                       rendered="#{lancamentoCtrl.item.servico.type != 'E'}">
-                    <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
-                            update=":#{p:component('totalValue')} itemValue"/>
-                  </uivah:inputCurrency>
-                  <uivah:inputNumber id="compValueBNumber" renderMessage="false"
+                  <uivah:percentage id="compValueBNumber" renderMessage="false"
                                      value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
-                                     rendered="#{lancamentoCtrl.item.servico.type == 'E'}">
+                                     editingBtns="true">
                     <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
-                  </uivah:inputNumber>
+                  </uivah:percentage>
                 </p:column>
                 <p:column headerText="Total" styleClass="left-align" width="100">
                   <h:panelGroup id="itemValue">

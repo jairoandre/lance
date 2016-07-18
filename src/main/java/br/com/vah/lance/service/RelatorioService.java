@@ -11,17 +11,9 @@ import br.com.vah.lance.reports.DescritivoCondominioDTO;
 import br.com.vah.lance.reports.RelatorioSetorDTO;
 import br.com.vah.lance.reports.ReportLoader;
 import br.com.vah.lance.util.ViewUtils;
-import javassist.runtime.Desc;
 import org.primefaces.model.StreamedContent;
 
-import javax.faces.context.FacesContext;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.persistence.Query;
-import javax.servlet.ServletContext;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -160,18 +152,32 @@ public class RelatorioService implements Serializable {
   public StreamedContent getRelatorioBalanco(Set<Servico> servicos, Date[] range) {
     Map<String, Object> parameters = new HashMap<>();
 
-    parameters.put("begin", range[0]);
-    parameters.put("end", range[1]);
 
     List<BalancoContabilDTO> datasource = new ArrayList<>();
 
     List<Lancamento> list;
 
-    if (servicos == null || servicos.isEmpty()) {
-      list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD, parameters);
+    Boolean servicesNull = servicos == null || servicos.isEmpty();
+    Boolean dateNull = range[0] == null || range[1] == null;
+
+    if (!dateNull) {
+      parameters.put("begin", range[0]);
+      parameters.put("end", range[1]);
+    }
+
+    if (servicesNull) {
+      if (dateNull) {
+        list = lancamentoService.getListByNamedQuery(Lancamento.ALL, parameters);
+      } else {
+        list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD, parameters);
+      }
     } else {
       parameters.put("services", servicos);
-      list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD_AND_SERVICE, parameters);
+      if (dateNull) {
+        list = lancamentoService.getListByNamedQuery(Lancamento.BY_SERVICES, parameters);
+      } else {
+        list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD_AND_SERVICES, parameters);
+      }
     }
 
     Set<Lancamento> lancs = new HashSet<>(list);
@@ -192,9 +198,15 @@ public class RelatorioService implements Serializable {
         dto.setSetor(setor.getId().toString());
         dto.setCliente(contratoSetor.getInquilino() == null ? contratoSetor.getContrato().getContratante().getTitle() : contratoSetor.getInquilino().getTitle());
         dto.setServico(serv.getTitle());
+        dto.setCriado(EstadoLancamentoEnum.V.equals(lanc.getStatus()) ? "Sim" : "Não");
         dto.setContaContabil(conta.getCodigoContabil());
         dto.setContaReduzido(conta.getId().toString());
         dto.setVigencia(lanc.getEffectiveOn());
+        Calendar cld = Calendar.getInstance();
+        cld.setTime(lanc.getEffectiveOn());
+        cld.set(Calendar.DAY_OF_MONTH, lanc.getServico().getDiaVencimento());
+        cld.add(Calendar.MONTH, 1);
+        dto.setVencimento(cld.getTime());
         dto.setValor(val.getValue());
         datasource.add(dto);
       }
@@ -224,8 +236,12 @@ public class RelatorioService implements Serializable {
       }
     });
 
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    parameters.put("REFERENCIA", String.format("%s à %s", sdf.format(range[0]), sdf.format(range[1])));
+    if (!dateNull) {
+      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      parameters.put("REFERENCIA", String.format("%s à %s", sdf.format(range[0]), sdf.format(range[1])));
+    } else {
+      parameters.put("REFERENCIA", "Todos");
+    }
 
     return reportLoader.imprimeRelatorio("balancoContabil", parameters, datasource);
   }

@@ -9,9 +9,9 @@
         <h:panelGrid columns="2">
           <p:outputLabel value="Período" for="range" styleClass="lance-label"/>
           <h:panelGroup id="range">
-            <p:calendar id="begin" value="#{balancoContabilCtrl.range[0]}"/>
-            <h:outputText value="à"/>
-            <p:calendar id="end" value="#{balancoContabilCtrl.range[1]}"/>
+            <p:calendar id="begin" value="#{balancoContabilCtrl.range[0]}" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
+            <h:outputText value="à" style="margin: 0 5px;"/>
+            <p:calendar id="end" value="#{balancoContabilCtrl.range[1]}" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
           </h:panelGroup>
           <p:outputLabel value="Serviços" for="servicos" styleClass="lance-label"/>
           <p:autoComplete id="servicos" value="#{servicoCtrl.itemToAdd}"

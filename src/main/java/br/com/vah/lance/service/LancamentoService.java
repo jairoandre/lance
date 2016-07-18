@@ -10,8 +10,6 @@ import br.com.vah.lance.util.ViewUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
@@ -91,7 +89,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
        * Recupera as entradas já lançadas para os serviços atrelados ao usuário e a data
        */
       entriesParams.put("services", userServicos);
-      currentEntries = findWithNamedQuery(Lancamento.BY_PERIOD_AND_SERVICE, entriesParams);
+      currentEntries = findWithNamedQuery(Lancamento.BY_PERIOD_AND_SERVICES, entriesParams);
 
       /**
        * Verifica se o período consultado é do mês vigente, caso seja, monta lançamentos que ainda não foram lançados.

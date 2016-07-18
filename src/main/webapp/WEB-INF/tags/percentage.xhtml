@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+  <h:panelGroup rendered="#{label != null and (rendered == null ? true : rendered)}">
+    <p:outputLabel value="#{label}" for="#{id}" styleClass="lance-label"
+                   rendered="#{rendered == null ? true : rendered}"/>
+    <h:panelGroup id="#{id}Info"
+                  styleClass="fa fa-info-circle lance-info-icon"
+                  rendered="#{info != null}"/>
+    <p:tooltip id="#{id}InfoTooltip" for="#{id}Info" value="#{info}"
+               rendered="#{info != null}"/>
+  </h:panelGroup>
+  <h:panelGroup id="#{id}InputPnl" rendered="#{rendered == null ? true : rendered}" layout="block"
+                style="#{empty editing ? '' : (!editing or empty editingBtns) ? '' : (flagsController.editingField ? '' : 'cursor: pointer')}">
+    <p:ajax event="click" listener="#{flagsController.settingTrue}"
+            process="@this" update="#{id}InputPnl"
+            disabled="#{empty editingBtns ? true : (!editing or flagsController.editingField)}"/>
+    <h:outputText value="#{value}"
+                  rendered="#{empty editing ? true : (empty editingBtns ? !editing : !flagsController.editingField)}">
+      <f:convertNumber minFractionDigits="2" type="percent"/>
+    </h:outputText>
+    <p:focus for="#{id}InputPnl" rendered="#{empty editingBtns ? false : editingBtns}"/>
+    <p:inputText id="#{id}" value="#{value}"
+                 required="#{required == null ? false : required}" label="#{label}"
+                 rendered="#{empty editing ? false : (empty editingBtns ? editing : flagsController.editingField)}"
+                 styleClass="#{id}"
+                 readonly="#{readonly == null ? false : readonly}">
+      <p:ajax event="blur" listener="#{flagsController.settingFalse}"
+              process="@this" update="#{id}InputPnl"
+              disabled="#{empty editingBtns ? true : !flagsController.editingField}"/>
+      <ui:insert/>
+      <f:convertNumber minFractionDigits="2" type="percent"/>
+    </p:inputText>
+    <h:panelGroup rendered="#{empty editing ? false : (empty editingBtns ? editing : flagsController.editingField)}">
+      <script>
+        $(function () {
+          $('.#{id}').maskMoney({
+            suffix: "%",
+            allowNegative: true,
+            allowZero: true,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true
+          });
+        })
+      </script>
+    </h:panelGroup>
+  </h:panelGroup>
+  <p:message for="#{id}"
+             rendered="#{(renderMessage == null ? true : renderMessage) and (rendered == null ? true : rendered)}"/>
+</ui:composition>

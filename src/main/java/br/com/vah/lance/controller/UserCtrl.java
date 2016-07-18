@@ -35,8 +35,6 @@ public class UserCtrl extends AbstractController<User> {
   @Inject
   ServicoService servicoService;
 
-  private Servico beanServico;
-
   private List<SelectItem> services;
 
   private RolesEnum[] roles;
@@ -101,14 +99,6 @@ public class UserCtrl extends AbstractController<User> {
     this.service = service;
   }
 
-  public Servico getBeanServico() {
-    return beanServico;
-  }
-
-  public void setBeanServico(Servico beanServico) {
-    this.beanServico = beanServico;
-  }
-
   public List<SelectItem> getServices() {
     return services;
   }
@@ -121,11 +111,12 @@ public class UserCtrl extends AbstractController<User> {
     return roles;
   }
 
-  public void toggleService() {
-    if (getItem().getServicos().contains(beanServico)) {
-      getItem().getServicos().remove(beanServico);
-    } else {
-      getItem().getServicos().add(beanServico);
+  public void incluirTodosServicos() {
+    List<Servico> todosServicos = servicoService.findWithNamedQuery(Servico.ALL);
+    for (Servico servico : todosServicos) {
+      if (!getItem().getServicos().contains(servico)) {
+        getItem().getServicos().add(servico);
+      }
     }
   }
 

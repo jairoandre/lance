@@ -18,8 +18,9 @@ import java.util.*;
 @NamedQueries({@NamedQuery(name = Lancamento.ALL, query = "SELECT e FROM Lancamento e"),
     @NamedQuery(name = Lancamento.COUNT, query = "SELECT COUNT(e) FROM Lancamento e"),
     @NamedQuery(name = Lancamento.CONDOMINIAL, query = "SELECT e FROM Lancamento e where e.servico.agrupavel = true and e.status = 'L' order by e.effectiveOn"),
-    @NamedQuery(name = Lancamento.BY_PERIOD_AND_SERVICE, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.servico in :services"),
+    @NamedQuery(name = Lancamento.BY_PERIOD_AND_SERVICES, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.servico in :services"),
     @NamedQuery(name = Lancamento.BY_SERVICE_DATE_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn >= :date and e.servico = :servico and e.status = :status"),
+    @NamedQuery(name = Lancamento.BY_SERVICES, query = "SELECT e FROM Lancamento e where e.servico in :services"),
     @NamedQuery(name = Lancamento.BY_PERIOD, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end"),
     @NamedQuery(name = Lancamento.BY_PERIOD_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.status = :status"),
     @NamedQuery(name = Lancamento.BY_ID, query = "SELECT e FROM Lancamento e where e.id = :id"),
@@ -34,8 +35,9 @@ public class Lancamento extends BaseEntity {
   public static final String COUNT = "Lancamento.countTotal";
 
   public static final String CONDOMINIAL = "Lancamento.condominial";
-  public static final String BY_PERIOD_AND_SERVICE = "Lancamento.byPeriodAndService";
+  public static final String BY_PERIOD_AND_SERVICES = "Lancamento.byPeriodAndService";
   public static final String BY_SERVICE_DATE_STATUS = "Lancamento.byServiceDateStatus";
+  public static final String BY_SERVICES = "Lancamento.byServices";
   public static final String BY_PERIOD = "Lancamento.byPeriod";
   public static final String BY_PERIOD_STATUS = "Lancamento.byPeriodStatus";
   public static final String BY_ID = "Lancamento.byID";
