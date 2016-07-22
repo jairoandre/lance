@@ -86,6 +86,8 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
   private List<String> ignoredMeters = new ArrayList<>();
 
+  private List<String> ignoredCSV = new ArrayList<>();
+
   private List<ContaReceber> contasReceberToAdd = new ArrayList<>();
 
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -385,6 +387,10 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     return ignoredMeters;
   }
 
+  public List<String> getIgnoredCSV() {
+    return ignoredCSV;
+  }
+
   public List<ContaReceber> getContasReceberToAdd() {
     return contasReceberToAdd;
   }
@@ -432,6 +438,9 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
         }
         computeValues();
         ignoredValues = map.size();
+        for (Long code : map.keySet()) {
+          ignoredCSV.add(code.toString());
+        }
         addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", String.format("Importação realizada com sucesso: %d importados, %d ignorados.", importedValues, ignoredValues)), false);
       } catch (Exception e) {
         addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", String.format("Erro na importação: linha %s.", line)), false);

@@ -92,7 +92,7 @@
                          action="#{servicoCtrl.removeValue(value)}"
                          ajax="true"
                          process="@this"
-                         update="valuesDataTable">
+                         update="#{p:component('valuesDataTableWrapper')}">
             <span class="fa fa-trash"/>
           </p:commandLink>
           <p:tooltip id="toolDeleteAction" for="deleteAction"

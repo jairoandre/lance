@@ -51,7 +51,7 @@
                     icon="fa fa-money"
                     ajax="false"
                     action="/pages/relatorios/balancoContabil.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
-        <p:menuitem value="Descritivo Condomínio"
+        <p:menuitem value="Descritivo Cond."
                     icon="fa fa-building"
                     ajax="false"
                     action="/pages/relatorios/descritivoCondominio.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
@@ -64,10 +64,10 @@
                   icon="fa fa-briefcase"
                   ajax="false"
                   action="/pages/contaReceber/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
-      <p:menuitem value="Boletos"
-                  icon="fa fa-barcode"
+      <p:menuitem value="Financeiro"
+                  icon="fa fa-usd"
                   ajax="false"
-                  action="/pages/boletos/index.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
+                  action="/pages/cobranca/list.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
       <f:facet name="options">
         <h:panelGroup style="margin-top: 3px;" layout="block">
           <h:outputText value="Olá, #{sessionCtrl.username}     "

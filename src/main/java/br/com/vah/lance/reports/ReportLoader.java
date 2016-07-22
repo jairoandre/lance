@@ -1,9 +1,12 @@
 package br.com.vah.lance.reports;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.fill.JRAbstractLRUVirtualizer;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
@@ -51,6 +54,11 @@ public class ReportLoader implements Serializable {
       facesContext.responseComplete();
 
       ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
+
+      //Instancia o virtualizador
+      JRAbstractLRUVirtualizer virtualizer = new JRGzipVirtualizer(100);
+
+      parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 
       JasperPrint jasperPrint = JasperFillManager.fillReport(scontext.getRealPath(String.format("/resources/reports/%s.jasper", reportName)), parameters, ds);
 

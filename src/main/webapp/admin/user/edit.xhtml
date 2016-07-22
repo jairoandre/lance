@@ -54,7 +54,7 @@
               <h:panelGroup layout="block"
                             styleClass="list-block margin-top #{it.systemAdded ? 'list-block--novo' : ''}">
                 <p:commandLink styleClass="fa fa-close"
-                               action="#{servicoCtrl.removeItem(balancoContabilCtrl.servicos, it)}"
+                               action="#{servicoCtrl.removeItem(userCtrl.item.servicos, it)}"
                                process="@this" update="@(.list)">
                 </p:commandLink>
                 <h:outputText value="#{it.labelForSelectItem} #{it.systemAdded ? '(NOVO)' : ''}"/>

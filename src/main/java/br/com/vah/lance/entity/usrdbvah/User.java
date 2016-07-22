@@ -4,9 +4,15 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.entity.BaseEntity;
+import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "TB_LANCA_USUARIO", schema = "USRDBVAH")
@@ -45,6 +51,7 @@ public class User extends BaseEntity {
   @CollectionTable(name = "TB_LANCA_USUARIO_ROLE", joinColumns = @JoinColumn(name = "ID_PUSER"), schema = "USRDBVAH")
   @Column(name = "CD_ROLE", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
   private Set<RolesEnum> roles;
 
   public User() {

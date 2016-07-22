@@ -151,6 +151,10 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     }
   }
 
+  public void addMsg(FacesMessage.Severity severity, String summary, String detail) {
+    addMsg(new FacesMessage(severity, summary, detail), false);
+  }
+
   /**
    * Create, Update and Delete operations
    */

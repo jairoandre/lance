@@ -168,8 +168,8 @@
         </attribute>
     </tag>
     <tag>
-        <tag-name>inputNumber</tag-name>
-        <source>tags/inputNumber.xhtml</source>
+        <tag-name>inputPercentage</tag-name>
+        <source>tags/inputPercentage.xhtml</source>
         <attribute>
             <description>Id</description>
             <name>id</name>

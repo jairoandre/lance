@@ -184,12 +184,20 @@
                             label="Importar CSV"
                             rendered="#{lancamentoCtrl.editing}"
                             cancelLabel="Cancelar" styleClass="margin-top"
-                            update="dataTable @this :#{p:component('totalValue')}"/>
+                            update="dataTable @this :#{p:component('totalValue')}">
+                <p:dataTable var="code" value="#{lancamentoCtrl.ignoredCSV}" emptyMessage="Sem itens ignorados"
+                             rendered="#{not empty lancamentoCtrl.ignoredCSV}">
+                  <p:column headerText="Leituras ignoradas" styleClass="left-align">
+                    <h:outputText value="#{code}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:fileUpload>
 
               <p:commandButton id="loadPreviousValuesBtn" action="#{lancamentoCtrl.carregarValoresAnteriores}"
                                ajax="true" value="Carregar Valores Anteriores"
                                onstart="PF('changePage').show()" oncomplete="PF('changePage').hide()"
-                               styleClass="margin-top" process="@this" update="dataTable #{p:component('rateioGrid')} #{p:component('totalValue')}"/>
+                               styleClass="margin-top" process="@this"
+                               update="dataTable #{p:component('rateioGrid')} #{p:component('totalValue')}"/>
 
               <p:dataTable id="dataTable" var="lancamentoValor"
                            value="#{lancamentoCtrl.lancamentoValors}" styleClass="table-left-header margin-top">
@@ -239,8 +247,8 @@
                           width="150"
                           rendered="#{lancamentoCtrl.item.servico.type.renderCompB}">
                   <uivah:percentage id="compValueBNumber" renderMessage="false"
-                                     value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
-                                     editingBtns="true">
+                                    value="#{lancamentoValor.valueB}" editing="#{lancamentoCtrl.editing}"
+                                    editingBtns="true">
                     <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uivah:percentage>

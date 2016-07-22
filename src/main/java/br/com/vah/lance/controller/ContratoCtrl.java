@@ -190,6 +190,34 @@ public class ContratoCtrl extends AbstractController<Contrato> {
     setSearchParam("title", getSearchTerm());
   }
 
+  public List<Servico> ordenaServicos(Set<Servico> servicos) {
+    if (servicos != null) {
+      List<Servico> ordered = new ArrayList<>(servicos);
+      Collections.sort(ordered, new Comparator<Servico>() {
+        @Override
+        public int compare(Servico o1, Servico o2) {
+          return o1.getTitle().compareTo(o2.getTitle());
+        }
+      });
+      return ordered;
+    }
+    return null;
+  }
+
+  public List<ContratoSetor> ordenaSetores(Set<ContratoSetor> setores) {
+    if (setores != null) {
+      List<ContratoSetor> ordered = new ArrayList<>(setores);
+      Collections.sort(ordered, new Comparator<ContratoSetor>() {
+        @Override
+        public int compare(ContratoSetor o1, ContratoSetor o2) {
+          return o1.getSetor().getTitle().compareTo(o2.getSetor().getTitle());
+        }
+      });
+      return ordered;
+    }
+    return null;
+  }
+
   @Override
   public String doSave() {
     try {

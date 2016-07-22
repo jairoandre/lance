@@ -1,0 +1,77 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="Gerar Arquivo de Remessa">
+        <div class="ui-messages ui-widget" aria-live="polite">
+          <div class="ui-messages-info ui-corner-all">
+            <span class="ui-messages-info-icon"></span>
+            <ul>
+              <li>
+                <h:panelGroup styleClass="ui-messages-info-detail">
+                  A listagem abaixo só apresenta os serviços de condomínio pendentes de validação.
+                </h:panelGroup>
+              </li>
+              <li>
+                Selecione com atenção os serviços a serem validados.
+              </li>
+              <li>
+                Os itens de contas a receber estarão com seus valores agrupados por <b>setor</b>.
+              </li>
+              <li>
+                Os serviços selecionados
+                <b>devem possuir a mesma parametrização contábil</b> (conta contábil, compartilhamento, centro de custo, etc...).
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h:panelGrid columns="5">
+          <p:outputLabel value="Vigência"/>
+          <h:panelGroup>
+            <p:inputText id="vigencia" styleClass="searchMonth" value="#{cobrancaCtrl.vigencia}"
+                         required="true">
+              <f:convertDateTime pattern="MM/yyyy" dateStyle="short" timeZone="GMT-0300"/>
+            </p:inputText>
+            <script>
+              $(".searchMonth").mask('99/9999');
+            </script>
+          </h:panelGroup>
+          <p:outputLabel value="Vencimento"/>
+          <p:inputText value="#{cobrancaCtrl.vencimento}"/>
+          <p:commandButton id="buscarCobrancaBtns" value="Recuperar Cobranças" action="#{cobrancaCtrl.recuperarCobrancas}" ajax="true" process="@form"
+                           update="cobrancaTable"/>
+        </h:panelGrid>
+
+        <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
+                     selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
+                     styleClass="margin-top">
+          <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
+          <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="75" styleClass="left-align">
+            <h:outputText value="#{cobranca.setor.id}"/>
+          </p:column>
+          <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="250" styleClass="left-align">
+            <h:outputText value="#{cobranca.setor.title}"/>
+          </p:column>
+          <p:column headerText="Cód." sortBy="#{cobranca.cliente.id}" width="75" styleClass="left-align">
+            <h:outputText value="#{cobranca.cliente.id}"/>
+          </p:column>
+          <p:column headerText="Cliente" sortBy="#{cobranca.cliente.title}" styleClass="left-align">
+            <h:outputText value="#{cobranca.cliente.title}"/>
+          </p:column>
+          <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="150" styleClass="right-align">
+            <h:outputText value="#{cobranca.valor}">
+              <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
+              </h:outputText>
+          </p:column>
+        </p:dataTable>
+        <p:commandButton id="gerarArquivoRemessaByn" value="Gerar Arquivo Remessa" action="#{cobrancaCtrl.gerarArquivoRemessa}"
+                         disabled="#{empty cobrancaCtrl.selectedCobrancas}"
+                         ajax="true" process="@form" update="cobrancaTable" styleClass="margin-top"/>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

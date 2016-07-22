@@ -46,6 +46,14 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     super(Lancamento.class);
   }
 
+  public List<Lancamento> recuperarLancamentosValidados(Date[] range, Integer vencimento) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("begin", range[0]);
+    params.put("end", range[1]);
+    params.put("vencimento", vencimento);
+    return findWithNamedQuery(Lancamento.BY_VIGENCIA_VENCIMENTO, params);
+  }
+
   /**
    * Recupera as entradas de lançamentos já persistidas. Quando necessário cria novas entradas (em memória) para lançamentos pendentes.
    *

@@ -24,6 +24,7 @@ import java.util.*;
     @NamedQuery(name = Lancamento.BY_PERIOD, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end"),
     @NamedQuery(name = Lancamento.BY_PERIOD_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.status = :status"),
     @NamedQuery(name = Lancamento.BY_ID, query = "SELECT e FROM Lancamento e where e.id = :id"),
+    @NamedQuery(name = Lancamento.BY_VIGENCIA_VENCIMENTO, query = "SELECT l FROM Lancamento l WHERE l.effectiveOn BETWEEN :begin AND :end AND l.servico.diaVencimento = :vencimento"),
     @NamedQuery(name = Lancamento.LAST_LANCAMENTO, query = "SELECT l FROM Lancamento l WHERE l.effectiveOn < :date AND l.servico = :servico ORDER BY l.effectiveOn DESC")})
 public class Lancamento extends BaseEntity {
 
@@ -42,6 +43,7 @@ public class Lancamento extends BaseEntity {
   public static final String BY_PERIOD_STATUS = "Lancamento.byPeriodStatus";
   public static final String BY_ID = "Lancamento.byID";
   public static final String LAST_LANCAMENTO = "Lancamento.lastLancamento";
+  public static final String BY_VIGENCIA_VENCIMENTO = "Lancamento.byVigenciaVencimento";
 
   @Id
   @SequenceGenerator(name = "seqEntryGenerator", sequenceName = "SEQ_LANCA_LANCAMENTO", schema = "USRDBVAH", allocationSize = 1)

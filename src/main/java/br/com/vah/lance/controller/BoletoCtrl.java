@@ -1,9 +1,7 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.entity.usrdbvah.Lancamento;
-import br.com.vah.lance.service.BoletoService;
-import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.LancamentoService;
+import br.com.vah.lance.service.*;
 import org.primefaces.model.StreamedContent;
 
 import javax.faces.application.FacesMessage;
@@ -27,6 +25,14 @@ public class BoletoCtrl extends AbstractController<Lancamento> {
   private
   @Inject
   BoletoService boletoService;
+
+  private
+  @Inject
+  ArquivoRemessaService arquivoService;
+
+  private
+  @Inject
+  CobrancaService cobrancaService;
 
   private
   @Inject
@@ -66,5 +72,12 @@ public class BoletoCtrl extends AbstractController<Lancamento> {
     return null;
   }
 
-
+  public StreamedContent getArquivo() {
+    try {
+      return arquivoService.gerarArquivo();
+    } catch (Exception e) {
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atenção", "Erro na geração do arquivo de remessa."), false);
+    }
+    return null;
+  }
 }

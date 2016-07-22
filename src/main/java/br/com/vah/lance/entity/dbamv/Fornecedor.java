@@ -44,7 +44,7 @@ public class Fornecedor extends BaseEntity {
   @Column(name = "TP_CLIENTE_FORN")
   private String type;
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "TB_LANCA_CLIENTE_SETOR", joinColumns = {
       @JoinColumn(name = "CD_FORNECEDOR")}, inverseJoinColumns = {
       @JoinColumn(name = "CD_SETOR")}, schema = "USRDBVAH")
