@@ -74,7 +74,7 @@ body {
   top: 10px;
   right: 10px;
   padding: 10px 10px 0;
-  background: rgba(53, 5, 5, 0.16);
+  background: #fff;
   border-radius: 10px;
 }
 
@@ -210,8 +210,8 @@ span.action-link:HOVER, a.action-link:HOVER, td.action-link a:HOVER {
   top: 6px;
   right: 10px;
   font-size: 20px;
-  background: black;
-  color: yellow;
+  color: #fff;
+  text-shadow: #444 2px 2px;
   border-radius: 5px;
 }
 

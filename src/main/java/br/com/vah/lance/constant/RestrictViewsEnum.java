@@ -17,7 +17,8 @@ public enum RestrictViewsEnum {
   SERVICO_CURRENCY("/pages/servico/currency.xhtml", ADMINISTRATOR, MANAGER),
   CONTRACT_EDIT("/pages/contrato/edit.xhtml", ADMINISTRATOR, ACCOUNTANT),
   LANCAMENTO_EDIT("/pages/lancamento/edit.xhtml", ADMINISTRATOR, MANAGER, REGISTER),
-  LANCAMENTO_VALIDATE("/pages/lancamento/validate.xhtml", ADMINISTRATOR, SUPERVISOR);
+  LANCAMENTO_VALIDATE("/pages/lancamento/validate.xhtml", ADMINISTRATOR, SUPERVISOR),
+  VALIDAR_CONDOMINIAL("/pages/lancamento/validarCondominial.xhtml", ADMINISTRATOR, SUPERVISOR);
 
   private String view;
 

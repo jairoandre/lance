@@ -165,7 +165,7 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="155">
+			<band height="116">
 				<staticText>
 					<reportElement x="0" y="0" width="185" height="15" uuid="3e087388-cade-408f-ab1b-42d6103bc7be"/>
 					<box>
@@ -217,19 +217,7 @@
 					<text><![CDATA[OUTRAS DESPESAS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="41" width="135" height="15" uuid="0b753d16-52de-4792-9a72-02cfc194bab6"/>
-					<box>
-						<pen lineWidth="0.0"/>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[SERVIÇO]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="0" y="56" width="135" height="15" uuid="86bdb23c-54fd-4da7-9e52-3d65fdaa1afb"/>
+					<reportElement x="0" y="41" width="135" height="15" uuid="86bdb23c-54fd-4da7-9e52-3d65fdaa1afb"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -241,7 +229,7 @@
 					<text><![CDATA[Energia]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="86" width="135" height="15" uuid="a953763e-b6d5-4533-8f23-dfa052f99254"/>
+					<reportElement x="0" y="71" width="135" height="15" uuid="a953763e-b6d5-4533-8f23-dfa052f99254"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -253,7 +241,7 @@
 					<text><![CDATA[Taxa de Refrigeração]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="101" width="135" height="15" uuid="78f92587-ca86-4488-b938-0bc1e64d42c1"/>
+					<reportElement x="0" y="86" width="135" height="15" uuid="78f92587-ca86-4488-b938-0bc1e64d42c1"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -265,7 +253,7 @@
 					<text><![CDATA[Internet]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="71" width="135" height="15" uuid="b76704d9-7919-465d-b683-a8d5156f627d"/>
+					<reportElement x="0" y="56" width="135" height="15" uuid="b76704d9-7919-465d-b683-a8d5156f627d"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -276,55 +264,43 @@
 					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[Telefonia]]></text>
 				</staticText>
-				<staticText>
-					<reportElement x="135" y="41" width="125" height="15" uuid="fecddb01-df1e-4593-a9f4-f9b9b308a5b9"/>
-					<box>
-						<pen lineWidth="0.0"/>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<text><![CDATA[VALOR]]></text>
-				</staticText>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="56" width="125" height="15" uuid="c255a4e2-19f2-4cc3-9520-35b591201387"/>
+					<reportElement x="135" y="41" width="125" height="15" uuid="c255a4e2-19f2-4cc3-9520-35b591201387"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="116" width="125" height="15" uuid="aa12fac3-5c62-411c-b066-26d19b4f6a98"/>
+					<reportElement x="135" y="101" width="125" height="15" uuid="aa12fac3-5c62-411c-b066-26d19b4f6a98"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_COLETA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="86" width="125" height="15" uuid="825f6b27-0a46-432c-b345-5d62e566dbc9"/>
+					<reportElement x="135" y="71" width="125" height="15" uuid="825f6b27-0a46-432c-b345-5d62e566dbc9"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_TR}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="101" width="125" height="15" uuid="b8fc7ad8-cf4e-45bb-a349-c251907e6cf1"/>
+					<reportElement x="135" y="86" width="125" height="15" uuid="b8fc7ad8-cf4e-45bb-a349-c251907e6cf1"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_INTERNET}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="71" width="125" height="15" uuid="d205fc66-0207-470c-b5d0-7aa4c5c880ca"/>
+					<reportElement x="135" y="56" width="125" height="15" uuid="d205fc66-0207-470c-b5d0-7aa4c5c880ca"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_TELEFONIA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="140" width="135" height="15" uuid="7504b412-aa93-4a2b-8d78-eafa80d98a4c"/>
+					<reportElement x="295" y="41" width="125" height="30" uuid="7504b412-aa93-4a2b-8d78-eafa80d98a4c"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -333,19 +309,19 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[TOTAL COBRANÇA:]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="140" width="125" height="15" uuid="68a6ca00-79ba-49dd-9b5d-67457732e226"/>
+					<reportElement x="420" y="41" width="135" height="30" uuid="68a6ca00-79ba-49dd-9b5d-67457732e226"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="10"/>
+						<font size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{TOTAL_CONDOMINIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="116" width="135" height="15" uuid="44edbcf6-7d8f-4d7c-83bf-8a3689674ff2"/>
+					<reportElement x="0" y="101" width="135" height="15" uuid="44edbcf6-7d8f-4d7c-83bf-8a3689674ff2"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -372,7 +348,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO INDIVIDUAL DE COBRANÇA DE CONDOMÍNIO]]></text>
+				<text><![CDATA[RELATÓRIO INDIV. DE COBRANÇA DE CONDOMÍNIO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="480" y="0" width="75" height="15" uuid="0e65a592-0a84-4942-bc94-d93b904c97f8"/>

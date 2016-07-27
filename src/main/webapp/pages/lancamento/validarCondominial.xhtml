@@ -60,10 +60,15 @@
 
         <p:dataTable id="dataTable" value="#{validarCondominialCtrl.lancamentos}" styleClass="margin-top"
                      var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index"
-                     selection="#{validarCondominialCtrl.lancamentosSelecionados}" rowKey="#{lancamento.id}">
+                     rowSelectMode="add" selection="#{validarCondominialCtrl.lancamentosSelecionados}"
+                     rowKey="#{lancamento.id}">
           <p:ajax event="toggleSelect" listener="#{validarCondominialCtrl.onSelect}" process="@this"
                   update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>
           <p:ajax event="rowSelectCheckbox" listener="#{validarCondominialCtrl.onSelect}" process="@this"
+                  update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>
+          <p:ajax event="rowSelect" listener="#{validarCondominialCtrl.onSelect}" process="@this"
+                  update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>
+          <p:ajax event="rowUnselect" listener="#{validarCondominialCtrl.onSelect}" process="@this"
                   update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>
           <p:ajax event="rowUnselectCheckbox" listener="#{validarCondominialCtrl.onSelect}" process="@this"
                   update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>

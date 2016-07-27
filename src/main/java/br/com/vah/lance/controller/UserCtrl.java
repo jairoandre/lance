@@ -45,12 +45,10 @@ public class UserCtrl extends AbstractController<User> {
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
-    setItem(createNewItem());
-    setLazyModel(new GenericLazyDataModel<User>(service));
-    getLazyModel().getSearchParams().addRelations(RELATIONS);
-    this.services = ViewUtils.createSelectItem(servicoService.findWithNamedQuery(Servico.ALL), true);
-    setSearchField("login");
+    initLazyModel(service, RELATIONS);
+    services = ViewUtils.createSelectItem(servicoService.findWithNamedQuery(Servico.ALL), true);
     roles = RolesEnum.values();
+    setSearchField("login");
   }
 
   @Override
@@ -126,5 +124,10 @@ public class UserCtrl extends AbstractController<User> {
     } else {
       getItem().getRoles().add(role);
     }
+  }
+
+  @Override
+  public void prepareSearch() {
+    setSearchParam("login", getSearchTerm());
   }
 }
