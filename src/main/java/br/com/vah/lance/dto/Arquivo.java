@@ -1,13 +1,13 @@
 package br.com.vah.lance.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by jairoportela on 12/07/2016.
  */
-public class ArquivoRemessa {
+public class Arquivo {
 
 
   // 9(01)
@@ -43,13 +43,14 @@ public class ArquivoRemessa {
   // 9(06)
   public static final String NUMERO_SEQUENCIAL = "000001";
 
+  private String sequencialTrailer;
+
   private List<Detalhe> detalhes = new ArrayList<>();
 
-  public ArquivoRemessa(String dataGeracao) {
-    this.dataGeracao = dataGeracao;
-    for (int i = 0 ; i < 30 ; i++) {
-      detalhes.add(new Detalhe());
-    }
+  public Arquivo(List<Detalhe> detalhes, Integer sequencialTrailer) {
+    this.dataGeracao = ArquivoUtils.formatDate(new Date(), "ddMMyy");
+    this.detalhes = detalhes;
+    this.sequencialTrailer = ArquivoUtils.leftZeros(sequencialTrailer, 6);
   }
 
   public String header() {
@@ -69,9 +70,8 @@ public class ArquivoRemessa {
         dataGeracao +
         BRANCOS_1 +
         NUMERO_SEQUENCIAL +
-        "\n";
+        "\r\n";
   }
-
 
 
   public String print() {
@@ -85,13 +85,8 @@ public class ArquivoRemessa {
   }
 
   public String footer() {
-    return
-        // 9(01)
-        "9" +
-            // X(393)
-            ArquivoUtils.rightSpace("", 393) +
-            // 9(06)
-            ArquivoUtils.leftZeros("12", 6);
+    return "9" + ArquivoUtils.rightSpace("", 393) + ArquivoUtils.leftZeros(sequencialTrailer, 6)
+        + "\r\n";
   }
 
 

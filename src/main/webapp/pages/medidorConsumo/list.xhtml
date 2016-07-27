@@ -18,7 +18,10 @@
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Título"
                     style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
+            <h:outputText value="#{item.title}" rendered="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"/>
+            <p:commandLink value="#{item.title}" ajax="false" action="#{medidorConsumoCtrl.edit(item)}"
+                           onclick="start()"
+                           rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"/>
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Qtd. setores"
                     style="text-align: left;" width="100">

@@ -8,13 +8,16 @@
     <h:form id="form">
       <p:panel header="Serviços">
         <vah:dataTable id="dataTable" controller="#{servicoCtrl}"
-                       renderEditAction="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
-                       renderDeleteAction="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
-                       renderAddBtn="#{sessionCtrl.isUserInRoles('SUPERVISOR')}"
+                       renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                       renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
+                       renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
                        renderActionColumn="false">
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
+            <h:outputText value="#{item.title}" rendered="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
+            <p:commandLink value="#{item.title}" ajax="false" action="#{servicoCtrl.edit(item)}"
+                           onclick="start()"
+                           rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
           </p:column>
           <p:column sortBy="#{item.historicoPadrao.id}" headerText="Hist. Padrão"
                     width="125" style="text-align: left;">

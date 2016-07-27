@@ -74,7 +74,7 @@ public class BoletoCtrl extends AbstractController<Lancamento> {
 
   public StreamedContent getArquivo() {
     try {
-      return arquivoService.gerarArquivo();
+      return arquivoService.gerarArquivo(null);
     } catch (Exception e) {
       addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atenção", "Erro na geração do arquivo de remessa."), false);
     }

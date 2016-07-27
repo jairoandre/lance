@@ -18,6 +18,10 @@ public class DescritivoCondominioDTO implements Serializable {
 
   private BigDecimal rateio;
 
+  private String nomeSetor;
+
+  private String vencimento;
+
   public String getNomeCliente() {
     return nomeCliente;
   }
@@ -56,5 +60,21 @@ public class DescritivoCondominioDTO implements Serializable {
 
   public void setRateio(BigDecimal rateio) {
     this.rateio = rateio;
+  }
+
+  public String getNomeSetor() {
+    return nomeSetor;
+  }
+
+  public void setNomeSetor(String nomeSetor) {
+    this.nomeSetor = nomeSetor;
+  }
+
+  public String getVencimento() {
+    return vencimento;
+  }
+
+  public void setVencimento(String vencimento) {
+    this.vencimento = vencimento;
   }
 }

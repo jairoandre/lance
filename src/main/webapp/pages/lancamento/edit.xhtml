@@ -28,10 +28,10 @@
               <vah:statusLancamento status="#{lancamentoCtrl.item.status}"/>
               <h:outputLabel value="Tipo:" styleClass="label"/>
               <h:outputText value="#{lancamentoCtrl.item.servico.type.label}"/>
-              <h:outputLabel value="Tarifa:" styleClass="label"
-                             rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
+              <h:outputLabel value="Taxa:" styleClass="label"
+                             rendered="#{lancamentoCtrl.item.servico.type == 'CTP'}"/>
               <h:outputText value="#{lancamentoCtrl.item.servicoValor.valueA}"
-                            rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}">
+                            rendered="#{lancamentoCtrl.item.servico.type == 'CTP'}">
                 <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
                                  pattern="R$ #,##0.00"/>
               </h:outputText>
@@ -182,7 +182,7 @@
               <p:fileUpload mode="advanced" skinSimple="false"
                             fileUploadListener="#{lancamentoCtrl.uploadValues}" uploadLabel="Submeter"
                             label="Importar CSV"
-                            rendered="#{lancamentoCtrl.editing}"
+                            rendered="#{lancamentoCtrl.editing and lancamentoCtrl.item.servico.agrupavel}"
                             cancelLabel="Cancelar" styleClass="margin-top"
                             update="dataTable @this :#{p:component('totalValue')}">
                 <p:dataTable var="code" value="#{lancamentoCtrl.ignoredCSV}" emptyMessage="Sem itens ignorados"
@@ -233,15 +233,22 @@
                   </h:outputText>
                 </p:column>
                 <p:column headerText="#{lancamentoCtrl.item.servico.type.compALabel}" styleClass="left-align"
-                          width="150">
+                          width="150" rendered="#{lancamentoCtrl.item.servico.type == 'CTP'}">
+                  <uivah:inputNumber id="compValueA_" renderMessage="false"
+                                       value="#{lancamentoValor.valueA}" editing="#{lancamentoCtrl.editing}"
+                                       editingBtns="true">
+                    <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
+                            update=":#{p:component('totalValue')} itemValue"/>
+                  </uivah:inputNumber>
+                </p:column>
+                <p:column headerText="#{lancamentoCtrl.item.servico.type.compALabel}" styleClass="left-align"
+                          width="150" rendered="#{lancamentoCtrl.item.servico.type != 'CTP'}">
                   <uivah:inputCurrency id="compValueA" renderMessage="false"
                                        value="#{lancamentoValor.valueA}" editing="#{lancamentoCtrl.editing}"
-                                       editingBtns="true" rendered="#{lancamentoCtrl.item.servico.type != 'CTR'}">
+                                       editingBtns="true">
                     <p:ajax event="keyup" listener="#{lancamentoCtrl.computeValues}" process="@this"
                             update=":#{p:component('totalValue')} itemValue"/>
                   </uivah:inputCurrency>
-                  <h:outputText value="#{lancamentoValor.valueA}"
-                                rendered="#{lancamentoCtrl.item.servico.type == 'CTR'}"/>
                 </p:column>
                 <p:column headerText="#{lancamentoCtrl.item.servico.type.compBLabel}" styleClass="left-align"
                           width="150"

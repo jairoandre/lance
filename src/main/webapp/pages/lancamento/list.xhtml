@@ -73,6 +73,14 @@
                           disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR') or (lancamento.status != 'L' and lancamento.status != 'F' and lancamento.status != 'M')}"
                           icon="fa fa-gavel"/>
               <p:separator/>
+              <p:menuitem value="Relat. Contab."
+                          onclick="PrimeFaces.monitorDownload(start, stop);"
+                          ajax="false"
+                          rendered="#{lancamento.status == 'L'}"
+                          icon="fa fa-bar-chart">
+                <p:fileDownload value="#{lancamentoCtrl.relatorioContabil(lancamento)}"/>
+              </p:menuitem>
+
               <p:menuitem value="Contas a receber" action="#{lancamentoCtrl.setItem(lancamento)}"
                           oncomplete="PF('contasReceberDlg').show()"
                           ajax="true"
@@ -116,7 +124,8 @@
                 <f:convertDateTime pattern="dd/MM/yyyy"/>
               </h:outputText>
             </p:column>
-            <p:column width="75" styleClass="center-align" rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+            <p:column width="75" styleClass="center-align"
+                      rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
               <p:menuButton value="Ações">
                 <p:menuitem value="Detalhar" action="#{contaReceberCtrl.detail(item)}"
                             onclick="PF('changePage').show()"
@@ -129,9 +138,9 @@
               </p:menuButton>
             </p:column>
           </p:dataTable>
-
         </p:dialog>
       </p:panel>
+
     </h:form>
   </ui:define>
 </ui:composition>

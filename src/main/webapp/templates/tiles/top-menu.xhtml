@@ -44,17 +44,14 @@
         <p:menuitem value="Validar Condomínio"
                     icon="fa fa-hospital-o"
                     ajax="false"
+                    rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"
                     action="/pages/lancamento/validarCondominial.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
       </p:submenu>
       <p:submenu label="Relatórios" icon="fa fa-bar-chart">
-        <p:menuitem value="Balanço Contabil"
-                    icon="fa fa-money"
-                    ajax="false"
-                    action="/pages/relatorios/balancoContabil.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
-        <p:menuitem value="Descritivo Cond."
+        <p:menuitem value="Consolidado Cond."
                     icon="fa fa-building"
                     ajax="false"
-                    action="/pages/relatorios/descritivoCondominio.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
+                    action="/pages/relatorios/balancoContabil.xhtml?faces-redirect=true" onclick="PF('changePage').show()"/>
         <p:menuitem value="Setores Vinculados"
                     icon="fa fa-th-list"
                     ajax="false"

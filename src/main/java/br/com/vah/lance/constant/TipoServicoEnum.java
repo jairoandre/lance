@@ -6,11 +6,24 @@ public enum TipoServicoEnum {
   C("Cobrança"),
   E("Cond. Energia Privativa"),
   G("Cond. Gás Privativo"),
-  CTR("Cond. Taxado"),
   CI("Cond. Individual"),
   CR("Cond. Rateio"),
   CP("Cond. Rateio Parcial"),
+  CTP("Cond. Peso"),
+  CTR("Cond. Tx. Refri."),
   CRE("Cond. Energia Comum");
+
+  public static final TipoServicoEnum TABELADO = T;
+  public static final TipoServicoEnum VENDA = V;
+  public static final TipoServicoEnum COBRANCA = C;
+  public static final TipoServicoEnum ENERGIA_PRIVADA = E;
+  public static final TipoServicoEnum GAS_PRIVADO = G;
+  public static final TipoServicoEnum CONDOMINIO_INDIVIDUAL = T;
+  public static final TipoServicoEnum CONDOMINIO_RATEIO = CR;
+  public static final TipoServicoEnum CONDOMINIO_RATEIO_PARCIAL = CP;
+  public static final TipoServicoEnum COLETA_INFECTANTE = CTP;
+  public static final TipoServicoEnum TAXA_REFRIGERACAO = CTR;
+  public static final TipoServicoEnum ENERGIA_COMUM = CRE;
 
   private String label;
 
@@ -24,12 +37,12 @@ public enum TipoServicoEnum {
 
   public String getCompALabel() {
     switch (this) {
-      case T:
-        return "Valor";
-      case CTR:
-        return "Quantidade";
+      case CTP:
+        return "Peso (Kg)";
       case V:
         return "Valor de venda";
+      case T:
+      case CTR:
       case E:
       case C:
       case CI:
@@ -53,10 +66,11 @@ public enum TipoServicoEnum {
         return false;
       case C:
       case CR:
-      case CRE:
       case CP:
-      case CTR:
       case CI:
+      case CRE:
+      case CTR:
+      case CTP:
         return false;
       default:
         return true;

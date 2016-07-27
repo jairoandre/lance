@@ -1,10 +1,10 @@
 package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
-import br.com.vah.lance.entity.dbamv.ContaReceber;
-import br.com.vah.lance.entity.dbamv.Fornecedor;
-import br.com.vah.lance.entity.dbamv.PlanoConta;
-import br.com.vah.lance.entity.dbamv.Setor;
+import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.dto.Arquivo;
+import br.com.vah.lance.dto.ArquivoUtils;
+import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.reports.BalancoContabilDTO;
 import br.com.vah.lance.reports.DescritivoCondominioDTO;
@@ -48,9 +48,17 @@ public class RelatorioService implements Serializable {
 
     for (Lancamento lancamento : lancamentos) {
 
-      if (condominio && !lancamento.getServico().getAgrupavel()) {
+      if (!condominio) {
         continue;
       }
+
+      Servico servico  = lancamento.getServico();
+
+      Calendar cld = Calendar.getInstance();
+      cld.setTime(lancamento.getEffectiveOn());
+      cld.add(Calendar.MONTH, 1);
+      cld.set(Calendar.DAY_OF_MONTH, servico.getDiaVencimento());
+      Date vencimento = cld.getTime();
 
       Map<Fornecedor, ContaReceber> mapContaReceber = new HashMap<>();
       Map<Fornecedor, DescritivoCondominioDTO> mapDTO = new HashMap<>();
@@ -72,9 +80,11 @@ public class RelatorioService implements Serializable {
         if (dto == null) {
           dto = new DescritivoCondominioDTO();
           dto.setNomeCliente(contratante.getTitle());
-          dto.setServico(lancamento.getServico().getTitle());
+          dto.setServico(servico.getTitle());
           dto.setTotal(lancamento.getTotalValue());
           dto.setRateio(BigDecimal.ZERO);
+          dto.setNomeSetor(valorLancamento.getContratoSetor().getSetor().getTitle());
+          dto.setVencimento(ArquivoUtils.formatDate(vencimento, "dd/MM/yyyy"));
           if (mapContaReceber.get(contratante) == null) {
             dto.setNumeroDocumento("-");
           } else {
@@ -98,8 +108,94 @@ public class RelatorioService implements Serializable {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
     parameters.put("REFERENCIA", sdf.format(vigencia));
-    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource);
+    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource, null);
 
+  }
+
+  private void ordenarDescritivo(List<DescritivoCondominioDTO> dtos) {
+    Collections.sort(dtos, new Comparator<DescritivoCondominioDTO>() {
+      @Override
+      public int compare(DescritivoCondominioDTO o1, DescritivoCondominioDTO o2) {
+        return o1.getServico().compareTo(o2.getServico());
+      }
+    });
+  }
+
+  public StreamedContent descritivo(Cobranca cobranca, User user) {
+    Map<String, Object> parameters = new HashMap<>();
+
+    String consumoEnergia = "-";
+    String pesoColeta = "-";
+    BigDecimal valorEnergia = BigDecimal.ZERO;
+    BigDecimal valorColeta = BigDecimal.ZERO;
+    BigDecimal valorTelefonia = BigDecimal.ZERO;
+    BigDecimal valorTR = BigDecimal.ZERO;
+    BigDecimal valorInternet = BigDecimal.ZERO;
+
+    parameters.put("AUTOR", user.getLogin());
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+    parameters.put("REFERENCIA", sdf.format(cobranca.getVigencia()));
+    List<DescritivoCondominioDTO> datasource = new ArrayList<>();
+
+    for (ItemCobranca item : cobranca.getDescritivo()) {
+
+      Servico servico = item.getServico();
+
+      if (TipoServicoEnum.ENERGIA_PRIVADA.equals(servico.getType())) {
+        valorEnergia = item.getValor();
+        continue;
+      }
+
+      if (TipoServicoEnum.COLETA_INFECTANTE.equals(servico.getType())) {
+        valorColeta = item.getValor();
+        continue;
+      }
+
+      if (TipoServicoEnum.TAXA_REFRIGERACAO.equals(servico.getType())) {
+        valorTR = item.getValor();
+        continue;
+      }
+
+      Long contaCusto = servico.getContaContabil().getId();
+
+      if (contaCusto.equals(269l)) {
+        valorInternet = item.getValor();
+        continue;
+      }
+
+      if (contaCusto.equals(272l)) {
+        valorTelefonia = item.getValor();
+        continue;
+      }
+
+      DescritivoCondominioDTO dto = new DescritivoCondominioDTO();
+      dto.setNumeroDocumento(item.getId() == null ? "-" : item.getId().toString());
+      dto.setTotal(item.getTotal());
+      dto.setRateio(item.getValor());
+      dto.setServico(servico.getTitle());
+      dto.setNomeSetor(cobranca.getSetor().getTitle());
+      dto.setVencimento(ArquivoUtils.formatDate(cobranca.getVencimento(), "dd/MM/yyyy"));
+      dto.setNomeCliente(cobranca.getCliente().getTitle());
+      datasource.add(dto);
+    }
+
+    String fileName = cobranca.getCliente().getTitle();
+    if (fileName.length() > 8) {
+      fileName = fileName.substring(0, 8);
+    }
+
+    parameters.put("VALOR_ENERGIA", valorEnergia);
+    parameters.put("VALOR_COLETA", valorColeta);
+    parameters.put("VALOR_TR", valorTR);
+    parameters.put("VALOR_INTERNET", valorInternet);
+    parameters.put("VALOR_TELEFONIA", valorTelefonia);
+    parameters.put("CONSUMO_ENERGIA", consumoEnergia);
+    parameters.put("PESO_COLETA", pesoColeta);
+    parameters.put("TOTAL_CONDOMINIO", cobranca.getValor());
+
+    ordenarDescritivo(datasource);
+
+    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource, String.format("%s-DESC", fileName));
   }
 
   public StreamedContent getRelatorioSetor() {
@@ -146,103 +242,161 @@ public class RelatorioService implements Serializable {
         return o1.getNomeCliente().compareTo(o2.getNomeCliente());
       }
     });
-    return reportLoader.imprimeRelatorio("setorRelatorio", parameters, datasource);
+    return reportLoader.imprimeRelatorio("setorRelatorio", parameters, datasource, null);
   }
 
-  public StreamedContent getRelatorioBalanco(Set<Servico> servicos, Date[] range) {
-    Map<String, Object> parameters = new HashMap<>();
+  public StreamedContent relatorioBalancoCondominial(Date vigencia, User usuario) {
 
+    Date[] range = ViewUtils.getDateRange(vigencia);
 
+    Map<String, Object> params = new HashMap<>();
+    params.put("begin", range[0]);
+    params.put("end", range[1]);
     List<BalancoContabilDTO> datasource = new ArrayList<>();
 
-    List<Lancamento> list;
+    List<Lancamento> lancamentos = lancamentoService.findWithNamedQuery(Lancamento.COND_VIGENCIA, params);
 
-    Boolean servicesNull = servicos == null || servicos.isEmpty();
-    Boolean dateNull = range[0] == null || range[1] == null;
+    for (Lancamento lancamento : lancamentos) {
+      if (lancamento.getServico().getAgrupavel()) {
+        lancamentoToDtos(lancamento, datasource, true);
+      }
 
-    if (!dateNull) {
-      parameters.put("begin", range[0]);
-      parameters.put("end", range[1]);
     }
 
-    if (servicesNull) {
-      if (dateNull) {
-        list = lancamentoService.getListByNamedQuery(Lancamento.ALL, parameters);
-      } else {
-        list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD, parameters);
-      }
-    } else {
-      parameters.put("services", servicos);
-      if (dateNull) {
-        list = lancamentoService.getListByNamedQuery(Lancamento.BY_SERVICES, parameters);
-      } else {
-        list = lancamentoService.getListByNamedQuery(Lancamento.BY_PERIOD_AND_SERVICES, parameters);
-      }
-    }
+    String fileName = "SERVCOND-" + ArquivoUtils.formatDate(vigencia, "ddMMyy");
 
-    Set<Lancamento> lancs = new HashSet<>(list);
+    return relatorioBalanco(datasource, vigencia, 22, fileName, usuario, true);
+  }
 
-    for (Lancamento lanc : lancs) {
-      for (LancamentoValor val : lanc.getValues()) {
-        Servico serv = lanc.getServico();
-        PlanoConta conta = serv.getContaContabil();
-        ContratoSetor contratoSetor = val.getContratoSetor();
-        Setor setor = contratoSetor.getSetor();
-        if (serv.getContaPorSetor()) {
-          SetorDetalhe setorDetalhe = setor.getSetorDetalhe();
-          if (setorDetalhe == null && setorDetalhe.getContaContabil() == null) {
-            conta = setorDetalhe.getContaContabil();
-          }
+  private void lancamentoToDtos(Lancamento lancamento, List<BalancoContabilDTO> datasource, Boolean condominio) {
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(lancamento.getEffectiveOn());
+    cld.add(Calendar.MONTH, 1);
+    cld.set(Calendar.DAY_OF_MONTH, 1);
+    cld.add(Calendar.DAY_OF_MONTH, -1);
+    for (LancamentoValor val : lancamento.getValues()) {
+
+      if (BigDecimal.ZERO.equals(val.getValue())) {
+        continue;
+      }
+
+      Servico serv = lancamento.getServico();
+      PlanoConta conta = serv.getContaContabil();
+      PlanoConta compartilhada = serv.getContaResultado();
+
+      ContratoSetor contratoSetor = val.getContratoSetor();
+      Setor setor = contratoSetor.getSetor();
+      if (serv.getContaPorSetor()) {
+        SetorDetalhe setorDetalhe = setor.getSetorDetalhe();
+        if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
+          conta = setorDetalhe.getContaContabil();
         }
-        BalancoContabilDTO dto = new BalancoContabilDTO();
-        dto.setSetor(setor.getId().toString());
+      }
+      BalancoContabilDTO dto = new BalancoContabilDTO();
+      dto.setSetor(setor.getId().toString());
+      ItemResultado contaCusto = lancamento.getServico().getContaCusto();
+      dto.setContaCusto(String.format("%d - %s", contaCusto.getId(), contaCusto.getTitle()));
+
+      if (condominio && datasource.contains(dto)) {
+        dto = datasource.get(datasource.indexOf(dto));
+        dto.setValor(dto.getValor().add(val.getValue()));
+      } else {
         dto.setCliente(contratoSetor.getInquilino() == null ? contratoSetor.getContrato().getContratante().getTitle() : contratoSetor.getInquilino().getTitle());
-        dto.setServico(serv.getTitle());
-        dto.setCriado(EstadoLancamentoEnum.V.equals(lanc.getStatus()) ? "Sim" : "Não");
-        dto.setContaContabil(conta.getCodigoContabil());
-        dto.setContaReduzido(conta.getId().toString());
-        dto.setVigencia(lanc.getEffectiveOn());
-        Calendar cld = Calendar.getInstance();
-        cld.setTime(lanc.getEffectiveOn());
-        cld.set(Calendar.DAY_OF_MONTH, lanc.getServico().getDiaVencimento());
-        cld.add(Calendar.MONTH, 1);
-        dto.setVencimento(cld.getTime());
+
+        if (condominio) {
+          dto.setServico("SERVIÇOS CONDOMÍNIO");
+        } else {
+          dto.setServico(serv.getTitle());
+        }
+
+        dto.setReduzido(conta.getId().toString());
+        dto.setConta(conta.getCodigoContabil());
+        dto.setNomeConta(conta.getTitle());
+
+        dto.setReduzidoCompart(compartilhada.getId().toString());
+        dto.setContaCompart(compartilhada.getCodigoContabil());
+        dto.setNomeContaCompart(compartilhada.getTitle());
+
+        dto.setCompetencia(cld.getTime());
         dto.setValor(val.getValue());
         datasource.add(dto);
       }
-    }
 
+    }
+  }
+
+  private void ordenarDtos(List<BalancoContabilDTO> datasource) {
     Collections.sort(datasource, new Comparator<BalancoContabilDTO>() {
       @Override
       public int compare(BalancoContabilDTO o1, BalancoContabilDTO o2) {
         if (o1.getServico().equals(o2.getServico())) {
-          if (o1.getContaReduzido().equals(o2.getContaReduzido())) {
-            if (o1.getVigencia().equals(o2.getVigencia())) {
-              if (o1.getCliente().equals(o2.getCliente())) {
-                return o1.getSetor().compareTo(o2.getSetor());
+          if (o1.getReduzido().equals(o2.getReduzido())) {
+            if(o1.getContaCusto().equals(o2.getContaCusto())) {
+              if (o1.getCompetencia().equals(o2.getCompetencia())) {
+                if (o1.getCliente().equals(o2.getCliente())) {
+                  return o1.getSetor().compareTo(o2.getSetor());
+                } else {
+                  return o1.getCliente().compareTo(o2.getCliente());
+                }
               } else {
-                return o1.getCliente().compareTo(o2.getCliente());
+                return o1.getCompetencia().compareTo(o2.getCompetencia());
               }
             } else {
-              return o1.getVigencia().compareTo(o2.getVigencia());
+              return o1.getContaCusto().compareTo(o2.getContaCusto());
             }
           } else {
-            return o1.getContaReduzido().compareTo(o2.getContaReduzido());
+            return o1.getReduzido().compareTo(o2.getReduzido());
           }
-
         } else {
           return o1.getServico().compareTo(o2.getServico());
         }
       }
     });
+  }
 
-    if (!dateNull) {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-      parameters.put("REFERENCIA", String.format("%s à %s", sdf.format(range[0]), sdf.format(range[1])));
+  public StreamedContent relatorioBalanco(Lancamento lancamento, User usuario) {
+    List<BalancoContabilDTO> datasource = new ArrayList<>();
+    lancamentoToDtos(lancamento, datasource, false);
+    ordenarDtos(datasource);
+    Date vigencia = lancamento.getEffectiveOn();
+    Integer apuracao = lancamento.getServico().getDiaLimite();
+    String fileName = lancamento.getServico().getContaContabil().getTitle();
+    return relatorioBalanco(datasource, vigencia, apuracao, fileName, usuario, false);
+  }
+
+  public StreamedContent relatorioBalanco(List<BalancoContabilDTO> datasource, Date vigencia, Integer apuracao, String fileName, User usuario, Boolean condominio) {
+
+    Map<String, Object> parameters = new HashMap<>();
+
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(vigencia);
+    cld.set(Calendar.DAY_OF_MONTH, apuracao);
+    cld.add(Calendar.MONTH, -1);
+    Date begin = cld.getTime();
+    cld.add(Calendar.MONTH, 1);
+    Date end = cld.getTime();
+
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    parameters.put("AUTOR", usuario.getLogin());
+    parameters.put("EMISSAO", sdf.format(new Date()));
+    if (condominio) {
+      parameters.put("POR_PERIODO", false);
+      parameters.put("REFERENCIA", ArquivoUtils.formatDate(vigencia, "MM/yyyy"));
     } else {
-      parameters.put("REFERENCIA", "Todos");
+      parameters.put("POR_PERIODO", true);
+      parameters.put("REFERENCIA", String.format("%s à %s", sdf.format(begin), sdf.format(end)));
+    }
+    sdf = new SimpleDateFormat("MMyyyy");
+
+    if (fileName.length() > 8) {
+      fileName = fileName.substring(0, 8);
     }
 
-    return reportLoader.imprimeRelatorio("balancoContabil", parameters, datasource);
+    String downloadFileName = String.format("%s-%s", fileName, sdf.format(new Date()));
+
+    ordenarDtos(datasource);
+
+    return reportLoader.imprimeRelatorio("balancoContabil", parameters, datasource, downloadFileName);
   }
+
 }

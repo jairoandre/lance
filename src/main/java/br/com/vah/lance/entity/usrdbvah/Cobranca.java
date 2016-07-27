@@ -51,6 +51,9 @@ public class Cobranca extends BaseEntity {
   @Column(name = "SN_BAIXA_MV")
   private Boolean baixa = false;
 
+  @Column(name = "NM_DOCUMENTO")
+  private String documento;
+
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "TB_LANCA_COBRANCA_CONTA", joinColumns = {
       @JoinColumn(name = "ID_COBRANCA")}, inverseJoinColumns = {
@@ -132,6 +135,14 @@ public class Cobranca extends BaseEntity {
     this.baixa = baixa;
   }
 
+  public String getDocumento() {
+    return documento;
+  }
+
+  public void setDocumento(String documento) {
+    this.documento = documento;
+  }
+
   public Set<ContaReceber> getContas() {
     return contas;
   }
@@ -154,7 +165,11 @@ public class Cobranca extends BaseEntity {
   }
 
   public String getRowKey() {
-    return id == null ? String.format("%d - %d", cliente.getId(), setor.getId()) : id.toString();
+    if (setor == null) {
+      return id == null ? cliente.getId().toString() : id.toString();
+    } else {
+      return id == null ? String.format("%d - %d", cliente.getId(), setor.getId()) : id.toString();
+    }
   }
 
 

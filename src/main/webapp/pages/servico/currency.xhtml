@@ -32,6 +32,9 @@
               <uivah:inputCurrency id="taxValue" label="Valor unitário" required="true"
                                      value="#{servicoCtrl.servicoValor.valueA}" editing="true"
                                      rendered="#{servicoCtrl.item.type == 'CTR'}" precision="2" pattern="R$ #,##0.00"/>
+              <uivah:inputCurrency id="taxaValue" label="Taxa" required="true"
+                                   value="#{servicoCtrl.servicoValor.valueA}" editing="true"
+                                   rendered="#{servicoCtrl.item.type == 'CTP'}" precision="2" pattern="R$ #,##0.00"/>
 
               <uivah:inputCurrency id="outPeakValue" label="Tarifa fora de ponta" required="true"
                                      value="#{servicoCtrl.servicoValor.valueA}" editing="true"

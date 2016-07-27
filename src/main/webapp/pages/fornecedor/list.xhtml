@@ -15,7 +15,10 @@
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
+            <h:outputText value="#{item.title}" rendered="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
+            <p:commandLink value="#{item.title}" ajax="false" action="#{fornecedorCtrl.edit(item)}"
+                           onclick="start()"
+                           rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
           </p:column>
           <p:column sortBy="#{item.nomeFantasia}" headerText="Nome Fantasia"
                     style="text-align: left;" width="250">

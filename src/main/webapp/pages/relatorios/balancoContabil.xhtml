@@ -2,54 +2,24 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
   <ui:define name="content">
     <h:form id="form">
-      <p:panel header="Balanço Contábil">
+      <p:panel header="Balanço Condomínio">
         <h:panelGrid columns="2">
-          <p:outputLabel value="Período" for="range" styleClass="lance-label"/>
-          <h:panelGroup id="range">
-            <p:calendar id="begin" value="#{balancoContabilCtrl.range[0]}" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
-            <h:outputText value="à" style="margin: 0 5px;"/>
-            <p:calendar id="end" value="#{balancoContabilCtrl.range[1]}" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
+          <p:outputLabel value="Vigência" for="vigencia"/>
+          <h:panelGroup>
+            <p:inputText id="vigencia" styleClass="searchMonth" value="#{balancoContabilCtrl.vigencia}"
+                         onclick="this.setSelectionRange(0, this.value.length)"
+                         required="true">
+              <f:convertDateTime pattern="MM/yyyy" dateStyle="short" timeZone="GMT-0300"/>
+            </p:inputText>
+            <script>
+              $(".searchMonth").mask('99/9999');
+            </script>
           </h:panelGroup>
-          <p:outputLabel value="Serviços" for="servicos" styleClass="lance-label"/>
-          <p:autoComplete id="servicos" value="#{servicoCtrl.itemToAdd}"
-                          widgetVar="servicos"
-                          queryDelay="200"
-                          var="item"
-                          itemLabel="#{item.labelForSelectItem}"
-                          itemValue="#{item}"
-                          onclick="this.setSelectionRange(0, this.value.length)"
-                          converter="#{servicoConverter}"
-                          inputStyleClass="lance-input"
-                          completeMethod="#{servicoCtrl.completeMethod}"
-                          placeholder="Nº./Nome...">
-            <p:ajax event="itemSelect" listener="#{servicoCtrl.addItem(balancoContabilCtrl.servicos)}"
-                    process="@this"
-                    update="list" oncomplete="$(PF('servicos').jqId + '_input').val('')"/>
-            <p:column width="75">
-              #{item.id}
-            </p:column>
-            <p:column>
-              #{item.title}
-            </p:column>
-          </p:autoComplete>
         </h:panelGrid>
-
-        <h:panelGroup id="list" styleClass="list list-block-wrapper" layout="block">
-          <ui:repeat value="#{balancoContabilCtrl.servicos.toArray()}" var="it">
-            <h:panelGroup layout="block"
-                          styleClass="list-block margin-top #{it.systemAdded ? 'list-block--novo' : ''}">
-              <p:commandLink styleClass="fa fa-close"
-                             action="#{servicoCtrl.removeItem(balancoContabilCtrl.servicos, it)}"
-                             process="@this" update="@(.list)">
-              </p:commandLink>
-              <h:outputText value="#{it.labelForSelectItem} #{it.systemAdded ? '(NOVO)' : ''}"/>
-            </h:panelGroup>
-          </ui:repeat>
-        </h:panelGroup>
-
         <h:panelGroup layout="block" styleClass="margin-top">
           <p:commandButton rendered="true" id="gerarRelatorio" value="Gerar Relatório" ajax="false"
                            process="@form"
@@ -59,17 +29,6 @@
           </p:commandButton>
         </h:panelGroup>
       </p:panel>
-
-      <script type="text/javascript">
-        function start() {
-          PF('changePage').show();
-        }
-
-        function stop() {
-          PF('changePage').hide();
-        }
-      </script>
-
     </h:form>
   </ui:define>
 </ui:composition>

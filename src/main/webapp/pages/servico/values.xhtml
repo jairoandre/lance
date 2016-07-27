@@ -27,7 +27,7 @@
 
         <!-- TABELADO ou TARIFADO -->
         <p:column sortBy="#{value.valueA}" headerText="Valor" styleClass="left-align"
-                  rendered="#{servicoCtrl.item.type == 'T' or servicoCtrl.item.type == 'CTR'}" width="200">
+                  rendered="#{servicoCtrl.item.type == 'T' or servicoCtrl.item.type == 'CTR' or servicoCtrl.item.type == 'CTP'}" width="200">
           <h:outputText value="#{value.valueA}">
             <f:convertNumber currencySymbol="R$" locale="pt_BR"
                              minFractionDigits="2" pattern="R$ #,##0.00"/>

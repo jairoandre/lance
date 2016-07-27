@@ -22,7 +22,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -31,7 +34,7 @@ import java.util.Map;
 @Stateless
 public class ReportLoader implements Serializable {
 
-  public StreamedContent imprimeRelatorio(String reportName, Map<String, Object> parameters, List datasource) {
+  public StreamedContent imprimeRelatorio(String reportName, Map<String, Object> parameters, List datasource, String downloadFilename) {
 
     try {
       FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -42,6 +45,11 @@ public class ReportLoader implements Serializable {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+    parameters.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
+
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    parameters.put("EMISSAO", sdf.format(new Date()));
 
     JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(datasource);
 
@@ -82,7 +90,12 @@ public class ReportLoader implements Serializable {
 
     DefaultStreamedContent dsc = new DefaultStreamedContent(report);
     dsc.setContentType("application/pdf");
-    dsc.setName(String.format("%s.pdf", reportName));
+
+    if (downloadFilename == null) {
+      dsc.setName(String.format("%s.pdf", reportName));
+    } else {
+      dsc.setName(String.format("%s.pdf", downloadFilename));
+    }
 
     return dsc;
 

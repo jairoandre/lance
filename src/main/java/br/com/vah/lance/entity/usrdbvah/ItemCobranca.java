@@ -22,6 +22,9 @@ public class ItemCobranca extends BaseEntity {
   @JoinColumn(name = "ID_SERVICO")
   private Servico servico;
 
+  @Column(name = "VL_TOTAL")
+  private BigDecimal total;
+
   @Column(name = "VL_VALOR")
   private BigDecimal valor;
 
@@ -43,6 +46,14 @@ public class ItemCobranca extends BaseEntity {
 
   public void setServico(Servico servico) {
     this.servico = servico;
+  }
+
+  public BigDecimal getTotal() {
+    return total;
+  }
+
+  public void setTotal(BigDecimal total) {
+    this.total = total;
   }
 
   public BigDecimal getValor() {

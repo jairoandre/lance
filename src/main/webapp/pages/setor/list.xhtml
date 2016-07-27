@@ -17,7 +17,10 @@
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Nome"
                     style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
+            <h:outputText value="#{item.title}" rendered="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
+            <p:commandLink value="#{item.title}" ajax="false" action="#{setorCtrl.edit(item)}"
+                           onclick="start()"
+                           rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}"/>
           </p:column>
           <p:column headerText="Conta contábil" width="200"
                     styleClass="ellipsis-text">

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medias" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16ee6332-fc89-4379-ba3c-765250e5790b">
-	<property name="ireport.zoom" value="1.3310000000000013"/>
-	<property name="ireport.x" value="29"/>
+	<property name="ireport.zoom" value="1.3310000000000017"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REFERENCIA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.lang.Object"/>
+	<parameter name="EMISSAO" class="java.lang.String"/>
+	<parameter name="AUTOR" class="java.lang.String"/>
+	<parameter name="CONSUMO_ENERGIA" class="java.lang.String"/>
+	<parameter name="PESO_COLETA" class="java.lang.String"/>
+	<parameter name="VALOR_ENERGIA" class="java.math.BigDecimal"/>
+	<parameter name="VALOR_COLETA" class="java.math.BigDecimal"/>
+	<parameter name="VALOR_TELEFONIA" class="java.math.BigDecimal"/>
+	<parameter name="VALOR_INTERNET" class="java.math.BigDecimal"/>
+	<parameter name="TOTAL_CONDOMINIO" class="java.math.BigDecimal"/>
+	<parameter name="VALOR_TR" class="java.math.BigDecimal"/>
 	<field name="nomeCliente" class="java.lang.String"/>
 	<field name="numeroDocumento" class="java.lang.String"/>
 	<field name="servico" class="java.lang.String"/>
 	<field name="total" class="java.math.BigDecimal"/>
 	<field name="rateio" class="java.math.BigDecimal"/>
+	<field name="nomeSetor" class="java.lang.String"/>
+	<field name="vencimento" class="java.lang.String"/>
 	<variable name="TOTAL_TOTAL_CLIENTE" class="java.math.BigDecimal" resetType="Group" resetGroup="nomeCliente" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
@@ -29,9 +41,9 @@
 	<group name="nomeCliente">
 		<groupExpression><![CDATA[$F{nomeCliente}]]></groupExpression>
 		<groupHeader>
-			<band height="45">
+			<band height="55">
 				<staticText>
-					<reportElement x="0" y="0" width="89" height="15" uuid="24af7fc6-0f68-47cb-8221-41ee43656366"/>
+					<reportElement x="0" y="0" width="40" height="15" uuid="24af7fc6-0f68-47cb-8221-41ee43656366"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -43,7 +55,7 @@
 					<text><![CDATA[NOME:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="89" y="0" width="466" height="15" uuid="95cea6c0-8cdd-4c20-a265-45a79456a8f0"/>
+					<reportElement x="40" y="0" width="255" height="15" uuid="95cea6c0-8cdd-4c20-a265-45a79456a8f0"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -52,12 +64,12 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeCliente}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="89" y="15" width="466" height="15" uuid="a4eeebcc-270e-454b-83cc-dc6dd31e1826"/>
+					<reportElement x="89" y="15" width="206" height="15" uuid="a4eeebcc-270e-454b-83cc-dc6dd31e1826"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -66,7 +78,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{numeroDocumento}]]></textFieldExpression>
 				</textField>
@@ -83,37 +95,86 @@
 					<text><![CDATA[Nº DOCUMENTO:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="30" width="260" height="15" uuid="cf94477e-039b-47a7-85d3-5b0c98f18941"/>
+					<reportElement x="0" y="40" width="260" height="15" uuid="cf94477e-039b-47a7-85d3-5b0c98f18941"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[DESCRIÇÃO DAS DESPESAS]]></text>
+					<text><![CDATA[DESCRIÇÃO DAS DESPESAS GERAIS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="295" y="30" width="260" height="15" uuid="e9157957-ac3b-48a9-aa32-ff06165c7d3d"/>
+					<reportElement x="295" y="40" width="260" height="15" uuid="e9157957-ac3b-48a9-aa32-ff06165c7d3d"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[DESCRIÇÃO DAS DESPESAS - ÁREA COMUM]]></text>
+					<text><![CDATA[DESCRIÇÃO DAS DESPESAS INDIVIDUAIS]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="335" y="0" width="220" height="15" uuid="8c956210-aebd-4e3c-9307-e13838b3ba26"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeSetor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="295" y="0" width="40" height="15" uuid="d79408bb-a724-4821-bf28-4b2a730e5ce9"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[SETOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="295" y="15" width="40" height="15" uuid="0f9ea79c-f26b-49f4-84d1-574575d1e95e"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[VENC.:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="335" y="15" width="220" height="15" uuid="d8f859fe-2a9b-49e8-8e63-033d24c7053c"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="16">
-				<break>
-					<reportElement x="0" y="15" width="100" height="1" uuid="0fa68c00-48fe-4d95-a806-4c794d207a53"/>
-				</break>
+			<band height="155">
 				<staticText>
 					<reportElement x="0" y="0" width="185" height="15" uuid="3e087388-cade-408f-ab1b-42d6103bc7be"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true" isItalic="true"/>
+						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Total Geral:]]></text>
+					<text><![CDATA[Total:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="295" y="0" width="185" height="15" uuid="a43d35b1-3141-4b64-8c78-7611ce52dd3c"/>
@@ -121,9 +182,9 @@
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true" isItalic="true"/>
+						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Total Geral:]]></text>
+					<text><![CDATA[Total:]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="185" y="0" width="75" height="15" uuid="75788610-ae24-44b9-b981-0ea1e2bff4e3"/>
@@ -131,7 +192,7 @@
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true" isItalic="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{TOTAL_TOTAL_CLIENTE}]]></textFieldExpression>
 				</textField>
@@ -141,10 +202,160 @@
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true" isItalic="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{TOTAL_RATEIO_CLIENTE}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="0" y="26" width="555" height="15" uuid="d96048cd-39f9-4986-b878-acb1b016cce2"/>
+					<box>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[OUTRAS DESPESAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="41" width="135" height="15" uuid="0b753d16-52de-4792-9a72-02cfc194bab6"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[SERVIÇO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="56" width="135" height="15" uuid="86bdb23c-54fd-4da7-9e52-3d65fdaa1afb"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Energia]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="86" width="135" height="15" uuid="a953763e-b6d5-4533-8f23-dfa052f99254"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Taxa de Refrigeração]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="101" width="135" height="15" uuid="78f92587-ca86-4488-b938-0bc1e64d42c1"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Internet]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="71" width="135" height="15" uuid="b76704d9-7919-465d-b683-a8d5156f627d"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Telefonia]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="135" y="41" width="125" height="15" uuid="fecddb01-df1e-4593-a9f4-f9b9b308a5b9"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[VALOR]]></text>
+				</staticText>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="56" width="125" height="15" uuid="c255a4e2-19f2-4cc3-9520-35b591201387"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="116" width="125" height="15" uuid="aa12fac3-5c62-411c-b066-26d19b4f6a98"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_COLETA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="86" width="125" height="15" uuid="825f6b27-0a46-432c-b345-5d62e566dbc9"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_TR}]]></textFieldExpression>
+				</textField>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="101" width="125" height="15" uuid="b8fc7ad8-cf4e-45bb-a349-c251907e6cf1"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_INTERNET}]]></textFieldExpression>
+				</textField>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="71" width="125" height="15" uuid="d205fc66-0207-470c-b5d0-7aa4c5c880ca"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_TELEFONIA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="140" width="135" height="15" uuid="7504b412-aa93-4a2b-8d78-eafa80d98a4c"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL COBRANÇA:]]></text>
+				</staticText>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="135" y="140" width="125" height="15" uuid="68a6ca00-79ba-49dd-9b5d-67457732e226"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{TOTAL_CONDOMINIO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="116" width="135" height="15" uuid="44edbcf6-7d8f-4d7c-83bf-8a3689674ff2"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Coleta de Resíduos (Kg)]]></text>
+				</staticText>
 			</band>
 		</groupFooter>
 	</group>
@@ -155,30 +366,37 @@
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="45" splitType="Stretch">
+		<band height="35" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="15" uuid="8bef819b-acf6-479a-9f0d-ddec741a3064"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO INDIVIDUAL]]></text>
+				<text><![CDATA[RELATÓRIO INDIVIDUAL DE COBRANÇA DE CONDOMÍNIO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="495" y="0" width="60" height="15" uuid="0e65a592-0a84-4942-bc94-d93b904c97f8"/>
+				<reportElement x="480" y="0" width="75" height="15" uuid="0e65a592-0a84-4942-bc94-d93b904c97f8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="15" width="555" height="15" uuid="6a297089-9585-4370-b319-8fd2f9a6fb09"/>
+				<reportElement x="0" y="15" width="555" height="10" uuid="6a297089-9585-4370-b319-8fd2f9a6fb09"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA["REFERÊNCIA: " + $P{REFERENCIA}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="0" y="0" width="120" height="30" uuid="45f7a8d9-4bd3-4827-b22c-b5107daa778d"/>
+				<reportElement x="0" y="0" width="135" height="35" uuid="45f7a8d9-4bd3-4827-b22c-b5107daa778d"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="0" y="15" width="555" height="10" uuid="88b7e3a0-2923-4c8d-9077-75fc4f461fff"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data de Emissão: " + $P{EMISSAO}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -222,7 +440,7 @@
 	<pageFooter>
 		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="495" y="0" width="60" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
+				<reportElement x="480" y="0" width="75" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
@@ -230,7 +448,7 @@
 				<reportElement x="0" y="0" width="100" height="15" uuid="9bde3af5-f84a-48fa-a1d4-5fb0a8a41009"/>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true" isItalic="true"/>
+					<font isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[SISTEMA LANCE]]></text>
 			</staticText>

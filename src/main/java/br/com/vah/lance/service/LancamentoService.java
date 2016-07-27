@@ -50,8 +50,12 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     Map<String, Object> params = new HashMap<>();
     params.put("begin", range[0]);
     params.put("end", range[1]);
-    params.put("vencimento", vencimento);
-    return findWithNamedQuery(Lancamento.BY_VIGENCIA_VENCIMENTO, params);
+    if (vencimento == null) {
+      return findWithNamedQuery(Lancamento.BY_PERIOD, params);
+    } else {
+      params.put("vencimento", vencimento);
+      return findWithNamedQuery(Lancamento.BY_PERIOD_VENCIMENTO, params);
+    }
   }
 
   /**
@@ -291,12 +295,14 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           lancamentoValor.setValueA(currentServicoValor.getValueA());
           break;
         case CTR:
+          /*
           BigDecimal valueToSet = BigDecimal.ZERO;
           SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
           if (setorDetalhe != null) {
             valueToSet = setorDetalhe.getRtQuantity() == null ? valueToSet : setorDetalhe.getRtQuantity();
           }
           lancamentoValor.setValueA(valueToSet);
+          */
           break;
         default:
           break;
@@ -348,9 +354,11 @@ public class LancamentoService extends DataAccessService<Lancamento> {
         case CR:
         case CRE:
         case CI:
+        case CTR:
           lancamentoValor.setValue(lancamentoValor.getValueA());
           break;
-        case CTR:
+        case CTP:
+        // case CTR:
           lancamentoValor.setValue(lancamentoValor.getValueA().multiply(currentServicoValor.getValueA()));
         default:
           break;

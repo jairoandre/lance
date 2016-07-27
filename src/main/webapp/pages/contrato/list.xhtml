@@ -8,16 +8,19 @@
     <h:form id="form">
       <p:panel header="Contratos">
         <vah:dataTable id="dataTable" controller="#{contratoCtrl}"
-                         renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
-                         renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
-                         renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
+                       renderEditAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                       renderDeleteAction="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
+                       renderAddBtn="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}">
           <p:column headerText="Cód. cliente"
                     style="text-align: left;" width="120">
             <h:outputText value="#{item.contratante.id}"/>
           </p:column>
           <p:column sortBy="#{item.title}" headerText="Título"
                     style="text-align: left;">
-            <h:outputText value="#{item.title}"/>
+            <h:outputText value="#{item.title}" rendered="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"/>
+            <p:commandLink value="#{item.title}" ajax="false" action="#{contratoCtrl.edit(item)}"
+                           onclick="start()"
+                           rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"/>
           </p:column>
           <p:column headerText="Setores"
                     style="text-align: left;" width="60" styleClass="left-align">

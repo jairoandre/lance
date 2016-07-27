@@ -11,21 +11,27 @@ public class BalancoContabilDTO implements Serializable {
 
   private String servico;
 
-  private String cliente;
+  private String reduzido;
+
+  private String contaCusto;
+
+  private String conta;
+
+  private String nomeConta;
+
+  private String reduzidoCompart;
+
+  private String contaCompart;
+
+  private String nomeContaCompart;
 
   private String setor;
 
-  private String criado;
+  private String cliente;
 
-  private Date vigencia;
+  private Date competencia;
 
-  private Date vencimento;
-
-  private String contaReduzido;
-
-  private String contaContabil;
-
-  private BigDecimal valor;
+  private BigDecimal valor = BigDecimal.ZERO;
 
   public String getServico() {
     return servico;
@@ -35,12 +41,60 @@ public class BalancoContabilDTO implements Serializable {
     this.servico = servico;
   }
 
-  public String getCliente() {
-    return cliente;
+  public String getReduzido() {
+    return reduzido;
   }
 
-  public void setCliente(String cliente) {
-    this.cliente = cliente;
+  public void setReduzido(String reduzido) {
+    this.reduzido = reduzido;
+  }
+
+  public String getContaCusto() {
+    return contaCusto;
+  }
+
+  public void setContaCusto(String contaCusto) {
+    this.contaCusto = contaCusto;
+  }
+
+  public String getConta() {
+    return conta;
+  }
+
+  public void setConta(String conta) {
+    this.conta = conta;
+  }
+
+  public String getNomeConta() {
+    return nomeConta;
+  }
+
+  public void setNomeConta(String nomeConta) {
+    this.nomeConta = nomeConta;
+  }
+
+  public String getReduzidoCompart() {
+    return reduzidoCompart;
+  }
+
+  public void setReduzidoCompart(String reduzidoCompart) {
+    this.reduzidoCompart = reduzidoCompart;
+  }
+
+  public String getContaCompart() {
+    return contaCompart;
+  }
+
+  public void setContaCompart(String contaCompart) {
+    this.contaCompart = contaCompart;
+  }
+
+  public String getNomeContaCompart() {
+    return nomeContaCompart;
+  }
+
+  public void setNomeContaCompart(String nomeContaCompart) {
+    this.nomeContaCompart = nomeContaCompart;
   }
 
   public String getSetor() {
@@ -51,44 +105,20 @@ public class BalancoContabilDTO implements Serializable {
     this.setor = setor;
   }
 
-  public String getCriado() {
-    return criado;
+  public String getCliente() {
+    return cliente;
   }
 
-  public void setCriado(String criado) {
-    this.criado = criado;
+  public void setCliente(String cliente) {
+    this.cliente = cliente;
   }
 
-  public Date getVigencia() {
-    return vigencia;
+  public Date getCompetencia() {
+    return competencia;
   }
 
-  public void setVigencia(Date vigencia) {
-    this.vigencia = vigencia;
-  }
-
-  public Date getVencimento() {
-    return vencimento;
-  }
-
-  public void setVencimento(Date vencimento) {
-    this.vencimento = vencimento;
-  }
-
-  public String getContaReduzido() {
-    return contaReduzido;
-  }
-
-  public void setContaReduzido(String contaReduzido) {
-    this.contaReduzido = contaReduzido;
-  }
-
-  public String getContaContabil() {
-    return contaContabil;
-  }
-
-  public void setContaContabil(String contaContabil) {
-    this.contaContabil = contaContabil;
+  public void setCompetencia(Date competencia) {
+    this.competencia = competencia;
   }
 
   public BigDecimal getValor() {
@@ -97,5 +127,24 @@ public class BalancoContabilDTO implements Serializable {
 
   public void setValor(BigDecimal valor) {
     this.valor = valor;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof BalancoContabilDTO) {
+      BalancoContabilDTO dto = (BalancoContabilDTO) obj;
+      if (this.setor != null && dto.setor != null) {
+        if (this.setor.equals(dto.setor)) {
+          if (this.contaCusto != null && dto.contaCusto != null) {
+            return this.contaCusto.equals(dto.contaCusto);
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+    return super.equals(obj);
   }
 }

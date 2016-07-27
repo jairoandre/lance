@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medias" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16ee6332-fc89-4379-ba3c-765250e5790b">
-	<property name="ireport.zoom" value="1.4641000000000042"/>
+	<property name="ireport.zoom" value="1.1000000000000028"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REFERENCIA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.lang.Object"/>
 	<parameter name="AUTOR" class="java.lang.String"/>
 	<parameter name="EMISSAO" class="java.lang.String"/>
-	<parameter name="POR_PERIODO" class="java.lang.Boolean"/>
 	<field name="servico" class="java.lang.String"/>
 	<field name="reduzido" class="java.lang.String"/>
 	<field name="conta" class="java.lang.String"/>
@@ -19,16 +18,11 @@
 	<field name="cliente" class="java.lang.String"/>
 	<field name="competencia" class="java.util.Date"/>
 	<field name="valor" class="java.math.BigDecimal"/>
-	<field name="contaCusto" class="java.lang.String"/>
-	<variable name="TOTAL_CONTA" class="java.math.BigDecimal" resetType="Group" resetGroup="reduzido" calculation="Sum">
+	<variable name="TOTAL_CONTA" class="java.math.BigDecimal" resetType="Group" resetGroup="servico" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
-	<variable name="TOTAL_CONTA_CUSTO" class="java.math.BigDecimal" resetType="Group" resetGroup="contaCusto" calculation="Sum">
-		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
-		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
-	</variable>
-	<variable name="TOTAL_SERVICO" class="java.math.BigDecimal" resetType="Group" resetGroup="servico" calculation="Sum">
+	<variable name="TOTAL_SERVICO" class="java.math.BigDecimal" resetType="Group" resetGroup="reduzido" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
@@ -39,84 +33,9 @@
 	<group name="servico">
 		<groupExpression><![CDATA[$F{servico}]]></groupExpression>
 		<groupHeader>
-			<band/>
-		</groupHeader>
-		<groupFooter>
 			<band height="25">
-				<textField pattern="#,##0.00">
-					<reportElement x="470" y="5" width="85" height="20" uuid="8e81de47-f5ea-4d5d-aa62-54dfe250e11f"/>
-					<box>
-						<topPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.0"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="12" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{TOTAL_SERVICO}]]></textFieldExpression>
-				</textField>
 				<staticText>
-					<reportElement x="0" y="5" width="470" height="20" uuid="a43d35b1-3141-4b64-8c78-7611ce52dd3c"/>
-					<box>
-						<topPen lineWidth="0.5"/>
-					</box>
-					<textElement verticalAlignment="Middle">
-						<font size="12" isBold="true" isItalic="false"/>
-					</textElement>
-					<text><![CDATA[TOTAL SERVIÇO:]]></text>
-				</staticText>
-			</band>
-		</groupFooter>
-	</group>
-	<group name="reduzido" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{reduzido}]]></groupExpression>
-		<groupHeader>
-			<band height="54">
-				<staticText>
-					<reportElement x="0" y="24" width="95" height="15" uuid="0d5b20f0-a2e5-4fb5-b94b-c266fe7f1560"/>
-					<box>
-						<bottomPen lineWidth="0.5"/>
-					</box>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[CONTA CONTÁBIL:]]></text>
-				</staticText>
-				<textField>
-					<reportElement x="95" y="24" width="460" height="15" uuid="0bf57f91-17cf-4b63-ad8f-40cd6ca4f5b4"/>
-					<box>
-						<pen lineWidth="0.0"/>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{reduzido} + " - " + $F{conta} + " - " + $F{nomeConta}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="95" y="39" width="460" height="15" uuid="9b930545-1c16-4dcb-8ba2-3d3b3834cd83"/>
-					<box>
-						<pen lineWidth="0.0"/>
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.0"/>
-					</box>
-					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{reduzidoCompart} + " - " + $F{contaCompart} + " - " + $F{nomeContaCompart}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="0" y="39" width="95" height="15" uuid="8f90bc52-40c7-4926-a830-e7cc1c1e0ab2"/>
-					<box>
-						<bottomPen lineWidth="0.5"/>
-					</box>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[CONTA COMPART.:]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="0" y="0" width="65" height="20" uuid="24af7fc6-0f68-47cb-8221-41ee43656366"/>
+					<reportElement x="0" y="0" width="95" height="20" uuid="24af7fc6-0f68-47cb-8221-41ee43656366"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -130,7 +49,7 @@
 					<text><![CDATA[SERVIÇO:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="65" y="0" width="405" height="20" uuid="95cea6c0-8cdd-4c20-a265-45a79456a8f0"/>
+					<reportElement x="95" y="0" width="460" height="20" uuid="95cea6c0-8cdd-4c20-a265-45a79456a8f0"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -143,50 +62,50 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{servico}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Report" pattern="#,##0.00">
-					<reportElement x="470" y="0" width="85" height="20" uuid="69bc5405-1106-4485-b27e-9b4c800ccf69"/>
-					<box>
-						<topPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="12" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{TOTAL_SERVICO}]]></textFieldExpression>
-				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="20">
+				<break>
+					<reportElement x="0" y="15" width="100" height="1" uuid="0fa68c00-48fe-4d95-a806-4c794d207a53"/>
+				</break>
 				<staticText>
-					<reportElement x="0" y="0" width="470" height="20" uuid="7a60dedf-c223-4173-899d-285f8a59a431"/>
+					<reportElement x="0" y="5" width="475" height="15" uuid="a43d35b1-3141-4b64-8c78-7611ce52dd3c"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="12" isBold="true" isItalic="false"/>
+						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[TOTAL CONTA:]]></text>
+					<text><![CDATA[TOTAL SERVIÇO:]]></text>
 				</staticText>
 				<textField pattern="#,##0.00">
-					<reportElement x="470" y="0" width="85" height="20" uuid="b879beb8-df96-479a-8f7c-abe14f587f3e"/>
+					<reportElement x="475" y="5" width="80" height="15" uuid="69bc5405-1106-4485-b27e-9b4c800ccf69"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="12" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{TOTAL_CONTA}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{TOTAL_SERVICO}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="contaCusto">
-		<groupExpression><![CDATA[$F{contaCusto}]]></groupExpression>
+	<group name="reduzido">
+		<groupExpression><![CDATA[$F{reduzido}]]></groupExpression>
 		<groupHeader>
-			<band height="35">
+			<band height="55">
 				<staticText>
-					<reportElement x="0" y="20" width="51" height="15" uuid="cf94477e-039b-47a7-85d3-5b0c98f18941"/>
+					<reportElement x="0" y="0" width="95" height="15" uuid="0d5b20f0-a2e5-4fb5-b94b-c266fe7f1560"/>
+					<box>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[CONTA CONTÁBIL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="40" width="38" height="15" uuid="cf94477e-039b-47a7-85d3-5b0c98f18941"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
@@ -196,7 +115,7 @@
 					<text><![CDATA[SETOR]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="51" y="20" width="370" height="15" backcolor="#FFFFFF" uuid="59b3baa0-48ce-452a-b4f5-9685db83df41"/>
+					<reportElement mode="Transparent" x="38" y="40" width="351" height="15" backcolor="#FFFFFF" uuid="59b3baa0-48ce-452a-b4f5-9685db83df41"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
@@ -206,17 +125,17 @@
 					<text><![CDATA[CLIENTE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="421" y="20" width="74" height="15" backcolor="#FFFFFF" uuid="f36fe85e-b0ea-4361-ac5a-6b72d42561d8"/>
+					<reportElement mode="Transparent" x="389" y="40" width="86" height="15" backcolor="#FFFFFF" uuid="f36fe85e-b0ea-4361-ac5a-6b72d42561d8"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="SansSerif" isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[COMPETÊN.]]></text>
+					<text><![CDATA[COMPETÊNCIA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="495" y="20" width="60" height="15" backcolor="#FFFFFF" uuid="e9157957-ac3b-48a9-aa32-ff06165c7d3d"/>
+					<reportElement mode="Transparent" x="475" y="40" width="80" height="15" backcolor="#FFFFFF" uuid="e9157957-ac3b-48a9-aa32-ff06165c7d3d"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
@@ -225,16 +144,8 @@
 					</textElement>
 					<text><![CDATA[VALOR]]></text>
 				</staticText>
-				<staticText>
-					<reportElement x="0" y="0" width="95" height="15" uuid="ea43b54e-ce98-4afd-9bd9-4e7d1a7b76cc"/>
-					<box>
-						<bottomPen lineWidth="0.5"/>
-					</box>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[CONTA CUSTO:]]></text>
-				</staticText>
 				<textField>
-					<reportElement x="95" y="0" width="460" height="15" uuid="d23164b0-7bcf-499d-a05b-394187d19930"/>
+					<reportElement x="95" y="0" width="460" height="15" uuid="0bf57f91-17cf-4b63-ad8f-40cd6ca4f5b4"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -245,31 +156,53 @@
 					<textElement verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{contaCusto}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{reduzido} + " - " + $F{conta} + " - " + $F{nomeConta}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="95" y="15" width="460" height="15" uuid="9b930545-1c16-4dcb-8ba2-3d3b3834cd83"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{reduzidoCompart} + " - " + $F{contaCompart} + " - " + $F{nomeContaCompart}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="15" width="95" height="15" uuid="8f90bc52-40c7-4926-a830-e7cc1c1e0ab2"/>
+					<box>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[CONTA COMPART.:]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="25">
+			<band height="16">
 				<staticText>
-					<reportElement x="0" y="0" width="470" height="15" uuid="17145e27-591c-483d-b130-1adec03d512a"/>
+					<reportElement x="0" y="0" width="475" height="15" uuid="7a60dedf-c223-4173-899d-285f8a59a431"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[TOTAL CONTA CUSTO:]]></text>
+					<text><![CDATA[TOTAL CONTA:]]></text>
 				</staticText>
 				<textField pattern="#,##0.00">
-					<reportElement x="470" y="0" width="85" height="15" uuid="45fc03b9-3e17-491c-841b-5934ff02149c"/>
+					<reportElement x="475" y="0" width="80" height="16" uuid="b879beb8-df96-479a-8f7c-abe14f587f3e"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{TOTAL_CONTA_CUSTO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{TOTAL_CONTA}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -287,7 +220,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO AUXILIAR DE OUTRAS RECEITAS]]></text>
+				<text><![CDATA[DESCRITIVO COBRANÇA]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="495" y="0" width="60" height="15" uuid="0e65a592-0a84-4942-bc94-d93b904c97f8"/>
@@ -305,26 +238,26 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REFERENCIA}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="15" width="555" height="10" uuid="7f5f4d40-a9f7-4d25-b2d8-c5394fa7c63c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[PERÍODO DE APURAÇÃO]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="342" y="15" width="213" height="10" uuid="6f318502-65e3-4786-9f9b-8e9c4392051a"/>
+				<reportElement x="0" y="15" width="555" height="10" uuid="6f318502-65e3-4786-9f9b-8e9c4392051a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Data de Emissão: " + $P{EMISSAO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="342" y="25" width="213" height="10" uuid="bf41fdb3-56bb-4fdd-b787-a0c4123ccda9"/>
+				<reportElement x="0" y="25" width="555" height="10" uuid="bf41fdb3-56bb-4fdd-b787-a0c4123ccda9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Emitido por: " + $P{AUTOR}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="15" width="555" height="10" uuid="a53b9b7e-1f0d-47c4-8edd-2916bba6f8bb"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{POR_PERIODO} ? "PERÍODO DE APURAÇÃO" : "COMPETÊNCIA"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -334,22 +267,22 @@
 	<detail>
 		<band height="15">
 			<textField>
-				<reportElement x="0" y="0" width="51" height="15" uuid="d8362d79-0c19-415e-9ea5-5eddcf588523"/>
+				<reportElement x="0" y="0" width="38" height="15" uuid="d8362d79-0c19-415e-9ea5-5eddcf588523"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{setor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="51" y="0" width="370" height="15" backcolor="#FFFFFF" uuid="85c8de9c-5eb1-4fe8-814c-11652a53d2d7"/>
+				<reportElement mode="Transparent" x="38" y="0" width="351" height="15" backcolor="#FFFFFF" uuid="85c8de9c-5eb1-4fe8-814c-11652a53d2d7"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement mode="Transparent" x="421" y="0" width="74" height="15" backcolor="#FFFFFF" uuid="0cb8d11d-a0be-438e-bebd-b5fac69f44aa"/>
+				<reportElement mode="Transparent" x="389" y="0" width="86" height="15" backcolor="#FFFFFF" uuid="0cb8d11d-a0be-438e-bebd-b5fac69f44aa"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{competencia}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement mode="Transparent" x="495" y="0" width="60" height="15" backcolor="#FFFFFF" uuid="1802de81-c036-46de-a954-25676e64c03c"/>
+				<reportElement mode="Transparent" x="475" y="0" width="80" height="15" backcolor="#FFFFFF" uuid="1802de81-c036-46de-a954-25676e64c03c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
@@ -361,12 +294,12 @@
 	<pageFooter>
 		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="495" y="0" width="60" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
+				<reportElement x="475" y="0" width="80" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="495" height="15" uuid="9bde3af5-f84a-48fa-a1d4-5fb0a8a41009"/>
+				<reportElement x="0" y="0" width="475" height="15" uuid="9bde3af5-f84a-48fa-a1d4-5fb0a8a41009"/>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" isItalic="false"/>

@@ -44,5 +44,14 @@
   <h:panelGroup layout="block" style="padding: 5px 5px;">
     <ui:insert name="content"/>
   </h:panelGroup>
+  <script type="text/javascript">
+    function start() {
+      PF('changePage').show();
+    }
+
+    function stop() {
+      PF('changePage').hide();
+    }
+  </script>
 </h:body>
 </html>

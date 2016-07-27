@@ -22,17 +22,19 @@ import java.util.Set;
 @ViewScoped
 public class BalancoContabilCtrl implements Serializable {
 
-  private Set<Servico> servicos = new LinkedHashSet<>();
-
-  private Date[] range = new Date[2];
+  private Date vigencia;
 
   private
   @Inject
   RelatorioService service;
 
+  private
+  @Inject
+  SessionCtrl sessionCtrl;
+
   public StreamedContent getRelatorio() {
     try {
-      return service.getRelatorioBalanco(servicos, range);
+      return service.relatorioBalancoCondominial(vigencia, sessionCtrl.getUser());
     } catch (Exception e) {
       addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ops!", "Ocorreu algum problema na geração do relatório."), false);
     }
@@ -47,19 +49,11 @@ public class BalancoContabilCtrl implements Serializable {
     }
   }
 
-  public Set<Servico> getServicos() {
-    return servicos;
+  public Date getVigencia() {
+    return vigencia;
   }
 
-  public void setServicos(Set<Servico> servicos) {
-    this.servicos = servicos;
-  }
-
-  public Date[] getRange() {
-    return range;
-  }
-
-  public void setRange(Date[] range) {
-    this.range = range;
+  public void setVigencia(Date vigencia) {
+    this.vigencia = vigencia;
   }
 }

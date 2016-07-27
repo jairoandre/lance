@@ -6,13 +6,11 @@ import br.com.vah.lance.constant.TipoServicoEnum;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
-import br.com.vah.lance.service.ContaReceberService;
-import br.com.vah.lance.service.DataAccessService;
-import br.com.vah.lance.service.LancamentoService;
-import br.com.vah.lance.service.ServicoService;
+import br.com.vah.lance.service.*;
 import br.com.vah.lance.util.ViewUtils;
 import com.opencsv.CSVReader;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import javax.annotation.PostConstruct;
@@ -47,6 +45,10 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   private
   @Inject
   ServicoService servicoService;
+
+  private
+  @Inject
+  RelatorioService relatorioService;
 
   private List<Lancamento> entries;
 
@@ -606,6 +608,10 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     } catch (Exception e) {
       addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", e.getMessage()), true);
     }
+  }
+
+  public StreamedContent relatorioContabil(Lancamento lancamento) {
+    return relatorioService.relatorioBalanco(lancamento, sessionCtrl.getUser());
   }
 
 }
