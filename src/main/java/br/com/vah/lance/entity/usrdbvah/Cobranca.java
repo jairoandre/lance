@@ -32,10 +32,6 @@ public class Cobranca extends BaseEntity {
   @JoinColumn(name = "ID_CLIENTE")
   private Fornecedor cliente;
 
-  @ManyToOne
-  @JoinColumn(name = "ID_ARQUIVO")
-  private ArquivoRemessa arquivo;
-
   @Column(name = "VL_VALOR")
   private BigDecimal valor = BigDecimal.ZERO;
 
@@ -57,10 +53,10 @@ public class Cobranca extends BaseEntity {
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "TB_LANCA_COBRANCA_CONTA", joinColumns = {
       @JoinColumn(name = "ID_COBRANCA")}, inverseJoinColumns = {
-      @JoinColumn(name = "CD_SETOR")}, schema = "USRDBVAH")
+      @JoinColumn(name = "CD_CON_REC")}, schema = "USRDBVAH")
   private Set<ContaReceber> contas = new HashSet<>();
 
-  @OneToMany(mappedBy = "cobranca")
+  @OneToMany(mappedBy = "cobranca", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private Set<ItemCobranca> descritivo = new HashSet<>();
 
   public Long getId() {
@@ -81,14 +77,6 @@ public class Cobranca extends BaseEntity {
 
   public Fornecedor getCliente() {
     return cliente;
-  }
-
-  public ArquivoRemessa getArquivo() {
-    return arquivo;
-  }
-
-  public void setArquivo(ArquivoRemessa arquivo) {
-    this.arquivo = arquivo;
   }
 
   public void setCliente(Fornecedor cliente) {

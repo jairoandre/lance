@@ -7,7 +7,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.util.*;
 
-public class ViewUtils {
+public class VahUtils {
 
   public static String leftPadZeros(Object obj, Integer size) {
     String objStr = String.valueOf(obj);
@@ -56,6 +56,14 @@ public class ViewUtils {
   public static boolean checkBetweenDates(Date whenBegin, Date whenEnd, Date begin, Date end) {
     return checkBetween(whenBegin, begin, end) || checkBetween(whenEnd, begin, end);
 
+  }
+
+  public static Date calcNextMonthDate(Date date, Integer day) {
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(date);
+    cld.add(Calendar.MONTH, 1);
+    cld.set(Calendar.DAY_OF_MONTH, day);
+    return cld.getTime();
   }
 
   public static Date[] getDateRange(Date date) {

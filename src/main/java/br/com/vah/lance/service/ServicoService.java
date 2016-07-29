@@ -2,7 +2,7 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.entity.usrdbvah.Servico;
 import br.com.vah.lance.entity.usrdbvah.ServicoValor;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +15,7 @@ public class ServicoService extends DataAccessService<Servico> {
 
   public boolean canAddServiceValue(Servico servico, ServicoValor servicoValorToAdd) {
     for (ServicoValor servicoValor : servico.getValues()) {
-      if (ViewUtils.checkBetween(
+      if (VahUtils.checkBetween(
           servicoValorToAdd.getBeginDate(),
           servicoValor.getBeginDate(),
           servicoValor.getEndDate())) {

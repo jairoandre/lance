@@ -25,6 +25,7 @@ import java.util.*;
     @NamedQuery(name = Lancamento.BY_PERIOD, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end"),
     @NamedQuery(name = Lancamento.BY_PERIOD_VENCIMENTO, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.servico.diaVencimento = :vencimento"),
     @NamedQuery(name = Lancamento.BY_PERIOD_STATUS, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.status = :status"),
+    @NamedQuery(name = Lancamento.BY_PERIOD_STATUS_VENC, query = "SELECT e FROM Lancamento e where e.effectiveOn between :begin and :end and e.status = :status and e.servico.diaVencimento = :vencimento"),
     @NamedQuery(name = Lancamento.BY_ID, query = "SELECT e FROM Lancamento e where e.id = :id"),
     @NamedQuery(name = Lancamento.LAST_LANCAMENTO, query = "SELECT l FROM Lancamento l WHERE l.effectiveOn < :date AND l.servico = :servico ORDER BY l.effectiveOn DESC")})
 public class Lancamento extends BaseEntity {
@@ -44,6 +45,7 @@ public class Lancamento extends BaseEntity {
   public static final String BY_PERIOD = "Lancamento.byPeriod";
   public static final String BY_PERIOD_VENCIMENTO = "Lancamento.byPeriodVencimento";
   public static final String BY_PERIOD_STATUS = "Lancamento.byPeriodStatus";
+  public static final String BY_PERIOD_STATUS_VENC = "Lancamento.byPeriodStatusVenc";
   public static final String BY_ID = "Lancamento.byID";
   public static final String LAST_LANCAMENTO = "Lancamento.lastLancamento";
 

@@ -61,8 +61,8 @@ public class ArquivoUtils {
   }
 
   public static void main(String... args) {
-    BigDecimal bd = new BigDecimal(250.32);
+    BigDecimal bd = new BigDecimal(1000.00);
 
-    System.out.println(formatNumber(bd, 13));
+    System.out.println(formatNumber(bd.divide(new BigDecimal(100.00), 2, BigDecimal.ROUND_CEILING).divide(new BigDecimal(30.00), 2, BigDecimal.ROUND_CEILING), 13));
   }
 }

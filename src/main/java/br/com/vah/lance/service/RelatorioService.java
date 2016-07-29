@@ -2,7 +2,6 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
 import br.com.vah.lance.constant.TipoServicoEnum;
-import br.com.vah.lance.dto.Arquivo;
 import br.com.vah.lance.dto.ArquivoUtils;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
@@ -10,7 +9,7 @@ import br.com.vah.lance.reports.BalancoContabilDTO;
 import br.com.vah.lance.reports.DescritivoCondominioDTO;
 import br.com.vah.lance.reports.RelatorioSetorDTO;
 import br.com.vah.lance.reports.ReportLoader;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 import org.primefaces.model.StreamedContent;
 
 import javax.inject.Inject;
@@ -40,7 +39,7 @@ public class RelatorioService implements Serializable {
 
     Map<String, Object> parameters = new HashMap<>();
 
-    Date[] range = ViewUtils.getDateRange(vigencia);
+    Date[] range = VahUtils.getDateRange(vigencia);
 
     List<Lancamento> lancamentos = lancamentoService.getLancamentosPorPeriodoStatus(status, range);
 
@@ -156,7 +155,7 @@ public class RelatorioService implements Serializable {
         continue;
       }
 
-      Long contaCusto = servico.getContaContabil().getId();
+      Long contaCusto = servico.getContaCusto().getId();
 
       if (contaCusto.equals(269l)) {
         valorInternet = item.getValor();
@@ -247,7 +246,7 @@ public class RelatorioService implements Serializable {
 
   public StreamedContent relatorioBalancoCondominial(Date vigencia, User usuario) {
 
-    Date[] range = ViewUtils.getDateRange(vigencia);
+    Date[] range = VahUtils.getDateRange(vigencia);
 
     Map<String, Object> params = new HashMap<>();
     params.put("begin", range[0]);

@@ -6,7 +6,7 @@ import br.com.vah.lance.constant.TipoSetorEnum;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
@@ -46,16 +46,37 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     super(Lancamento.class);
   }
 
-  public List<Lancamento> recuperarLancamentosValidados(Date[] range, Integer vencimento) {
+  /**
+   * Recupera os lançamentos validados para a vigência e/ou vencimento informados.
+   *
+   * @param range
+   * @param vencimento
+   * @return
+   */
+  public List<Lancamento> recuperarLancamentosValidados(Date[] range, Integer vencimento, Boolean previa) {
+    String namedQuery;
     Map<String, Object> params = new HashMap<>();
     params.put("begin", range[0]);
     params.put("end", range[1]);
-    if (vencimento == null) {
-      return findWithNamedQuery(Lancamento.BY_PERIOD, params);
+    if (previa) {
+      if (vencimento == null) {
+        namedQuery = Lancamento.BY_PERIOD;
+      } else {
+        params.put("vencimento", vencimento);
+        namedQuery = Lancamento.BY_PERIOD_VENCIMENTO;
+      }
     } else {
-      params.put("vencimento", vencimento);
-      return findWithNamedQuery(Lancamento.BY_PERIOD_VENCIMENTO, params);
+      params.put("status", EstadoLancamentoEnum.V);
+      if (vencimento == null) {
+        namedQuery = Lancamento.BY_PERIOD_STATUS;
+      } else {
+        params.put("vencimento", vencimento);
+        namedQuery = Lancamento.BY_PERIOD_STATUS_VENC;
+      }
     }
+
+    return findWithNamedQuery(namedQuery, params);
+
   }
 
   /**
@@ -106,7 +127,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
       /**
        * Verifica se o período consultado é do mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
        */
-      if (ViewUtils.checkBetween(new Date(), range[0], range[1])) {
+      if (VahUtils.checkBetween(new Date(), range[0], range[1])) {
 
         Set<Servico> includedServicos = new HashSet<>();
 
@@ -358,7 +379,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           lancamentoValor.setValue(lancamentoValor.getValueA());
           break;
         case CTP:
-        // case CTR:
+          // case CTR:
           lancamentoValor.setValue(lancamentoValor.getValueA().multiply(currentServicoValor.getValueA()));
         default:
           break;
@@ -461,19 +482,6 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     return findWithNamedQuery(Lancamento.BY_SERVICE_DATE_STATUS, entriesParams);
   }
 
-  public Date getDataVencimento(Lancamento lancamento, Date dataLancamento) {
-    Calendar cl = Calendar.getInstance();
-    cl.setTime(dataLancamento);
-    cl.add(Calendar.MONTH, 1);
-    Integer vencimento = 5;
-    if (lancamento.getServico() != null && lancamento.getServico().getDiaVencimento() != null) {
-      vencimento = lancamento.getServico().getDiaVencimento();
-    }
-    cl.set(Calendar.DAY_OF_MONTH, vencimento);
-    return cl.getTime();
-  }
-
-
   public ContaReceber createContaReceber(LancamentoValor lancamentoValor, String numDocPrefix, Integer count, Date dataLancamento) {
 
     ContaReceber conRecToAdd = new ContaReceber();
@@ -485,7 +493,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecToAdd.setMoeda("1");
     conRecToAdd.setTipoVencimento("V");
     conRecToAdd.setValorBruto(lancamentoValor.getValue());
-    String numeroDocumento = numDocPrefix + ViewUtils.leftPadZeros(count, 3);
+    String numeroDocumento = numDocPrefix + VahUtils.leftPadZeros(count, 3);
     conRecToAdd.setNumeroDocumento(numeroDocumento);
     conRecToAdd.setDataLancamento(dataLancamento);
 
@@ -502,9 +510,11 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
     PlanoConta contaContabil = lancamentoValor.getLancamento().getServico().getContaContabil();
 
-    SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
-    if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
-      contaContabil = setorDetalhe.getContaContabil();
+    if (lancamentoValor.getLancamento().getServico().getContaPorSetor()) {
+      SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
+      if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
+        contaContabil = setorDetalhe.getContaContabil();
+      }
     }
     conRecToAdd.setContaContabil(contaContabil);
 
@@ -517,7 +527,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecItem.setValorMoeda(lancamentoValor.getValue());
     conRecItem.setContaReceber(conRecToAdd);
 
-    Date dataVencimento = getDataVencimento(lancamentoValor.getLancamento(), dataLancamento);
+    Date dataVencimento = VahUtils.calcNextMonthDate(dataLancamento, lancamentoValor.getLancamento().getServico().getDiaVencimento());
 
     conRecItem.setDataVencimento(dataVencimento);
     conRecItem.setDataPrevistaRecebimento(dataVencimento);
@@ -564,43 +574,45 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           ContaReceber contaReceber = contasReceberMap.get(lancamentoValor.getContratoSetor().getSetor());
 
           if (contaReceber == null) {
-            contasReceberMap.put(lancamentoValor.getContratoSetor().getSetor(), createContaReceber(lancamentoValor, numDocPrefix, count++, dataLancamento));
-            continue;
-          } else {
-            ContaReceberRateio itemRateio = contaReceber.getItensRateio().iterator().next();
-            ContaReceberItem itemConta = contaReceber.getItensConta().iterator().next();
+            contaReceber = createContaReceber(lancamentoValor, numDocPrefix, count++, dataLancamento);
+            contasReceberMap.put(lancamentoValor.getContratoSetor().getSetor(), contaReceber);
+          }
 
-            // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
-            // condizentes com o serviço iterado
-            Servico servico = lancamento.getServico();
+          ContaReceberRateio itemRateio = contaReceber.getItensRateio().iterator().next();
+          ContaReceberItem itemConta = contaReceber.getItensConta().iterator().next();
 
-            PlanoConta contaContabil = servico.getContaContabil();
+          // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
+          // condizentes com o serviço iterado
+          Servico servico = lancamento.getServico();
+
+          PlanoConta contaContabil = servico.getContaContabil();
+
+          if (lancamentoValor.getLancamento().getServico().getContaPorSetor()) {
             SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
             if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
               contaContabil = setorDetalhe.getContaContabil();
             }
-
-            if (!contaReceber.getHistoricoPadrao().equals(servico.getHistoricoPadrao()) ||
-                !contaReceber.getContaContabil().equals(contaContabil) ||
-                !itemRateio.getContaResultado().equals(servico.getContaCusto())) {
-              throw new LanceBusinessException("Não é possível realizar lançamento agrupado. Parâmetros contábeis divergentes entre os serviços selecionados. Serviço [%s]", lancamento.getServico().getClass().getSimpleName());
-            }
-
-            // Conta a receber para o setor já existe. Neste caso, atualize somente os valores da conta.
-            BigDecimal entryValueNumber = lancamentoValor.getValue();
-
-            // Valor total da conta
-            contaReceber.setValorBruto(contaReceber.getValorBruto().add(entryValueNumber));
-
-
-            // Valor do item de rateio
-            itemRateio.setValorRateio(itemRateio.getValorRateio().add(entryValueNumber));
-
-            // Valor do item da conta
-            itemConta.setValorDuplicata(itemConta.getValorDuplicata().add(entryValueNumber));
-            itemConta.setValorMoeda(itemConta.getValorMoeda().add(entryValueNumber));
-
           }
+
+          if (!contaReceber.getHistoricoPadrao().equals(servico.getHistoricoPadrao()) ||
+              !contaReceber.getContaContabil().equals(contaContabil) ||
+              !itemRateio.getContaResultado().equals(servico.getContaCusto())) {
+            throw new LanceBusinessException("Não é possível realizar lançamento agrupado. Parâmetros contábeis divergentes entre os serviços selecionados. Serviço [%s]", lancamento.getServico().getClass().getSimpleName());
+          }
+
+          // Conta a receber para o setor já existe. Neste caso, atualize somente os valores da conta.
+          BigDecimal entryValueNumber = lancamentoValor.getValue();
+
+          // Valor total da conta
+          contaReceber.setValorBruto(contaReceber.getValorBruto().add(entryValueNumber));
+
+
+          // Valor do item de rateio
+          itemRateio.setValorRateio(itemRateio.getValorRateio().add(entryValueNumber));
+
+          // Valor do item da conta
+          itemConta.setValorDuplicata(itemConta.getValorDuplicata().add(entryValueNumber));
+          itemConta.setValorMoeda(itemConta.getValorMoeda().add(entryValueNumber));
 
         }
       } // for

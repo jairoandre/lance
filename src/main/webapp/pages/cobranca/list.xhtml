@@ -15,7 +15,7 @@
             <h:outputText value="Para as outras cobranças o agrupamento é realizado por cliente e data de vencimento."/>
           </div>
         </div>
-        <h:panelGrid columns="5">
+        <h:panelGrid columns="8">
           <p:outputLabel value="Vigência" for="vigencia"/>
           <h:panelGroup>
             <p:inputText id="vigencia" styleClass="searchMonth" value="#{cobrancaCtrl.vigencia}"
@@ -35,65 +35,89 @@
               $(".vencimento").numberMask();
             </script>
           </h:panelGroup>
-          <p:commandButton id="buscarCobrancaBtns" value="Recuperar Cobranças"
-                           action="#{cobrancaCtrl.recuperarCobrancas}" ajax="true" process="@form"
-                           update="cobrancaTable"/>
+          <p:selectBooleanCheckbox id="previa" value="#{cobrancaCtrl.previa}" label="Prévia">
+            <p:ajax event="change" process="@this" update="cobrancaPnl" listener="#{cobrancaCtrl.clearCobrancas}"/>
+          </p:selectBooleanCheckbox>
+          <p:outputLabel for="previa" value="Prévia"/>
+          <p:commandButton id="gerarCobrancasBtn" value="Gerar Cobranças"
+                           action="#{cobrancaCtrl.gerarCobrancas}" ajax="true" process="@form"
+                           update="@form"/>
+          <p:commandButton id="buscarCobrancasBtn" value="Buscar Gravadas"
+                           action="#{cobrancaCtrl.buscarCobrancas}" ajax="true" process="@form"
+                           update="@form"/>
         </h:panelGrid>
 
-        <p:commandButton id="arquivoRemessaBtn1" value="Gerar Arquivo Remessa"
-                         ajax="false" process="@form" styleClass="margin-top"
-                         onclick="PrimeFaces.monitorDownload(start, stop);">
-          <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
-        </p:commandButton>
+        <h:panelGroup id="cobrancaPnl">
+          <p:commandButton id="arquivoRemessaBtn1" value="Remessa Selecionados"
+                           ajax="false" process="@form" styleClass="margin-top"
+                           onclick="PrimeFaces.monitorDownload(start, stop);">
+            <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
+          </p:commandButton>
 
-        <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
-                     selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
-                     styleClass="margin-top" rowSelectMode="add" >
-          <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
-          <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="50" styleClass="left-align">
-            <h:outputText value="#{cobranca.setor.id}"/>
-          </p:column>
-          <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="200"
-                    styleClass="left-align ellipsis-text">
-            <h:outputText value="#{cobranca.setor.title}"/>
-          </p:column>
-          <p:column headerText="Cód." sortBy="#{cobranca.cliente.id}" width="50" styleClass="left-align">
-            <h:outputText value="#{cobranca.cliente.id}"/>
-          </p:column>
-          <p:column headerText="Cliente" sortBy="#{cobranca.cliente.title}" styleClass="left-align">
-            <h:outputText value="#{cobranca.cliente.title}"/>
-          </p:column>
-          <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="100" styleClass="right-align">
-            <h:outputText value="#{cobranca.valor}">
-              <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
-            </h:outputText>
-          </p:column>
-          <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="75" styleClass="left-align">
-            <h:outputText value="#{cobranca.vigencia}">
-              <f:convertDateTime pattern="MM/yyyy"/>
-            </h:outputText>
-          </p:column>
-          <p:column headerText="Venc." sortBy="#{cobranca.vencimento}" width="75" styleClass="left-align">
-            <h:outputText value="#{cobranca.vencimento}">
-              <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </h:outputText>
-          </p:column>
-          <p:column headerText="Ações" width="100" styleClass="center-align">
-            <p:menuButton id="menuButton" value="Ações">
-              <p:menuitem value="Descritivo"
-                          onclick="PrimeFaces.monitorDownload(start, stop);"
-                          ajax="false"
-                          icon="fa fa-building">
-                <p:fileDownload value="#{cobrancaCtrl.descritivo(cobranca)}"/>
-              </p:menuitem>
-            </p:menuButton>
-          </p:column>
-        </p:dataTable>
-        <p:commandButton id="arquivoRemessaBtn2" value="Gerar Arquivo Remessa"
-                         ajax="false" process="@form" styleClass="margin-top"
-                         onclick="PrimeFaces.monitorDownload(start, stop);">
-          <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
-        </p:commandButton>
+          <p:commandButton id="gravarCobrancas1" value="Gravar Selecionados"
+                           action="#{cobrancaCtrl.gravarSelecionados}"
+                           ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
+
+          <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
+                       selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
+                       disabledSelection="#{cobrancaCtrl.previa}"
+                       styleClass="margin-top" rowSelectMode="add">
+            <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
+            <p:column headerText="Id" width="40" styleClass="left-align">
+              <h:outputText value="#{cobranca.id}"/>
+            </p:column>
+            <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="50" styleClass="left-align">
+              <h:outputText value="#{cobranca.setor.id}"/>
+            </p:column>
+            <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="200"
+                      styleClass="left-align ellipsis-text">
+              <h:outputText value="#{cobranca.setor.title}"/>
+            </p:column>
+            <p:column headerText="Cód." sortBy="#{cobranca.cliente.id}" width="50" styleClass="left-align">
+              <h:outputText value="#{cobranca.cliente.id}"/>
+            </p:column>
+            <p:column headerText="Cliente" sortBy="#{cobranca.cliente.title}" styleClass="left-align">
+              <h:outputText value="#{cobranca.cliente.title}"/>
+            </p:column>
+            <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="100" styleClass="right-align">
+              <h:outputText value="#{cobranca.valor}">
+                <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="75" styleClass="left-align">
+              <h:outputText value="#{cobranca.vigencia}">
+                <f:convertDateTime pattern="MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Venc." sortBy="#{cobranca.vencimento}" width="75" styleClass="left-align">
+              <h:outputText value="#{cobranca.vencimento}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Ações" width="100" styleClass="center-align">
+              <p:menuButton id="menuButton" value="Ações">
+                <p:menuitem value="Descritivo"
+                            onclick="PrimeFaces.monitorDownload(start, stop);"
+                            ajax="false"
+                            disabled="#{empty cobranca.setor}"
+                            icon="fa fa-building">
+                  <p:fileDownload value="#{cobrancaCtrl.descritivo(cobranca)}"/>
+                </p:menuitem>
+              </p:menuButton>
+            </p:column>
+          </p:dataTable>
+          <p:commandButton id="arquivoRemessaBtn2" value="Remessa Selecionados"
+                           ajax="false" process="@form" styleClass="margin-top"
+                           onclick="PrimeFaces.monitorDownload(start, stop);">
+            <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
+          </p:commandButton>
+
+          <p:commandButton id="gravarCobrancas2" value="Gravar Selecionados"
+                           action="#{cobrancaCtrl.gravarSelecionados}"
+                           ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
+        </h:panelGroup>
+
+
       </p:panel>
     </h:form>
   </ui:define>

@@ -9,7 +9,7 @@ public class Multa {
   private String tipoRegistro = "2";
   private String codigoMulta = "2";
   private String dataMulta;
-  private String multa = "0000000000002";
+  private String multa = "0000000000200";
   private String spaces = ArquivoUtils.rightSpace("", 371);
   private String sequencial;
 

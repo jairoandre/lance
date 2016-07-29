@@ -4,7 +4,7 @@ import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.entity.usrdbvah.User;
 import br.com.vah.lance.service.UserService;
 import br.com.vah.lance.util.DateUtility;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -119,7 +119,7 @@ public class SessionCtrl implements Serializable {
         user.setLogin(username);
         user.getRoles().add(RolesEnum.USER);
         userService.create(user);
-        ViewUtils.addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Solicite configuração de acesso ao administrador do sistema"), true);
+        VahUtils.addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Solicite configuração de acesso ao administrador do sistema"), true);
       }
 
       // gets the user principle and navigates to the appropriate page

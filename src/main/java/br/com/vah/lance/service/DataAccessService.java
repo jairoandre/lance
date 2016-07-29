@@ -210,6 +210,11 @@ public abstract class DataAccessService<T> implements Serializable {
     return query.getResultList();
   }
 
+  public Criteria createCriteria() {
+    Session session = em.unwrap(Session.class);
+    return session.createCriteria(type);
+  }
+
   /**
    * Create criteria
    *

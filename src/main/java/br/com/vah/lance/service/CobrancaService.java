@@ -4,6 +4,12 @@ import br.com.vah.lance.entity.dbamv.ContaReceber;
 import br.com.vah.lance.entity.dbamv.Fornecedor;
 import br.com.vah.lance.entity.dbamv.Setor;
 import br.com.vah.lance.entity.usrdbvah.*;
+import br.com.vah.lance.exception.LanceBusinessException;
+import br.com.vah.lance.util.VahUtils;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,9 +26,79 @@ public class CobrancaService extends DataAccessService<Cobranca> {
   @Inject
   LancamentoService lancamentoService;
 
-  public List<Cobranca> recuperarCobrancas(Date[] vigencia, Integer vencimento) {
+  public CobrancaService() {
+    super(Cobranca.class);
+  }
 
-    List<Lancamento> lancamentos = lancamentoService.recuperarLancamentosValidados(vigencia, vencimento);
+  /**
+   * Busca as cobranças gravadas na base de dados pela vigência e/ou vencimento.
+   *
+   * @param vigencia
+   * @param vencimento
+   * @return
+   */
+  public List<Cobranca> buscarCobrancas(Date[] vigencia, Integer vencimento) {
+    Criteria criteria = createCriteria();
+
+    criteria.add(Restrictions.between("vigencia", vigencia[0], vigencia[1]));
+    if (vencimento != null) {
+      criteria.add(Restrictions.eq("vencimento", VahUtils.calcNextMonthDate(vigencia[0], vencimento)));
+    }
+
+    criteria.setFetchMode("contas", FetchMode.SELECT);
+    criteria.setFetchMode("descritivo", FetchMode.SELECT);
+
+    criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+    return criteria.list();
+  }
+
+  /**
+   * Cria ou atualiza na base de dados as cobranças contidas em um array.
+   *
+   * @param cobrancas
+   * @return
+   */
+  public List<Cobranca> gravarCobrancas(Cobranca[] cobrancas) throws LanceBusinessException {
+    List<Cobranca> attachedCobrancas = new ArrayList<>();
+    if (cobrancas != null && cobrancas.length > 0) {
+
+      StringBuilder builder = new StringBuilder();
+      for (Cobranca cobranca : cobrancas) {
+        if (cobranca.getId() == null && checkCobranca(cobranca)) {
+          if (cobranca.getSetor() != null) {
+            builder.append(String.format("Setor: %s", cobranca.getSetor().getLabelForSelectItem()));
+          }
+          builder.append(String.format("Cliente: %s", cobranca.getCliente().getLabelForSelectItem()));
+          builder.append("\r\n");
+        }
+      }
+
+      if (builder.length() > 0) {
+        throw new LanceBusinessException("Já existe cobranças para os seguintes items: \r\n" + builder.toString());
+      }
+
+      for (Cobranca cobranca : cobrancas) {
+        if (cobranca.getId() == null) {
+          attachedCobrancas.add(create(cobranca));
+        } else {
+          attachedCobrancas.add(update(cobranca));
+        }
+      }
+    }
+    return attachedCobrancas;
+  }
+
+  /**
+   * Realiza uma varredura nos lançamentos verificando
+   *
+   * @param vigencia
+   * @param vencimento
+   * @return
+   */
+  public List<Cobranca> gerarCobrancas(Date[] vigencia, Integer vencimento, Boolean previa) {
+
+    List<Lancamento> lancamentos = lancamentoService.recuperarLancamentosValidados(vigencia, vencimento, previa);
 
     Calendar cld = Calendar.getInstance();
     cld.setTime(vigencia[0]);
@@ -73,7 +149,15 @@ public class CobrancaService extends DataAccessService<Cobranca> {
             cobranca.setSetor(setor);
           }
           cobranca.setCliente(cliente);
+          /*
+          Cobranca attached = recuperarCobranca(cobranca);
+          if (attached != null) {
+            cobranca = attached;
+            cobranca.setValor(BigDecimal.ZERO);
+          }*/
           cobrancasMap.put(chave, cobranca);
+        } else if (cobranca.getId() != null) {
+          continue;
         }
 
         if (contas.get(chaveConta) != null) {
@@ -109,5 +193,30 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     });
 
     return cobrancas;
+  }
+
+  /**
+   * Verifica se já existe cobrança com o mesmo vencimento para o cliente/setor informado na nova cobrança.
+   *
+   * @param cobranca
+   * @return {@true} se houver {@false} se não.
+   */
+  public Boolean checkCobranca(Cobranca cobranca) {
+    return recuperarCobranca(cobranca) != null;
+
+  }
+
+  public Cobranca recuperarCobranca(Cobranca cobranca) {
+    Criteria criteria = createCriteria();
+    if (cobranca.getSetor() != null) {
+      criteria.add(Restrictions.eq("setor", cobranca.getSetor()));
+    }
+    criteria.add(Restrictions.eq("cliente", cobranca.getCliente()));
+    criteria.add(Restrictions.eq("vencimento", cobranca.getVencimento()));
+    if (criteria.list().size() == 0) {
+      return null;
+    } else {
+      return (Cobranca) criteria.list().iterator().next();
+    }
   }
 }

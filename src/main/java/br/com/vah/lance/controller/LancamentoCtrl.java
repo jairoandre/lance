@@ -7,7 +7,7 @@ import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.*;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 import com.opencsv.CSVReader;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.StreamedContent;
@@ -96,7 +96,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
-    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), ViewUtils.getDateRangeForThisMonth());
+    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRangeForThisMonth());
     initLazyModel(service, RELATIONS);
   }
 
@@ -104,7 +104,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     Calendar cld = GregorianCalendar.getInstance();
     cld.setTime(searchMonth);
     cld.add(Calendar.DAY_OF_YEAR, 15);
-    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), ViewUtils.getDateRange(cld.getTime()));
+    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRange(cld.getTime()));
   }
 
   @Override
@@ -269,7 +269,8 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
     dtLancamentoConRec = new Date();
 
-    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
+    dtVencConRec =
+        VahUtils.calcNextMonthDate(dtLancamentoConRec, getItem().getServico().getDiaVencimento());
 
   }
 
@@ -278,7 +279,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
       try {
         Date date = sdf.parse(groupDateStr);
-        entries = service.retrieveEntriesForUser(null, ViewUtils.getDateRange(date));
+        entries = service.retrieveEntriesForUser(null, VahUtils.getDateRange(date));
         Map<Fornecedor, Map<Servico, BigDecimal>> values = service.groupByClient(entries);
         Map<Fornecedor, List<Map.Entry<Servico, BigDecimal>>> mapOfList = new HashMap<>();
         for (Fornecedor client : values.keySet()) {
@@ -336,7 +337,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
       String numDocPrefix = sdf.format(dtLancamentoConRec);
 
-      numDocPrefix = numDocPrefix + ViewUtils.leftPadZeros(getItem().getServico().getId(), 2);
+      numDocPrefix = numDocPrefix + VahUtils.leftPadZeros(getItem().getServico().getId(), 2);
 
       int count = 0;
 
@@ -551,7 +552,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   }
 
   public void updateDtVencimento() {
-    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
+    dtVencConRec = VahUtils.calcNextMonthDate(dtLancamentoConRec, getItem().getServico().getDiaVencimento());
   }
 
   /**

@@ -3,6 +3,7 @@ package br.com.vah.lance.dto;
 import br.com.vah.lance.entity.dbamv.Fornecedor;
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,10 +54,10 @@ public class Detalhe {
   private String codigoBanco = "341";
   // 9(05)
   private String agenciaCobradora = ArquivoUtils.leftZeros("", 5);
-  // 9(01) : 01 - Duplicata Mercantil
+  // X(02) : 01 - Duplicata Mercantil
   private String especie = "01";
   // X(01) : A - Aceite ou N - Não aceite
-  private String aceite = "A";
+  private String aceite = "N";
   // 9(06)
   private String dataEmissao = ArquivoUtils.leftZeros("", 6);
   // X(02) : 09 - Protestar ; 02 - Devolver 05 dias ; 03 - Devolver 30 dias ; 05 - Conforme instruções ; 06 - 10 dias ; 07 - 15 dias
@@ -115,11 +116,15 @@ public class Detalhe {
       usoEmpresa = ArquivoUtils.rightSpace(cobranca.getId(), 25);
       nossoNumero = ArquivoUtils.leftZeros(cobranca.getId(), 8);
     }
-    numeroDocumento = ArquivoUtils.rightSpace(cobranca.getDocumento(), 10);
+    String nrDoc = cobranca.getDocumento();
+    if (nrDoc == null || nrDoc.isEmpty()) {
+      nrDoc = cobranca.getId().toString();
+    }
+    numeroDocumento = ArquivoUtils.rightSpace(nrDoc, 10);
     vencimento = ArquivoUtils.formatDate(cobranca.getVencimento(), "ddMMyy");
     valor = ArquivoUtils.formatNumber(cobranca.getValor(), 13);
     dataEmissao = ArquivoUtils.formatDate(new Date(), "ddMMyy");
-    moraDiaria = ArquivoUtils.leftZeros("1", 13);
+    moraDiaria = ArquivoUtils.formatNumber(cobranca.getValor().divide(new BigDecimal(100.00), 2, BigDecimal.ROUND_CEILING).divide(new BigDecimal(30.00), 2, BigDecimal.ROUND_CEILING), 13);
     if (cliente.getCgcCpf().length() > 11) {
       codigoInscricaoPagador = "02";
     } else {

@@ -6,7 +6,7 @@ import br.com.vah.lance.entity.usrdbvah.Servico;
 import br.com.vah.lance.entity.usrdbvah.ServicoValor;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServicoService;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -54,7 +54,7 @@ public class ServicoCtrl extends AbstractController<Servico> {
 
   public void prepareNewServiceValue() {
     servicoValor = new ServicoValor();
-    Date[] range = ViewUtils.getDateRangeForThisMonth();
+    Date[] range = VahUtils.getDateRangeForThisMonth();
     servicoValor.setBeginDate(range[0]);
   }
 

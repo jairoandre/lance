@@ -103,17 +103,17 @@
             <p:column headerText="Cód." width="50" styleClass="left-align" sortBy="#{item.id}">
               <h:outputText value="#{item.id}"/>
             </p:column>
-            <p:column headerText="Documento"
-                      styleClass="left-align" width="75" sortBy="#{item.numeroDocumento}">
-              <h:outputText value="#{item.numeroDocumento}"/>
+            <p:column headerText="Setor"
+                      styleClass="left-align" width="75" sortBy="#{item.codSetor}">
+              <h:outputText value="#{item.codSetor}"/>
             </p:column>
             <p:column headerText="Cliente"
-                      styleClass="left-align ellipsis-text" width="200">
+                      styleClass="left-align ellipsis-text" width="200" sortBy="#{item.nomeCliente}">
               <h:outputText id="nomeCliente" value="#{item.nomeCliente}"/>
               <vah:toolTip id="clienteTool" index="#{idx}" for="#{p:component('nomeCliente')}"
                            value="#{item.nomeCliente}"/>
             </p:column>
-            <p:column headerText="Valor" width="85" styleClass="left-align">
+            <p:column headerText="Valor" width="85" styleClass="left-align" sortBy="#{item.valorBruto}">
               <h:outputText value="#{item.valorBruto}">
                 <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
               </h:outputText>

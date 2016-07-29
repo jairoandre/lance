@@ -37,7 +37,7 @@ public class SetorDetalhe extends BaseEntity {
   private BigDecimal rtQuantity;
 
   @ManyToOne
-  @JoinColumn(name = "CD_REDUZIDO", nullable = true)
+  @JoinColumn(name = "CD_REDUZIDO")
   private PlanoConta contaContabil;
 
   @Enumerated(EnumType.ORDINAL)

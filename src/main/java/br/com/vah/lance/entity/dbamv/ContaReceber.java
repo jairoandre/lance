@@ -272,4 +272,11 @@ public class ContaReceber extends BaseEntity {
   public void setGlosaAceita(String glosaAceita) {
     this.glosaAceita = glosaAceita;
   }
+
+  public String getCodSetor() {
+    if (itensRateio != null) {
+      return itensRateio.iterator().next().getCdSetor().toString();
+    }
+    return "-";
+  }
 }

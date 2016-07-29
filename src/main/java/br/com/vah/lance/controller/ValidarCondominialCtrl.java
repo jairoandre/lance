@@ -7,6 +7,7 @@ import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.ContaReceberService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.LancamentoService;
+import br.com.vah.lance.util.VahUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -59,7 +60,7 @@ public class ValidarCondominialCtrl extends AbstractController<Lancamento> {
     setItem(createNewItem());
     lancamentos = service.recuperarLancamentosCondominial();
     dtLancamentoConRec = new Date();
-    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
+    dtVencConRec = VahUtils.calcNextMonthDate(dtLancamentoConRec, 8);
   }
 
   public List<Lancamento> getLancamentos() {
@@ -105,7 +106,7 @@ public class ValidarCondominialCtrl extends AbstractController<Lancamento> {
   }
 
   public void updateDtVencimento() {
-    dtVencConRec = service.getDataVencimento(getItem(), dtLancamentoConRec);
+    dtVencConRec = VahUtils.calcNextMonthDate(dtLancamentoConRec, 8);
   }
 
   public void doValidateSave() {

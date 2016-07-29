@@ -1,6 +1,7 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
+import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.ArquivoRemessaService;
 import br.com.vah.lance.service.CobrancaService;
 import br.com.vah.lance.service.DataAccessService;
@@ -12,7 +13,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +46,8 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   @Inject
   ArquivoRemessaService arquivoService;
 
+  private Boolean previa = false;
+
   private Cobranca[] selectedCobrancas;
 
   private Date vigencia;
@@ -54,32 +56,77 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private List<Cobranca> cobrancas;
 
-  public void recuperarCobrancas() {
+  private boolean validarObrigatorios() {
+    if (vigencia == null) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Informe a vigência");
+      return false;
+    }
+    return true;
+  }
+
+  private void addErrorMessage(Exception e) {
+    addMsg(FacesMessage.SEVERITY_ERROR, "Ops", String.format("Isto não deveria acontecer: %s", e.getMessage()));
+  }
+
+  public void clearCobrancas() {
+    cobrancas = null;
+  }
+
+  public void gerarCobrancas() {
     try {
-      boolean recuperar = true;
-      if (vigencia == null) {
-        addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Informe a vigência");
-        recuperar = false;
-      }
-      if (recuperar) {
-        cobrancas = service.recuperarCobrancas(DateUtility.monthRange(vigencia), vencimento);
+      if (validarObrigatorios()) {
+        cobrancas = service.gerarCobrancas(DateUtility.monthRange(vigencia), vencimento, previa);
       }
     } catch (Exception e) {
-      addMsg(FacesMessage.SEVERITY_ERROR, "Ops", "Erro na recuperação das cobranças");
+      addErrorMessage(e);
+    }
+  }
+
+  public void buscarCobrancas() {
+    try {
+      if (validarObrigatorios()) {
+        cobrancas = service.buscarCobrancas(DateUtility.monthRange(vigencia), vencimento);
+      }
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+  }
+
+  public void gravarSelecionados() {
+    try {
+      cobrancas = service.gravarCobrancas(selectedCobrancas);
+      addMsg(FacesMessage.SEVERITY_INFO, "Sucesso", "Registros atualizados");
+      selectedCobrancas = null;
+    } catch(LanceBusinessException lbe) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
+    } catch (Exception e) {
+      addErrorMessage(e);
     }
   }
 
   public StreamedContent getArquivoRemessa() {
-    if (selectedCobrancas != null && selectedCobrancas.length > 0) {
-      return arquivoService.gerarArquivo(Arrays.asList(selectedCobrancas));
-    } else {
-      return null;
+    try {
+      if (selectedCobrancas != null && selectedCobrancas.length > 0) {
+        return arquivoService.gerarArquivo(Arrays.asList(selectedCobrancas));
+      }
+    } catch (LanceBusinessException lbe) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
+    } catch (Exception e) {
+      addErrorMessage(e);
     }
-
+    return null;
   }
 
   public StreamedContent descritivo(Cobranca cobranca) {
     return relatorioService.descritivo(cobranca, sessionCtrl.getUser());
+  }
+
+  public Boolean getPrevia() {
+    return previa;
+  }
+
+  public void setPrevia(Boolean previa) {
+    this.previa = previa;
   }
 
   public Cobranca[] getSelectedCobrancas() {

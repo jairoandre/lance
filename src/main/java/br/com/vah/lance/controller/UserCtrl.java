@@ -15,8 +15,7 @@ import br.com.vah.lance.entity.usrdbvah.User;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.ServicoService;
 import br.com.vah.lance.service.UserService;
-import br.com.vah.lance.util.GenericLazyDataModel;
-import br.com.vah.lance.util.ViewUtils;
+import br.com.vah.lance.util.VahUtils;
 
 @SuppressWarnings("serial")
 @Named
@@ -46,7 +45,7 @@ public class UserCtrl extends AbstractController<User> {
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
     initLazyModel(service, RELATIONS);
-    services = ViewUtils.createSelectItem(servicoService.findWithNamedQuery(Servico.ALL), true);
+    services = VahUtils.createSelectItem(servicoService.findWithNamedQuery(Servico.ALL), true);
     roles = RolesEnum.values();
     setSearchField("login");
   }
