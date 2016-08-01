@@ -178,7 +178,7 @@
 					<textElement verticalAlignment="Middle">
 						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Total:]]></text>
+					<text><![CDATA[TOTAL:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="295" y="0" width="185" height="15" uuid="a43d35b1-3141-4b64-8c78-7611ce52dd3c"/>
@@ -188,7 +188,7 @@
 					<textElement verticalAlignment="Middle">
 						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Total:]]></text>
+					<text><![CDATA[TOTAL:]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="185" y="0" width="75" height="15" uuid="75788610-ae24-44b9-b981-0ea1e2bff4e3"/>
@@ -229,7 +229,7 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Bottom"/>
 					<text><![CDATA[Energia]]></text>
 				</staticText>
 				<staticText>
@@ -241,7 +241,7 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Bottom"/>
 					<text><![CDATA[Taxa de Refrigeração]]></text>
 				</staticText>
 				<staticText>
@@ -253,7 +253,7 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Bottom"/>
 					<text><![CDATA[Internet]]></text>
 				</staticText>
 				<staticText>
@@ -265,33 +265,33 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Bottom"/>
 					<text><![CDATA[Telefonia]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="135" y="41" width="125" height="15" uuid="c255a4e2-19f2-4cc3-9520-35b591201387"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="135" y="71" width="125" height="15" uuid="825f6b27-0a46-432c-b345-5d62e566dbc9"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_TR}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="135" y="86" width="125" height="15" uuid="b8fc7ad8-cf4e-45bb-a349-c251907e6cf1"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_INTERNET}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="135" y="56" width="125" height="15" uuid="d205fc66-0207-470c-b5d0-7aa4c5c880ca"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_TELEFONIA}]]></textFieldExpression>
@@ -326,7 +326,7 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[ÁREA COMUM:]]></text>
@@ -340,7 +340,7 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[OUTRAS DESPESAS:]]></text>
@@ -360,7 +360,7 @@
 					<box>
 						<topPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="10" isBold="true" isItalic="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{TOTAL_RATEIO_CLIENTE}]]></textFieldExpression>
@@ -370,7 +370,7 @@
 					<box>
 						<topPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="10" isBold="true" isItalic="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}.add($P{VALOR_TELEFONIA}).add($P{VALOR_INTERNET}).add($P{VALOR_TR})]]></textFieldExpression>

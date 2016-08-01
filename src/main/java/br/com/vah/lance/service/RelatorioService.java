@@ -172,7 +172,7 @@ public class RelatorioService implements Serializable {
 
     for (ItemCobranca item : cobranca.getDescritivo()) {
       DescritivoCondominioDTO dto = new DescritivoCondominioDTO();
-      dto.setNumeroDocumento(item.getId() == null ? "-" : item.getId().toString());
+      dto.setNumeroDocumento(cobranca.getId() == null ? "-" : cobranca.getId().toString());
       dto.setTotal(item.getTotal());
       dto.setRateio(item.getValor());
       dto.setServico(item.getServico().getTitle());
@@ -182,13 +182,9 @@ public class RelatorioService implements Serializable {
       datasource.add(dto);
     }
 
-    Calendar cld = Calendar.getInstance();
-    cld.setTime(cobranca.getVigencia());
-    cld.add(Calendar.MONTH, -1);
-
     parameters.put("AUTOR", user.getLogin());
     SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
-    parameters.put("REFERENCIA", sdf.format(cld.getTime()));
+    parameters.put("REFERENCIA", sdf.format(cobranca.getVigencia()));
     parameters.put("TOTAL_CONDOMINIO", cobranca.getValor());
 
     return reportLoader.getReportAsInputStream("descritivoGeral", parameters, datasource);
@@ -259,7 +255,7 @@ public class RelatorioService implements Serializable {
       }
 
       DescritivoCondominioDTO dto = new DescritivoCondominioDTO();
-      dto.setNumeroDocumento(item.getId() == null ? "-" : item.getId().toString());
+      dto.setNumeroDocumento(cobranca.getId() == null ? "-" : cobranca.getId().toString());
       dto.setTotal(item.getTotal());
       dto.setRateio(item.getValor());
       dto.setServico(servico.getTitle());

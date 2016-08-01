@@ -39,11 +39,11 @@
             <p:ajax event="change" process="@this" update="cobrancaPnl" listener="#{cobrancaCtrl.clearCobrancas}"/>
           </p:selectBooleanCheckbox>
           <p:outputLabel for="previa" value="Prévia"/>
-          <p:commandButton id="gerarCobrancasBtn" value="Gerar Cobranças"
-                           action="#{cobrancaCtrl.gerarCobrancas}" ajax="true" process="@form"
-                           update="@form"/>
           <p:commandButton id="buscarCobrancasBtn" value="Buscar Gravadas"
                            action="#{cobrancaCtrl.buscarCobrancas}" ajax="true" process="@form"
+                           update="@form"/>
+          <p:commandButton id="gerarCobrancasBtn" value="Gerar Cobranças"
+                           action="#{cobrancaCtrl.gerarCobrancas}" ajax="true" process="@form"
                            update="@form"/>
         </h:panelGrid>
 
@@ -58,7 +58,7 @@
                            action="#{cobrancaCtrl.gravarSelecionados}"
                            ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
 
-          <p:commandButton value="Descritivo Selecionados"
+          <p:commandButton value="Descritivo Selecionados (PDF)"
                            onclick="PrimeFaces.monitorDownload(start, stop);"
                            process="@form"
                            ajax="false"
@@ -67,6 +67,14 @@
             <p:fileDownload value="#{cobrancaCtrl.descritivos}"/>
           </p:commandButton>
 
+          <p:commandButton value="Descritivo Selecionados (TXT)"
+                           onclick="PrimeFaces.monitorDownload(start, stop);"
+                           process="@form"
+                           ajax="false"
+                           icon="fa fa-building"
+                           styleClass="margin-top margin-left">
+            <p:fileDownload value="#{cobrancaCtrl.descritivoCobrancas}"/>
+          </p:commandButton>
 
           <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
                        selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"

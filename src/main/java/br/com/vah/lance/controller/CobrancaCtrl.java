@@ -125,6 +125,19 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return null;
   }
 
+  public StreamedContent getDescritivoCobrancas() {
+    try {
+      if (selectedCobrancas != null && selectedCobrancas.length > 0) {
+        return arquivoService.gerarDescritivo(Arrays.asList(selectedCobrancas));
+      }
+    } catch (LanceBusinessException lbe) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+    return null;
+  }
+
   public StreamedContent descritivoGeral(Cobranca cobranca) {
     try {
       return relatorioService.descritivoGeral(cobranca, sessionCtrl.getUser());

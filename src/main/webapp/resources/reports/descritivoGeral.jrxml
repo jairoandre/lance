@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medias" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16ee6332-fc89-4379-ba3c-765250e5790b">
 	<property name="ireport.zoom" value="1.3310000000000017"/>
-	<property name="ireport.x" value="16"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REFERENCIA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.lang.Object"/>
@@ -14,8 +14,9 @@
 	<field name="total" class="java.math.BigDecimal"/>
 	<field name="nomeSetor" class="java.lang.String"/>
 	<field name="vencimento" class="java.lang.String"/>
+	<field name="rateio" class="java.math.BigDecimal"/>
 	<variable name="TOTAL_CLIENTE" class="java.math.BigDecimal" resetType="Group" resetGroup="nomeCliente" calculation="Sum">
-		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+		<variableExpression><![CDATA[$F{rateio}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<group name="nomeCliente">
@@ -148,7 +149,7 @@
 					<textElement verticalAlignment="Middle">
 						<font isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Total:]]></text>
+					<text><![CDATA[TOTAL:]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
 					<reportElement x="480" y="0" width="75" height="15" uuid="75788610-ae24-44b9-b981-0ea1e2bff4e3"/>
@@ -220,7 +221,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rateio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
