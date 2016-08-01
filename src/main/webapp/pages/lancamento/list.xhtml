@@ -96,7 +96,10 @@
             </p:menuButton>
           </p:column>
         </p:dataTable>
-        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="900" height="400" header="Contas a receber">
+        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="900" height="400">
+          <f:facet name="header">
+            <h:outputText value="Contas a receber - #{lancamentoCtrl.item.servico.title}" rendered="#{not empty lancamentoCtrl.item.servico}"/>
+          </f:facet>
           <p:dataTable id="contasReceberTable" rendered="#{not empty lancamentoCtrl.item.contasReceber}"
                        value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}"
                        rowIndexVar="idx">

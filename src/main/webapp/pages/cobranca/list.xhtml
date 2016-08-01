@@ -58,6 +58,16 @@
                            action="#{cobrancaCtrl.gravarSelecionados}"
                            ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
 
+          <p:commandButton value="Descritivo Selecionados"
+                           onclick="PrimeFaces.monitorDownload(start, stop);"
+                           process="@form"
+                           ajax="false"
+                           icon="fa fa-building"
+                           styleClass="margin-top margin-left">
+            <p:fileDownload value="#{cobrancaCtrl.descritivos}"/>
+          </p:commandButton>
+
+
           <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
                        selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
                        disabledSelection="#{cobrancaCtrl.previa}"
@@ -69,7 +79,7 @@
             <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="50" styleClass="left-align">
               <h:outputText value="#{cobranca.setor.id}"/>
             </p:column>
-            <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="200"
+            <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="100"
                       styleClass="left-align ellipsis-text">
               <h:outputText value="#{cobranca.setor.title}"/>
             </p:column>
@@ -96,12 +106,19 @@
             </p:column>
             <p:column headerText="Ações" width="100" styleClass="center-align">
               <p:menuButton id="menuButton" value="Ações">
-                <p:menuitem value="Descritivo"
+                <p:menuitem value="Descritivo Cond."
                             onclick="PrimeFaces.monitorDownload(start, stop);"
                             ajax="false"
-                            disabled="#{empty cobranca.setor}"
+                            rendered="#{not empty cobranca.setor}"
                             icon="fa fa-building">
                   <p:fileDownload value="#{cobrancaCtrl.descritivo(cobranca)}"/>
+                </p:menuitem>
+                <p:menuitem value="Descritivo Geral"
+                            onclick="PrimeFaces.monitorDownload(start, stop);"
+                            ajax="false"
+                            rendered="#{empty cobranca.setor}"
+                            icon="fa fa-building">
+                  <p:fileDownload value="#{cobrancaCtrl.descritivoGeral(cobranca)}"/>
                 </p:menuitem>
               </p:menuButton>
             </p:column>

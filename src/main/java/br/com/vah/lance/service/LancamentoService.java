@@ -486,11 +486,14 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
     ContaReceber conRecToAdd = new ContaReceber();
 
+    Servico servico = lancamentoValor.getLancamento().getServico();
+
     conRecToAdd.setCdProcesso(132l);
     conRecToAdd.setCdMultiEmpresa(1);
     conRecToAdd.setTipoDocumento("C");
     conRecToAdd.setDataEmissao(new Date());
     conRecToAdd.setMoeda("1");
+    conRecToAdd.setCdTipDoc(servico.getTipoDocumento().getId().intValue());
     conRecToAdd.setTipoVencimento("V");
     conRecToAdd.setValorBruto(lancamentoValor.getValue());
     String numeroDocumento = numDocPrefix + VahUtils.leftPadZeros(count, 3);

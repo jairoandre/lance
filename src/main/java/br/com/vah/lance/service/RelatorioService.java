@@ -10,13 +10,17 @@ import br.com.vah.lance.reports.DescritivoCondominioDTO;
 import br.com.vah.lance.reports.RelatorioSetorDTO;
 import br.com.vah.lance.reports.ReportLoader;
 import br.com.vah.lance.util.VahUtils;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import javax.inject.Inject;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by jairoportela on 06/07/2016.
@@ -51,7 +55,7 @@ public class RelatorioService implements Serializable {
         continue;
       }
 
-      Servico servico  = lancamento.getServico();
+      Servico servico = lancamento.getServico();
 
       Calendar cld = Calendar.getInstance();
       cld.setTime(lancamento.getEffectiveOn());
@@ -120,8 +124,95 @@ public class RelatorioService implements Serializable {
     });
   }
 
-  public StreamedContent descritivo(Cobranca cobranca, User user) {
+  public StreamedContent descritivos(Cobranca[] cobrancas, User user) {
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    ZipOutputStream zos = new ZipOutputStream(baos);
+    try {
+      for (Cobranca cobranca : cobrancas) {
+        String fileName = cobranca.getCliente().getId().toString();
+        byte[] buffer = new byte[1024];
+        if (cobranca.getSetor() != null) {
+          fileName += "-" + cobranca.getSetor().getId();
+        }
+        fileName += ArquivoUtils.formatDate(cobranca.getVencimento(), "ddMMyy") + ".pdf";
+        ZipEntry ze = new ZipEntry(fileName);
+        zos.putNextEntry(ze);
+        InputStream in;
+        if (cobranca.getSetor() == null) {
+          in = descritivoGeralIN(cobranca, user);
+        } else {
+          in = descritivoIN(cobranca, user);
+        }
+        int len;
+        while ((len = in.read(buffer)) > 0) {
+          zos.write(buffer, 0, len);
+        }
+        in.close();
+        zos.closeEntry();
+      }
+
+      zos.close();
+
+      DefaultStreamedContent dsc = new DefaultStreamedContent(new ByteArrayInputStream(baos.toByteArray()));
+      dsc.setContentType("application/zip");
+      dsc.setName("DESCRITIVOS.zip");
+
+      return dsc;
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+    return null;
+  }
+
+  public InputStream descritivoGeralIN(Cobranca cobranca, User user) {
     Map<String, Object> parameters = new HashMap<>();
+    List<DescritivoCondominioDTO> datasource = new ArrayList<>();
+
+    for (ItemCobranca item : cobranca.getDescritivo()) {
+      DescritivoCondominioDTO dto = new DescritivoCondominioDTO();
+      dto.setNumeroDocumento(item.getId() == null ? "-" : item.getId().toString());
+      dto.setTotal(item.getTotal());
+      dto.setRateio(item.getValor());
+      dto.setServico(item.getServico().getTitle());
+      dto.setNomeSetor("-");
+      dto.setVencimento(ArquivoUtils.formatDate(cobranca.getVencimento(), "dd/MM/yyyy"));
+      dto.setNomeCliente(cobranca.getCliente().getTitle());
+      datasource.add(dto);
+    }
+
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(cobranca.getVigencia());
+    cld.add(Calendar.MONTH, -1);
+
+    parameters.put("AUTOR", user.getLogin());
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+    parameters.put("REFERENCIA", sdf.format(cld.getTime()));
+    parameters.put("TOTAL_CONDOMINIO", cobranca.getValor());
+
+    return reportLoader.getReportAsInputStream("descritivoGeral", parameters, datasource);
+  }
+
+  public StreamedContent descritivoGeral(Cobranca cobranca, User user) {
+
+    String fileName = cobranca.getCliente().getId().toString();
+
+    if (cobranca.getSetor() != null) {
+      fileName += " - " + cobranca.getSetor();
+    }
+
+    fileName += "-DESC-GERAL";
+
+    return reportLoader.printReport(descritivoGeralIN(cobranca, user), fileName);
+  }
+
+  public InputStream descritivoIN(Cobranca cobranca, User user) {
+    Map<String, Object> parameters = new HashMap<>();
+
+    Calendar cld = Calendar.getInstance();
+    cld.setTime(cobranca.getVigencia());
+    cld.add(Calendar.MONTH, -1);
 
     String consumoEnergia = "-";
     String pesoColeta = "-";
@@ -133,7 +224,7 @@ public class RelatorioService implements Serializable {
 
     parameters.put("AUTOR", user.getLogin());
     SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
-    parameters.put("REFERENCIA", sdf.format(cobranca.getVigencia()));
+    parameters.put("REFERENCIA", sdf.format(cld.getTime()));
     List<DescritivoCondominioDTO> datasource = new ArrayList<>();
 
     for (ItemCobranca item : cobranca.getDescritivo()) {
@@ -178,11 +269,6 @@ public class RelatorioService implements Serializable {
       datasource.add(dto);
     }
 
-    String fileName = cobranca.getCliente().getTitle();
-    if (fileName.length() > 8) {
-      fileName = fileName.substring(0, 8);
-    }
-
     parameters.put("VALOR_ENERGIA", valorEnergia);
     parameters.put("VALOR_COLETA", valorColeta);
     parameters.put("VALOR_TR", valorTR);
@@ -194,7 +280,19 @@ public class RelatorioService implements Serializable {
 
     ordenarDescritivo(datasource);
 
-    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource, String.format("%s-DESC", fileName));
+    return reportLoader.getReportAsInputStream("descritivoCondominio", parameters, datasource);
+  }
+
+  public StreamedContent descritivo(Cobranca cobranca, User user) {
+
+    String fileName = cobranca.getCliente().getId().toString();
+    if (cobranca.getSetor() != null) {
+      fileName += "-" + cobranca.getSetor().getId();
+    }
+
+    fileName += "-DESC";
+
+    return reportLoader.printReport(descritivoIN(cobranca, user), fileName);
   }
 
   public StreamedContent getRelatorioSetor() {
@@ -330,7 +428,7 @@ public class RelatorioService implements Serializable {
       public int compare(BalancoContabilDTO o1, BalancoContabilDTO o2) {
         if (o1.getServico().equals(o2.getServico())) {
           if (o1.getReduzido().equals(o2.getReduzido())) {
-            if(o1.getContaCusto().equals(o2.getContaCusto())) {
+            if (o1.getContaCusto().equals(o2.getContaCusto())) {
               if (o1.getCompetencia().equals(o2.getCompetencia())) {
                 if (o1.getCliente().equals(o2.getCliente())) {
                   return o1.getSetor().compareTo(o2.getSetor());

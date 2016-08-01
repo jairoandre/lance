@@ -50,7 +50,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private Cobranca[] selectedCobrancas;
 
-  private Date vigencia;
+  private Date vigencia = new Date();
 
   private Integer vencimento;
 
@@ -97,11 +97,19 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
       cobrancas = service.gravarCobrancas(selectedCobrancas);
       addMsg(FacesMessage.SEVERITY_INFO, "Sucesso", "Registros atualizados");
       selectedCobrancas = null;
-    } catch(LanceBusinessException lbe) {
+    } catch (LanceBusinessException lbe) {
       addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
     } catch (Exception e) {
       addErrorMessage(e);
     }
+  }
+
+  public StreamedContent getDescritivos() {
+    if (selectedCobrancas == null || selectedCobrancas.length == 0) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Selecione pelo menos uma cobrança para gerar o descritivo.");
+      return null;
+    }
+    return relatorioService.descritivos(selectedCobrancas, sessionCtrl.getUser());
   }
 
   public StreamedContent getArquivoRemessa() {
@@ -117,8 +125,22 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return null;
   }
 
+  public StreamedContent descritivoGeral(Cobranca cobranca) {
+    try {
+      return relatorioService.descritivoGeral(cobranca, sessionCtrl.getUser());
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+    return null;
+  }
+
   public StreamedContent descritivo(Cobranca cobranca) {
-    return relatorioService.descritivo(cobranca, sessionCtrl.getUser());
+    try {
+      return relatorioService.descritivo(cobranca, sessionCtrl.getUser());
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+    return null;
   }
 
   public Boolean getPrevia() {

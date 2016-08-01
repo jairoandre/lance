@@ -34,22 +34,21 @@ import java.util.Map;
 @Stateless
 public class ReportLoader implements Serializable {
 
-  public StreamedContent imprimeRelatorio(String reportName, Map<String, Object> parameters, List datasource, String downloadFilename) {
-
+  public InputStream getReportAsInputStream(String reportName, Map<String, Object> params, List datasource) {
     try {
       FacesContext facesContext = FacesContext.getCurrentInstance();
       facesContext.responseComplete();
       ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
       BufferedImage logo = ImageIO.read(scontext.getResource("/resources/img/logo.png"));
-      parameters.put("LOGO", logo);
+      params.put("LOGO", logo);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    parameters.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
+    params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    parameters.put("EMISSAO", sdf.format(new Date()));
+    params.put("EMISSAO", sdf.format(new Date()));
 
     JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(datasource);
 
@@ -66,9 +65,9 @@ public class ReportLoader implements Serializable {
       //Instancia o virtualizador
       JRAbstractLRUVirtualizer virtualizer = new JRGzipVirtualizer(100);
 
-      parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+      params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 
-      JasperPrint jasperPrint = JasperFillManager.fillReport(scontext.getRealPath(String.format("/resources/reports/%s.jasper", reportName)), parameters, ds);
+      JasperPrint jasperPrint = JasperFillManager.fillReport(scontext.getRealPath(String.format("/resources/reports/%s.jasper", reportName)), params, ds);
 
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -84,20 +83,26 @@ public class ReportLoader implements Serializable {
 
     } catch (Exception e) {
 
-      e.printStackTrace();
-
     }
 
-    DefaultStreamedContent dsc = new DefaultStreamedContent(report);
-    dsc.setContentType("application/pdf");
+    return report;
+  }
 
-    if (downloadFilename == null) {
-      dsc.setName(String.format("%s.pdf", reportName));
+  public StreamedContent imprimeRelatorio(String reportName, Map<String, Object> params, List datasource, String fileName) {
+
+    InputStream report = getReportAsInputStream(reportName, params, datasource);
+
+    return printReport(report, fileName);
+  }
+
+  public StreamedContent printReport(InputStream report, String fileName) {
+    if (report == null) {
+      return null;
     } else {
-      dsc.setName(String.format("%s.pdf", downloadFilename));
+      DefaultStreamedContent dsc = new DefaultStreamedContent(report);
+      dsc.setContentType("application/pdf");
+      dsc.setName(String.format("%s.pdf", fileName));
+      return dsc;
     }
-
-    return dsc;
-
   }
 }

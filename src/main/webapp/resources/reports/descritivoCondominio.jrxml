@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medias" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16ee6332-fc89-4379-ba3c-765250e5790b">
-	<property name="ireport.zoom" value="1.3310000000000017"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.4641000000000022"/>
+	<property name="ireport.x" value="40"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REFERENCIA" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.lang.Object"/>
@@ -64,7 +64,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeCliente}]]></textFieldExpression>
 				</textField>
@@ -78,7 +78,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{numeroDocumento}]]></textFieldExpression>
 				</textField>
@@ -99,7 +99,9 @@
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<text><![CDATA[DESCRIÇÃO DAS DESPESAS GERAIS]]></text>
 				</staticText>
 				<staticText>
@@ -107,7 +109,9 @@
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<text><![CDATA[DESCRIÇÃO DAS DESPESAS INDIVIDUAIS]]></text>
 				</staticText>
 				<textField>
@@ -120,7 +124,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeSetor}]]></textFieldExpression>
 				</textField>
@@ -158,14 +162,14 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="116">
+			<band height="101">
 				<staticText>
 					<reportElement x="0" y="0" width="185" height="15" uuid="3e087388-cade-408f-ab1b-42d6103bc7be"/>
 					<box>
@@ -197,7 +201,7 @@
 					<textFieldExpression><![CDATA[$V{TOTAL_TOTAL_CLIENTE}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="480" y="0" width="75" height="16" uuid="69bc5405-1106-4485-b27e-9b4c800ccf69"/>
+					<reportElement x="480" y="0" width="75" height="15" uuid="69bc5405-1106-4485-b27e-9b4c800ccf69"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 					</box>
@@ -207,12 +211,12 @@
 					<textFieldExpression><![CDATA[$V{TOTAL_RATEIO_CLIENTE}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="26" width="555" height="15" uuid="d96048cd-39f9-4986-b878-acb1b016cce2"/>
+					<reportElement x="0" y="26" width="260" height="15" uuid="d96048cd-39f9-4986-b878-acb1b016cce2"/>
 					<box>
 						<bottomPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="11" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[OUTRAS DESPESAS]]></text>
 				</staticText>
@@ -272,13 +276,6 @@
 					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="135" y="101" width="125" height="15" uuid="aa12fac3-5c62-411c-b066-26d19b4f6a98"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{VALOR_COLETA}]]></textFieldExpression>
-				</textField>
-				<textField pattern="R$ #,##0.00">
 					<reportElement x="135" y="71" width="125" height="15" uuid="825f6b27-0a46-432c-b345-5d62e566dbc9"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8"/>
@@ -300,7 +297,7 @@
 					<textFieldExpression><![CDATA[$P{VALOR_TELEFONIA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="295" y="41" width="125" height="30" uuid="7504b412-aa93-4a2b-8d78-eafa80d98a4c"/>
+					<reportElement x="295" y="81" width="125" height="20" uuid="7504b412-aa93-4a2b-8d78-eafa80d98a4c"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -308,20 +305,20 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[TOTAL COBRANÇA:]]></text>
 				</staticText>
 				<textField pattern="R$ #,##0.00">
-					<reportElement x="420" y="41" width="135" height="30" uuid="68a6ca00-79ba-49dd-9b5d-67457732e226"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="12"/>
+					<reportElement x="420" y="81" width="135" height="20" uuid="68a6ca00-79ba-49dd-9b5d-67457732e226"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{TOTAL_CONDOMINIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="101" width="135" height="15" uuid="44edbcf6-7d8f-4d7c-83bf-8a3689674ff2"/>
+					<reportElement x="295" y="41" width="125" height="20" uuid="14f7c19b-d20d-4e92-84a4-dbbadb0f8416"/>
 					<box>
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -329,9 +326,55 @@
 						<bottomPen lineWidth="0.0"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[Coleta de Resíduos (Kg)]]></text>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ÁREA COMUM:]]></text>
 				</staticText>
+				<staticText>
+					<reportElement x="295" y="61" width="125" height="20" uuid="8695cf5f-908b-42b0-a6a1-0666de24a81b"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[OUTRAS DESPESAS:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="295" y="26" width="260" height="15" uuid="2dcad29a-06b4-406a-8442-5b6709d92fe0"/>
+					<box>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SUMÁRIO]]></text>
+				</staticText>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="420" y="41" width="135" height="20" uuid="da38bb8d-0065-4eec-a0c2-f8a7946cae95"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{TOTAL_RATEIO_CLIENTE}]]></textFieldExpression>
+				</textField>
+				<textField pattern="R$ #,##0.00">
+					<reportElement x="420" y="61" width="135" height="20" uuid="fa730a39-37e7-40e4-be03-db8b02433a7b"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VALOR_ENERGIA}.add($P{VALOR_TELEFONIA}).add($P{VALOR_INTERNET}).add($P{VALOR_TR})]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>

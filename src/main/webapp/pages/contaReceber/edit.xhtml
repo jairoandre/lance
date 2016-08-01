@@ -38,6 +38,8 @@
           <f:convertNumber type="currency" currencySymbol="R$" minFractionDigits="2"
                            pattern="R$ #,##0.00"/>
         </h:outputText>
+        <h:outputLabel value="Tipo Documento:" style="font-weight: bold;"/>
+        <h:outputText value="#{contaReceberCtrl.item.cdTipDoc}"/>
         <f:facet name="other">
           <h:panelGrid columns="2" cellpadding="5">
             <h:outputLabel value="Descrição:" style="font-weight: bold;"/>
