@@ -56,16 +56,14 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private List<Cobranca> cobrancas;
 
+  private Cobranca cobranca;
+
   private boolean validarObrigatorios() {
     if (vigencia == null) {
       addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Informe a vigência");
       return false;
     }
     return true;
-  }
-
-  private void addErrorMessage(Exception e) {
-    addMsg(FacesMessage.SEVERITY_ERROR, "Ops", String.format("Isto não deveria acontecer: %s", e.getMessage()));
   }
 
   public void clearCobrancas() {
@@ -156,6 +154,21 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return null;
   }
 
+  public void preNotaFiscal(Cobranca cobranca) {
+    this.cobranca = cobranca;
+  }
+
+  public void salvarContaReceber() {
+    try {
+      service.salvarNotaFiscal(cobranca);
+      addMsg(FacesMessage.SEVERITY_INFO, "Informação", "Registros atualizados");
+    } catch (LanceBusinessException lbe) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+  }
+
   public Boolean getPrevia() {
     return previa;
   }
@@ -194,6 +207,14 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   public void setCobrancas(List<Cobranca> cobrancas) {
     this.cobrancas = cobrancas;
+  }
+
+  public Cobranca getCobranca() {
+    return cobranca;
+  }
+
+  public void setCobranca(Cobranca cobranca) {
+    this.cobranca = cobranca;
   }
 
   @Override

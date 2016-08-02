@@ -488,6 +488,18 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
     Servico servico = lancamentoValor.getLancamento().getServico();
 
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+
+    String obsPrefix = "VIG.";
+    Date dataRefVig = lancamentoValor.getLancamento().getEffectiveOn();
+    if (servico.getAgrupavel()) {
+      Calendar cld = Calendar.getInstance();
+      cld.setTime(dataRefVig);
+      cld.add(Calendar.MONTH, -1);
+      dataRefVig = cld.getTime();
+      obsPrefix = "REF.";
+    }
+
     conRecToAdd.setCdProcesso(132l);
     conRecToAdd.setCdMultiEmpresa(1);
     conRecToAdd.setTipoDocumento("C");
@@ -507,8 +519,8 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     conRecToAdd.setCliente(client);
     conRecToAdd.setNomeCliente(client.getTitle());
     conRecToAdd.setHistoricoPadrao(historicoPadrao);
-    conRecToAdd.setDescricao(historicoPadrao.getTitle());
-    conRecToAdd.setObservacao(numeroDocumento + " - " + client.getTitle());
+    conRecToAdd.setObservacao(String.format("%s %s", obsPrefix, sdf.format(dataRefVig)));
+    conRecToAdd.setDescricao(numeroDocumento + " - " + client.getTitle());
     conRecToAdd.setGlosaAceita("N");
 
     PlanoConta contaContabil = lancamentoValor.getLancamento().getServico().getContaContabil();

@@ -50,6 +50,12 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   @Inject
   RelatorioService relatorioService;
 
+  private
+  @Inject
+  CobrancaService cobrancaService;
+
+  private List<ContaReceber> contasLancamento;
+
   private List<Lancamento> entries;
 
   private List<LancamentoValor> lancamentoValors;
@@ -92,6 +98,18 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
   private List<ContaReceber> contasReceberToAdd = new ArrayList<>();
 
+  public void onLoadContaReceber() {
+    getLogger().info("Load params");
+    if (getId() != null) {
+      try {
+        setItem(getService().find(getId()));
+        contasLancamento = getItem().getContasReceber();
+      } catch (Exception e) {
+        addMsg(FacesMessage.SEVERITY_ERROR, "Aviso", "Erro na recuperação do lançamento");
+      }
+    }
+  }
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
@@ -105,6 +123,14 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     cld.setTime(searchMonth);
     cld.add(Calendar.DAY_OF_YEAR, 15);
     entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRange(cld.getTime()));
+  }
+
+  public List<ContaReceber> getContasLancamento() {
+    return contasLancamento;
+  }
+
+  public void setContasLancamento(List<ContaReceber> contasLancamento) {
+    this.contasLancamento = contasLancamento;
   }
 
   @Override
@@ -611,8 +637,23 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     }
   }
 
+  public void salvarContaReceber() {
+    try {
+      cobrancaService.salvarNotaFiscal(getItem());
+      addMsg(FacesMessage.SEVERITY_INFO, "Informação", "Registros atualizados");
+    } catch (LanceBusinessException lbe) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+  }
+
   public StreamedContent relatorioContabil(Lancamento lancamento) {
     return relatorioService.relatorioBalanco(lancamento, sessionCtrl.getUser());
+  }
+
+  public String contasReceberLancamento(Lancamento lancamento) {
+    return "/pages/contaReceber/list-for-nf.xhtml" + _FACES_REDIRECT + _ID_PARAM + lancamento.getId();
   }
 
 }

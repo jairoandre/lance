@@ -26,6 +26,12 @@ public class CobrancaService extends DataAccessService<Cobranca> {
   @Inject
   LancamentoService lancamentoService;
 
+  private
+  @Inject
+  ContaReceberService contaReceberService;
+
+
+
   public CobrancaService() {
     super(Cobranca.class);
   }
@@ -219,4 +225,25 @@ public class CobrancaService extends DataAccessService<Cobranca> {
       return (Cobranca) criteria.list().iterator().next();
     }
   }
+
+  public void salvarNotaFiscal(List<ContaReceber> contas) throws LanceBusinessException {
+    for (ContaReceber contaReceber : contas) {
+      if (contaReceber.getNumeroDocumento() == null) {
+        throw new LanceBusinessException("Número de documento obrigatório");
+      }
+    }
+    for (ContaReceber contaReceber : contas) {
+      contaReceber.setDescricao(String.format("%s - %s", contaReceber.getNumeroDocumento(), contaReceber.getCliente().getTitle()));
+      contaReceberService.update(contaReceber);
+    }
+  }
+
+  public void salvarNotaFiscal(Lancamento lancamento) throws LanceBusinessException {
+    salvarNotaFiscal(lancamento.getContasReceber());
+  }
+
+  public void salvarNotaFiscal(Cobranca cobranca) throws LanceBusinessException {
+    salvarNotaFiscal(new ArrayList<ContaReceber>(cobranca.getContas()));
+  }
+
 }

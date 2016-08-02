@@ -41,9 +41,13 @@
           <p:outputLabel for="previa" value="Prévia"/>
           <p:commandButton id="buscarCobrancasBtn" value="Buscar Gravadas"
                            action="#{cobrancaCtrl.buscarCobrancas}" ajax="true" process="@form"
+                           onstart="start()"
+                           oncomplete="stop()"
                            update="@form"/>
           <p:commandButton id="gerarCobrancasBtn" value="Gerar Cobranças"
                            action="#{cobrancaCtrl.gerarCobrancas}" ajax="true" process="@form"
+                           onstart="start()"
+                           oncomplete="stop()"
                            update="@form"/>
         </h:panelGrid>
 
@@ -81,7 +85,7 @@
                        disabledSelection="#{cobrancaCtrl.previa}"
                        styleClass="margin-top" rowSelectMode="add">
             <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
-            <p:column headerText="Id" width="40" styleClass="left-align">
+            <p:column headerText="Id" sortBy="#{cobranca.id}" width="40" styleClass="left-align">
               <h:outputText value="#{cobranca.id}"/>
             </p:column>
             <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="50" styleClass="left-align">
@@ -97,7 +101,7 @@
             <p:column headerText="Cliente" sortBy="#{cobranca.cliente.title}" styleClass="left-align">
               <h:outputText value="#{cobranca.cliente.title}"/>
             </p:column>
-            <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="100" styleClass="right-align">
+            <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="75" styleClass="right-align">
               <h:outputText value="#{cobranca.valor}">
                 <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
               </h:outputText>
@@ -112,7 +116,7 @@
                 <f:convertDateTime pattern="dd/MM/yyyy"/>
               </h:outputText>
             </p:column>
-            <p:column headerText="Ações" width="100" styleClass="center-align">
+            <p:column headerText="Ações" width="80" styleClass="center-align">
               <p:menuButton id="menuButton" value="Ações">
                 <p:menuitem value="Descritivo Cond."
                             onclick="PrimeFaces.monitorDownload(start, stop);"
@@ -128,6 +132,16 @@
                             icon="fa fa-building">
                   <p:fileDownload value="#{cobrancaCtrl.descritivoGeral(cobranca)}"/>
                 </p:menuitem>
+                <p:separator/>
+                <p:menuitem value="Baixa contábil" process="@this" update="@this" ajax="true" icon="fa fa-tags"/>
+                <p:menuitem value="Nota fiscal"
+                            action="#{cobrancaCtrl.preNotaFiscal(cobranca)}"
+                            ajax="true"
+                            process="@this"
+                            update="#{p:component('nfDlgWrapper')}"
+                            oncomplete="PF('nfDlg').show()"
+                            disabled="#{empty cobranca.id}"
+                            icon="fa fa-ticket"/>
               </p:menuButton>
             </p:column>
           </p:dataTable>
@@ -136,13 +150,54 @@
                            onclick="PrimeFaces.monitorDownload(start, stop);">
             <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
           </p:commandButton>
-
           <p:commandButton id="gravarCobrancas2" value="Gravar Selecionados"
                            action="#{cobrancaCtrl.gravarSelecionados}"
                            ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
         </h:panelGroup>
-
-
+        <h:panelGroup id="nfDlgWrapper">
+          <p:dialog id="nfDlg" widgetVar="nfDlg"
+                    header="Informar Nº. Nota Fiscal"
+                    width="800" height="400"
+                    rendered="#{not empty cobrancaCtrl.cobranca}">
+            <h:panelGrid columns="4">
+              <p:outputLabel value="Cliente:" for="clienteMVDlg" styleClass="lance-label"/>
+              <h:outputText id="clienteMVDlg" value="#{cobrancaCtrl.cobranca.cliente.title}"/>
+              <p:outputLabel value="Setor:" for="setorMVDlg" styleClass="lance-label"/>
+              <h:outputText id="setorMVDlg" value="#{empty cobrancaCtrl.cobranca.setor ? '-' : cobrancaCtrl.cobranca.setor.title}"/>
+              <p:outputLabel value="Valor total:" for="valorTotalDlg" styleClass="lance-label"/>
+              <h:outputText id="valorTotalDlg" value="#{cobrancaCtrl.cobranca.valor}">
+                <f:convertNumber pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </h:panelGrid>
+            <p:dataGrid id="nfGrid" value="#{cobrancaCtrl.cobranca.contas.toArray()}" var="contaReceber" columns="1"
+                        styleClass="margin-top" rowIndexVar="idx">
+              <h:panelGrid columns="2">
+                <p:outputLabel id="idMVLabel" value="Cód.:" for="idMVOutput" styleClass="lance-label"/>
+                <h:outputText id="idMVOutput" value="#{contaReceber.id}"/>
+                <p:outputLabel id="valorLabel" value="Valor:" for="valorOutput" styleClass="lance-label"/>
+                <h:outputText id="valorOutput" value="#{contaReceber.valorBruto}">
+                  <f:convertNumber pattern="R$ #,##0.00"/>
+                </h:outputText>
+                <p:outputLabel id="contaMVLabel" value="Conta:" for="contaMVOutput" styleClass="lance-label"/>
+                <h:outputText id="contaMVOutput" value="#{contaReceber.contaContabil.title}"/>
+                <p:outputLabel id="descLabel" value="Descrição:" for="descOutput" styleClass="lance-label"/>
+                <h:outputText id="descOutput" value="#{contaReceber.descricao}"/>
+                <p:outputLabel id="nfLabel" value="Nº. Documento:" for="nfInput" styleClass="lance-label"/>
+                <p:inputText id="nfInput" value="#{contaReceber.numeroDocumento}"/>
+              </h:panelGrid>
+              <p:separator rendered="#{idx lt (cobrancaCtrl.cobranca.contas.size() - 1)}"/>
+            </p:dataGrid>
+            <f:facet name="footer">
+              <p:commandButton id="cobrancaNfBtn" value="Salvar"
+                               action="#{cobrancaCtrl.salvarContaReceber}"
+                               oncomplete="PF('nfDlg').hide()"
+                               ajax="true" process="nfDlg" update="@all"/>
+              <p:commandButton id="calcenNfDlg" value="Cancelar"
+                               ajax="true" process="@this" oncomplete="PF('nfDlg').hide()"
+                               styleClass="margin-left"/>
+            </f:facet>
+          </p:dialog>
+        </h:panelGroup>
       </p:panel>
     </h:form>
   </ui:define>

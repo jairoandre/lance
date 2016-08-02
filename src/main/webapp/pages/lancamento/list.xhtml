@@ -80,7 +80,6 @@
                           icon="fa fa-bar-chart">
                 <p:fileDownload value="#{lancamentoCtrl.relatorioContabil(lancamento)}"/>
               </p:menuitem>
-
               <p:menuitem value="Contas a receber" action="#{lancamentoCtrl.setItem(lancamento)}"
                           oncomplete="PF('contasReceberDlg').show()"
                           ajax="true"
@@ -88,11 +87,11 @@
                           update="#{p:component('contasReceberDlg')}"
                           disabled="#{empty lancamento.contasReceber}"
                           icon="fa fa-file"/>
-              <p:menuitem value="Emitir boletos" action="#{lancamentoCtrl.validate(lancamento)}"
+              <p:menuitem value="Informar Nota Fiscal" action="#{lancamentoCtrl.contasReceberLancamento(lancamento)}"
                           onclick="PF('changePage').show()"
-                          ajax="false"
-                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT') or (lancamento.status != 'V') or true}"
-                          icon="fa fa-barcode"/>
+                          ajax="true"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT') or empty lancamento.contasReceber}"
+                          icon="fa fa-tags"/>
             </p:menuButton>
           </p:column>
         </p:dataTable>

@@ -1,0 +1,72 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+  <ui:define name="metadata">
+    <f:metadata>
+      <f:viewParam name="id" value="#{lancamentoCtrl.id}"/>
+      <f:viewAction action="#{lancamentoCtrl.onLoadContaReceber}"/>
+    </f:metadata>
+  </ui:define>
+  <ui:define name="content">
+    <h:form id="form">
+      <p:panel header="CONTAS A RECEBER - #{lancamentoCtrl.item.servico.title}">
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:commandButton id="salvarBtn1" value="Salvar"
+                           action="#{lancamentoCtrl.salvarContaReceber}" ajax="true"
+                           process="@form"
+                           onstart="start()"
+                           oncomplete="stop()"
+                           update="@form"/>
+          <p:commandButton id="voltarBtn1" value="Voltar"
+                           action="#{lancamentoCtrl.listPage}" ajax="true"
+                           process="@this"
+                           onstart="start()"
+                           oncomplete="stop()"
+                           styleClass="margin-left"/>
+        </h:panelGroup>
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:dataTable id="dtList" value="#{lancamentoCtrl.contasLancamento}" var="contaReceber" emptyMessage="Sem itens">
+            <p:column headerText="Cód." width="75" sortBy="#{contaReceber.id}" styleClass="left-align">
+              <h:outputText value="#{contaReceber.id}"/>
+            </p:column>
+            <p:column headerText="Emissão" width="75" sortBy="#{contaReceber.dataEmissao}" styleClass="left-align">
+              <h:outputText value="#{contaReceber.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Cliente" sortBy="#{contaReceber.cliente.title}" styleClass="left-align">
+              <h:outputText value="#{contaReceber.cliente.title}"/>
+            </p:column>
+            <p:column headerText="Valor" width="100" sortBy="#{contaReceber.valorBruto}" styleClass="left-align">
+              <h:outputText value="#{contaReceber.valorBruto}">
+                <f:convertNumber pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Documento" width="150" styleClass="left-align">
+              <p:inputText value="#{contaReceber.numeroDocumento}"
+                           onclick="this.setSelectionRange(0, this.value.length)"/>
+            </p:column>
+          </p:dataTable>
+        </h:panelGroup>
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:commandButton id="salvarBtn2" value="Salvar"
+                           action="#{lancamentoCtrl.salvarContaReceber}" ajax="true"
+                           process="@form"
+                           onstart="start()"
+                           oncomplete="stop()"
+                           update="@form"/>
+          <p:commandButton id="voltarBtn2" value="Voltar"
+                           action="#{lancamentoCtrl.listPage}" ajax="true"
+                           process="@this"
+                           onstart="start()"
+                           oncomplete="stop()"
+                           styleClass="margin-left"/>
+        </h:panelGroup>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

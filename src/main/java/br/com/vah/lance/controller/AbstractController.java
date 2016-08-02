@@ -32,17 +32,17 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
 
   private T[] selectedItems;
 
-  private final String _PREFIX_URL = "/pages/";
+  public static final String _PREFIX_URL = "/pages/";
 
-  private final String _EDIT_XHTML = "/edit.xhtml";
+  public static final String _EDIT_XHTML = "/edit.xhtml";
 
-  private final String _LIST_XHTML = "/list.xhtml";
+  public static final String _LIST_XHTML = "/list.xhtml";
 
-  private final String _DETAIL_XHTML = "/detail.xhtml";
+  public static final String _DETAIL_XHTML = "/detail.xhtml";
 
-  private final String _FACES_REDIRECT = "?faces-redirect=true";
+  public static final String _FACES_REDIRECT = "?faces-redirect=true";
 
-  private final String _ID_PARAM = "&id=";
+  public static final String _ID_PARAM = "&id=";
 
   private String deleteConfirmAnswer;
 
@@ -149,6 +149,10 @@ public abstract class AbstractController<T extends BaseEntity> implements Serial
     if (flash) {
       ctx.getExternalContext().getFlash().setKeepMessages(true);
     }
+  }
+
+  public void addErrorMessage(Exception e) {
+    addMsg(FacesMessage.SEVERITY_ERROR, "Ops", String.format("Isto não deveria acontecer: %s", e.getMessage()));
   }
 
   public void addMsg(FacesMessage.Severity severity, String summary, String detail) {
