@@ -5,6 +5,7 @@ import br.com.vah.lance.entity.BaseEntity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by jairoportela on 03/05/2016.
@@ -55,6 +56,8 @@ public class ContaReceberItem extends BaseEntity {
   @Column(name = "SN_GLOSA_ACEITA")
   private String glosaAceita;
 
+  @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+  private Set<Recebimento> recebimentos;
 
   @Override
   public Long getId() {
@@ -140,6 +143,14 @@ public class ContaReceberItem extends BaseEntity {
 
   public void setGlosaAceita(String glosaAceita) {
     this.glosaAceita = glosaAceita;
+  }
+
+  public Set<Recebimento> getRecebimentos() {
+    return recebimentos;
+  }
+
+  public void setRecebimentos(Set<Recebimento> recebimentos) {
+    this.recebimentos = recebimentos;
   }
 
   public void setNumeroParcela(Integer numeroParcela) {

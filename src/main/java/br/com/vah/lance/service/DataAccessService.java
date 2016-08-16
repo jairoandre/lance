@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import br.com.vah.lance.entity.BaseEntity;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
@@ -26,7 +27,7 @@ import br.com.vah.lance.util.PaginatedSearchParam;
  */
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public abstract class DataAccessService<T> implements Serializable {
+public abstract class DataAccessService<T extends BaseEntity> implements Serializable {
 
   public static final String ID = "id";
 
@@ -292,5 +293,21 @@ public abstract class DataAccessService<T> implements Serializable {
 
   public EntityManager getEm() {
     return em;
+  }
+
+  public List<T> persistList(List<T> list) {
+
+    List<T> attachedList = new ArrayList<>();
+
+    for (T item : list) {
+      if (item.getId() == null) {
+        attachedList.add(create(item));
+      } else {
+        attachedList.add(update(item));
+      }
+    }
+
+    return attachedList;
+
   }
 }

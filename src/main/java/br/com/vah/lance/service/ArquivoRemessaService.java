@@ -4,12 +4,14 @@ import br.com.vah.lance.dto.*;
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
 import br.com.vah.lance.entity.usrdbvah.ItemCobranca;
 import br.com.vah.lance.exception.LanceBusinessException;
+import javassist.runtime.Desc;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import javax.ejb.Stateless;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class ArquivoRemessaService implements Serializable {
 
     String content = arquivo.print();
 
-    ByteArrayInputStream bais = new ByteArrayInputStream(Charset.forName("UTF-8").encode(content.toString()).array());
+    ByteArrayInputStream bais = new ByteArrayInputStream(content.getBytes());
 
     DefaultStreamedContent dsc = new DefaultStreamedContent(bais);
 
@@ -64,18 +66,23 @@ public class ArquivoRemessaService implements Serializable {
       if (cobranca.getId() == null) {
         throw new LanceBusinessException("Somente cobranças gravadas podem gerar o descritivo");
       }
+      if (cobranca.getSetor() != null) {
+        builder.append((new Descritivo(cobranca)).print());
+      }
       for (ItemCobranca item : cobranca.getDescritivo()) {
-        Descritivo descritivo = new Descritivo(item);
-        builder.append(descritivo.print());
+        builder.append((new Descritivo(item)).print());
       }
     }
     String content = builder.toString();
-    ByteArrayInputStream bais = new ByteArrayInputStream(Charset.forName("UTF-8").encode(content.toString()).array());
-    DefaultStreamedContent dsc = new DefaultStreamedContent(bais);
-    dsc.setContentType("text/plain");
-    dsc.setContentEncoding("UTF-8");
-    dsc.setName(String.format("%s%s.txt", "DR", ArquivoUtils.formatDate(new Date(), "ddMMyy")));
-    return dsc;
+    try {
+      ByteArrayInputStream bais = new ByteArrayInputStream(content.toString().getBytes("UTF-8"));
+      DefaultStreamedContent dsc = new DefaultStreamedContent(bais);
+      dsc.setContentType("text/plain");
+      dsc.setName(String.format("%s%s.txt", "DR", ArquivoUtils.formatDate(new Date(), "ddMMyy")));
+      return dsc;
+    } catch (UnsupportedEncodingException uee) {
+      throw new LanceBusinessException("Codificação de caracteres não suportada.");
+    }
   }
 
 }

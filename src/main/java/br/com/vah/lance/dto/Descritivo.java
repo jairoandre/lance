@@ -1,6 +1,8 @@
 package br.com.vah.lance.dto;
 
 import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.entity.dbamv.Setor;
+import br.com.vah.lance.entity.usrdbvah.Cobranca;
 import br.com.vah.lance.entity.usrdbvah.ItemCobranca;
 import br.com.vah.lance.entity.usrdbvah.Servico;
 
@@ -9,7 +11,11 @@ import br.com.vah.lance.entity.usrdbvah.Servico;
  */
 public class Descritivo {
 
-  // 9(01) - 0: rateado; 1: individual
+  public static final String RATEADO = "0";
+  public static final String INDIVIDUAL = "1";
+  public static final String SETOR = "2";
+
+  // 9(01) - 0: rateado; 1: individual; 2: Setor
   private String rateado;
   // X(08)
   private String nossoNumero;
@@ -19,6 +25,14 @@ public class Descritivo {
   private String valorTotal;
   // 9(11)V9(02)
   private String valorIndividual;
+  // X(31)
+  private String nomeSetor;
+
+  public Descritivo(Cobranca cobranca) {
+    rateado = "2";
+    nossoNumero = ArquivoUtils.rightSpace(cobranca.getId().toString(), 8);
+    nomeSetor = ArquivoUtils.rightSpace(cobranca.getSetor().getTitle(), 71);
+  }
 
   public Descritivo(ItemCobranca item) {
 
@@ -31,7 +45,7 @@ public class Descritivo {
         || contaCusto.equals(269l)
         || contaCusto.equals(272l);
 
-    rateado = isIndividual ? "1" : "0";
+    rateado = isIndividual ? INDIVIDUAL : RATEADO;
     nossoNumero = ArquivoUtils.rightSpace(item.getCobranca().getId().toString(), 8);
     descricao = ArquivoUtils.rightSpace(item.getServico().getTitle(), 45);
     valorTotal = ArquivoUtils.formatNumber(item.getTotal(), 13);
@@ -40,7 +54,11 @@ public class Descritivo {
   }
 
   public String print() {
-    return rateado + nossoNumero + descricao + valorTotal + valorIndividual + "\r\n";
+    if (SETOR.equals(rateado)) {
+      return rateado + nossoNumero + nomeSetor + "\r\n";
+    } else {
+      return rateado + nossoNumero + descricao + valorTotal + valorIndividual + "\r\n";
+    }
   }
 
   public String getRateado() {

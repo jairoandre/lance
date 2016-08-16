@@ -1,21 +1,27 @@
 package br.com.vah.lance.controller;
 
+import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.entity.dbamv.DescontoAcrescimo;
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
+import br.com.vah.lance.entity.usrdbvah.ItemCobranca;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.ArquivoRemessaService;
 import br.com.vah.lance.service.CobrancaService;
 import br.com.vah.lance.service.DataAccessService;
 import br.com.vah.lance.service.RelatorioService;
 import br.com.vah.lance.util.DateUtility;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +52,11 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   @Inject
   ArquivoRemessaService arquivoService;
 
+  private DescontoAcrescimo descontoAcrescimo;
+
   private Boolean previa = false;
+
+  private Boolean ocultarRecebidos = false;
 
   private Cobranca[] selectedCobrancas;
 
@@ -57,6 +67,22 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   private List<Cobranca> cobrancas;
 
   private Cobranca cobranca;
+
+  private Integer qtdSelecionados;
+
+  private BigDecimal totalSelecionados;
+
+  private Date dataRecebimento;
+
+  private Boolean showRecebimentosDlg = false;
+
+  private Boolean showRecebimentoDlg = false;
+
+  private List<DescontoAcrescimo> descontosAcrescimos;
+
+  private BigDecimal multaAcrescimo = BigDecimal.ZERO;
+
+  private BigDecimal totalRecebimento;
 
   private boolean validarObrigatorios() {
     if (vigencia == null) {
@@ -83,7 +109,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   public void buscarCobrancas() {
     try {
       if (validarObrigatorios()) {
-        cobrancas = service.buscarCobrancas(DateUtility.monthRange(vigencia), vencimento);
+        cobrancas = service.buscarCobrancas(DateUtility.monthRange(vigencia), vencimento, ocultarRecebidos);
       }
     } catch (Exception e) {
       addErrorMessage(e);
@@ -147,6 +173,11 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   public StreamedContent descritivo(Cobranca cobranca) {
     try {
+      for (ItemCobranca item : cobranca.getDescritivo()) {
+        if (item.getServico().getType().equals(TipoServicoEnum.COLETA_INFECTANTE)) {
+          return relatorioService.descritivoGeral(cobranca, sessionCtrl.getUser());
+        }
+      }
       return relatorioService.descritivo(cobranca, sessionCtrl.getUser());
     } catch (Exception e) {
       addErrorMessage(e);
@@ -169,12 +200,139 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     }
   }
 
+  public void receberSelecionados() {
+    Map<String, Object> params = new HashMap<>();
+    params.put(CobrancaService.USUARIO, sessionCtrl.getUser().getTitle());
+    params.put(CobrancaService.DATA_BAIXA, dataRecebimento);
+
+    if (multaAcrescimo != null && !BigDecimal.ZERO.equals(multaAcrescimo)) {
+      params.put(CobrancaService.MULTA_ACRESCIMO, multaAcrescimo);
+    }
+
+    List<Cobranca> cobrancas = new ArrayList<>(Arrays.asList(selectedCobrancas));
+    try {
+      service.receberCobrancas(cobrancas, params, false);
+      buscarCobrancas();
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Informação", "Recebimento efetuado com sucesso"), false);
+      showRecebimentosDlg = false;
+    } catch (LanceBusinessException lbe) {
+      addErrorMessage(lbe);
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+
+  }
+
+  public void receberCobranca() {
+    selectedCobrancas = new Cobranca[1];
+    selectedCobrancas[0] = cobranca;
+    receberSelecionados();
+  }
+
+  public void fecharModalRecebimento() {
+    showRecebimentosDlg = false;
+    showRecebimentoDlg = false;
+  }
+
+  public void preReceberCobranca(Cobranca cobranca) {
+    this.cobranca = cobranca;
+    multaAcrescimo = BigDecimal.ZERO;
+    showRecebimentoDlg = true;
+    descontosAcrescimos = new ArrayList<>();
+    totalRecebimento = cobranca.getValor();
+  }
+
+  public void atualizarTotalReceb() {
+    totalRecebimento = cobranca.getValor().add(multaAcrescimo);
+  }
+
+  public void preReceberSelecionados() {
+    qtdSelecionados = 0;
+    totalSelecionados = BigDecimal.ZERO;
+    multaAcrescimo = null;
+    showRecebimentosDlg = false;
+    if (selectedCobrancas != null && selectedCobrancas.length > 0) {
+      RequestContext.getCurrentInstance().addCallbackParam("showRecebimentosDlg", true);
+      qtdSelecionados = selectedCobrancas.length;
+      for (Cobranca cobranca : selectedCobrancas) {
+        totalSelecionados = totalSelecionados.add(cobranca.getValor());
+      }
+      showRecebimentosDlg = true;
+    } else {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Nenhuma cobrança selecionada.");
+    }
+  }
+
+
+  public void cancelarRecebimento() {
+    try {
+      service.cancelarRecebimento(cobrancaToCancel);
+      addMsg(FacesMessage.SEVERITY_INFO, "Informação", String.format("Recebimento para a cobrança nº %d cancelada com sucesso!", cobrancaToCancel.getId()));
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+  }
+
+  private List<String> mensagens;
+
+  public List<String> getMensagens() {
+    return mensagens;
+  }
+
+  public void setMensagens(List<String> mensagens) {
+    this.mensagens = mensagens;
+  }
+
+  public void uploadArquivoRetorno(FileUploadEvent evt) {
+    UploadedFile file = evt.getFile();
+    if (file != null) {
+      try {
+        Map<String, Object> processamento = service.processarArquivoRetorno(file.getContents());
+        mensagens = (List<String>) processamento.get(CobrancaService.MENSAGENS);
+      } catch (Exception e) {
+        addErrorMessage(e);
+      }
+    }
+  }
+
+  public void criarMovimentacoes(Cobranca cobranca) {
+    try {
+      service.criarMovimentacoes(cobranca);
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Informação", "Movimentação criadas"), false);
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+
+  }
+
+
+  public void addDescontoAcrescimo() {
+    descontosAcrescimos.add(descontoAcrescimo);
+    this.descontoAcrescimo = null;
+  }
+
   public Boolean getPrevia() {
     return previa;
   }
 
   public void setPrevia(Boolean previa) {
     this.previa = previa;
+  }
+
+  public Boolean getOcultarRecebidos() {
+    return ocultarRecebidos;
+  }
+
+  public void setOcultarRecebidos(Boolean ocultarRecebidos) {
+    this.ocultarRecebidos = ocultarRecebidos;
+  }
+
+  public DescontoAcrescimo getDescontoAcrescimo() {
+    return descontoAcrescimo;
+  }
+
+  public void setDescontoAcrescimo(DescontoAcrescimo descontoAcrescimo) {
+    this.descontoAcrescimo = descontoAcrescimo;
   }
 
   public Cobranca[] getSelectedCobrancas() {
@@ -217,6 +375,62 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     this.cobranca = cobranca;
   }
 
+  public Integer getQtdSelecionados() {
+    return qtdSelecionados;
+  }
+
+  public void setQtdSelecionados(Integer qtdSelecionados) {
+    this.qtdSelecionados = qtdSelecionados;
+  }
+
+  public BigDecimal getTotalSelecionados() {
+    return totalSelecionados;
+  }
+
+  public void setTotalSelecionados(BigDecimal totalSelecionados) {
+    this.totalSelecionados = totalSelecionados;
+  }
+
+  public Date getDataRecebimento() {
+    return dataRecebimento;
+  }
+
+  public void setDataRecebimento(Date dataRecebimento) {
+    this.dataRecebimento = dataRecebimento;
+  }
+
+  public Boolean getShowRecebimentosDlg() {
+    return showRecebimentosDlg;
+  }
+
+  public void setShowRecebimentosDlg(Boolean showRecebimentosDlg) {
+    this.showRecebimentosDlg = showRecebimentosDlg;
+  }
+
+  public Boolean getShowRecebimentoDlg() {
+    return showRecebimentoDlg;
+  }
+
+  public void setShowRecebimentoDlg(Boolean showRecebimentoDlg) {
+    this.showRecebimentoDlg = showRecebimentoDlg;
+  }
+
+  public List<DescontoAcrescimo> getDescontosAcrescimos() {
+    return descontosAcrescimos;
+  }
+
+  public void setDescontosAcrescimos(List<DescontoAcrescimo> descontosAcrescimos) {
+    this.descontosAcrescimos = descontosAcrescimos;
+  }
+
+  public BigDecimal getMultaAcrescimo() {
+    return multaAcrescimo;
+  }
+
+  public void setMultaAcrescimo(BigDecimal multaAcrescimo) {
+    this.multaAcrescimo = multaAcrescimo;
+  }
+
   @Override
   public DataAccessService<Cobranca> getService() {
     return service;
@@ -240,5 +454,56 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   @Override
   public String getEntityName() {
     return "Cobrança";
+  }
+
+  private String confirmarCancelamentoRecebMsg = "";
+
+  private String cancelamentoRecebAnwser;
+
+  private Cobranca cobrancaToCancel;
+
+  public void preCancelarRecebimento(Cobranca cobranca) {
+    cancelamentoRecebAnwser = "";
+    cobrancaToCancel = cobranca;
+    StringBuilder builder = new StringBuilder();
+    builder.append("Cancelar recebimento da cobrança Nº <b>");
+    builder.append(cobranca.getId());
+    builder.append("</b> de <b>R$ ");
+    builder.append(new DecimalFormat("#,##0.00").format(cobranca.getValor()));
+    builder.append("</b>?<br/>");
+    builder.append("Se sim, digite <b>CANCELAR</b>.");
+    confirmarCancelamentoRecebMsg = builder.toString();
+  }
+
+  public void upperCaseAnwser() {
+    cancelamentoRecebAnwser = cancelamentoRecebAnwser.toUpperCase();
+  }
+
+  public String getConfirmarCancelamentoRecebMsg() {
+    return confirmarCancelamentoRecebMsg;
+  }
+
+  public String getCancelamentoRecebAnwser() {
+    return cancelamentoRecebAnwser;
+  }
+
+  public void setCancelamentoRecebAnwser(String cancelamentoRecebAnwser) {
+    this.cancelamentoRecebAnwser = cancelamentoRecebAnwser;
+  }
+
+  public Cobranca getCobrancaToCancel() {
+    return cobrancaToCancel;
+  }
+
+  public void setCobrancaToCancel(Cobranca cobrancaToCancel) {
+    this.cobrancaToCancel = cobrancaToCancel;
+  }
+
+  public BigDecimal getTotalRecebimento() {
+    return totalRecebimento;
+  }
+
+  public void setTotalRecebimento(BigDecimal totalRecebimento) {
+    this.totalRecebimento = totalRecebimento;
   }
 }

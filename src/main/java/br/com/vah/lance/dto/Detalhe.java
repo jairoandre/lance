@@ -4,7 +4,6 @@ import br.com.vah.lance.entity.dbamv.Fornecedor;
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -61,9 +60,9 @@ public class Detalhe {
   // 9(06)
   private String dataEmissao = ArquivoUtils.leftZeros("", 6);
   // X(02) : 09 - Protestar ; 02 - Devolver 05 dias ; 03 - Devolver 30 dias ; 05 - Conforme instruções ; 06 - 10 dias ; 07 - 15 dias
-  private String instrucao01 = "35";
+  private String instrucao01 = "34";
   // X(02)
-  private String instrucao02 = "09";
+  private String instrucao02 = "00";
   // 9(11)V9(02)
   private String moraDiaria = ArquivoUtils.leftZeros("", 13);
   // 9(06)
@@ -92,7 +91,7 @@ public class Detalhe {
   private String cidade = ArquivoUtils.rightSpace("", 15);
   // X(02)
   private String uf = ArquivoUtils.rightSpace("", 2);
-  // X(30)
+  // X(30) 352 - 381
   private String sacadorAvalista = ArquivoUtils.rightSpace("", 30);
   // X(04)
   private String spaces03 = ArquivoUtils.rightSpace("", 4);

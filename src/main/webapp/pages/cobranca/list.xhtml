@@ -3,10 +3,11 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core">
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:uivah="http://vah.com.br/vah">
   <ui:define name="content">
     <h:form id="form">
-      <p:panel header="Gerar Arquivo de Remessa">
+      <p:panel header="Financeiro">
         <div class="ui-messages ui-widget" aria-live="polite">
           <div class="ui-messages-info ui-corner-all">
             <span class="ui-messages-info-icon"/>
@@ -15,6 +16,7 @@
             <h:outputText value="Para as outras cobranças o agrupamento é realizado por cliente e data de vencimento."/>
           </div>
         </div>
+
         <h:panelGrid columns="8">
           <p:outputLabel value="Vigência" for="vigencia"/>
           <h:panelGroup>
@@ -35,10 +37,9 @@
               $(".vencimento").numberMask();
             </script>
           </h:panelGroup>
-          <p:selectBooleanCheckbox id="previa" value="#{cobrancaCtrl.previa}" label="Prévia">
-            <p:ajax event="change" process="@this" update="cobrancaPnl" listener="#{cobrancaCtrl.clearCobrancas}"/>
-          </p:selectBooleanCheckbox>
-          <p:outputLabel for="previa" value="Prévia"/>
+          <p:selectBooleanCheckbox id="ocultarRecebidos" value="#{cobrancaCtrl.ocultarRecebidos}"
+                                   label="Ocultar Recebidos"/>
+          <p:outputLabel for="ocultarRecebidos" value="Ocultar Recebidos"/>
           <p:commandButton id="buscarCobrancasBtn" value="Buscar Gravadas"
                            action="#{cobrancaCtrl.buscarCobrancas}" ajax="true" process="@form"
                            onstart="start()"
@@ -52,17 +53,31 @@
         </h:panelGrid>
 
         <h:panelGroup id="cobrancaPnl">
-          <p:commandButton id="arquivoRemessaBtn1" value="Remessa Selecionados"
-                           ajax="false" process="@form" styleClass="margin-top"
+
+          <p:commandButton id="gravarCobrancas1" value="Gravar Selec."
+                           action="#{cobrancaCtrl.gravarSelecionados}"
+                           icon="fa fa-save"
+                           ajax="true" process="@form"
+                           update="@form" styleClass="margin-top"/>
+
+          <p:commandButton id="arquivoRemessaBtn1" value="Arquivo Itaú (TXT)"
+                           ajax="false" process="@form"
+                           icon="fa fa-send"
+                           styleClass="margin-top margin-left"
                            onclick="PrimeFaces.monitorDownload(start, stop);">
             <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
           </p:commandButton>
 
-          <p:commandButton id="gravarCobrancas1" value="Gravar Selecionados"
-                           action="#{cobrancaCtrl.gravarSelecionados}"
-                           ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
+          <p:commandButton value="Arquivo BPD (TXT)"
+                           onclick="PrimeFaces.monitorDownload(start, stop);"
+                           process="@form"
+                           ajax="false"
+                           icon="fa fa-building"
+                           styleClass="margin-top margin-left">
+            <p:fileDownload value="#{cobrancaCtrl.descritivoCobrancas}"/>
+          </p:commandButton>
 
-          <p:commandButton value="Descritivo Selecionados (PDF)"
+          <p:commandButton value="Descritivo Selec. (PDF)"
                            onclick="PrimeFaces.monitorDownload(start, stop);"
                            process="@form"
                            ajax="false"
@@ -71,14 +86,14 @@
             <p:fileDownload value="#{cobrancaCtrl.descritivos}"/>
           </p:commandButton>
 
-          <p:commandButton value="Descritivo Selecionados (TXT)"
-                           onclick="PrimeFaces.monitorDownload(start, stop);"
+          <p:commandButton value="Receber Selec."
+                           action="#{cobrancaCtrl.preReceberSelecionados}"
                            process="@form"
-                           ajax="false"
-                           icon="fa fa-building"
-                           styleClass="margin-top margin-left">
-            <p:fileDownload value="#{cobrancaCtrl.descritivoCobrancas}"/>
-          </p:commandButton>
+                           update="#{p:component('recebimentosDlgWrapper')}"
+                           oncomplete="if (args &amp;&amp; args.showRecebimentosDlg) PF('recebimentosDlg').show(); else window.scrollTo(0, 0);"
+                           ajax="true"
+                           icon="fa fa-thumbs-up"
+                           styleClass="margin-top margin-left"/>
 
           <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.cobrancas}" var="cobranca" emptyMessage="Sem cobranças"
                        selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
@@ -106,7 +121,17 @@
                 <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
               </h:outputText>
             </p:column>
-            <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="75" styleClass="left-align">
+            <p:column headerText="Receb." width="50" styleClass="center-align">
+              <h:panelGroup style="background: green; padding: 5px; border-radius: 2px; color: white;"
+                            rendered="#{cobranca.baixa}">
+                <h:outputText value="Sim"/>
+              </h:panelGroup>
+              <h:panelGroup style="background: red; padding: 5px; border-radius: 2px; color: white;"
+                            rendered="#{not cobranca.baixa}">
+                <h:outputText value="Não"/>
+              </h:panelGroup>
+            </p:column>
+            <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="70" styleClass="left-align">
               <h:outputText value="#{cobranca.vigencia}">
                 <f:convertDateTime pattern="MM/yyyy"/>
               </h:outputText>
@@ -118,14 +143,14 @@
             </p:column>
             <p:column headerText="Ações" width="80" styleClass="center-align">
               <p:menuButton id="menuButton" value="Ações">
-                <p:menuitem value="Descritivo Cond."
+                <p:menuitem value="Descritivo"
                             onclick="PrimeFaces.monitorDownload(start, stop);"
                             ajax="false"
                             rendered="#{not empty cobranca.setor}"
                             icon="fa fa-building">
                   <p:fileDownload value="#{cobrancaCtrl.descritivo(cobranca)}"/>
                 </p:menuitem>
-                <p:menuitem value="Descritivo Geral"
+                <p:menuitem value="Descritivo"
                             onclick="PrimeFaces.monitorDownload(start, stop);"
                             ajax="false"
                             rendered="#{empty cobranca.setor}"
@@ -133,7 +158,20 @@
                   <p:fileDownload value="#{cobrancaCtrl.descritivoGeral(cobranca)}"/>
                 </p:menuitem>
                 <p:separator/>
-                <p:menuitem value="Baixa contábil" process="@this" update="@this" ajax="true" icon="fa fa-tags"/>
+                <p:menuitem value="Receber Cobrança" process="@this" update="#{p:component('recebimentoWrapper')}"
+                            action="#{cobrancaCtrl.preReceberCobranca(cobranca)}"
+                            oncomplete="PF('recebimentoDlg').show()"
+                            rendered="#{!cobranca.baixa}"
+                            ajax="true" icon="fa fa-thumbs-up"/>
+                <p:menuitem value="Cancelar Receb." process="@this" update="#{p:component('confirmarCancelamentoDlg')}"
+                            action="#{cobrancaCtrl.preCancelarRecebimento(cobranca)}"
+                            oncomplete="PF('confirmarCancelamentoDlg').show()"
+                            rendered="#{cobranca.baixa}"
+                            ajax="true" icon="fa fa-ban"/>
+                <p:menuitem value="Criar movimentações" process="@this"
+                            action="#{cobrancaCtrl.criarMovimentacoes(cobranca)}"
+                            oncomplete="window.scrollTo(0, 0)"
+                            ajax="true" icon="fa fa-bullhorn" rendered="false"/>
                 <p:menuitem value="Nota fiscal"
                             action="#{cobrancaCtrl.preNotaFiscal(cobranca)}"
                             ajax="true"
@@ -145,25 +183,147 @@
               </p:menuButton>
             </p:column>
           </p:dataTable>
-          <p:commandButton id="arquivoRemessaBtn2" value="Remessa Selecionados"
-                           ajax="false" process="@form" styleClass="margin-top"
+          <p:commandButton id="gravarCobrancas2" value="Gravar Selec."
+                           action="#{cobrancaCtrl.gravarSelecionados}"
+                           icon="fa fa-save"
+                           ajax="true" process="@form" update="@form" styleClass="margin-top"/>
+          <p:commandButton id="arquivoRemessaBtn2" value="Arquivo Itaú (TXT)" icon="fa fa-send"
+                           ajax="false" process="@form" styleClass="margin-top margin-left"
                            onclick="PrimeFaces.monitorDownload(start, stop);">
             <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
           </p:commandButton>
-          <p:commandButton id="gravarCobrancas2" value="Gravar Selecionados"
-                           action="#{cobrancaCtrl.gravarSelecionados}"
-                           ajax="true" process="@form" update="@form" styleClass="margin-top margin-left"/>
+
+          <p:dialog id="confirmarCancelamentoDlg" header="Atenção"
+                    widgetVar="confirmarCancelamentoDlg" modal="true">
+            <h:outputText
+              value="#{cobrancaCtrl.confirmarCancelamentoRecebMsg}"
+              escape="false"/>
+            <br/>
+            <h:panelGroup layout="block">
+              <p:inputText id="cancelarRecebAnwser" value="#{cobrancaCtrl.cancelamentoRecebAnwser}"
+                           style="text-transform: uppercase;">
+                <p:ajax event="keyup" process="@this" listener="#{cobrancaCtrl.upperCaseAnwser}"
+                        update="cancelarRecebConfirmBtn" global="false"/>
+              </p:inputText>
+            </h:panelGroup>
+            <f:facet name="footer">
+              <p:commandButton id="cancelarRecebConfirmBtn" value="Cancelar Recebimento" ajax="true" update="@form"
+                               action="#{cobrancaCtrl.cancelarRecebimento}"
+                               onstart="start();"
+                               oncomplete="stop(); PF('confirmarCancelamentoDlg').hide(); window.scrollTo(0, 0);"
+                               disabled="#{cobrancaCtrl.cancelamentoRecebAnwser != 'CANCELAR'}"/>
+              <p:commandButton value="Fechar"
+                               oncomplete="PF('confirmarCancelamentoDlg').hide();"
+                               styleClass="margin-left"/>
+            </f:facet>
+          </p:dialog>
+
         </h:panelGroup>
+
+        <h:panelGroup id="recebimentosDlgWrapper">
+          <p:dialog id="recebimentosDlg" widgetVar="recebimentosDlg"
+                    header="Receber Selecionados"
+                    modal="true" width="450" height="100" rendered="#{cobrancaCtrl.showRecebimentosDlg}">
+            <h:panelGrid id="recebimentosDlgFields" columns="2">
+              <p:outputLabel value="Quantidade" styleClass="lance-label"/>
+              <h:outputText value="#{cobrancaCtrl.qtdSelecionados}"/>
+              <p:outputLabel value="Total" styleClass="lance-label"/>
+              <h:outputText value="#{cobrancaCtrl.totalSelecionados}">
+                <f:convertNumber pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <p:outputLabel value="Data Recebimento" for="dataRecebimento" styleClass="lance-label"/>
+              <p:calendar id="dataRecebimento" value="#{cobrancaCtrl.dataRecebimento}" showOn="button"
+                          required="true" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
+            </h:panelGrid>
+            <f:facet name="footer">
+              <p:commandButton value="Receber" action="#{cobrancaCtrl.receberSelecionados}" ajax="true"
+                               onstart="start()"
+                               oncomplete="if (args &amp;&amp; !args.validationFailed) PF('recebimentosDlg').hide(); window.scrollTo(0, 0); stop();"
+                               validateClient="true" process="recebimentosDlgFields"
+                               update="recebimentosDlgFields cobrancaTable"/>
+              <p:commandButton value="Cancelar" action="#{cobrancaCtrl.fecharModalRecebimento}" process="@this"
+                               update="recebimentosDlgWrapper" onclick="PF('recebimentosDlg').hide()"
+                               styleClass="margin-left"/>
+            </f:facet>
+          </p:dialog>
+
+        </h:panelGroup>
+
+        <h:panelGroup id="recebimentoWrapper">
+          <p:dialog id="recebimentoDlg" widgetVar="recebimentoDlg"
+                    header="Baixa Recebimento - Cobrança nº #{cobrancaCtrl.cobranca.id}"
+                    modal="true" width="450" height="150" rendered="#{cobrancaCtrl.showRecebimentoDlg}">
+
+            <h:panelGrid columns="3">
+              <p:outputLabel value="Valor" styleClass="lance-label"/>
+              <h:outputText value="#{cobrancaCtrl.cobranca.valor}">
+                <f:convertNumber pattern="R$ #,##0.00"/>
+              </h:outputText>
+              <h:panelGroup/>
+              <p:outputLabel value="Data Recebimento" for="dataRecebimento2" styleClass="lance-label"/>
+              <p:calendar id="dataRecebimento2" value="#{cobrancaCtrl.dataRecebimento}" showOn="button"
+                          required="true" pattern="dd/MM/yyyy" mask="true" locale="pt_BR"/>
+              <h:panelGroup/>
+              <uivah:inputCurrency id="multaAcrescimo" label="Multa/Acréscimo" value="#{cobrancaCtrl.multaAcrescimo}"
+                                   editing="true">
+                <p:ajax event="keyup" listener="#{cobrancaCtrl.atualizarTotalReceb}" process="@this" update="totalRecebimentoWrapper" />
+              </uivah:inputCurrency>
+              <p:outputLabel value="Total" for="totalRecebimento" styleClass="lance-label"/>
+              <h:panelGroup id="totalRecebimentoWrapper">
+                <h:outputText id="totalRecebimento" value="#{cobrancaCtrl.totalRecebimento}">
+                  <f:convertNumber pattern="R$ #,##0.00"/>
+                </h:outputText>
+              </h:panelGroup>
+              <h:panelGroup/>
+              <uivah:autoComplete id="descontoAcrescimo" value="#{cobrancaCtrl.descontoAcrescimo}"
+                                  label="Desconto/Acréscimo"
+                                  controller="#{descontoAcrescimoCtrl}" completeMethod="autoComplete"
+                                  required="true"
+                                  rendered="false"
+                                  converter="#{descontoAcrescimoConverter}" itemLabel="labelForSelectItem"
+                                  placeholder="Cód./Nome">
+                <p:ajax event="itemSelect" listener="#{cobrancaCtrl.addDescontoAcrescimo}"
+                        update="descontosAcrescimosPanel"/>
+                <p:column>
+                  #{item.id}
+                </p:column>
+                <p:column>
+                  #{item.title}
+                </p:column>
+              </uivah:autoComplete>
+            </h:panelGrid>
+            <h:panelGroup id="descontosAcrescimosPanel" rendered="false">
+              <ui:repeat value="#{cobrancaCtrl.descontosAcrescimos}" var="desconto">
+                #{desconto.labelForSelectItem}
+              </ui:repeat>
+            </h:panelGroup>
+
+            <f:facet name="footer">
+              <p:commandButton value="Receber" action="#{cobrancaCtrl.receberCobranca}" ajax="true"
+                               onstart="start()"
+                               oncomplete="if (args &amp;&amp; !args.validationFailed) PF('recebimentoDlg').hide(); stop(); window.scrollTo(0, 0);"
+                               validateClient="true" process="recebimentoWrapper"
+                               update="recebimentoWrapper cobrancaTable"/>
+              <p:commandButton value="Cancelar" action="#{cobrancaCtrl.fecharModalRecebimento}" process="@this"
+                               update="recebimentoWrapper" onclick="PF('recebimentoDlg').hide()"
+                               styleClass="margin-left"/>
+            </f:facet>
+
+          </p:dialog>
+        </h:panelGroup>
+
         <h:panelGroup id="nfDlgWrapper">
           <p:dialog id="nfDlg" widgetVar="nfDlg"
                     header="Informar Nº. Nota Fiscal"
                     width="800" height="400"
+                    modal="true"
                     rendered="#{not empty cobrancaCtrl.cobranca}">
             <h:panelGrid columns="4">
               <p:outputLabel value="Cliente:" for="clienteMVDlg" styleClass="lance-label"/>
               <h:outputText id="clienteMVDlg" value="#{cobrancaCtrl.cobranca.cliente.title}"/>
               <p:outputLabel value="Setor:" for="setorMVDlg" styleClass="lance-label"/>
-              <h:outputText id="setorMVDlg" value="#{empty cobrancaCtrl.cobranca.setor ? '-' : cobrancaCtrl.cobranca.setor.title}"/>
+              <h:outputText id="setorMVDlg"
+                            value="#{empty cobrancaCtrl.cobranca.setor ? '-' : cobrancaCtrl.cobranca.setor.title}"/>
               <p:outputLabel value="Valor total:" for="valorTotalDlg" styleClass="lance-label"/>
               <h:outputText id="valorTotalDlg" value="#{cobrancaCtrl.cobranca.valor}">
                 <f:convertNumber pattern="R$ #,##0.00"/>

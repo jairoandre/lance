@@ -1,19 +1,19 @@
 package br.com.vah.lance.service;
 
-import br.com.vah.lance.entity.dbamv.ContaReceber;
-import br.com.vah.lance.entity.dbamv.Fornecedor;
-import br.com.vah.lance.entity.dbamv.Setor;
+import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.util.VahUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -21,6 +21,11 @@ import java.util.*;
  */
 @Stateless
 public class CobrancaService extends DataAccessService<Cobranca> {
+
+  public static final String DATA_BAIXA = "DATA_BAIXA";
+  public static final String USUARIO = "USUARIO";
+  public static final String MULTA_ACRESCIMO = "MULTA_ACRESCIMO";
+
 
   private
   @Inject
@@ -30,6 +35,21 @@ public class CobrancaService extends DataAccessService<Cobranca> {
   @Inject
   ContaReceberService contaReceberService;
 
+  private
+  @Inject
+  ContaReceberItemService contaReceberItemService;
+
+  private
+  @Inject
+  RecebimentoService recebimentoService;
+
+  private
+  @Inject
+  MovimentacaoService movimentacaoService;
+
+  private
+  @Inject
+  RecebimentoMovimentoService recebMovService;
 
 
   public CobrancaService() {
@@ -43,12 +63,16 @@ public class CobrancaService extends DataAccessService<Cobranca> {
    * @param vencimento
    * @return
    */
-  public List<Cobranca> buscarCobrancas(Date[] vigencia, Integer vencimento) {
+  public List<Cobranca> buscarCobrancas(Date[] vigencia, Integer vencimento, Boolean ocultarRecebidos) {
     Criteria criteria = createCriteria();
 
     criteria.add(Restrictions.between("vigencia", vigencia[0], vigencia[1]));
     if (vencimento != null) {
       criteria.add(Restrictions.eq("vencimento", VahUtils.calcNextMonthDate(vigencia[0], vencimento)));
+    }
+
+    if (ocultarRecebidos) {
+      criteria.add(Restrictions.eq("baixa", false));
     }
 
     criteria.setFetchMode("contas", FetchMode.SELECT);
@@ -244,6 +268,311 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
   public void salvarNotaFiscal(Cobranca cobranca) throws LanceBusinessException {
     salvarNotaFiscal(new ArrayList<ContaReceber>(cobranca.getContas()));
+  }
+
+  public void validarDataBaixaCobranca(Date data) throws LanceBusinessException {
+    if (data == null) {
+      throw new LanceBusinessException("Data de baixa obrigatória.");
+    }
+    if (data.compareTo(new Date()) > 0) {
+      throw new LanceBusinessException("Data de baixa maior que data atual.");
+    }
+  }
+
+  public void validarValorBaixa(Cobranca cobranca, BigDecimal valor) throws LanceBusinessException {
+
+    if (valor == null) {
+      throw new LanceBusinessException("Valor de baixa obrigatório");
+    }
+
+    if (!cobranca.getValor().equals(valor)) {
+      throw new LanceBusinessException("Valores de cobrança e de baixa divergentes");
+    }
+  }
+
+  public void receberCobrancas(List<Cobranca> cobrancas, Map<String, Object> params, Boolean validar) throws LanceBusinessException {
+    for (Cobranca cobranca : cobrancas) {
+      receberCobranca(cobranca, params, validar);
+    }
+  }
+
+  public void receberCobranca(Cobranca cobranca, Map<String, Object> params, Boolean validar) throws LanceBusinessException {
+    Date dataBaixa = (Date) params.get(DATA_BAIXA);
+    String usuario = (String) params.get(USUARIO);
+    BigDecimal multaAcrescimo = (BigDecimal) params.get(MULTA_ACRESCIMO);
+    DescontoAcrescimo tipoDesconto = new DescontoAcrescimo();
+    tipoDesconto.setId(1l);
+    tipoDesconto.setDescricao("JUROS INCORRIDOS");
+    tipoDesconto.setTipo("A");
+
+
+    if (validar) {
+      validarDataBaixaCobranca(dataBaixa);
+    }
+
+    if (cobranca.getBaixa()) {
+      throw new LanceBusinessException("Cobrança com baixa já realizada pelo Lance.");
+    }
+
+    Recebimento aDescontarAcrescer = null;
+
+    // Para cada conta a receber que compor a cobrança, crie um recebimento
+
+    List<Recebimento> recebimentosToPersist = new ArrayList<>();
+    List<Movimentacao> movimentacaosToPersist = new ArrayList<>();
+
+    SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+    String docIdentificacao = String.format("DOC - %s", sdf.format(dataBaixa));
+
+    for (ContaReceber conta : cobranca.getContas()) {
+
+      ContaReceberItem item = conta.getItensConta().iterator().next();
+      ContaReceberItem attachedItem = contaReceberItemService.find(item.getId());
+
+      if (attachedItem.getRecebimentos().size() > 0) {
+        throw new LanceBusinessException(String.format("Cobrança nº %d já foi recebido.", cobranca.getId()));
+      }
+
+      Recebimento recebimento = new Recebimento();
+
+      String descricao = String.format("RECEBIMENTO BOLETO %d - %s", cobranca.getId(), cobranca.getCliente().getTitle());
+
+      recebimento.setItem(item);
+      recebimento.setDataRecebimento(dataBaixa);
+      recebimento.setDataCheque(dataBaixa);
+      recebimento.setValorRecebido(conta.getValorBruto());
+      recebimento.setValorMoeda(conta.getValorBruto());
+      recebimento.setNomeUsuario(usuario);
+      recebimento.setDescricao(descricao);
+
+      if (aDescontarAcrescer == null
+          || aDescontarAcrescer.getValorRecebido().compareTo(recebimento.getValorRecebido()) < 0) {
+        aDescontarAcrescer = recebimento;
+      }
+
+      if (descricao.length() > 50) {
+        descricao = descricao.substring(0, 50);
+      }
+
+      Movimentacao movimentacao = new Movimentacao();
+      RecebimentoMovimentacao recebimentoMov = new RecebimentoMovimentacao();
+      recebimentoMov.setMovimentacao(movimentacao);
+      recebimentoMov.setRecebimento(recebimento);
+      movimentacao.getRecebimentos().add(recebimentoMov);
+
+      movimentacao.setValor(conta.getValorBruto());
+      movimentacao.setData(dataBaixa);
+      movimentacao.setNumeroIdentificacao(docIdentificacao);
+      movimentacao.setDescricao(descricao);
+      movimentacao.setDescricaoPadrao(descricao);
+      movimentacao.setDescricaoProcesso(descricao);
+
+      movimentacaosToPersist.add(movimentacao);
+      recebimentosToPersist.add(recebimento);
+
+      // MULTA/ACRESCIMO
+
+      if (multaAcrescimo != null) {
+
+        BigDecimal proporcional = multaAcrescimo.multiply(conta.getValorBruto()).divide(cobranca.getValor(), 2, BigDecimal.ROUND_FLOOR);
+        RecebimentoDescAcres acrescimo = new RecebimentoDescAcres();
+        acrescimo.setRecebimento(recebimento);
+        acrescimo.setValor(proporcional);
+        acrescimo.setValorMoeda(proporcional);
+        acrescimo.setDescontoAcrescimo(tipoDesconto);
+        acrescimo.setDescricaoDescAcres(String.format("JUROS INCORRIDOS - %s", cobranca.getCliente().getTitle()));
+        acrescimo.setTipoDescAcres("A");
+
+        recebimento.getDescontosAcrescimos().add(acrescimo);
+        recebimento.setValorAcrescimo(proporcional);
+        recebimento.setValorRecebido(conta.getValorBruto().add(proporcional));
+
+      }
+
+    }
+
+    cobranca.setBaixa(true);
+
+    try {
+      update(cobranca);
+      recebimentoService.persistList(recebimentosToPersist);
+      movimentacaoService.persistList(movimentacaosToPersist);
+    } catch (Exception e) {
+      throw new LanceBusinessException(e.getMessage());
+    }
+
+  }
+
+  public void cancelarRecebimento(Cobranca cobranca) {
+
+    Set<Recebimento> recebimentosToRemove = new HashSet<>();
+    Set<Movimentacao> movimentacoesToRemove = new HashSet<>();
+    Set<RecebimentoMovimentacao> recebMovToRemove = new HashSet<>();
+
+    for (ContaReceber conta : cobranca.getContas()) {
+      for (ContaReceberItem item : conta.getItensConta()) {
+        List<Recebimento> recebimentos = recebimentoService.recebimentosByItem(item);
+        for (Recebimento recebimento : recebimentos) {
+          recebimentosToRemove.add(recebimento);
+          List<RecebimentoMovimentacao> movimentacoes = recebMovService.movimentacaoByRecebimento(recebimento);
+          for (RecebimentoMovimentacao recebMov : movimentacoes) {
+            movimentacoesToRemove.add(recebMov.getMovimentacao());
+            recebMovToRemove.add(recebMov);
+          }
+        }
+      }
+    }
+
+    for (RecebimentoMovimentacao recebMov : recebMovToRemove) {
+      recebMovService.delete(recebMov.getId());
+    }
+
+    for (Movimentacao mov : movimentacoesToRemove) {
+      movimentacaoService.delete(mov.getId());
+    }
+
+    for (Recebimento receb : recebimentosToRemove) {
+      recebimentoService.delete(receb.getId());
+    }
+
+    cobranca.setBaixa(false);
+
+    update(cobranca);
+
+  }
+
+  public void criarMovimentacoes(Cobranca cobranca) {
+    Cobranca attached = find(cobranca.getId());
+    SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+    List<Movimentacao> movimentacaosToPersist = new ArrayList<>();
+    for (ContaReceber conta : attached.getContas()) {
+      for (ContaReceberItem item : conta.getItensConta()) {
+        for (Recebimento recebimento : item.getRecebimentos()) {
+
+          String descricao = recebimento.getDescricao();
+
+          if (descricao.length() > 50) {
+            descricao = descricao.substring(0, 50);
+          }
+
+          Movimentacao movimentacao = new Movimentacao();
+          RecebimentoMovimentacao recebimentoMov = new RecebimentoMovimentacao();
+          recebimentoMov.setMovimentacao(movimentacao);
+          recebimentoMov.setRecebimento(recebimento);
+          movimentacao.getRecebimentos().add(recebimentoMov);
+
+          movimentacao.setValor(conta.getValorBruto());
+          movimentacao.setData(recebimento.getDataRecebimento());
+          movimentacao.setNumeroIdentificacao(String.format("DOC - %s", sdf.format(recebimento.getDataRecebimento())));
+          movimentacao.setDescricao(descricao);
+          movimentacao.setDescricaoPadrao(descricao);
+          movimentacao.setDescricaoProcesso(descricao);
+          movimentacaosToPersist.add(movimentacao);
+        }
+      }
+    }
+    movimentacaoService.persistList(movimentacaosToPersist);
+
+  }
+
+
+  public static final String firstLine0To26 = "02RETORNO01COBRANCA       ";
+
+  private void validarPrimeiraLinha(String line) throws LanceBusinessException {
+    if (line == null) {
+      throw new LanceBusinessException("Primeira linha do arquivo é nula");
+    }
+    if (!firstLine0To26.equals(line.substring(0, 26))) {
+      throw new LanceBusinessException("Posição 0 a 26 da primeira linha inválida");
+    }
+
+  }
+
+  public static final String MENSAGENS = "MENSAGENS";
+  public static final String COBRANCAS = "COBRANCAS";
+
+  public Map<String, Object> processarArquivoRetorno(byte[] content) throws LanceBusinessException {
+    Map<String, Object> resultadoProcessamento = new HashMap<>();
+
+    InputStream is = null;
+
+    List<String> mensagens = new ArrayList<>();
+    List<Cobranca> cobrancas = new ArrayList<>();
+
+    resultadoProcessamento.put(MENSAGENS, mensagens);
+    resultadoProcessamento.put(COBRANCAS, cobrancas);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy");
+
+    try {
+      is = new ByteArrayInputStream(content);
+      BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+      // Primeira linha
+      Integer lCount = 1;
+      Integer ignorados = 0;
+      String line = bf.readLine();
+      validarPrimeiraLinha(line);
+      String seqArRet = line.substring(108, 113);
+      String seqReg = line.substring(394);
+      while ((line = bf.readLine()) != null) {
+        lCount++;
+        String tipoRegistro = line.substring(0, 1);
+        if (tipoRegistro.equals("1")) {
+          String usoEmpresa = line.substring(37, 62).trim();
+          String codigoOcorrencia = line.substring(108, 110);
+          String valorTitulo = line.substring(152, 165);
+          String tarifaCobranca = line.substring(175, 188);
+          String iof = line.substring(214, 227);
+          String valorAbatimento = line.substring(227, 240);
+          String descontos = line.substring(240, 253);
+          String valorPrincipal = line.substring(253, 266);
+          String jurosMoraMulta = line.substring(266, 279);
+          String outrosCreditos = line.substring(279, 292);
+
+          BigDecimal valor = new BigDecimal(valorTitulo.substring(0, 11) + "." + valorTitulo.substring(11));
+
+          Date dataOcorrencia = sdf.parse(line.substring(110, 116));
+
+          // OCORRÊNCIA 06 - LIQUIDAÇÃO NORMAL
+          if (codigoOcorrencia.equals("06")) {
+            try {
+              Cobranca cobranca = find(Long.valueOf(usoEmpresa));
+              if (cobranca.getBaixa()) {
+                mensagens.add(String.format("Linha %03d: Cobrança nº %d já recebida.", lCount, cobranca.getId()));
+                ignorados++;
+                continue;
+              } else {
+                cobrancas.add(cobranca);
+              }
+            } catch (Exception e) {
+              mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+              continue;
+            }
+          } else {
+            mensagens.add(String.format("Linha %03d: Ocorrência não tratada %s", lCount, codigoOcorrencia));
+          }
+        } else if (tipoRegistro.equals("9")) {
+          break;
+        }
+      }
+      String qtdTitulos = line.substring(17, 25);
+      String valorTotalCobranca = line.substring(25, 39);
+    } catch (ParseException pe) {
+      throw new LanceBusinessException("Erro na leitura da data");
+    } catch (IOException e) {
+      throw new LanceBusinessException("Erro na leitura do arquivo");
+    } finally {
+      if (is != null) {
+        try {
+          is.close();
+        } catch (IOException e) {
+
+        }
+      }
+    }
+
+
+    return resultadoProcessamento;
   }
 
 }

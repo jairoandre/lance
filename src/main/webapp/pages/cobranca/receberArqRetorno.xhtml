@@ -1,0 +1,34 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:uivah="http://vah.com.br/vah">
+
+  <ui:define name="content">
+    <h:form enctype="multipart/form-data">
+      <p:panel header="Receber Arquivo Retorno">
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:fileUpload skinSimple="true"
+                      label="Escolher arquivo"
+                      cancelLabel="Cancelar" uploadLabel="Submeter"
+                      onstart="start()"
+                      oncomplete="stop()"
+                      update="resultadoProcessamento"
+                      fileUploadListener="#{cobrancaCtrl.uploadArquivoRetorno}"/>
+
+        <p:dataList id="resultadoProcessamento" value="#{cobrancaCtrl.mensagens}" var="mensagem" emptyMessage="Aguardando arquivo..." styleClass="margin-top">
+          <f:facet name="header">
+            <h:outputText value="Resultado processamento"/>
+          </f:facet>
+          <h:outputText value="#{mensagem}"/>
+        </p:dataList>
+
+      </p:panel>
+    </h:form>
+  </ui:define>
+
+
+</ui:composition>

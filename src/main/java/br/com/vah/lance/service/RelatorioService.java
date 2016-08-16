@@ -232,11 +232,6 @@ public class RelatorioService implements Serializable {
         continue;
       }
 
-      if (TipoServicoEnum.COLETA_INFECTANTE.equals(servico.getType())) {
-        valorColeta = item.getValor();
-        continue;
-      }
-
       if (TipoServicoEnum.TAXA_REFRIGERACAO.equals(servico.getType())) {
         valorTR = item.getValor();
         continue;

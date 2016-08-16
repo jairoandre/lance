@@ -76,7 +76,7 @@
               <p:menuitem value="Relat. Contab."
                           onclick="PrimeFaces.monitorDownload(start, stop);"
                           ajax="false"
-                          rendered="#{lancamento.status == 'L'}"
+                          rendered="#{lancamento.status == 'L' or lancamento.status == 'V'}"
                           icon="fa fa-bar-chart">
                 <p:fileDownload value="#{lancamentoCtrl.relatorioContabil(lancamento)}"/>
               </p:menuitem>
