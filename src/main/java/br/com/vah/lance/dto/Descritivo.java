@@ -19,19 +19,27 @@ public class Descritivo {
   private String rateado;
   // X(08)
   private String nossoNumero;
-  // X(45)
+  // X(100)
   private String descricao;
   // 9(11)V9(02)
   private String valorTotal;
   // 9(11)V9(02)
   private String valorIndividual;
-  // X(31)
+  // REGISTRO 2
+  // X(100)
   private String nomeSetor;
+  // X(6)
+  private String numero;
+  // X(20)
+  private String complemento;
+
 
   public Descritivo(Cobranca cobranca) {
     rateado = "2";
     nossoNumero = ArquivoUtils.rightSpace(cobranca.getId().toString(), 8);
-    nomeSetor = ArquivoUtils.rightSpace(cobranca.getSetor().getTitle(), 71);
+    nomeSetor = ArquivoUtils.rightSpace(cobranca.getSetor().getTitle(), 100);
+    numero = ArquivoUtils.rightSpace(cobranca.getCliente().getNumero(), 6);
+    complemento = ArquivoUtils.rightSpace(cobranca.getCliente().getComplemento(), 20);
   }
 
   public Descritivo(ItemCobranca item) {
@@ -39,7 +47,8 @@ public class Descritivo {
     Servico servico = item.getServico();
     Long contaCusto = servico.getContaCusto().getId();
 
-    boolean isIndividual = TipoServicoEnum.ENERGIA_PRIVADA.equals(servico.getType())
+    boolean isIndividual = !servico.getAgrupavel()
+        || TipoServicoEnum.ENERGIA_PRIVADA.equals(servico.getType())
         || TipoServicoEnum.COLETA_INFECTANTE.equals(servico.getType())
         || TipoServicoEnum.TAXA_REFRIGERACAO.equals(servico.getType())
         || contaCusto.equals(269l)
@@ -47,7 +56,7 @@ public class Descritivo {
 
     rateado = isIndividual ? INDIVIDUAL : RATEADO;
     nossoNumero = ArquivoUtils.rightSpace(item.getCobranca().getId().toString(), 8);
-    descricao = ArquivoUtils.rightSpace(item.getServico().getTitle(), 45);
+    descricao = ArquivoUtils.rightSpace(item.getServico().getTitle(), 100);
     valorTotal = ArquivoUtils.formatNumber(item.getTotal(), 13);
     valorIndividual = ArquivoUtils.formatNumber(item.getValor(), 13);
 
@@ -55,49 +64,9 @@ public class Descritivo {
 
   public String print() {
     if (SETOR.equals(rateado)) {
-      return rateado + nossoNumero + nomeSetor + "\r\n";
+      return rateado + nossoNumero + nomeSetor + numero + complemento + "\r\n";
     } else {
       return rateado + nossoNumero + descricao + valorTotal + valorIndividual + "\r\n";
     }
-  }
-
-  public String getRateado() {
-    return rateado;
-  }
-
-  public void setRateado(String rateado) {
-    this.rateado = rateado;
-  }
-
-  public String getNossoNumero() {
-    return nossoNumero;
-  }
-
-  public void setNossoNumero(String nossoNumero) {
-    this.nossoNumero = nossoNumero;
-  }
-
-  public String getDescricao() {
-    return descricao;
-  }
-
-  public void setDescricao(String descricao) {
-    this.descricao = descricao;
-  }
-
-  public String getValorTotal() {
-    return valorTotal;
-  }
-
-  public void setValorTotal(String valorTotal) {
-    this.valorTotal = valorTotal;
-  }
-
-  public String getValorIndividual() {
-    return valorIndividual;
-  }
-
-  public void setValorIndividual(String valorIndividual) {
-    this.valorIndividual = valorIndividual;
   }
 }

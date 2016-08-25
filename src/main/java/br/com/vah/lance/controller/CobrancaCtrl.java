@@ -120,6 +120,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     try {
       cobrancas = service.gravarCobrancas(selectedCobrancas);
       addMsg(FacesMessage.SEVERITY_INFO, "Sucesso", "Registros atualizados");
+      buscarCobrancas();
       selectedCobrancas = null;
     } catch (LanceBusinessException lbe) {
       addMsg(FacesMessage.SEVERITY_WARN, "Atenção", lbe.getMsg());

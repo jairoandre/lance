@@ -46,6 +46,12 @@ public class Fornecedor extends BaseEntity {
   @Column(name = "NR_CEP")
   private String cep;
 
+  @Column(name = "NR_ENDERECO")
+  private String numero;
+
+  @Column(name = "DS_COMPLEMENTO")
+  private String complemento;
+
   @ManyToOne
   @JoinColumn(name = "CD_CIDADE")
   private Cidade cidade;
@@ -132,6 +138,22 @@ public class Fornecedor extends BaseEntity {
 
   public void setCep(String cep) {
     this.cep = cep;
+  }
+
+  public String getNumero() {
+    return numero;
+  }
+
+  public void setNumero(String numero) {
+    this.numero = numero;
+  }
+
+  public String getComplemento() {
+    return complemento;
+  }
+
+  public void setComplemento(String complemento) {
+    this.complemento = complemento;
   }
 
   public Cidade getCidade() {

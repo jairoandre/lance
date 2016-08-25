@@ -125,9 +125,11 @@ public class LancamentoService extends DataAccessService<Lancamento> {
       currentEntries = findWithNamedQuery(Lancamento.BY_PERIOD_AND_SERVICES, entriesParams);
 
       /**
-       * Verifica se o período consultado é do mês vigente, caso seja, monta lançamentos que ainda não foram lançados.
+       * Verifica se o período consultado é do mês vigente (ou posterior), caso seja, monta lançamentos que ainda não foram lançados.
        */
-      if (VahUtils.checkBetween(new Date(), range[0], range[1])) {
+      Date today = new Date();
+
+      if (VahUtils.checkBetween(today, range[0], range[1]) || today.before(range[0])) {
 
         Set<Servico> includedServicos = new HashSet<>();
 
@@ -153,7 +155,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
                 // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
                 if (!includedServicos.contains(servico)) {
-                  entries.add(new Lancamento(servico));
+                  entries.add(new Lancamento(servico, range[0]));
                   includedServicos.add(servico);
                 }
 
@@ -195,18 +197,18 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     return contratos;
   }
 
-  public Lancamento prepareNewEntry(Long userId, Long serviceId) {
+  public Lancamento prepareNewEntry(Long userId, Long serviceId, Date vigencia) {
     User user = userService.find(userId);
-    Lancamento lancamento = prepareNewEntry(serviceId);
+    Lancamento lancamento = prepareNewEntry(serviceId, vigencia);
     lancamento.setAutor(user);
     return lancamento;
   }
 
-  public Lancamento prepareNewEntry(Long serviceId) {
+  public Lancamento prepareNewEntry(Long serviceId, Date vigencia) {
 
     Servico servico = servicoService.find(serviceId);
 
-    Lancamento lancamento = new Lancamento(servico);
+    Lancamento lancamento = new Lancamento(servico, vigencia);
     lancamento.setTotalValue(BigDecimal.ZERO);
 
     // Verifica necessidade de se carregar lista de medidores (Energia Individual, Gás, etc...)
@@ -451,7 +453,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
   public Lancamento addNovosLancamentos(Lancamento lancamento) {
     Map<Fornecedor, LancamentoValor> map = new HashMap<>();
-    Lancamento novasEntradas = prepareNewEntry(lancamento.getServico().getId());
+    Lancamento novasEntradas = prepareNewEntry(lancamento.getServico().getId(), lancamento.getEffectiveOn());
     for (LancamentoValor servicoValor : lancamento.getValues()) {
       map.put(servicoValor.getContratoSetor().getContrato().getContratante(), servicoValor);
     }
@@ -591,44 +593,43 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           if (contaReceber == null) {
             contaReceber = createContaReceber(lancamentoValor, numDocPrefix, count++, dataLancamento);
             contasReceberMap.put(lancamentoValor.getContratoSetor().getSetor(), contaReceber);
-          }
+          } else {
+            ContaReceberRateio itemRateio = contaReceber.getItensRateio().iterator().next();
+            ContaReceberItem itemConta = contaReceber.getItensConta().iterator().next();
 
-          ContaReceberRateio itemRateio = contaReceber.getItensRateio().iterator().next();
-          ContaReceberItem itemConta = contaReceber.getItensConta().iterator().next();
+            // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
+            // condizentes com o serviço iterado
+            Servico servico = lancamento.getServico();
 
-          // Antes de atualizar os valores, verifica se a conta receber previamente inserida no mapping apresenta parâmetros contábeis
-          // condizentes com o serviço iterado
-          Servico servico = lancamento.getServico();
+            PlanoConta contaContabil = servico.getContaContabil();
 
-          PlanoConta contaContabil = servico.getContaContabil();
-
-          if (lancamentoValor.getLancamento().getServico().getContaPorSetor()) {
-            SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
-            if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
-              contaContabil = setorDetalhe.getContaContabil();
+            if (lancamentoValor.getLancamento().getServico().getContaPorSetor()) {
+              SetorDetalhe setorDetalhe = lancamentoValor.getContratoSetor().getSetor().getSetorDetalhe();
+              if (setorDetalhe != null && setorDetalhe.getContaContabil() != null) {
+                contaContabil = setorDetalhe.getContaContabil();
+              }
             }
+
+            if (!contaReceber.getHistoricoPadrao().equals(servico.getHistoricoPadrao()) ||
+                !contaReceber.getContaContabil().equals(contaContabil) ||
+                !itemRateio.getContaResultado().equals(servico.getContaCusto())) {
+              throw new LanceBusinessException("Não é possível realizar lançamento agrupado. Parâmetros contábeis divergentes entre os serviços selecionados. Serviço [%s]", lancamento.getServico().getClass().getSimpleName());
+            }
+
+            // Conta a receber para o setor já existe. Neste caso, atualize somente os valores da conta.
+            BigDecimal entryValueNumber = lancamentoValor.getValue();
+
+            // Valor total da conta
+            contaReceber.setValorBruto(contaReceber.getValorBruto().add(entryValueNumber));
+
+
+            // Valor do item de rateio
+            itemRateio.setValorRateio(itemRateio.getValorRateio().add(entryValueNumber));
+
+            // Valor do item da conta
+            itemConta.setValorDuplicata(itemConta.getValorDuplicata().add(entryValueNumber));
+            itemConta.setValorMoeda(itemConta.getValorMoeda().add(entryValueNumber));
           }
-
-          if (!contaReceber.getHistoricoPadrao().equals(servico.getHistoricoPadrao()) ||
-              !contaReceber.getContaContabil().equals(contaContabil) ||
-              !itemRateio.getContaResultado().equals(servico.getContaCusto())) {
-            throw new LanceBusinessException("Não é possível realizar lançamento agrupado. Parâmetros contábeis divergentes entre os serviços selecionados. Serviço [%s]", lancamento.getServico().getClass().getSimpleName());
-          }
-
-          // Conta a receber para o setor já existe. Neste caso, atualize somente os valores da conta.
-          BigDecimal entryValueNumber = lancamentoValor.getValue();
-
-          // Valor total da conta
-          contaReceber.setValorBruto(contaReceber.getValorBruto().add(entryValueNumber));
-
-
-          // Valor do item de rateio
-          itemRateio.setValorRateio(itemRateio.getValorRateio().add(entryValueNumber));
-
-          // Valor do item da conta
-          itemConta.setValorDuplicata(itemConta.getValorDuplicata().add(entryValueNumber));
-          itemConta.setValorMoeda(itemConta.getValorMoeda().add(entryValueNumber));
-
         }
       } // for
     } // if
@@ -642,7 +643,6 @@ public class LancamentoService extends DataAccessService<Lancamento> {
       lancamento.setStatus(EstadoLancamentoEnum.V);
       lancamento.setContasReceber(persistedContas);
     }
-
     return updateList(lancamentos);
   }
 

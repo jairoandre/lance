@@ -94,6 +94,9 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     if (cobrancas != null && cobrancas.length > 0) {
 
       StringBuilder builder = new StringBuilder();
+
+      List<Cobranca> toPersist = new ArrayList<>();
+
       for (Cobranca cobranca : cobrancas) {
         if (cobranca.getId() == null && checkCobranca(cobranca)) {
           if (cobranca.getSetor() != null) {
@@ -101,14 +104,18 @@ public class CobrancaService extends DataAccessService<Cobranca> {
           }
           builder.append(String.format("Cliente: %s", cobranca.getCliente().getLabelForSelectItem()));
           builder.append("\r\n");
+        } else {
+          toPersist.add(cobranca);
         }
       }
 
+      /*
       if (builder.length() > 0) {
         throw new LanceBusinessException("Já existe cobranças para os seguintes items: \r\n" + builder.toString());
       }
+      */
 
-      for (Cobranca cobranca : cobrancas) {
+      for (Cobranca cobranca : toPersist) {
         if (cobranca.getId() == null) {
           attachedCobrancas.add(create(cobranca));
         } else {
@@ -301,8 +308,8 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     String usuario = (String) params.get(USUARIO);
     BigDecimal multaAcrescimo = (BigDecimal) params.get(MULTA_ACRESCIMO);
     DescontoAcrescimo tipoDesconto = new DescontoAcrescimo();
-    tipoDesconto.setId(1l);
-    tipoDesconto.setDescricao("JUROS INCORRIDOS");
+    tipoDesconto.setId(20l);
+    tipoDesconto.setDescricao("JUROS CLIENTES");
     tipoDesconto.setTipo("A");
 
 
@@ -323,6 +330,8 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
     SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
     String docIdentificacao = String.format("DOC - %s", sdf.format(dataBaixa));
+
+    BigDecimal totalProporcional = BigDecimal.ZERO;
 
     for (ContaReceber conta : cobranca.getContas()) {
 
@@ -361,6 +370,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
       movimentacao.getRecebimentos().add(recebimentoMov);
 
       movimentacao.setValor(conta.getValorBruto());
+      movimentacao.setValorMoeda(conta.getValorBruto());
       movimentacao.setData(dataBaixa);
       movimentacao.setNumeroIdentificacao(docIdentificacao);
       movimentacao.setDescricao(descricao);
@@ -373,8 +383,8 @@ public class CobrancaService extends DataAccessService<Cobranca> {
       // MULTA/ACRESCIMO
 
       if (multaAcrescimo != null) {
-
         BigDecimal proporcional = multaAcrescimo.multiply(conta.getValorBruto()).divide(cobranca.getValor(), 2, BigDecimal.ROUND_FLOOR);
+        totalProporcional = totalProporcional.add(proporcional);
         RecebimentoDescAcres acrescimo = new RecebimentoDescAcres();
         acrescimo.setRecebimento(recebimento);
         acrescimo.setValor(proporcional);
@@ -385,13 +395,33 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
         recebimento.getDescontosAcrescimos().add(acrescimo);
         recebimento.setValorAcrescimo(proporcional);
-        recebimento.setValorRecebido(conta.getValorBruto().add(proporcional));
+        conta.setValorAcrescimo(proporcional);
+        BigDecimal valorLiquido = conta.getValorBruto().add(proporcional);
+
+        recebimento.setValorRecebido(valorLiquido);
+        movimentacao.setValor(valorLiquido);
+        movimentacao.setValorMoeda(valorLiquido);
 
       }
 
     }
 
+    if (multaAcrescimo != null) {
+      BigDecimal delta = multaAcrescimo.subtract(totalProporcional);
+      if (!BigDecimal.ZERO.equals(delta)) {
+        Movimentacao mov = movimentacaosToPersist.iterator().next();
+        Recebimento receb = recebimentosToPersist.iterator().next();
+        mov.setValor(mov.getValor().add(delta));
+        receb.setValorAcrescimo(receb.getValorAcrescimo().add(delta));
+        receb.setValorMoedaAcrescimo(receb.getValorMoedaAcrescimo().add(delta));
+        RecebimentoDescAcres acresc = receb.getDescontosAcrescimos().iterator().next();
+        acresc.setValor(acresc.getValor().add(delta));
+        acresc.setValorMoeda(acresc.getValorMoeda().add(delta));
+      }
+    }
+
     cobranca.setBaixa(true);
+    cobranca.setDataBaixa(new Date());
 
     try {
       update(cobranca);

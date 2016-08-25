@@ -10,13 +10,20 @@
     <f:metadata>
       <f:viewParam name="id" value="#{lancamentoCtrl.id}"/>
       <f:viewParam name="serviceId" value="#{lancamentoCtrl.serviceId}"/>
+      <f:viewParam name="vigencia" value="#{lancamentoCtrl.vigencia}"/>
       <f:viewAction action="#{lancamentoCtrl.onLoad}"/>
     </f:metadata>
   </ui:define>
   <ui:define name="content">
     <h:form id="form" onkeypress="return event.keyCode != 13">
       <h:panelGroup id="container" layout="block" styleClass="lance-container">
-        <p:panel header="Lançamento - #{lancamentoCtrl.item.servico.title}">
+        <p:panel>
+          <f:facet name="header">
+            <h:outputText value="#{lancamentoCtrl.item.servico.title} - Vig.: "/>
+            <h:outputText value="#{lancamentoCtrl.item.effectiveOn}">
+              <f:convertDateTime pattern="MM/yyyy"/>
+            </h:outputText>
+          </f:facet>
 
           <!-- TOTAL BLOCK -->
           <ui:include src="totalBlock.xhtml"/>

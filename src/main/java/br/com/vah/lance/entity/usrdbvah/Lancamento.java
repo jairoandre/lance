@@ -148,16 +148,16 @@ public class Lancamento extends BaseEntity {
   public Lancamento() {
     this.status = EstadoLancamentoEnum.N;
     this.createdOn = new Date();
-    this.effectiveOn = new Date();
     this.totalValue = BigDecimal.ZERO;
     this.comentarios = new LinkedHashSet<>();
     this.values = new HashSet<>();
     this.meterValues = new LinkedHashSet<>();
   }
 
-  public Lancamento(Servico servico) {
+  public Lancamento(Servico servico, Date effectiveOn) {
     this();
     this.servico = servico;
+    this.effectiveOn = effectiveOn;
   }
 
   @Override

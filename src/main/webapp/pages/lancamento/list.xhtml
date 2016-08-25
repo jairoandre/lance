@@ -64,7 +64,7 @@
                           action="#{lancamentoCtrl.edit(lancamento)}"
                           onclick="PF('changePage').show()"
                           ajax="false"
-                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or lancamento.status == 'V'}"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,MANAGER,REGISTER') or lancamento.status == 'V' or !lancamentoCtrl.verificarDataLimite(lancamento)}"
                           icon="fa fa-send"/>
               <p:menuitem value="Validar" action="#{lancamentoCtrl.validate(lancamento)}"
                           onclick="PF('changePage').show()"

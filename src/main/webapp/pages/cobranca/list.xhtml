@@ -121,7 +121,7 @@
                 <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
               </h:outputText>
             </p:column>
-            <p:column headerText="Receb." width="50" styleClass="center-align">
+            <p:column headerText="Baixa" width="50" styleClass="center-align">
               <h:panelGroup style="background: green; padding: 5px; border-radius: 2px; color: white;"
                             rendered="#{cobranca.baixa}">
                 <h:outputText value="Sim"/>
@@ -130,6 +130,11 @@
                             rendered="#{not cobranca.baixa}">
                 <h:outputText value="Não"/>
               </h:panelGroup>
+            </p:column>
+            <p:column headerText="Receb." sortBy="#{cobranca.dataBaixa}" width="70" styleClass="left-align">
+              <h:outputText value="#{cobranca.dataBaixa}">
+                <f:convertDateTime pattern="MM/yyyy"/>
+              </h:outputText>
             </p:column>
             <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="70" styleClass="left-align">
               <h:outputText value="#{cobranca.vigencia}">

@@ -41,6 +41,9 @@ public class Cobranca extends BaseEntity {
   @Column(name = "DT_VENCIMENTO")
   private Date vencimento;
 
+  @Column(name = "DT_BAIXA")
+  private Date dataBaixa;
+
   @Column(name = "SN_LIQUIDADO")
   private Boolean liquidado = false;
 
@@ -105,6 +108,14 @@ public class Cobranca extends BaseEntity {
 
   public void setVencimento(Date vencimento) {
     this.vencimento = vencimento;
+  }
+
+  public Date getDataBaixa() {
+    return dataBaixa;
+  }
+
+  public void setDataBaixa(Date dataBaixa) {
+    this.dataBaixa = dataBaixa;
   }
 
   public Boolean getLiquidado() {

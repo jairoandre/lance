@@ -83,10 +83,10 @@ public class ContaReceber extends BaseEntity {
   @Column(name = "DS_OBSERVACAO")
   private String observacao;
 
-  @OneToMany(mappedBy = "pk.contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "pk.contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ContaReceberRateio> itensRateio = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "contaReceber", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ContaReceberItem> itensConta = new LinkedHashSet<>();
 
   @Column(name = "SN_GLOSA_ACEITA")

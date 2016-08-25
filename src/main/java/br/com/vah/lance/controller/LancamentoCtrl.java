@@ -21,6 +21,7 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -60,6 +61,8 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
   private List<LancamentoValor> lancamentoValors;
 
+  private String vigencia;
+
   private List groupValues;
 
   private Long serviceId;
@@ -98,6 +101,10 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
 
   private List<ContaReceber> contasReceberToAdd = new ArrayList<>();
 
+  private Integer diaAtual;
+
+  private Date parsedVigencia;
+
   public void onLoadContaReceber() {
     getLogger().info("Load params");
     if (getId() != null) {
@@ -116,6 +123,18 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     logger.info(this.getClass().getSimpleName() + " created.");
     entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRangeForThisMonth());
     initLazyModel(service, RELATIONS);
+    Date today = new Date();
+    SimpleDateFormat sdfDia = new SimpleDateFormat("dd");
+    SimpleDateFormat sdfVigencia = new SimpleDateFormat("MMyyyy");
+    try {
+      diaAtual = Integer.valueOf(sdfDia.format(today));
+      if (vigencia == null) {
+        vigencia = sdfVigencia.format(today);
+      }
+      parsedVigencia = sdfVigencia.parse(vigencia);
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
   }
 
   public void filterByDate() {
@@ -182,6 +201,14 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     this.serviceId = serviceId;
   }
 
+  public String getVigencia() {
+    return vigencia;
+  }
+
+  public void setVigencia(String vigencia) {
+    this.vigencia = vigencia;
+  }
+
   public Comentario getComentario() {
     return comentario;
   }
@@ -245,20 +272,33 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   @Override
   public void onLoad() {
     super.onLoad();
-    if (serviceId != null && getItem().getId() == null) {
-      setItem(service.prepareNewEntry(sessionCtrl.getUser().getId(), serviceId));
-      service.computeInitialValues(getItem());
-    } else if (getItem().getId() != null) {
-      setItem(service.addNovosLancamentos(getItem()));
+    SimpleDateFormat sdf = new SimpleDateFormat("MMyyyy");
+    try {
+      if (serviceId != null && getItem().getId() == null) {
+        parsedVigencia = sdf.parse(vigencia);
+        setItem(service.prepareNewEntry(sessionCtrl.getUser().getId(), serviceId, parsedVigencia));
+        service.computeInitialValues(getItem());
+      } else if (getItem().getId() != null) {
+        setItem(service.addNovosLancamentos(getItem()));
+      }
+      TipoServicoEnum serviceType = getItem().getServico().getType();
+      getItem().getMeterValues();
+      sharedPerArea = TipoServicoEnum.CP.equals(serviceType) || TipoServicoEnum.CR.equals(serviceType) || TipoServicoEnum.CRE.equals(serviceType);
+      comentario = createComment();
+      lancamentoValors = new ArrayList<>(getItem().getValues());
+      if (sharedPerArea) {
+        shareAmmount();
+      }
+    } catch (Exception e) {
+      addErrorMessage(e);
     }
-    TipoServicoEnum serviceType = getItem().getServico().getType();
-    getItem().getMeterValues();
-    sharedPerArea = TipoServicoEnum.CP.equals(serviceType) || TipoServicoEnum.CR.equals(serviceType) || TipoServicoEnum.CRE.equals(serviceType);
-    comentario = createComment();
-    lancamentoValors = new ArrayList<>(getItem().getValues());
-    if (sharedPerArea) {
-      shareAmmount();
-    }
+
+
+  }
+
+  public Boolean verificarDataLimite(Lancamento lancamento) {
+    Date today = new Date();
+    return lancamento.getEffectiveOn().after(today) ? true : (diaAtual <= lancamento.getServico().getDiaLimite());
   }
 
   private List<Lancamento> oldEntries;
@@ -326,8 +366,15 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   @Override
   public String edit(Lancamento item) {
     if (item.getId() == null) {
-      return editPage() + String.format("?faces-redirect=true&editing=true&serviceId=%d",
-          item.getServico().getId());
+      try {
+        return editPage() + String.format("?faces-redirect=true&editing=true&serviceId=%d&vigencia=%s",
+            item.getServico().getId(),
+            new SimpleDateFormat("MMyyyy").format(item.getEffectiveOn()));
+      } catch (Exception e) {
+        addErrorMessage(e);
+        return "";
+      }
+
     } else {
       return super.edit(item);
     }
