@@ -3,30 +3,129 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:uivah="http://vah.com.br/vah">
+                xmlns:f="http://java.sun.com/jsf/core">
 
   <ui:define name="content">
     <h:form enctype="multipart/form-data">
-      <p:panel header="Receber Arquivo Retorno">
-        <p:growl id="messages" showDetail="true"/>
+      <h:panelGroup id="container" layout="block" styleClass="lance-container">
+        <p:panel header="Retorno">
 
-        <p:fileUpload skinSimple="true"
-                      label="Escolher arquivo"
-                      cancelLabel="Cancelar" uploadLabel="Submeter"
-                      onstart="start()"
-                      oncomplete="stop()"
-                      update="resultadoProcessamento"
-                      fileUploadListener="#{cobrancaCtrl.uploadArquivoRetorno}"/>
+          <h:panelGroup id="totalValue" layout="block"
+                        styleClass="lancamento-total-block">
+            <h:panelGrid columns="2">
+              <h:outputLabel value="TOTAL SELECIONADOS:"/>
+              <h:outputText value="#{cobrancaCtrl.totalSelecionados}" styleClass="label">
+                <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+              </h:outputText>
+            </h:panelGrid>
+          </h:panelGroup>
 
-        <p:dataList id="resultadoProcessamento" value="#{cobrancaCtrl.mensagens}" var="mensagem" emptyMessage="Aguardando arquivo..." styleClass="margin-top">
-          <f:facet name="header">
-            <h:outputText value="Resultado processamento"/>
-          </f:facet>
-          <h:outputText value="#{mensagem}"/>
-        </p:dataList>
+          <p:growl id="messages" showDetail="true"/>
 
-      </p:panel>
+          <p:fileUpload skinSimple="true"
+                        label="Escolher arquivo"
+                        cancelLabel="Cancelar" uploadLabel="Submeter"
+                        onstart="start()"
+                        oncomplete="stop()"
+                        update="cobrancasWrapper"
+                        fileUploadListener="#{cobrancaCtrl.uploadArquivoRetorno}"/>
+
+          <h:panelGroup id="cobrancasWrapper" layout="block" styleClass="margin-top">
+
+            <p:panel header="Mensagens" toggleable="true" rendered="#{not empty cobrancaCtrl.mensagens}"
+                     styleClass="margin-top">
+              <p:dataList id="resultadoProcessamento" value="#{cobrancaCtrl.mensagens}" var="mensagem"
+                          emptyMessage="Aguardando arquivo..." styleClass="margin-top">
+                <h:outputText value="#{mensagem}"/>
+              </p:dataList>
+            </p:panel>
+
+            <p:panel header="Cobranças confirmadas" toggleable="true" rendered="#{not empty cobrancaCtrl.confirmadas}"
+                     styleClass="margin-top">
+              <p:commandButton id="arquivoRemessaBtn1" value="Arquivo BPD (TXT)"
+                               ajax="false" process="@form"
+                               icon="fa fa-send"
+                               styleClass="margin-top"
+                               onclick="PrimeFaces.monitorDownload(start, stop);">
+                <p:fileDownload value="#{cobrancaCtrl.arquivoRemessa}"/>
+              </p:commandButton>
+
+              <p:commandButton value="Descritivo BPD (TXT)"
+                               onclick="PrimeFaces.monitorDownload(start, stop);"
+                               process="@form"
+                               ajax="false"
+                               icon="fa fa-building"
+                               styleClass="margin-top margin-left">
+                <p:fileDownload value="#{cobrancaCtrl.descritivoCobrancas}"/>
+              </p:commandButton>
+              <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.confirmadas}" var="cobranca"
+                           emptyMessage="Sem cobranças"
+                           selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
+                           disabledSelection="#{cobrancaCtrl.previa}"
+                           styleClass="margin-top" rowSelectMode="add">
+
+                <p:ajax event="toggleSelect" listener="#{cobrancaCtrl.updateTotalSelecionados}" process="cobrancaTable"
+                        update="#{p:component('totalValue')}"/>
+                <p:ajax event="rowSelect" listener="#{cobrancaCtrl.updateTotalSelecionados}" process="cobrancaTable"
+                        update="#{p:component('totalValue')}"/>
+                <p:ajax event="rowUnselect" listener="#{cobrancaCtrl.updateTotalSelecionados}" process="cobrancaTable"
+                        update="#{p:component('totalValue')}"/>
+
+                <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
+                <p:column headerText="Id" sortBy="#{cobranca.id}" width="40" styleClass="left-align">
+                  <h:outputText value="#{cobranca.id}"/>
+                </p:column>
+                <p:column headerText="Cód." sortBy="#{cobranca.setor.id}" width="50" styleClass="left-align">
+                  <h:outputText value="#{cobranca.setor.id}"/>
+                </p:column>
+                <p:column headerText="Setor" sortBy="#{cobranca.setor.title}" width="100"
+                          styleClass="left-align ellipsis-text">
+                  <h:outputText value="#{cobranca.setor.title}"/>
+                </p:column>
+                <p:column headerText="Cód." sortBy="#{cobranca.cliente.id}" width="50" styleClass="left-align">
+                  <h:outputText value="#{cobranca.cliente.id}"/>
+                </p:column>
+                <p:column headerText="Cliente" sortBy="#{cobranca.cliente.title}" styleClass="left-align">
+                  <h:outputText value="#{cobranca.cliente.title}"/>
+                </p:column>
+                <p:column headerText="Valor" sortBy="#{cobranca.valor}" width="75" styleClass="right-align">
+                  <h:outputText value="#{cobranca.valor}">
+                    <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Baixa" width="50" styleClass="center-align">
+                  <h:panelGroup style="background: green; padding: 5px; border-radius: 2px; color: white;"
+                                rendered="#{cobranca.baixa}">
+                    <h:outputText value="Sim"/>
+                  </h:panelGroup>
+                  <h:panelGroup style="background: red; padding: 5px; border-radius: 2px; color: white;"
+                                rendered="#{not cobranca.baixa}">
+                    <h:outputText value="Não"/>
+                  </h:panelGroup>
+                </p:column>
+                <p:column headerText="Receb." sortBy="#{cobranca.dataBaixa}" width="70" styleClass="left-align">
+                  <h:outputText value="#{cobranca.dataBaixa}">
+                    <f:convertDateTime pattern="MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Vigên." sortBy="#{cobranca.vigencia}" width="70" styleClass="left-align">
+                  <h:outputText value="#{cobranca.vigencia}">
+                    <f:convertDateTime pattern="MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Venc." sortBy="#{cobranca.vencimento}" width="75" styleClass="left-align">
+                  <h:outputText value="#{cobranca.vencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:panel>
+
+          </h:panelGroup>
+
+
+        </p:panel>
+      </h:panelGroup>
     </h:form>
   </ui:define>
 

@@ -70,7 +70,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private Integer qtdSelecionados;
 
-  private BigDecimal totalSelecionados;
+  private BigDecimal totalSelecionados = BigDecimal.ZERO;
 
   private Date dataRecebimento;
 
@@ -90,6 +90,16 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
       return false;
     }
     return true;
+  }
+
+  public void updateTotalSelecionados() {
+    totalSelecionados = BigDecimal.ZERO;
+
+    if (selectedCobrancas != null) {
+      for (Cobranca cobranca : selectedCobrancas) {
+        totalSelecionados = totalSelecionados.add(cobranca.getValor());
+      }
+    }
   }
 
   public void clearCobrancas() {
@@ -280,6 +290,12 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return mensagens;
   }
 
+  private List<Cobranca> confirmadas;
+
+  public List<Cobranca> getConfirmadas() {
+    return this.confirmadas;
+  }
+
   public void setMensagens(List<String> mensagens) {
     this.mensagens = mensagens;
   }
@@ -290,6 +306,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
       try {
         Map<String, Object> processamento = service.processarArquivoRetorno(file.getContents());
         mensagens = (List<String>) processamento.get(CobrancaService.MENSAGENS);
+        confirmadas = (List<Cobranca>) processamento.get(CobrancaService.CONFIRMADAS);
       } catch (Exception e) {
         addErrorMessage(e);
       }

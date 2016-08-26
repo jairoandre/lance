@@ -1,5 +1,6 @@
 package br.com.vah.lance.service;
 
+import br.com.vah.lance.constant.EntradasRejeitadasEnum;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
@@ -520,6 +521,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
   public static final String MENSAGENS = "MENSAGENS";
   public static final String COBRANCAS = "COBRANCAS";
+  public static final String CONFIRMADAS = "CONFIRMADAS";
 
   public Map<String, Object> processarArquivoRetorno(byte[] content) throws LanceBusinessException {
     Map<String, Object> resultadoProcessamento = new HashMap<>();
@@ -528,9 +530,11 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
     List<String> mensagens = new ArrayList<>();
     List<Cobranca> cobrancas = new ArrayList<>();
+    List<Cobranca> confirmadas = new ArrayList<>();
 
     resultadoProcessamento.put(MENSAGENS, mensagens);
     resultadoProcessamento.put(COBRANCAS, cobrancas);
+    resultadoProcessamento.put(CONFIRMADAS, confirmadas);
 
     SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy");
 
@@ -558,10 +562,49 @@ public class CobrancaService extends DataAccessService<Cobranca> {
           String valorPrincipal = line.substring(253, 266);
           String jurosMoraMulta = line.substring(266, 279);
           String outrosCreditos = line.substring(279, 292);
+          String mensagem = line.substring(377, 385).trim();
 
           BigDecimal valor = new BigDecimal(valorTitulo.substring(0, 11) + "." + valorTitulo.substring(11));
 
           Date dataOcorrencia = sdf.parse(line.substring(110, 116));
+
+          // OCORRÊNCIA 02 - ENTRADA CONFIRMADA
+          if (codigoOcorrencia.equals("02")) {
+            try {
+              Cobranca cobranca = find(Long.valueOf(usoEmpresa));
+              if (cobranca.getLiquidado()) {
+                mensagens.add(String.format("Linha %03d: Cobrança nº %d já confirmada.", lCount, cobranca.getId()));
+                ignorados++;
+                continue;
+              } else {
+                confirmadas.add(cobranca);
+              }
+            } catch (Exception e) {
+              mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+              continue;
+            }
+          }
+
+          // OCORRÊNCIA 03 - ENTRADA REJEITADA
+          if (codigoOcorrencia.equals("03")) {
+            EntradasRejeitadasEnum motivoRejeicao = EntradasRejeitadasEnum.getByCodigo(mensagem.substring(0,2));
+            if (motivoRejeicao == null) {
+              mensagens.add(String.format("Linha %03d: Cobranca nº %s rejeitada.", lCount, usoEmpresa));
+              continue;
+            } else {
+              mensagens.add(String.format("Linha %03d: Cobranca nº %s rejeitada. Motivo: %s", lCount, usoEmpresa, motivoRejeicao.getLabel()));
+              if (motivoRejeicao.equals(EntradasRejeitadasEnum._14)) {
+                try {
+                  Cobranca cobranca = find(Long.valueOf(usoEmpresa));
+                  confirmadas.add(cobranca);
+                } catch (Exception e) {
+                  mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+                }
+              }
+              continue;
+            }
+          }
+
 
           // OCORRÊNCIA 06 - LIQUIDAÇÃO NORMAL
           if (codigoOcorrencia.equals("06")) {
@@ -578,8 +621,6 @@ public class CobrancaService extends DataAccessService<Cobranca> {
               mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
               continue;
             }
-          } else {
-            mensagens.add(String.format("Linha %03d: Ocorrência não tratada %s", lCount, codigoOcorrencia));
           }
         } else if (tipoRegistro.equals("9")) {
           break;
