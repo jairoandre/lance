@@ -99,6 +99,15 @@
               <p:fileDownload value="#{cobrancaCtrl.descritivos}"/>
             </p:commandButton>
 
+            <p:commandButton value="Protocolo Entrega (PDF)"
+                             onclick="PrimeFaces.monitorDownload(start, stop);"
+                             process="@form"
+                             ajax="false"
+                             icon="fa fa-file-o"
+                             styleClass="margin-top margin-left">
+              <p:fileDownload value="#{cobrancaCtrl.protocoloEntrega}"/>
+            </p:commandButton>
+
             <p:commandButton value="Receber Selec."
                              action="#{cobrancaCtrl.preReceberSelecionados}"
                              process="@form"

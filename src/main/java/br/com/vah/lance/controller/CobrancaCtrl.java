@@ -139,6 +139,14 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     }
   }
 
+  public StreamedContent getProtocoloEntrega() {
+    if (selectedCobrancas == null || selectedCobrancas.length == 0) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Selecione pelo menos uma cobrança.");
+      return null;
+    }
+    return relatorioService.getProtocoloEntrega(selectedCobrancas, vigencia);
+  }
+
   public StreamedContent getDescritivos() {
     if (selectedCobrancas == null || selectedCobrancas.length == 0) {
       addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Selecione pelo menos uma cobrança para gerar o descritivo.");

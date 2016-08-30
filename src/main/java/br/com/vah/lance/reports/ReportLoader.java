@@ -82,7 +82,7 @@ public class ReportLoader implements Serializable {
       report = new ByteArrayInputStream(baos.toByteArray());
 
     } catch (Exception e) {
-
+      e.printStackTrace();
     }
 
     return report;

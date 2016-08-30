@@ -2,13 +2,11 @@ package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
 import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.dto.Arquivo;
 import br.com.vah.lance.dto.ArquivoUtils;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
-import br.com.vah.lance.reports.BalancoContabilDTO;
-import br.com.vah.lance.reports.DescritivoCondominioDTO;
-import br.com.vah.lance.reports.RelatorioSetorDTO;
-import br.com.vah.lance.reports.ReportLoader;
+import br.com.vah.lance.reports.*;
 import br.com.vah.lance.util.VahUtils;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -485,6 +483,35 @@ public class RelatorioService implements Serializable {
     ordenarDtos(datasource);
 
     return reportLoader.imprimeRelatorio("balancoContabil", parameters, datasource, downloadFileName);
+  }
+
+  public StreamedContent getProtocoloEntrega(Cobranca[] cobrancas, Date vigencia) {
+    Map<String, Object> parameters = new HashMap<>();
+
+    parameters.put("EMISSAO", ArquivoUtils.formatDate(new Date(), "dd/MM/yyyy"));
+    parameters.put("REFERENCIA", ArquivoUtils.formatDate(vigencia, "MM/yyyy"));
+
+    List<ProtocoloEntregaDTO> ds = new ArrayList<>();
+
+    for (Cobranca cobranca : cobrancas) {
+      ProtocoloEntregaDTO dto  = new ProtocoloEntregaDTO();
+      dto.setId(cobranca.getId());
+      dto.setCliente(cobranca.getCliente().getTitle());
+      dto.setSetor(cobranca.getSetor() == null ? "" : cobranca.getSetor().getTitle());
+      dto.setVencimento(ArquivoUtils.formatDate(cobranca.getVencimento(), "dd/MM/yyyy"));
+      ds.add(dto);
+    }
+
+    Collections.sort(ds, new Comparator<ProtocoloEntregaDTO>() {
+      @Override
+      public int compare(ProtocoloEntregaDTO o1, ProtocoloEntregaDTO o2) {
+        return o1.getCliente().compareTo(o2.getCliente());
+      }
+    });
+
+    String downloadFileName = String.format("PROTOCOLO-%s", ArquivoUtils.formatDate(new Date(), "MMyyyy"));
+
+    return reportLoader.imprimeRelatorio("protocoloEntrega", parameters, ds, downloadFileName);
   }
 
 }
