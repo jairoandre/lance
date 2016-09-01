@@ -53,30 +53,20 @@ public class LancamentoService extends DataAccessService<Lancamento> {
    * @param vencimento
    * @return
    */
-  public List<Lancamento> recuperarLancamentosValidados(Date[] range, Integer vencimento, Boolean previa) {
+  public List<Lancamento> recuperarLancamentosValidados(Date[] range, Integer vencimento) {
     String namedQuery;
     Map<String, Object> params = new HashMap<>();
     params.put("begin", range[0]);
     params.put("end", range[1]);
-    if (previa) {
-      if (vencimento == null) {
-        namedQuery = Lancamento.BY_PERIOD;
-      } else {
-        params.put("vencimento", vencimento);
-        namedQuery = Lancamento.BY_PERIOD_VENCIMENTO;
-      }
+    params.put("status", EstadoLancamentoEnum.V);
+    if (vencimento == null) {
+      namedQuery = Lancamento.BY_PERIOD_STATUS;
     } else {
-      params.put("status", EstadoLancamentoEnum.V);
-      if (vencimento == null) {
-        namedQuery = Lancamento.BY_PERIOD_STATUS;
-      } else {
-        params.put("vencimento", vencimento);
-        namedQuery = Lancamento.BY_PERIOD_STATUS_VENC;
-      }
+      params.put("vencimento", vencimento);
+      namedQuery = Lancamento.BY_PERIOD_STATUS_VENC;
     }
 
     return findWithNamedQuery(namedQuery, params);
-
   }
 
   /**

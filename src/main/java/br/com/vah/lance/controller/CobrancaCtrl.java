@@ -54,9 +54,9 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private DescontoAcrescimo descontoAcrescimo;
 
-  private Boolean previa = false;
-
   private Boolean ocultarRecebidos = false;
+
+  private Boolean exibirCancelados = false;
 
   private Cobranca[] selectedCobrancas;
 
@@ -109,7 +109,8 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   public void gerarCobrancas() {
     try {
       if (validarObrigatorios()) {
-        cobrancas = service.gerarCobrancas(DateUtility.monthRange(vigencia), vencimento, previa);
+        selectedCobrancas = null;
+        cobrancas = service.gerarCobrancas(DateUtility.monthRange(vigencia), vencimento);
       }
     } catch (Exception e) {
       addErrorMessage(e);
@@ -119,8 +120,19 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   public void buscarCobrancas() {
     try {
       if (validarObrigatorios()) {
-        cobrancas = service.buscarCobrancas(DateUtility.monthRange(vigencia), vencimento, ocultarRecebidos);
+        selectedCobrancas = null;
+        cobrancas = service.buscarCobrancas(DateUtility.monthRange(vigencia), vencimento, ocultarRecebidos, exibirCancelados);
       }
+    } catch (Exception e) {
+      addErrorMessage(e);
+    }
+  }
+
+  public void cancelarCobranca(Cobranca cobranca) {
+    try {
+      service.cancelarCobranca(cobranca);
+      FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", String.format("Cobrança Nº. %d cancelada.", cobranca.getId()));
+      addMsg(msg, false);
     } catch (Exception e) {
       addErrorMessage(e);
     }
@@ -337,14 +349,6 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     this.descontoAcrescimo = null;
   }
 
-  public Boolean getPrevia() {
-    return previa;
-  }
-
-  public void setPrevia(Boolean previa) {
-    this.previa = previa;
-  }
-
   public Boolean getOcultarRecebidos() {
     return ocultarRecebidos;
   }
@@ -488,6 +492,24 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private Cobranca cobrancaToCancel;
 
+  public void preExibirDescritivo(Cobranca cobranca) {
+    this.cobranca = cobranca;
+  }
+
+  public List<ItemCobranca> getDescritivoOrdenado() {
+    if (cobranca != null && cobranca.getDescritivo() != null) {
+      List<ItemCobranca> ordenado = new ArrayList<>(cobranca.getDescritivo());
+      Collections.sort(ordenado, new Comparator<ItemCobranca>() {
+        @Override
+        public int compare(ItemCobranca o1, ItemCobranca o2) {
+          return o1.getServico().getTitle().compareTo(o2.getServico().getTitle());
+        }
+      });
+      return ordenado;
+    }
+    return null;
+  }
+
   public void preCancelarRecebimento(Cobranca cobranca) {
     cancelamentoRecebAnwser = "";
     cobrancaToCancel = cobranca;
@@ -531,5 +553,13 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   public void setTotalRecebimento(BigDecimal totalRecebimento) {
     this.totalRecebimento = totalRecebimento;
+  }
+
+  public Boolean getExibirCancelados() {
+    return exibirCancelados;
+  }
+
+  public void setExibirCancelados(Boolean exibirCancelados) {
+    this.exibirCancelados = exibirCancelados;
   }
 }

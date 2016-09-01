@@ -45,13 +45,6 @@
       <layout>default</layout>
       <name>Repository for library Library[eclipselink]</name>
     </repository>
-    <repository>
-      <id>jrimum.org</id>
-      <url>http://jrimum.org/maven/content/groups/public/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
 
   <dependencies>
@@ -150,12 +143,6 @@
       <groupId>javax.xml</groupId>
       <artifactId>jaxp-api</artifactId>
       <version>1.4.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jrimum</groupId>
-      <artifactId>jrimum-bopepo</artifactId>
-      <version>0.2.3-SNAPSHOT</version><!-- 0.2.3-DEV-SNAPSHOT em desenvolvimento -->
     </dependency>
 
   </dependencies>

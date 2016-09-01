@@ -50,6 +50,9 @@ public class Cobranca extends BaseEntity {
   @Column(name = "SN_BAIXA_MV")
   private Boolean baixa = false;
 
+  @Column(name = "SN_CANCELADO")
+  private Boolean cancelado = false;
+
   @Column(name = "NM_DOCUMENTO")
   private String documento;
 
@@ -132,6 +135,14 @@ public class Cobranca extends BaseEntity {
 
   public void setBaixa(Boolean baixa) {
     this.baixa = baixa;
+  }
+
+  public Boolean getCancelado() {
+    return cancelado;
+  }
+
+  public void setCancelado(Boolean cancelado) {
+    this.cancelado = cancelado;
   }
 
   public String getDocumento() {

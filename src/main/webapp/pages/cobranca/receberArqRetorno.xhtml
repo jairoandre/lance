@@ -61,7 +61,6 @@
               <p:dataTable id="cobrancaTable" value="#{cobrancaCtrl.confirmadas}" var="cobranca"
                            emptyMessage="Sem cobranças"
                            selection="#{cobrancaCtrl.selectedCobrancas}" rowKey="#{cobranca.rowKey}"
-                           disabledSelection="#{cobrancaCtrl.previa}"
                            styleClass="margin-top" rowSelectMode="add">
 
                 <p:ajax event="toggleSelect" listener="#{cobrancaCtrl.updateTotalSelecionados}" process="cobrancaTable"

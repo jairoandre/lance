@@ -24,10 +24,6 @@ public class BoletoCtrl extends AbstractController<Lancamento> {
 
   private
   @Inject
-  BoletoService boletoService;
-
-  private
-  @Inject
   ArquivoRemessaService arquivoService;
 
   private
@@ -61,15 +57,6 @@ public class BoletoCtrl extends AbstractController<Lancamento> {
   @Override
   public String getEntityName() {
     return "Boleto";
-  }
-
-  public StreamedContent getBoleto() {
-    try {
-      return boletoService.createBoleto(null);
-    } catch (Exception e) {
-      addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "relatório"), false);
-    }
-    return null;
   }
 
   public StreamedContent getArquivo() {

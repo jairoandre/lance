@@ -1,6 +1,7 @@
 package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EntradasRejeitadasEnum;
+import br.com.vah.lance.dto.ArquivoUtils;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
@@ -64,7 +65,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
    * @param vencimento
    * @return
    */
-  public List<Cobranca> buscarCobrancas(Date[] vigencia, Integer vencimento, Boolean ocultarRecebidos) {
+  public List<Cobranca> buscarCobrancas(Date[] vigencia, Integer vencimento, Boolean ocultarRecebidos, Boolean exibirCancelados) {
     Criteria criteria = createCriteria();
 
     criteria.add(Restrictions.between("vigencia", vigencia[0], vigencia[1]));
@@ -74,6 +75,10 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
     if (ocultarRecebidos) {
       criteria.add(Restrictions.eq("baixa", false));
+    }
+
+    if (!exibirCancelados) {
+      criteria.add(Restrictions.eq("cancelado", false));
     }
 
     criteria.setFetchMode("contas", FetchMode.SELECT);
@@ -127,6 +132,48 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     return attachedCobrancas;
   }
 
+  private Map<String, ContaReceber> contasLancamento(Lancamento lancamento) {
+    Map<String, ContaReceber> contas = new HashMap<>();
+    for (ContaReceber contaReceber : lancamento.getContasReceber()) {
+      Fornecedor cliente = contaReceber.getCliente();
+      Long cdSetor = contaReceber.getItensRateio().iterator().next().getCdSetor();
+      if (!lancamento.getServico().getAgrupavel()) {
+        cdSetor = 0l;
+      }
+      String chave = String.format("%d - %d - %d", cliente.getId(), cdSetor, lancamento.getServico().getDiaVencimento());
+      contas.put(chave, contaReceber);
+    }
+    return contas;
+  }
+
+  public Cobranca cancelarCobranca(Cobranca cobranca) {
+    cobranca.setCancelado(true);
+    return update(cobranca);
+  }
+
+  public Map<String, Cobranca> recuperarCobrancas(Date[] vigencia, Integer diaVencimento) {
+    Criteria criteria = createCriteria();
+    if (diaVencimento == null) {
+      criteria.add(Restrictions.between("vigencia", vigencia[0], vigencia[1]));
+    } else {
+      Calendar cld = Calendar.getInstance();
+      cld.setTime(vigencia[0]);
+      cld.add(Calendar.MONTH, 1);
+      cld.set(Calendar.DAY_OF_MONTH, diaVencimento);
+      criteria.add(Restrictions.eq("vencimento", cld.getTime()));
+    }
+    criteria.add(Restrictions.eq("cancelado", false));
+    List<Cobranca> cobrancas = criteria.list();
+    Map<String, Cobranca> maps = new HashMap<>();
+    for (Cobranca cobranca : cobrancas) {
+      Long cdSetor = cobranca.getSetor() == null ? 0l : cobranca.getSetor().getId();
+      Integer vencimento = Integer.valueOf(ArquivoUtils.formatDate(cobranca.getVencimento(), "dd"));
+      String chave = String.format("%d - %d - %d", cobranca.getCliente().getId(), cdSetor, vencimento);
+      maps.put(chave, cobranca);
+    }
+    return maps;
+  }
+
   /**
    * Realiza uma varredura nos lançamentos verificando
    *
@@ -134,9 +181,9 @@ public class CobrancaService extends DataAccessService<Cobranca> {
    * @param vencimento
    * @return
    */
-  public List<Cobranca> gerarCobrancas(Date[] vigencia, Integer vencimento, Boolean previa) {
+  public List<Cobranca> gerarCobrancas(Date[] vigencia, Integer vencimento) throws LanceBusinessException {
 
-    List<Lancamento> lancamentos = lancamentoService.recuperarLancamentosValidados(vigencia, vencimento, previa);
+    List<Lancamento> lancamentos = lancamentoService.recuperarLancamentosValidados(vigencia, vencimento);
 
     Calendar cld = Calendar.getInstance();
     cld.setTime(vigencia[0]);
@@ -144,16 +191,11 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
     Map<String, Cobranca> cobrancasMap = new HashMap<>();
 
+    Map<String, Cobranca> attachedCobrancas = recuperarCobrancas(vigencia, vencimento);
+
     for (Lancamento lancamento : lancamentos) {
 
-      Map<String, ContaReceber> contas = new HashMap<>();
-
-      for (ContaReceber contaReceber : lancamento.getContasReceber()) {
-        Fornecedor cliente = contaReceber.getCliente();
-        Long cdSetor = contaReceber.getItensRateio().iterator().next().getCdSetor();
-        String chave = String.format("%d - %d", cliente.getId(), cdSetor);
-        contas.put(chave, contaReceber);
-      }
+      Map<String, ContaReceber> contas = contasLancamento(lancamento);
 
       Servico servico = lancamento.getServico();
 
@@ -172,11 +214,21 @@ public class CobrancaService extends DataAccessService<Cobranca> {
         ContratoSetor contratoSetor = valor.getContratoSetor();
         Fornecedor cliente = contratoSetor.getContrato().getContratante();
         Setor setor = contratoSetor.getSetor();
-        String chaveConta = String.format("%d - %d", cliente.getId(), setor.getId());
-        String chave = chaveConta;
-        if (!cobraPorSetor) {
-          chave = cliente.getId().toString();
+
+        Long cdSetor = setor.getId();
+
+        if (!lancamento.getServico().getAgrupavel()) {
+          cdSetor = 0l;
         }
+
+        String chave = String.format("%d - %d - %d", cliente.getId(), cdSetor, lancamento.getServico().getDiaVencimento());
+
+        Cobranca attachedCobranca = attachedCobrancas.get(chave);
+
+        if (attachedCobranca != null) {
+          continue;
+        }
+
         Cobranca cobranca = cobrancasMap.get(chave);
 
         if (cobranca == null) {
@@ -187,19 +239,13 @@ public class CobrancaService extends DataAccessService<Cobranca> {
             cobranca.setSetor(setor);
           }
           cobranca.setCliente(cliente);
-          /*
-          Cobranca attached = recuperarCobranca(cobranca);
-          if (attached != null) {
-            cobranca = attached;
-            cobranca.setValor(BigDecimal.ZERO);
-          }*/
           cobrancasMap.put(chave, cobranca);
-        } else if (cobranca.getId() != null) {
-          continue;
         }
 
-        if (contas.get(chaveConta) != null) {
-          cobranca.getContas().add(contas.get(chaveConta));
+        ContaReceber conta = contas.get(chave);
+
+        if (conta != null) {
+          cobranca.getContas().add(conta);
         }
 
         ItemCobranca item = new ItemCobranca();
@@ -208,9 +254,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
         item.setTotal(lancamento.getTotalValue());
         item.setValor(valor.getValue());
         cobranca.getDescritivo().add(item);
-
         cobranca.setValor(cobranca.getValor().add(valor.getValue()));
-
       }
     }
 
@@ -218,7 +262,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
     // Remover itens já persistidos
     for (Cobranca cobranca : cobrancasMap.values()) {
-      if (!BigDecimal.ZERO.equals(cobranca.getValor())) {
+      if (!BigDecimal.ZERO.equals(cobranca.getValor()) && cobranca.getId() == null) {
         cobrancas.add(cobranca);
       }
     }
@@ -553,6 +597,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
         String tipoRegistro = line.substring(0, 1);
         if (tipoRegistro.equals("1")) {
           String usoEmpresa = line.substring(37, 62).trim();
+          String nossoNumero = line.substring(62,70);
           String codigoOcorrencia = line.substring(108, 110);
           String valorTitulo = line.substring(152, 165);
           String tarifaCobranca = line.substring(175, 188);
@@ -580,14 +625,14 @@ public class CobrancaService extends DataAccessService<Cobranca> {
                 confirmadas.add(cobranca);
               }
             } catch (Exception e) {
-              mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+              mensagens.add(String.format("Linha %03d: Registro sem correspondência no Lance (%s).", lCount, nossoNumero));
               continue;
             }
           }
 
           // OCORRÊNCIA 03 - ENTRADA REJEITADA
           if (codigoOcorrencia.equals("03")) {
-            EntradasRejeitadasEnum motivoRejeicao = EntradasRejeitadasEnum.getByCodigo(mensagem.substring(0,2));
+            EntradasRejeitadasEnum motivoRejeicao = EntradasRejeitadasEnum.getByCodigo(mensagem.substring(0, 2));
             if (motivoRejeicao == null) {
               mensagens.add(String.format("Linha %03d: Cobranca nº %s rejeitada.", lCount, usoEmpresa));
               continue;
@@ -598,7 +643,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
                   Cobranca cobranca = find(Long.valueOf(usoEmpresa));
                   confirmadas.add(cobranca);
                 } catch (Exception e) {
-                  mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+                  mensagens.add(String.format("Linha %03d: Registro rejeitado sem correspondência no Lance (%s): %s", lCount, nossoNumero, motivoRejeicao.getLabel()));
                 }
               }
               continue;
@@ -618,7 +663,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
                 cobrancas.add(cobranca);
               }
             } catch (Exception e) {
-              mensagens.add(String.format("Linha %03d: Não foi possível recuperar cobrança para o nº %s", lCount, usoEmpresa));
+              mensagens.add(String.format("Linha %03d: Liquidação de registro sem correspondência no Lance (%s).", lCount, nossoNumero));
               continue;
             }
           }
