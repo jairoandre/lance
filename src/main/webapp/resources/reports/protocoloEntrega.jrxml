@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="protocoloEntrega" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16ee6332-fc89-4379-ba3c-765250e5790b">
-	<property name="ireport.zoom" value="0.9090909090909105"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.100000000000002"/>
+	<property name="ireport.x" value="12"/>
 	<property name="ireport.y" value="0"/>
 	<style name="zebra">
 		<conditionalStyle>
@@ -33,11 +33,6 @@
 				<text><![CDATA[PROTOCOLO DE ENTREGA DE BOLETOS]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="727" y="0" width="75" height="15" uuid="0e65a592-0a84-4942-bc94-d93b904c97f8"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement x="0" y="15" width="802" height="10" uuid="6a297089-9585-4370-b319-8fd2f9a6fb09"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
@@ -54,6 +49,16 @@
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Data de Emissão: " + $P{EMISSAO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="742" y="0" width="30" height="15" uuid="100f966f-98f6-4382-9587-71bb4b83617e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="772" y="0" width="30" height="15" uuid="f72a6a40-3627-46de-9e4b-335faee1e517"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["\\" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -218,19 +223,75 @@
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="15" splitType="Stretch">
+		<band height="65" splitType="Stretch">
 			<textField>
-				<reportElement x="727" y="0" width="75" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
+				<reportElement x="742" y="50" width="30" height="15" uuid="96432ff2-7461-4fc6-a93c-283e7f038c47"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="15" uuid="9bde3af5-f84a-48fa-a1d4-5fb0a8a41009"/>
+				<reportElement x="0" y="50" width="100" height="15" uuid="9bde3af5-f84a-48fa-a1d4-5fb0a8a41009"/>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[SISTEMA LANCE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="0" width="127" height="20" uuid="04f21c43-7ead-49bc-8216-13d32e4450f4"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Conferido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="572" y="0" width="200" height="20" uuid="e3de2bba-49de-483b-a764-d7e5c813764f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Data: __/__/____]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="0" width="200" height="20" uuid="165ffbc9-08ce-4863-bd8f-c4d4458c4406"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Data: __/__/____]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="172" y="0" width="200" height="20" uuid="f74d5c79-24c6-402f-8343-c6658dee8631"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Data: __/__/____]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="172" y="20" width="200" height="15" uuid="c221bfc6-584d-41ce-9a73-d012dbc833e5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[_____________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="20" width="200" height="15" uuid="89f480fb-021d-4bbe-8ac6-30e5a4316dcc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[_____________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="572" y="20" width="200" height="15" uuid="3e7f0ea8-9d8c-4221-a5a4-8569f8541fec"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[_____________________]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="772" y="50" width="30" height="15" uuid="b2767b17-945a-4f04-bc6e-f78c4b84329a"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["\\" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="172" y="35" width="200" height="15" uuid="506ef383-98f5-404b-aa4f-60daacd6dca3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Financeiro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="35" width="200" height="15" uuid="6870293d-4afc-4f2d-9f59-bb3c44cd1482"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Condomínio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="572" y="35" width="200" height="15" uuid="05aefc35-d950-4863-8210-19c73a613b3a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Recepção]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

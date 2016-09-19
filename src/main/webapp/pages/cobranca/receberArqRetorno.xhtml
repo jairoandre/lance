@@ -33,7 +33,7 @@
           <h:panelGroup id="cobrancasWrapper" layout="block" styleClass="margin-top">
 
             <p:panel header="Mensagens" toggleable="true" rendered="#{not empty cobrancaCtrl.mensagens}"
-                     styleClass="margin-top">
+                     styleClass="margin-top" collapsed="true">
               <p:dataList id="resultadoProcessamento" value="#{cobrancaCtrl.mensagens}" var="mensagem"
                           emptyMessage="Aguardando arquivo..." styleClass="margin-top">
                 <h:outputText value="#{mensagem}"/>

@@ -1,6 +1,7 @@
 package br.com.vah.lance.service;
 
 import br.com.vah.lance.constant.EntradasRejeitadasEnum;
+import br.com.vah.lance.constant.OcorrenciasRecebimentoEnum;
 import br.com.vah.lance.dto.ArquivoUtils;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
@@ -384,7 +385,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
       ContaReceberItem attachedItem = contaReceberItemService.find(item.getId());
 
       if (attachedItem.getRecebimentos().size() > 0) {
-        throw new LanceBusinessException(String.format("Cobrança nº %d já foi recebido.", cobranca.getId()));
+        throw new LanceBusinessException(String.format("Cobrança [%d] já foi recebido.", cobranca.getId()));
       }
 
       Recebimento recebimento = new Recebimento();
@@ -597,8 +598,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
         String tipoRegistro = line.substring(0, 1);
         if (tipoRegistro.equals("1")) {
           String usoEmpresa = line.substring(37, 62).trim();
-          String nossoNumero = line.substring(62,70);
-          String codigoOcorrencia = line.substring(108, 110);
+          String nossoNumero = line.substring(62, 70);
           String valorTitulo = line.substring(152, 165);
           String tarifaCobranca = line.substring(175, 188);
           String iof = line.substring(214, 227);
@@ -613,12 +613,15 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
           Date dataOcorrencia = sdf.parse(line.substring(110, 116));
 
+          OcorrenciasRecebimentoEnum codigoOcorrencia = OcorrenciasRecebimentoEnum.byValue(line.substring(108, 110));
+
+
           // OCORRÊNCIA 02 - ENTRADA CONFIRMADA
-          if (codigoOcorrencia.equals("02")) {
+          if (codigoOcorrencia.equals(OcorrenciasRecebimentoEnum._02)) {
             try {
               Cobranca cobranca = find(Long.valueOf(usoEmpresa));
               if (cobranca.getLiquidado()) {
-                mensagens.add(String.format("Linha %03d: Cobrança nº %d já confirmada.", lCount, cobranca.getId()));
+                mensagens.add(String.format("Linha %03d: Cobrança [%d] já confirmada.", lCount, cobranca.getId()));
                 ignorados++;
                 continue;
               } else {
@@ -628,16 +631,13 @@ public class CobrancaService extends DataAccessService<Cobranca> {
               mensagens.add(String.format("Linha %03d: Registro sem correspondência no Lance (%s).", lCount, nossoNumero));
               continue;
             }
-          }
-
-          // OCORRÊNCIA 03 - ENTRADA REJEITADA
-          if (codigoOcorrencia.equals("03")) {
+          } else if (codigoOcorrencia.equals(OcorrenciasRecebimentoEnum._03)) { // OCORRÊNCIA 03 - REJEITADA
             EntradasRejeitadasEnum motivoRejeicao = EntradasRejeitadasEnum.getByCodigo(mensagem.substring(0, 2));
             if (motivoRejeicao == null) {
-              mensagens.add(String.format("Linha %03d: Cobranca nº %s rejeitada.", lCount, usoEmpresa));
+              mensagens.add(String.format("Linha %03d: Cobrança [%s] rejeitada.", lCount, usoEmpresa));
               continue;
             } else {
-              mensagens.add(String.format("Linha %03d: Cobranca nº %s rejeitada. Motivo: %s", lCount, usoEmpresa, motivoRejeicao.getLabel()));
+              mensagens.add(String.format("Linha %03d: Cobrança [%s] rejeitada. Motivo: %s", lCount, usoEmpresa, motivoRejeicao.getLabel()));
               if (motivoRejeicao.equals(EntradasRejeitadasEnum._14)) {
                 try {
                   Cobranca cobranca = find(Long.valueOf(usoEmpresa));
@@ -648,15 +648,14 @@ public class CobrancaService extends DataAccessService<Cobranca> {
               }
               continue;
             }
-          }
+            // OCORRÊNCIA 06 - LIQUIDAÇÃO NORMAL ou 08 - LIQUIDAÇÃO EM CARTÓRIO
+          } else if (codigoOcorrencia.equals(OcorrenciasRecebimentoEnum._06)
+              || codigoOcorrencia.equals(OcorrenciasRecebimentoEnum._08)) {
 
-
-          // OCORRÊNCIA 06 - LIQUIDAÇÃO NORMAL
-          if (codigoOcorrencia.equals("06")) {
             try {
               Cobranca cobranca = find(Long.valueOf(usoEmpresa));
               if (cobranca.getBaixa()) {
-                mensagens.add(String.format("Linha %03d: Cobrança nº %d já recebida.", lCount, cobranca.getId()));
+                mensagens.add(String.format("Linha %03d: Cobrança [%d] já recebida.", lCount, cobranca.getId()));
                 ignorados++;
                 continue;
               } else {
@@ -666,7 +665,10 @@ public class CobrancaService extends DataAccessService<Cobranca> {
               mensagens.add(String.format("Linha %03d: Liquidação de registro sem correspondência no Lance (%s).", lCount, nossoNumero));
               continue;
             }
+          } else {
+            mensagens.add(String.format("Linha %03d: Cobrança [%s], ocorrência [%s]: %s.", lCount, usoEmpresa, codigoOcorrencia.getValue(), codigoOcorrencia.getLabel()));
           }
+
         } else if (tipoRegistro.equals("9")) {
           break;
         }
