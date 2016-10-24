@@ -359,7 +359,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
         case V:
           BigDecimal sellValue = lancamentoValor.getValueA();
           BigDecimal commission = lancamentoValor.getValueB();
-          lancamentoValor.setValue(sellValue.add(sellValue.multiply(commission)));
+          lancamentoValor.setValue(sellValue.add(sellValue.multiply(commission)).setScale(2, BigDecimal.ROUND_HALF_UP));
           break;
         // Cobrança (ex: taxas de residência)
         case C:
@@ -372,7 +372,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           break;
         case CTP:
           // case CTR:
-          lancamentoValor.setValue(lancamentoValor.getValueA().multiply(currentServicoValor.getValueA()));
+          lancamentoValor.setValue(lancamentoValor.getValueA().multiply(currentServicoValor.getValueA()).setScale(2, BigDecimal.ROUND_HALF_UP));
         default:
           break;
       }
@@ -494,7 +494,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 
     conRecToAdd.setCdProcesso(132l);
     conRecToAdd.setCdMultiEmpresa(1);
-    conRecToAdd.setTipoDocumento("C");
+    conRecToAdd.setTipoDocumento("D");
     conRecToAdd.setDataEmissao(new Date());
     conRecToAdd.setMoeda("1");
     conRecToAdd.setCdTipDoc(servico.getTipoDocumento().getId().intValue());

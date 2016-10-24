@@ -90,7 +90,7 @@ public class ContaReceber extends BaseEntity {
   private Set<ContaReceberItem> itensConta = new LinkedHashSet<>();
 
   @Column(name = "SN_GLOSA_ACEITA")
-  private String glosaAceita;
+  private String glosaAceita= "N";
 
   public Long getId() {
     return id;

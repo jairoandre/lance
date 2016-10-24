@@ -3,6 +3,7 @@ package br.com.vah.lance.service;
 import br.com.vah.lance.constant.EntradasRejeitadasEnum;
 import br.com.vah.lance.constant.OcorrenciasRecebimentoEnum;
 import br.com.vah.lance.dto.ArquivoUtils;
+import br.com.vah.lance.dto.CobrancaDTO;
 import br.com.vah.lance.entity.dbamv.*;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
@@ -349,6 +350,19 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     }
   }
 
+  public void receberCobrancasDTOs(CobrancaDTO[] dtos, String usuario, Date dataCompensado) throws LanceBusinessException {
+    for (CobrancaDTO dto : dtos) {
+      Map<String, Object> params = new HashMap<>();
+      params.put(DATA_BAIXA, dataCompensado);
+      params.put(USUARIO, usuario);
+      if (!BigDecimal.ZERO.equals(dto.getMulta())) {
+        params.put(MULTA_ACRESCIMO, dto.getMulta());
+      }
+      receberCobranca(dto.getCobranca(), params, false);
+    }
+
+  }
+
   public void receberCobranca(Cobranca cobranca, Map<String, Object> params, Boolean validar) throws LanceBusinessException {
     Date dataBaixa = (Date) params.get(DATA_BAIXA);
     String usuario = (String) params.get(USUARIO);
@@ -574,7 +588,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     InputStream is = null;
 
     List<String> mensagens = new ArrayList<>();
-    List<Cobranca> cobrancas = new ArrayList<>();
+    List<CobrancaDTO> cobrancas = new ArrayList<>();
     List<Cobranca> confirmadas = new ArrayList<>();
 
     resultadoProcessamento.put(MENSAGENS, mensagens);
@@ -610,11 +624,11 @@ public class CobrancaService extends DataAccessService<Cobranca> {
           String mensagem = line.substring(377, 385).trim();
 
           BigDecimal valor = new BigDecimal(valorTitulo.substring(0, 11) + "." + valorTitulo.substring(11));
+          BigDecimal multa = new BigDecimal(jurosMoraMulta.substring(0, 11) + "." + jurosMoraMulta.substring(11));
 
           Date dataOcorrencia = sdf.parse(line.substring(110, 116));
 
           OcorrenciasRecebimentoEnum codigoOcorrencia = OcorrenciasRecebimentoEnum.byValue(line.substring(108, 110));
-
 
           // OCORRÊNCIA 02 - ENTRADA CONFIRMADA
           if (codigoOcorrencia.equals(OcorrenciasRecebimentoEnum._02)) {
@@ -659,7 +673,8 @@ public class CobrancaService extends DataAccessService<Cobranca> {
                 ignorados++;
                 continue;
               } else {
-                cobrancas.add(cobranca);
+                CobrancaDTO dto  = new CobrancaDTO(cobranca, dataOcorrencia, multa);
+                cobrancas.add(dto);
               }
             } catch (Exception e) {
               mensagens.add(String.format("Linha %03d: Liquidação de registro sem correspondência no Lance (%s).", lCount, nossoNumero));

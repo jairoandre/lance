@@ -120,6 +120,80 @@
               </p:dataTable>
             </p:panel>
 
+            <p:panel id="cobrancaCompensadasPnl" header="Cobranças recebidas" toggleable="true" rendered="#{not empty cobrancaCtrl.cobrancaDTOs}" styleClass="margin-top">
+
+              <h:panelGrid id="cobrancasCompensadas" columns="3">
+                <p:outputLabel value="Data Compensado:" for="dataCompensado"/>
+                <p:calendar id="dataCompensado" value="#{cobrancaCtrl.dataCompensado}" label="Data Compensado" pattern="dd/MM/yyyy" required="true"
+                            timeZone="GMT-03:00" mask="true" locale="pt_BR"/>
+                <p:commandButton value="Receber Selec."
+                                 action="#{cobrancaCtrl.receberCobrancaDTOs}"
+                                 process="cobrancaCompensadasPnl"
+                                 update="@form"
+                                 oncomplete="window.scrollTo(0, 0)"
+                                 ajax="true"
+                                 icon="fa fa-thumbs-up"/>
+              </h:panelGrid>
+
+
+
+              <p:dataTable id="cobrancaDTOTable" value="#{cobrancaCtrl.cobrancaDTOs}" var="dto"
+                           emptyMessage="Sem cobranças"
+                           selection="#{cobrancaCtrl.selectedCobrancaDTOs}" rowKey="#{dto.rowKey}"
+                           styleClass="margin-top" rowSelectMode="add">
+
+                <p:ajax event="toggleSelect" listener="#{cobrancaCtrl.updateTotalSelecionadosDTO}" process="cobrancaDTOTable"
+                        update="#{p:component('totalValue')}"/>
+                <p:ajax event="rowSelect" listener="#{cobrancaCtrl.updateTotalSelecionadosDTO}" process="cobrancaDTOTable"
+                        update="#{p:component('totalValue')}"/>
+                <p:ajax event="rowUnselect" listener="#{cobrancaCtrl.updateTotalSelecionadosDTO}" process="cobrancaDTOTable"
+                        update="#{p:component('totalValue')}"/>
+
+                <p:column selectionMode="multiple" style="width: 16px; text-align: center;"/>
+                <p:column headerText="Id" sortBy="#{dto.cobranca.id}" width="40" styleClass="left-align">
+                  <h:outputText value="#{dto.cobranca.id}"/>
+                </p:column>
+                <p:column headerText="Cód." sortBy="#{dto.cobranca.setor.id}" width="50" styleClass="left-align">
+                  <h:outputText value="#{dto.cobranca.setor.id}"/>
+                </p:column>
+                <p:column headerText="Setor" sortBy="#{dto.cobranca.setor.title}" width="100"
+                          styleClass="left-align ellipsis-text">
+                  <h:outputText value="#{dto.cobranca.setor.title}"/>
+                </p:column>
+                <p:column headerText="Cód." sortBy="#{dto.cobranca.cliente.id}" width="50" styleClass="left-align">
+                  <h:outputText value="#{dto.cobranca.cliente.id}"/>
+                </p:column>
+                <p:column headerText="Cliente" sortBy="#{dto.cobranca.cliente.title}" styleClass="left-align ellipsis-text">
+                  <h:outputText value="#{dto.cobranca.cliente.title}"/>
+                </p:column>
+                <p:column headerText="Valor" sortBy="#{dto.cobranca.valor}" width="75" styleClass="right-align">
+                  <h:outputText value="#{dto.cobranca.valor}">
+                    <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Multa" sortBy="#{dto.multa}" width="75" styleClass="right-align">
+                  <h:outputText value="#{dto.multa}">
+                    <f:convertNumber pattern="R$ #,##0.00" minFractionDigits="2"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Vigên." sortBy="#{dto.cobranca.vigencia}" width="70" styleClass="left-align">
+                  <h:outputText value="#{dto.cobranca.vigencia}">
+                    <f:convertDateTime pattern="MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Venc." sortBy="#{dto.cobranca.vencimento}" width="75" styleClass="left-align">
+                  <h:outputText value="#{dto.cobranca.vencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Pag." sortBy="#{dto.data}" width="75" styleClass="left-align">
+                  <h:outputText value="#{dto.data}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:panel>
+
           </h:panelGroup>
 
 

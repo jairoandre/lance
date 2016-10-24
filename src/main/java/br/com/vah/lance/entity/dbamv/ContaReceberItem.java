@@ -54,7 +54,7 @@ public class ContaReceberItem extends BaseEntity {
   private Integer numeroParcela = 1;
 
   @Column(name = "SN_GLOSA_ACEITA")
-  private String glosaAceita;
+  private String glosaAceita = "N";
 
   @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
   private Set<Recebimento> recebimentos;

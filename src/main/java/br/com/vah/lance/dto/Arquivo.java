@@ -31,7 +31,7 @@ public class Arquivo {
   // X(08)
   public static final String BRANCOS_0 = ArquivoUtils.rightSpace("", 8);
   // X(30)
-  public static final String NOME_EMPRESA = ArquivoUtils.rightSpace("VITORIA APART HOSPITAL AS", 30);
+  public static final String NOME_EMPRESA = ArquivoUtils.rightSpace("VITORIA APART HOSPITAL SA", 30);
   // 9(03)
   public static final String COD_BANCO = "341";
   // X(15)

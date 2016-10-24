@@ -59,7 +59,7 @@
         </h:panelGrid>
 
         <p:dataTable id="dataTable" value="#{validarCondominialCtrl.lancamentos}" styleClass="margin-top"
-                     var="lancamento" emptyMessage="Sem entradas" rowIndexVar="index"
+                     var="lancamento" sortBy="#{lancamento.servico.title}" emptyMessage="Sem entradas" rowIndexVar="index"
                      rowSelectMode="add" selection="#{validarCondominialCtrl.lancamentosSelecionados}"
                      rowKey="#{lancamento.id}">
           <p:ajax event="toggleSelect" listener="#{validarCondominialCtrl.onSelect}" process="@this"
@@ -73,7 +73,7 @@
           <p:ajax event="rowUnselectCheckbox" listener="#{validarCondominialCtrl.onSelect}" process="@this"
                   update="#{p:component('validarSelecionadosBtnPnl')} #{p:component('totalValue')}"/>
           <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-          <p:column headerText="Serviço" styleClass="left-align">
+          <p:column headerText="Serviço" sortBy="#{lancamento.servico.title}" styleClass="left-align">
             <h:outputText value="#{lancamento.servico.title}"/>
           </p:column>
           <p:column headerText="Tipo de serviço" width="200" styleClass="left-align">

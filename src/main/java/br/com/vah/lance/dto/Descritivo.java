@@ -32,12 +32,13 @@ public class Descritivo {
   private String numero;
   // X(20)
   private String complemento;
+  private Descritivo descritivo;
 
 
   public Descritivo(Cobranca cobranca) {
     rateado = "2";
     nossoNumero = ArquivoUtils.rightSpace(cobranca.getId().toString(), 8);
-    nomeSetor = ArquivoUtils.rightSpace(cobranca.getSetor().getTitle(), 100);
+    nomeSetor = ArquivoUtils.rightSpace(cobranca.getSetor() == null ? "" : cobranca.getSetor().getTitle(), 100);
     numero = ArquivoUtils.rightSpace(cobranca.getCliente().getNumero(), 6);
     complemento = ArquivoUtils.rightSpace(cobranca.getCliente().getComplemento(), 20);
   }
@@ -59,14 +60,14 @@ public class Descritivo {
     descricao = ArquivoUtils.rightSpace(item.getServico().getTitle(), 100);
     valorTotal = ArquivoUtils.formatNumber(item.getTotal(), 13);
     valorIndividual = ArquivoUtils.formatNumber(item.getValor(), 13);
-
+    descritivo = new Descritivo(item.getCobranca());
   }
 
   public String print() {
     if (SETOR.equals(rateado)) {
       return rateado + nossoNumero + nomeSetor + numero + complemento + "\r\n";
     } else {
-      return rateado + nossoNumero + descricao + valorTotal + valorIndividual + "\r\n";
+      return descritivo.print() + rateado + nossoNumero + descricao + valorTotal + valorIndividual + "\r\n";
     }
   }
 }

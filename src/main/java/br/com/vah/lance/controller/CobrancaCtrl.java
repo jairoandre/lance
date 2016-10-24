@@ -1,6 +1,7 @@
 package br.com.vah.lance.controller;
 
 import br.com.vah.lance.constant.TipoServicoEnum;
+import br.com.vah.lance.dto.CobrancaDTO;
 import br.com.vah.lance.entity.dbamv.DescontoAcrescimo;
 import br.com.vah.lance.entity.usrdbvah.Cobranca;
 import br.com.vah.lance.entity.usrdbvah.ItemCobranca;
@@ -60,11 +61,15 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private Cobranca[] selectedCobrancas;
 
+  private CobrancaDTO[] selectedCobrancaDTOs;
+
   private Date vigencia = new Date();
 
   private Integer vencimento;
 
   private List<Cobranca> cobrancas;
+
+  private List<CobrancaDTO> cobrancaDTOs;
 
   private Cobranca cobranca;
 
@@ -84,6 +89,8 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   private BigDecimal totalRecebimento;
 
+  private Date dataCompensado;
+
   private boolean validarObrigatorios() {
     if (vigencia == null) {
       addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Informe a vigência");
@@ -98,6 +105,16 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     if (selectedCobrancas != null) {
       for (Cobranca cobranca : selectedCobrancas) {
         totalSelecionados = totalSelecionados.add(cobranca.getValor());
+      }
+    }
+  }
+
+  public void updateTotalSelecionadosDTO() {
+    totalSelecionados = BigDecimal.ZERO;
+
+    if (selectedCobrancaDTOs != null) {
+      for (CobrancaDTO dto : selectedCobrancaDTOs) {
+        totalSelecionados = totalSelecionados.add(dto.getCobranca().getValor()).add(dto.getMulta());
       }
     }
   }
@@ -260,6 +277,31 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     receberSelecionados();
   }
 
+  public void receberCobrancaDTOs() {
+    boolean noValidationErrors = true;
+    if (dataCompensado == null) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Informe a data de compensação da cobrança");
+      noValidationErrors = false;
+    }
+    if (selectedCobrancaDTOs == null || selectedCobrancaDTOs.length == 0) {
+      addMsg(FacesMessage.SEVERITY_WARN, "Atenção", "Selecione ao menos uma cobrança.");
+      noValidationErrors = false;
+    }
+    if (noValidationErrors) {
+      try {
+        service.receberCobrancasDTOs(selectedCobrancaDTOs, sessionCtrl.getUser().getLogin(), dataCompensado);
+        addMsg(FacesMessage.SEVERITY_INFO, "Sucesso", "Cobranças baixadas com sucesso!");
+        for (CobrancaDTO cobrancaDTO : selectedCobrancaDTOs) {
+          cobrancaDTOs.remove(cobrancaDTO);
+        }
+        selectedCobrancaDTOs = null;
+        mensagens = null;
+      } catch (Exception e) {
+        addErrorMessage(e);
+      }
+    }
+  }
+
   public void fecharModalRecebimento() {
     showRecebimentosDlg = false;
     showRecebimentoDlg = false;
@@ -327,6 +369,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
         Map<String, Object> processamento = service.processarArquivoRetorno(file.getContents());
         mensagens = (List<String>) processamento.get(CobrancaService.MENSAGENS);
         confirmadas = (List<Cobranca>) processamento.get(CobrancaService.CONFIRMADAS);
+        cobrancaDTOs = (List<CobrancaDTO>) processamento.get(CobrancaService.COBRANCAS);
       } catch (Exception e) {
         addErrorMessage(e);
       }
@@ -403,6 +446,18 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   public void setCobranca(Cobranca cobranca) {
     this.cobranca = cobranca;
+  }
+
+  public List<CobrancaDTO> getCobrancaDTOs() {
+    return cobrancaDTOs;
+  }
+
+  public CobrancaDTO[] getSelectedCobrancaDTOs() {
+    return selectedCobrancaDTOs;
+  }
+
+  public void setSelectedCobrancaDTOs(CobrancaDTO[] selectedCobrancaDTOs) {
+    this.selectedCobrancaDTOs = selectedCobrancaDTOs;
   }
 
   public Integer getQtdSelecionados() {
@@ -561,5 +616,13 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
 
   public void setExibirCancelados(Boolean exibirCancelados) {
     this.exibirCancelados = exibirCancelados;
+  }
+
+  public Date getDataCompensado() {
+    return dataCompensado;
+  }
+
+  public void setDataCompensado(Date dataCompensado) {
+    this.dataCompensado = dataCompensado;
   }
 }
