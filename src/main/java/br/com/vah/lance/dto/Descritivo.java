@@ -6,6 +6,9 @@ import br.com.vah.lance.entity.usrdbvah.Cobranca;
 import br.com.vah.lance.entity.usrdbvah.ItemCobranca;
 import br.com.vah.lance.entity.usrdbvah.Servico;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by jairoportela on 28/07/2016.
  */
@@ -57,7 +60,16 @@ public class Descritivo {
 
     rateado = isIndividual ? INDIVIDUAL : RATEADO;
     nossoNumero = ArquivoUtils.rightSpace(item.getCobranca().getId().toString(), 8);
-    descricao = ArquivoUtils.rightSpace(item.getServico().getTitle(), 100);
+    String servicoTitle = item.getServico().getTitle();
+    descricao = ArquivoUtils.rightSpace(servicoTitle, 100);
+    if (servicoTitle.equals("SERVIÇOS DE INTERNET E COMUNICAÇÃO")) {
+      SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+      Calendar cld = Calendar.getInstance();
+      cld.setTime(item.getCobranca().getVencimento());
+      cld.add(Calendar.MONTH, -1);
+      String ref = sdf.format(cld.getTime());
+      descricao = ArquivoUtils.rightSpace("SERV. DE INTERNET E COMUN. (REF. " + ref + ")", 100);
+    }
     valorTotal = ArquivoUtils.formatNumber(item.getTotal(), 13);
     valorIndividual = ArquivoUtils.formatNumber(item.getValor(), 13);
     descritivo = new Descritivo(item.getCobranca());

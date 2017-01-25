@@ -585,13 +585,13 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
       ammountClinics = getItem().getAmmountToShare().multiply(servicoValor.getValueB());
       ammountShopping = getItem().getAmmountToShare().multiply(servicoValor.getValueC());
       if (!BigDecimal.ZERO.equals(getItem().getTotalAreaA())) {
-        taxProviders = ammountProviders.divide(getItem().getTotalAreaA(), 10, BigDecimal.ROUND_CEILING);
+        taxProviders = ammountProviders.divide(getItem().getTotalAreaA(), 10, BigDecimal.ROUND_HALF_UP);
       }
       if (!BigDecimal.ZERO.equals(getItem().getTotalAreaB())) {
-        taxClinics = ammountClinics.divide(getItem().getTotalAreaB(), 10, BigDecimal.ROUND_CEILING);
+        taxClinics = ammountClinics.divide(getItem().getTotalAreaB(), 10, BigDecimal.ROUND_HALF_UP);
       }
       if (!BigDecimal.ZERO.equals(getItem().getTotalAreaC())) {
-        taxShopping = ammountShopping.divide(getItem().getTotalAreaC(), 10, BigDecimal.ROUND_CEILING);
+        taxShopping = ammountShopping.divide(getItem().getTotalAreaC(), 10, BigDecimal.ROUND_HALF_UP);
       }
     }
   }

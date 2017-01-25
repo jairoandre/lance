@@ -117,11 +117,11 @@ public class CobrancaService extends DataAccessService<Cobranca> {
         }
       }
 
-      /*
+
       if (builder.length() > 0) {
         throw new LanceBusinessException("Já existe cobranças para os seguintes items: \r\n" + builder.toString());
       }
-      */
+
 
       for (Cobranca cobranca : toPersist) {
         if (cobranca.getId() == null) {
@@ -297,6 +297,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
     }
     criteria.add(Restrictions.eq("cliente", cobranca.getCliente()));
     criteria.add(Restrictions.eq("vencimento", cobranca.getVencimento()));
+    criteria.add(Restrictions.eq("cancelado", false));
     if (criteria.list().size() == 0) {
       return null;
     } else {

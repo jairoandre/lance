@@ -377,7 +377,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
           break;
       }
       // Soma os valores
-      lancamento.setTotalValue(lancamento.getTotalValue().add(lancamentoValor.getValue()));
+      lancamento.setTotalValue(lancamento.getTotalValue().add(lancamentoValor.getValue()).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
   }
 
