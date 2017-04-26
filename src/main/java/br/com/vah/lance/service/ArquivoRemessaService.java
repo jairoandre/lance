@@ -9,6 +9,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,10 @@ import java.util.List;
  */
 @Stateless
 public class ArquivoRemessaService implements Serializable {
+
+  private
+  @Inject
+  CobrancaService cobrancaService;
 
   public Arquivo gerarArquivoRemessa(List<Cobranca> cobrancas) throws LanceBusinessException {
     List<Detalhe> detalhes = new ArrayList<>();
@@ -62,7 +67,8 @@ public class ArquivoRemessaService implements Serializable {
 
   public StreamedContent gerarDescritivo(List<Cobranca> cobrancas) throws LanceBusinessException {
     StringBuilder builder = new StringBuilder();
-    for (Cobranca cobranca : cobrancas) {
+    for (Cobranca dettached : cobrancas) {
+      Cobranca cobranca = cobrancaService.initializeDescritivo(dettached.getId());
       if (cobranca.getId() == null) {
         throw new LanceBusinessException("Somente cobranças gravadas podem gerar o descritivo");
       }
