@@ -5,6 +5,7 @@ import br.com.vah.lance.exception.LanceBusinessException;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import java.util.HashSet;
 import java.util.List;
 
 @Stateless
@@ -24,5 +25,12 @@ public class ContratoService extends DataAccessService<Contrato> {
       throw new LanceBusinessException("Já existe contrato para o período informado.");
     }
     return create(contrato);
+  }
+
+  public Contrato initializeLists(Long id) {
+    Contrato contrato = find(id);
+    new HashSet<>(contrato.getSetores());
+    new HashSet<>(contrato.getServicos());
+    return contrato;
   }
 }

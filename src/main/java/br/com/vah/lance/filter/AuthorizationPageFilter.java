@@ -9,6 +9,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * To prevent user from going back to Login page if the user already logged in
@@ -51,6 +52,25 @@ public class AuthorizationPageFilter implements Filter {
       }
     } else {
       // Usuário não logado
+      /*
+      response.addHeader("requestURI", request.getRequestURI());
+      Map<String, String[]> paramMap = request.getParameterMap();
+      if (paramMap != null) {
+        response.addHeader("paramMapSize", String.valueOf(paramMap.size()));
+        int mapIterator = 0;
+        for (String key : paramMap.keySet()) {
+          response.addHeader(String.format("paramMapKey[%d]", mapIterator), key);
+          String[] values = paramMap.get(key);
+          response.addHeader(String.format("paramMapValuesSize[%d]", mapIterator), String.valueOf(values == null ? 0 : values.length));
+          if (values != null) {
+            int valueIterator = 0;
+            for (String value : values) {
+              response.addHeader(String.format("paramMapValue[%d][%d]", mapIterator, valueIterator), value);
+            }
+          }
+        }
+      }
+      */
       response.sendRedirect(request.getContextPath() + "/login.xhtml");
     }
   }

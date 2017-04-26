@@ -60,6 +60,13 @@
                              disabled="#{!lancamentoCtrl.editing}"
                              styleClass="margin-left"
                              rendered="#{lancamentoCtrl.sharedPerArea}"/>
+            <p:commandButton id="addNovasEntradas" value="Verificar Novos Contratos"
+                             action="#{lancamentoCtrl.adicionarNovasEntradas}"
+                             onstart="start();" oncomplete="stop();"
+                             process="@this"
+                             update="@form"
+                             disabled="#{!lancamentoCtrl.editing}"
+                             styleClass="margin-left"/>
           </h:panelGroup>
 
           <!-- INFORMAÇÕES SOBRE AS ÁREAS (PERCENTUAIS) -->

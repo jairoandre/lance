@@ -65,7 +65,7 @@ public class Lancamento extends BaseEntity {
   /**
    * Comentários do lançamento
    */
-  @OneToMany(mappedBy = "lancamento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "lancamento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<Comentario> comentarios;
 
   /**
@@ -112,7 +112,7 @@ public class Lancamento extends BaseEntity {
   @Column(name = "VL_AREA_C")
   private BigDecimal totalAreaC = BigDecimal.ZERO;
 
-  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(name = "TB_LANCA_LAN_CON_REC", joinColumns = {
       @JoinColumn(name = "ID")}, inverseJoinColumns = {@JoinColumn(name = "CD_CON_REC")}, schema = "USRDBVAH")
   private List<ContaReceber> contasReceber = new ArrayList<>();
@@ -136,13 +136,13 @@ public class Lancamento extends BaseEntity {
   /**
    * Os valores individuais de lançamento (por cliente/contrato)
    */
-  @OneToMany(mappedBy = "lancamento", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "lancamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Set<LancamentoValor> values;
 
   /**
    * Os valores individuais de leituras de medidores (para os caso de Energia e Gás)
    */
-  @OneToMany(mappedBy = "lancamento", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "lancamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Set<LancamentoMedidorValor> meterValues;
 
   public Lancamento() {

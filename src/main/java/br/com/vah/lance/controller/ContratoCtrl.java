@@ -63,6 +63,9 @@ public class ContratoCtrl extends AbstractController<Contrato> {
   @Override
   public void onLoad() {
     super.onLoad();
+    if (getItem().getId() != null) {
+      setItem(service.initializeLists(getItem().getId()));
+    }
     if (getEditing()) {
       List<Servico> allServicos = servicoService.findWithNamedQuery(Servico.ALL);
       for (Servico item : allServicos) {

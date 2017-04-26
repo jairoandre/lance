@@ -15,8 +15,10 @@ import br.com.vah.lance.entity.dbamv.ItemResultado;
 
 @Entity
 @Table(name = "TB_LANCA_SERVICO", schema = "USRDBVAH")
-@NamedQueries({@NamedQuery(name = Servico.ALL, query = "SELECT s FROM Servico s"),
-    @NamedQuery(name = Servico.COUNT, query = "SELECT COUNT(s) FROM Servico s")})
+@NamedQueries({
+    @NamedQuery(name = Servico.ALL, query = "SELECT s FROM Servico s"),
+    @NamedQuery(name = Servico.COUNT, query = "SELECT COUNT(s) FROM Servico s")
+})
 public class Servico extends BaseEntity {
 
   /**

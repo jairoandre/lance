@@ -80,67 +80,71 @@
                           icon="fa fa-bar-chart">
                 <p:fileDownload value="#{lancamentoCtrl.relatorioContabil(lancamento)}"/>
               </p:menuitem>
-              <p:menuitem value="Contas a receber" action="#{lancamentoCtrl.setItem(lancamento)}"
-                          oncomplete="PF('contasReceberDlg').show()"
+              <p:menuitem value="Contas a receber" action="#{lancamentoCtrl.preOpenContasReceberDlg(lancamento)}"
+                          onclick="start();"
+                          oncomplete="PF('contasReceberDlg').show(); stop();"
                           ajax="true"
                           process="@this"
-                          update="#{p:component('contasReceberDlg')}"
-                          disabled="#{empty lancamento.contasReceber}"
+                          update="#{p:component('contasReceberDlgWrapper')}"
                           icon="fa fa-file"/>
               <p:menuitem value="Informar Nota Fiscal" action="#{lancamentoCtrl.contasReceberLancamento(lancamento)}"
                           onclick="PF('changePage').show()"
                           ajax="true"
-                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT') or empty lancamento.contasReceber}"
+                          disabled="#{!sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"
                           icon="fa fa-tags"/>
             </p:menuButton>
           </p:column>
         </p:dataTable>
-        <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="900" height="400">
-          <f:facet name="header">
-            <h:outputText value="Contas a receber - #{lancamentoCtrl.item.servico.title}" rendered="#{not empty lancamentoCtrl.item.servico}"/>
-          </f:facet>
-          <p:dataTable id="contasReceberTable" rendered="#{not empty lancamentoCtrl.item.contasReceber}"
-                       value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}"
-                       rowIndexVar="idx">
-            <p:column headerText="Cód." width="50" styleClass="left-align" sortBy="#{item.id}">
-              <h:outputText value="#{item.id}"/>
-            </p:column>
-            <p:column headerText="Setor"
-                      styleClass="left-align" width="75" sortBy="#{item.codSetor}">
-              <h:outputText value="#{item.codSetor}"/>
-            </p:column>
-            <p:column headerText="Cliente"
-                      styleClass="left-align ellipsis-text" width="200" sortBy="#{item.nomeCliente}">
-              <h:outputText id="nomeCliente" value="#{item.nomeCliente}"/>
-              <vah:toolTip id="clienteTool" index="#{idx}" for="#{p:component('nomeCliente')}"
-                           value="#{item.nomeCliente}"/>
-            </p:column>
-            <p:column headerText="Valor" width="85" styleClass="left-align" sortBy="#{item.valorBruto}">
-              <h:outputText value="#{item.valorBruto}">
-                <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
-              </h:outputText>
-            </p:column>
-            <p:column headerText="Data Emissão"
-                      styleClass="left-align" width="100">
-              <h:outputText value="#{item.dataEmissao}">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-              </h:outputText>
-            </p:column>
-            <p:column width="75" styleClass="center-align"
-                      rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
-              <p:menuButton value="Ações">
-                <p:menuitem value="Detalhar" action="#{contaReceberCtrl.detail(item)}"
-                            onclick="PF('changePage').show()"
-                            ajax="false"
-                            icon="fa fa-search"/>
-                <p:menuitem value="Editar" action="#{contaReceberCtrl.edit(item)}"
-                            onclick="PF('changePage').show()"
-                            ajax="false"
-                            icon="fa fa-pencil"/>
-              </p:menuButton>
-            </p:column>
-          </p:dataTable>
-        </p:dialog>
+
+        <h:panelGroup id="contasReceberDlgWrapper">
+          <p:dialog id="contasReceberDlg" widgetVar="contasReceberDlg" width="900" height="400" rendered="#{lancamentoCtrl.showContasReceberDlg}">
+            <f:facet name="header">
+              <h:outputText value="Contas a receber - #{lancamentoCtrl.item.servico.title}" rendered="#{not empty lancamentoCtrl.item.servico}"/>
+            </f:facet>
+            <p:dataTable id="contasReceberTable"
+                         value="#{lancamentoCtrl.item.contasReceber}" var="item" sortBy="#{item.numeroDocumento}"
+                         rowIndexVar="idx">
+              <p:column headerText="Cód." width="50" styleClass="left-align" sortBy="#{item.id}">
+                <h:outputText value="#{item.id}"/>
+              </p:column>
+              <p:column headerText="Setor"
+                        styleClass="left-align" width="75" sortBy="#{item.codSetor}">
+                <h:outputText value="#{item.codSetor}"/>
+              </p:column>
+              <p:column headerText="Cliente"
+                        styleClass="left-align ellipsis-text" width="200" sortBy="#{item.nomeCliente}">
+                <h:outputText id="nomeCliente" value="#{item.nomeCliente}"/>
+                <vah:toolTip id="clienteTool" index="#{idx}" for="#{p:component('nomeCliente')}"
+                             value="#{item.nomeCliente}"/>
+              </p:column>
+              <p:column headerText="Valor" width="85" styleClass="left-align" sortBy="#{item.valorBruto}">
+                <h:outputText value="#{item.valorBruto}">
+                  <f:convertNumber minFractionDigits="2" pattern="R$ #,##0.00"/>
+                </h:outputText>
+              </p:column>
+              <p:column headerText="Data Emissão"
+                        styleClass="left-align" width="100">
+                <h:outputText value="#{item.dataEmissao}">
+                  <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputText>
+              </p:column>
+              <p:column width="75" styleClass="center-align"
+                        rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,SUPERVISOR')}">
+                <p:menuButton value="Ações">
+                  <p:menuitem value="Detalhar" action="#{contaReceberCtrl.detail(item)}"
+                              onclick="PF('changePage').show()"
+                              ajax="false"
+                              icon="fa fa-search"/>
+                  <p:menuitem value="Editar" action="#{contaReceberCtrl.edit(item)}"
+                              onclick="PF('changePage').show()"
+                              ajax="false"
+                              icon="fa fa-pencil"/>
+                </p:menuButton>
+              </p:column>
+            </p:dataTable>
+          </p:dialog>
+        </h:panelGroup>
+
       </p:panel>
 
     </h:form>

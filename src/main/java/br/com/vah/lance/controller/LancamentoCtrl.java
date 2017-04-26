@@ -3,7 +3,9 @@ package br.com.vah.lance.controller;
 import br.com.vah.lance.constant.EstadoLancamentoEnum;
 import br.com.vah.lance.constant.RolesEnum;
 import br.com.vah.lance.constant.TipoServicoEnum;
-import br.com.vah.lance.entity.dbamv.*;
+import br.com.vah.lance.entity.dbamv.ContaReceber;
+import br.com.vah.lance.entity.dbamv.Fornecedor;
+import br.com.vah.lance.entity.dbamv.Setor;
 import br.com.vah.lance.entity.usrdbvah.*;
 import br.com.vah.lance.exception.LanceBusinessException;
 import br.com.vah.lance.service.*;
@@ -21,7 +23,6 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -109,20 +110,25 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     getLogger().info("Load params");
     if (getId() != null) {
       try {
-        setItem(getService().find(getId()));
-        contasLancamento = getItem().getContasReceber();
+        Lancamento lancamento = service.initializeLists(getId(), false, true, false, false);
+        contasLancamento = lancamento.getContasReceber();
+        setItem(lancamento);
       } catch (Exception e) {
         addMsg(FacesMessage.SEVERITY_ERROR, "Aviso", "Erro na recuperação do lançamento");
       }
     }
   }
 
+  public void buscar() {
+    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRangeForThisMonth());
+    initLazyModel(service, RELATIONS);
+  }
+
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   @PostConstruct
   public void init() {
     logger.info(this.getClass().getSimpleName() + " created.");
-    entries = service.retrieveEntriesForUser(sessionCtrl.getUser().getId(), VahUtils.getDateRangeForThisMonth());
-    initLazyModel(service, RELATIONS);
     Date today = new Date();
     SimpleDateFormat sdfDia = new SimpleDateFormat("dd");
     SimpleDateFormat sdfVigencia = new SimpleDateFormat("MMyyyy");
@@ -269,6 +275,17 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
     return "/pages/lancamento/validate.xhtml?faces-redirect=true&id=" + item.getId() + "&editing=true";
   }
 
+
+  public void adicionarNovasEntradas() {
+    Lancamento lancamentoAtualizado = service.addNovosLancamentos(getItem());
+    setItem(lancamentoAtualizado);
+    lancamentoValors = new ArrayList<>(lancamentoAtualizado.getValues());
+  }
+
+
+  /**
+   * Carrega as informações do lançamento
+   */
   @Override
   public void onLoad() {
     super.onLoad();
@@ -279,7 +296,7 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
         setItem(service.prepareNewEntry(sessionCtrl.getUser().getId(), serviceId, parsedVigencia));
         service.computeInitialValues(getItem());
       } else if (getItem().getId() != null) {
-        setItem(service.addNovosLancamentos(getItem()));
+        setItem(service.initializeLists(getItem()));
       }
       TipoServicoEnum serviceType = getItem().getServico().getType();
       getItem().getMeterValues();
@@ -696,11 +713,25 @@ public class LancamentoCtrl extends AbstractController<Lancamento> {
   }
 
   public StreamedContent relatorioContabil(Lancamento lancamento) {
-    return relatorioService.relatorioBalanco(lancamento, sessionCtrl.getUser());
+    return relatorioService.relatorioBalanco(service.initializeLists(lancamento), sessionCtrl.getUser());
+  }
+
+  private Boolean showContasReceberDlg = false;
+
+  public void preOpenContasReceberDlg(Lancamento lancamento) {
+    showContasReceberDlg = true;
+    setItem(service.initializeLists(lancamento, false, true, false, false));
+  }
+
+  public void closeOpenContasReceberDlg() {
+    showContasReceberDlg = false;
+  }
+
+  public Boolean getShowContasReceberDlg() {
+    return showContasReceberDlg;
   }
 
   public String contasReceberLancamento(Lancamento lancamento) {
     return "/pages/contaReceber/list-for-nf.xhtml" + _FACES_REDIRECT + _ID_PARAM + lancamento.getId();
   }
-
 }

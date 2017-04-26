@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import br.com.vah.lance.entity.BaseEntity;
+import br.com.vah.lance.entity.usrdbvah.Servico;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
@@ -214,6 +215,12 @@ public abstract class DataAccessService<T extends BaseEntity> implements Seriali
   public Criteria createCriteria() {
     Session session = em.unwrap(Session.class);
     return session.createCriteria(type);
+  }
+
+  public List<T> list() {
+    Session session = em.unwrap(Session.class);
+    Criteria criteria = session.createCriteria(Servico.class);
+    return criteria.list();
   }
 
   /**

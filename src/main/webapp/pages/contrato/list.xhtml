@@ -22,10 +22,6 @@
                            onclick="start()"
                            rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR,ACCOUNTANT')}"/>
           </p:column>
-          <p:column headerText="Setores"
-                    style="text-align: left;" width="60" styleClass="left-align">
-            <h:outputText value="#{item.setores.size()}"/>
-          </p:column>
         </vah:dataTable>
       </p:panel>
     </h:form>

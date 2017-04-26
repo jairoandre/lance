@@ -364,7 +364,8 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
   }
 
-  public void receberCobranca(Cobranca cobranca, Map<String, Object> params, Boolean validar) throws LanceBusinessException {
+  public void receberCobranca(Cobranca dettach, Map<String, Object> params, Boolean validar) throws LanceBusinessException {
+    Cobranca cobranca = initializeContas(dettach.getId());
     Date dataBaixa = (Date) params.get(DATA_BAIXA);
     String usuario = (String) params.get(USUARIO);
     BigDecimal multaAcrescimo = (BigDecimal) params.get(MULTA_ACRESCIMO);
@@ -444,7 +445,7 @@ public class CobrancaService extends DataAccessService<Cobranca> {
       // MULTA/ACRESCIMO
 
       if (multaAcrescimo != null) {
-        BigDecimal proporcional = multaAcrescimo.multiply(conta.getValorBruto()).divide(cobranca.getValor(), 2, BigDecimal.ROUND_FLOOR);
+        BigDecimal proporcional = multaAcrescimo.multiply(conta.getValorBruto()).divide(cobranca.getValor(), 2, BigDecimal.ROUND_HALF_UP);
         totalProporcional = totalProporcional.add(proporcional);
         RecebimentoDescAcres acrescimo = new RecebimentoDescAcres();
         acrescimo.setRecebimento(recebimento);
@@ -456,7 +457,15 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
         recebimento.getDescontosAcrescimos().add(acrescimo);
         recebimento.setValorAcrescimo(proporcional);
-        conta.setValorAcrescimo(proporcional);
+        // JUROS FORNECEDOR
+
+        // Removido dia 19/04/2017
+        // Verificou-se que o acrescimo informado no lance
+        // não deve ser inserido ao valor da conta, mas somente
+        // às suas parcelas.
+
+        // conta.setValorAcrescimo(proporcional);
+        // conta.setCodigoAcrescimo(1);
         BigDecimal valorLiquido = conta.getValorBruto().add(proporcional);
 
         recebimento.setValorRecebido(valorLiquido);
@@ -494,7 +503,9 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
   }
 
-  public void cancelarRecebimento(Cobranca cobranca) {
+  public void cancelarRecebimento(Cobranca dettached) {
+
+    Cobranca cobranca = initializeContas(dettached.getId());
 
     Set<Recebimento> recebimentosToRemove = new HashSet<>();
     Set<Movimentacao> movimentacoesToRemove = new HashSet<>();
@@ -707,6 +718,25 @@ public class CobrancaService extends DataAccessService<Cobranca> {
 
 
     return resultadoProcessamento;
+  }
+
+  public Cobranca initializeLists(Long id) {
+    Cobranca cobranca = find(id);
+    new HashSet<>(cobranca.getDescritivo());
+    new HashSet<>(cobranca.getContas());
+    return cobranca;
+  }
+
+  public Cobranca initializeDescritivo(Long id) {
+    Cobranca cobranca = find(id);
+    new HashSet<>(cobranca.getDescritivo());
+    return cobranca;
+  }
+
+  public Cobranca initializeContas(Long id) {
+    Cobranca cobranca = find(id);
+    new HashSet<>(cobranca.getContas());
+    return cobranca;
   }
 
 }

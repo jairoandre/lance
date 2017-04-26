@@ -35,6 +35,10 @@ public class RelatorioService implements Serializable {
 
   private
   @Inject
+  CobrancaService cobrancaService;
+
+  private
+  @Inject
   ContratoService contratoService;
 
   public StreamedContent getRelatorioDescritivoCondominio(Fornecedor cliente, Date vigencia, EstadoLancamentoEnum status, Boolean condominio) {
@@ -109,7 +113,7 @@ public class RelatorioService implements Serializable {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
     parameters.put("REFERENCIA", sdf.format(vigencia));
-    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource, null);
+    return reportLoader.imprimeRelatorio("descritivoCondominio", parameters, datasource, "DESCRITIVO_CONDOMINIO");
 
   }
 
@@ -128,7 +132,8 @@ public class RelatorioService implements Serializable {
 
     ZipOutputStream zos = new ZipOutputStream(baos);
     try {
-      for (Cobranca cobranca : cobrancas) {
+      for (Cobranca dettach : cobrancas) {
+        Cobranca cobranca = cobrancaService.initializeLists(dettach.getId());
         String fileName = cobranca.getCliente().getId().toString();
         byte[] buffer = new byte[1024];
         if (cobranca.getSetor() != null) {
@@ -164,7 +169,9 @@ public class RelatorioService implements Serializable {
     return null;
   }
 
-  public InputStream descritivoGeralIN(Cobranca cobranca, User user) {
+  public InputStream descritivoGeralIN(Cobranca dettached, User user) {
+    Cobranca cobranca = cobrancaService.initializeDescritivo(dettached.getId());
+
     Map<String, Object> parameters = new HashMap<>();
     List<DescritivoCondominioDTO> datasource = new ArrayList<>();
 
@@ -190,18 +197,15 @@ public class RelatorioService implements Serializable {
 
   public StreamedContent descritivoGeral(Cobranca cobranca, User user) {
 
-    String fileName = cobranca.getCliente().getId().toString();
-
-    if (cobranca.getSetor() != null) {
-      fileName += " - " + cobranca.getSetor();
-    }
-
-    fileName += "-DESC-GERAL";
+    String fileName = String.format("DESCRITIVO_GERAL-%d", cobranca.getCliente().getId());
 
     return reportLoader.printReport(descritivoGeralIN(cobranca, user), fileName);
   }
 
-  public InputStream descritivoIN(Cobranca cobranca, User user) {
+  public InputStream descritivoIN(Cobranca dettached, User user) {
+
+    Cobranca cobranca = cobrancaService.initializeDescritivo(dettached.getId());
+
     Map<String, Object> parameters = new HashMap<>();
 
     Calendar cld = Calendar.getInstance();
@@ -274,12 +278,7 @@ public class RelatorioService implements Serializable {
 
   public StreamedContent descritivo(Cobranca cobranca, User user) {
 
-    String fileName = cobranca.getCliente().getId().toString();
-    if (cobranca.getSetor() != null) {
-      fileName += "-" + cobranca.getSetor().getId();
-    }
-
-    fileName += "-DESC";
+    String fileName = String.format("DESCRITIVO-%d", cobranca.getCliente().getId());
 
     return reportLoader.printReport(descritivoIN(cobranca, user), fileName);
   }
@@ -293,8 +292,8 @@ public class RelatorioService implements Serializable {
 
     Date today = new Date();
 
-    for (Contrato contrato : contratos) {
-
+    for (Contrato dettached : contratos) {
+      Contrato contrato = contratoService.initializeLists(dettached.getId());
       if (today.after(contrato.getBeginDate()) && today.before(contrato.getEndDate())) {
         Fornecedor contratante = contrato.getContratante();
         for (ContratoSetor contratoSetor : contrato.getSetores()) {
@@ -328,7 +327,7 @@ public class RelatorioService implements Serializable {
         return o1.getNomeCliente().compareTo(o2.getNomeCliente());
       }
     });
-    return reportLoader.imprimeRelatorio("setorRelatorio", parameters, datasource, null);
+    return reportLoader.imprimeRelatorio("setorRelatorio", parameters, datasource, "RELATORIO_SETOR");
   }
 
   public StreamedContent relatorioBalancoCondominial(Date vigencia, User usuario) {
@@ -360,6 +359,9 @@ public class RelatorioService implements Serializable {
     cld.add(Calendar.MONTH, 1);
     cld.set(Calendar.DAY_OF_MONTH, 1);
     cld.add(Calendar.DAY_OF_MONTH, -1);
+
+    lancamento = lancamentoService.initializeLists(lancamento, false, false, false, true);
+
     for (LancamentoValor val : lancamento.getValues()) {
 
       if (BigDecimal.ZERO.equals(val.getValue())) {
@@ -494,7 +496,7 @@ public class RelatorioService implements Serializable {
     List<ProtocoloEntregaDTO> ds = new ArrayList<>();
 
     for (Cobranca cobranca : cobrancas) {
-      ProtocoloEntregaDTO dto  = new ProtocoloEntregaDTO();
+      ProtocoloEntregaDTO dto = new ProtocoloEntregaDTO();
       dto.setId(cobranca.getId());
       dto.setCliente(cobranca.getCliente().getTitle());
       dto.setSetor(cobranca.getSetor() == null ? "" : cobranca.getSetor().getTitle());

@@ -56,13 +56,13 @@ public class Cobranca extends BaseEntity {
   @Column(name = "NM_DOCUMENTO")
   private String documento;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany
   @JoinTable(name = "TB_LANCA_COBRANCA_CONTA", joinColumns = {
       @JoinColumn(name = "ID_COBRANCA")}, inverseJoinColumns = {
       @JoinColumn(name = "CD_CON_REC")}, schema = "USRDBVAH")
   private Set<ContaReceber> contas = new HashSet<>();
 
-  @OneToMany(mappedBy = "cobranca", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "cobranca", cascade = CascadeType.ALL)
   private Set<ItemCobranca> descritivo = new HashSet<>();
 
   public Long getId() {

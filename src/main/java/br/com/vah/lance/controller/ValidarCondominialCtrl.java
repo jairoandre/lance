@@ -114,6 +114,7 @@ public class ValidarCondominialCtrl extends AbstractController<Lancamento> {
       service.validarLancamentosAgrupados(lancamentosSelecionados, dtLancamentoConRec);
       lancamentos = service.recuperarLancamentosCondominial();
       lancamentosSelecionados = null;
+      addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Lançamentos validados."), false);
     } catch (LanceBusinessException lbe) {
       addMsg(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de negócio", lbe.getMsg()), false);
     } catch (Exception e) {

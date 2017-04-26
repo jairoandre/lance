@@ -70,6 +70,9 @@ public class ContaReceber extends BaseEntity {
   @Column(name = "VL_ACRESCIMO")
   private BigDecimal valorAcrescimo;
 
+  @Column(name = "CD_ACRESCIMO")
+  private Integer codigoAcrescimo;
+
   @Column(name = "VL_DESCONTO")
   private BigDecimal valorDesconto;
 
@@ -215,6 +218,14 @@ public class ContaReceber extends BaseEntity {
 
   public void setValorAcrescimo(BigDecimal valorAcrescimo) {
     this.valorAcrescimo = valorAcrescimo;
+  }
+
+  public Integer getCodigoAcrescimo() {
+    return codigoAcrescimo;
+  }
+
+  public void setCodigoAcrescimo(Integer codigoAcrescimo) {
+    this.codigoAcrescimo = codigoAcrescimo;
   }
 
   public BigDecimal getValorDesconto() {

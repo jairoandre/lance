@@ -87,7 +87,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
 		/*
      * Recupera os contratos vigentes para a data
 		 */
-    List<Contrato> contratos = validesContracts(range[1]);
+    // List<Contrato> contratos = validesContracts(range[1]);
 
     Map<String, Object> entriesParams = new LinkedHashMap<>();
     entriesParams.put("begin", range[0]);
@@ -135,30 +135,32 @@ public class LancamentoService extends DataAccessService<Lancamento> {
          * associados ao usuário. Caso possua, cria uma instância de lançamento
          * para o serviço.
          */
+
+        List<Servico> servicos = servicoService.list();
+
+        for (Servico servico : servicos) {
+          if (userServicos.contains(servico)) {
+            // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
+            if (!includedServicos.contains(servico)) {
+              entries.add(new Lancamento(servico, range[0]));
+              includedServicos.add(servico);
+            }
+          }
+        }
+
+        currentEntries.addAll(entries);
+
+/*
         for (Contrato contrato : contratos) {
 
           for (ContratoSetor contratoSetor : contrato.getSetores()) {
 
-            for (Servico servico : contratoSetor.getServicos()) {
-
-              if (userServicos.contains(servico)) {
-
-                // Cria um novo agrupamento de serviços se necessário (por questões de exibição)
-                if (!includedServicos.contains(servico)) {
-                  entries.add(new Lancamento(servico, range[0]));
-                  includedServicos.add(servico);
-                }
-
-              }
-
-            }
 
           }
 
         }
+*/
 
-        // "Concatena" entradas persistidas com entradas pendentes.
-        currentEntries.addAll(entries);
       }
 
     }
@@ -192,6 +194,40 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     Lancamento lancamento = prepareNewEntry(serviceId, vigencia);
     lancamento.setAutor(user);
     return lancamento;
+  }
+
+  public Lancamento initializeLists(Lancamento lancamento) {
+    Lancamento att = find(lancamento.getId());
+    new HashSet(att.getComentarios());
+    new HashSet(att.getContasReceber());
+    new HashSet(att.getMeterValues());
+    new HashSet(att.getValues());
+    return att;
+  }
+
+  public Lancamento initializeLists(Lancamento lancamento, Boolean comentarios, Boolean contas, Boolean medidores, Boolean valores) {
+    return initializeLists(lancamento.getId(), comentarios,contas, medidores, valores);
+  }
+
+  public Lancamento initializeLists(Long id, Boolean comentarios, Boolean contas, Boolean medidores, Boolean valores) {
+    Lancamento att = find(id);
+    if (comentarios) {
+      new HashSet(att.getComentarios());
+    }
+
+    if (contas) {
+      new HashSet(att.getContasReceber());
+    }
+
+    if (medidores) {
+      new HashSet(att.getMeterValues());
+    }
+
+    if (valores) {
+      new HashSet(att.getValues());
+    }
+
+    return att;
   }
 
   public Lancamento prepareNewEntry(Long serviceId, Date vigencia) {
@@ -444,7 +480,7 @@ public class LancamentoService extends DataAccessService<Lancamento> {
   public Lancamento addNovosLancamentos(Lancamento lancamento) {
     Map<Fornecedor, LancamentoValor> map = new HashMap<>();
     Lancamento novasEntradas = prepareNewEntry(lancamento.getServico().getId(), lancamento.getEffectiveOn());
-    for (LancamentoValor servicoValor : lancamento.getValues()) {
+   for (LancamentoValor servicoValor : lancamento.getValues()) {
       map.put(servicoValor.getContratoSetor().getContrato().getContratante(), servicoValor);
     }
     for (LancamentoValor novaEntrada : novasEntradas.getValues()) {
@@ -572,8 +608,15 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     String numDocPrefix = sdf.format(dataLancamento);
     numDocPrefix = numDocPrefix + "99";
 
+    List<Lancamento> attacheds = new ArrayList<>();
+
     if (lancamentos != null) {
       for (Lancamento lancamento : lancamentos) {
+
+        // Reatacha o objeto na sessão
+
+        lancamento = find(lancamento.getId());
+        attacheds.add(lancamento);
 
         Integer count = 0;
         for (LancamentoValor lancamentoValor : lancamento.getValues()) {
@@ -628,12 +671,12 @@ public class LancamentoService extends DataAccessService<Lancamento> {
     List<ContaReceber> persistedContas = contaReceberService.createList(new ArrayList<>(contasReceberMap.values()));
 
     // Itera a lista de lançamentos selecionados para atualiza-los
-    for (Lancamento lancamento : lancamentos) {
+    for (Lancamento lancamento : attacheds) {
       // Modifica o status para validado
       lancamento.setStatus(EstadoLancamentoEnum.V);
       lancamento.setContasReceber(persistedContas);
     }
-    return updateList(lancamentos);
+    return updateList(attacheds);
   }
 
   public Lancamento carregarValoresAnteriores(Lancamento lancamento) throws LanceBusinessException {

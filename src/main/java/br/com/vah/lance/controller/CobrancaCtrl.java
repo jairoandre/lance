@@ -53,6 +53,10 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   @Inject
   ArquivoRemessaService arquivoService;
 
+  private
+  @Inject
+  CobrancaService cobrancaService;
+
   private DescontoAcrescimo descontoAcrescimo;
 
   private Boolean ocultarRecebidos = false;
@@ -210,7 +214,8 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return null;
   }
 
-  public StreamedContent descritivoGeral(Cobranca cobranca) {
+  public StreamedContent descritivoGeral(Cobranca dettach) {
+    Cobranca cobranca = cobrancaService.initializeLists(dettach.getId());
     try {
       return relatorioService.descritivoGeral(cobranca, sessionCtrl.getUser());
     } catch (Exception e) {
@@ -219,7 +224,8 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
     return null;
   }
 
-  public StreamedContent descritivo(Cobranca cobranca) {
+  public StreamedContent descritivo(Cobranca dettach) {
+    Cobranca cobranca = cobrancaService.initializeLists(dettach.getId());
     try {
       for (ItemCobranca item : cobranca.getDescritivo()) {
         if (item.getServico().getType().equals(TipoServicoEnum.COLETA_INFECTANTE)) {
@@ -234,7 +240,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   }
 
   public void preNotaFiscal(Cobranca cobranca) {
-    this.cobranca = cobranca;
+    this.cobranca = cobrancaService.initializeLists(cobranca.getId());
   }
 
   public void salvarContaReceber() {
@@ -308,7 +314,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   }
 
   public void preReceberCobranca(Cobranca cobranca) {
-    this.cobranca = cobranca;
+    this.cobranca = cobrancaService.initializeLists(cobranca.getId());
     multaAcrescimo = BigDecimal.ZERO;
     showRecebimentoDlg = true;
     descontosAcrescimos = new ArrayList<>();
@@ -548,7 +554,7 @@ public class CobrancaCtrl extends AbstractController<Cobranca> {
   private Cobranca cobrancaToCancel;
 
   public void preExibirDescritivo(Cobranca cobranca) {
-    this.cobranca = cobranca;
+    this.cobranca = cobrancaService.initializeLists(cobranca.getId());
   }
 
   public List<ItemCobranca> getDescritivoOrdenado() {
